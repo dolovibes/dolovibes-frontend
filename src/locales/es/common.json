@@ -1,0 +1,47 @@
+{
+    "navbar": {
+        "experiences": "Experiencias",
+        "ourExperiences": "Nuestras Experiencias",
+        "packages": "Paquetes",
+        "ourPackages": "Nuestros Paquetes",
+        "aboutUs": "Nosotros",
+        "quote": "Cotizar",
+        "viewAllExperiences": "Ver todas las experiencias →",
+        "viewAllPackages": "Ver todos los paquetes →"
+    },
+    "seasons": {
+        "summer": "Verano",
+        "winter": "Invierno"
+    },
+    "buttons": {
+        "next": "Siguiente Paso",
+        "back": "Atrás",
+        "submit": "Enviar Solicitud",
+        "close": "Cerrar",
+        "goBack": "Volver",
+        "backToHome": "Volver al inicio"
+    },
+    "labels": {
+        "perPerson": "por persona",
+        "days": "Días",
+        "persons": "Pers."
+    },
+    "quoteModal": {
+        "title": "Solicita tu Cotización",
+        "step": "Paso",
+        "of": "de",
+        "step1Title": "¿Qué tienes en mente?",
+        "step2Title": "Tus Datos de Contacto",
+        "interestLabel": "Interés Principal",
+        "customPlan": "Planificar a Medida",
+        "dateLabel": "Fecha Aproximada",
+        "travelersLabel": "Viajeros",
+        "notesLabel": "Notas o Deseos Especiales",
+        "notesPlaceholder": "Ej: Quiero ver el atardecer en los Dolomitas, nivel físico medio...",
+        "namePlaceholder": "Nombre Completo",
+        "emailPlaceholder": "Correo Electrónico",
+        "phonePlaceholder": "Teléfono (WhatsApp)",
+        "successTitle": "¡Solicitud Recibida!",
+        "successMessage": "Un experto de DOLOVIBES te contactará pronto para planificar tu viaje."
+    }
+}
