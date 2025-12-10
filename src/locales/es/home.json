@@ -1,0 +1,15 @@
+{
+    "hero": {
+        "badge": "DESCUBRE TU PRÓXIMA AVENTURA",
+        "title": "Vive experiencias",
+        "titleHighlight": "inolvidables",
+        "subtitle": "Selecciona tu temporada ideal y descubre las aventuras que tenemos preparadas para ti"
+    },
+    "selector": {
+        "whenQuestion": "¿Cuándo quieres vivir tu aventura?",
+        "whatQuestion": "¿Qué experiencia te gustaría vivir?",
+        "selectExperience": "Selecciona una experiencia",
+        "changeSeason": "Cambiar temporada",
+        "noExperiences": "No hay experiencias disponibles para esta temporada"
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "title": "Quiénes Somos",
+    "photoAlt": "Nuestros clientes",
+    "origin": {
+        "title": "Cómo nació Dolovibes",
+        "text": "Texto sobre el origen de Dolovibes. Aquí puedes contar la historia de cómo surgió la empresa, qué motivó su creación y los primeros pasos del proyecto."
+    },
+    "essence": {
+        "title": "Nuestra Esencia",
+        "text": "Texto sobre la esencia de Dolovibes. Describe qué hace única a la empresa, sus valores fundamentales y lo que la distingue de otras opciones."
+    },
+    "vision": {
+        "title": "Visión",
+        "text": "Texto sobre la visión de Dolovibes. Describe hacia dónde se dirige la empresa y qué impacto quiere tener en el futuro."
+    },
+    "mission": {
+        "title": "Misión",
+        "text": "Texto sobre la misión de Dolovibes. Explica el propósito principal de la empresa y cómo busca servir a sus clientes."
+    }
+}

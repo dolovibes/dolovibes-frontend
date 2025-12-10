@@ -7,7 +7,7 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
+  color-scheme: light;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -24,6 +24,7 @@
 body {
   margin: 0;
   min-height: 100vh;
+  background-color: #ffffff;
 }
 
 /* Custom animations */
@@ -82,6 +83,8 @@ html {
 input,
 select,
 textarea {
+  background-color: #ffffff;
+  color: #1e293b;
   border: 1px solid #e2e8f0;
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
@@ -94,4 +97,53 @@ select:focus,
 textarea:focus {
   border-color: #10b981;
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Animaciones adicionales para el nuevo Hero */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+/* Delay classes para animaciones */
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+/* Gradiente radial para viñeta del video */
+.bg-radial-gradient {
+  background: radial-gradient(ellipse at center, transparent 0%, rgba(15, 23, 42, 0.3) 100%);
+}
+
+/* Asegurar que el video cubra todo */
+video {
+  object-fit: cover;
+}
+
+/* Transiciones suaves para todos los elementos interactivos */
+button,
+a {
+  transition: all 0.2s ease-out;
+}
+
+/* Estilos para el scroll suave en toda la app */
+* {
+  scroll-behavior: smooth;
 }
