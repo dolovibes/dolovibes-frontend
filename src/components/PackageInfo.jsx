@@ -43,13 +43,13 @@ const PackageInfo = ({ tour, onClose }) => {
     ];
 
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-nieve">
             {/* Navigation Bar */}
             <nav className="bg-white shadow-sm h-20 flex items-center justify-between px-8 sticky top-0 z-50">
-                <span className="font-serif text-2xl font-bold text-emerald-700 tracking-wider">DOLOVIBES</span>
+                <span className="font-serif text-2xl font-bold text-alpino tracking-wider">DOLOVIBES</span>
                 <button
                     onClick={onClose}
-                    className="text-sm font-bold text-slate-500 hover:text-emerald-600 uppercase tracking-widest flex items-center gap-2 transition-colors"
+                    className="text-sm font-bold text-niebla hover:text-alpino uppercase tracking-widest flex items-center gap-2 transition-colors"
                 >
                     <ArrowLeft size={16} /> Volver al Inicio
                 </button>
@@ -66,7 +66,7 @@ const PackageInfo = ({ tour, onClose }) => {
                 </div>
 
                 <div className="relative z-10 text-center text-white px-4 max-w-4xl">
-                    <span className="bg-emerald-600 text-white px-3 py-1 text-xs font-bold uppercase tracking-widest mb-4 inline-block rounded-sm">
+                    <span className="bg-alpino text-white px-3 py-1 text-xs font-bold uppercase tracking-widest mb-4 inline-block rounded-sm">
                         Invierno 2025
                     </span>
                     <h1 className="font-serif text-5xl md:text-6xl font-bold mb-4">
@@ -77,17 +77,17 @@ const PackageInfo = ({ tour, onClose }) => {
                     </p>
 
                     {/* Quick Stats */}
-                    <div className="flex flex-wrap justify-center gap-4 text-slate-800">
+                    <div className="flex flex-wrap justify-center gap-4 text-grafito">
                         <div className="bg-white/95 backdrop-blur px-6 py-2 rounded-lg shadow-lg flex items-center gap-3">
-                            <Clock className="text-emerald-600" size={18} />
+                            <Clock className="text-alpino" size={18} />
                             <span className="font-bold text-sm">{tour?.duration || "7 Días / 6 Noches"}</span>
                         </div>
                         <div className="bg-white/95 backdrop-blur px-6 py-2 rounded-lg shadow-lg flex items-center gap-3">
-                            <Mountain className="text-emerald-600" size={18} />
+                            <Mountain className="text-alpino" size={18} />
                             <span className="font-bold text-sm">Nivel: Intermedio</span>
                         </div>
                         <div className="bg-white/95 backdrop-blur px-6 py-2 rounded-lg shadow-lg flex items-center gap-3">
-                            <Tag className="text-emerald-600" size={18} />
+                            <Tag className="text-alpino" size={18} />
                             <span className="font-bold text-sm">{tour?.price || "Desde €2,800"}</span>
                         </div>
                     </div>
@@ -101,17 +101,17 @@ const PackageInfo = ({ tour, onClose }) => {
                 <div className="lg:col-span-8 space-y-16">
 
                     {/* Highlights Section */}
-                    <section id="highlights" className="bg-white p-8 rounded-xl shadow-sm border border-slate-100">
-                        <h2 className="font-serif text-3xl font-bold text-emerald-700 mb-6">Highlights del Viaje</h2>
+                    <section id="highlights" className="bg-white p-8 rounded-xl shadow-sm border border-niebla">
+                        <h2 className="font-serif text-3xl font-bold text-alpino mb-6">Highlights del Viaje</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {highlights.map((item, idx) => (
                                 <div key={idx} className="flex gap-4">
-                                    <div className="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center flex-shrink-0 text-emerald-600">
+                                    <div className="w-12 h-12 bg-nieve rounded-full flex items-center justify-center flex-shrink-0 text-alpino">
                                         <item.icon size={20} />
                                     </div>
                                     <div>
-                                        <h4 className="font-bold text-slate-800">{item.title}</h4>
-                                        <p className="text-sm text-slate-600">{item.description}</p>
+                                        <h4 className="font-bold text-grafito">{item.title}</h4>
+                                        <p className="text-sm text-pizarra">{item.description}</p>
                                     </div>
                                 </div>
                             ))}
@@ -120,25 +120,25 @@ const PackageInfo = ({ tour, onClose }) => {
 
                     {/* Day by Day Itinerary */}
                     <section id="daybyday" className="relative">
-                        <h2 className="font-serif text-3xl font-bold text-emerald-700 mb-10">Itinerario Día a Día</h2>
+                        <h2 className="font-serif text-3xl font-bold text-alpino mb-10">Itinerario Día a Día</h2>
 
                         <div className="space-y-8 relative">
                             {/* Vertical Line */}
-                            <div className="absolute left-[2.2rem] top-4 bottom-8 w-0.5 bg-slate-200 -z-10"></div>
+                            <div className="absolute left-[2.2rem] top-4 bottom-8 w-0.5 bg-niebla -z-10"></div>
 
                             {itinerary.map((day) => (
                                 <div key={day.day} className="flex gap-6 items-start">
                                     {/* Day Number Box */}
-                                    <div className="w-20 h-20 bg-emerald-600 text-white flex flex-col items-center justify-center rounded-lg shadow-md flex-shrink-0 z-10">
+                                    <div className="w-20 h-20 bg-alpino text-white flex flex-col items-center justify-center rounded-lg shadow-md flex-shrink-0 z-10">
                                         <span className="text-xs font-light uppercase tracking-wide">Día</span>
                                         <span className="text-2xl font-bold font-serif">{day.day.toString().padStart(2, '0')}</span>
                                     </div>
 
                                     {/* Day Content Card */}
-                                    <div className="flex-1 bg-white rounded-lg border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-                                        <div className="p-6 flex justify-between items-center bg-slate-50 border-b border-slate-100">
-                                            <h3 className="font-bold text-lg text-emerald-700 flex items-center gap-3">
-                                                <day.icon size={20} className="text-emerald-600" />
+                                    <div className="flex-1 bg-white rounded-lg border border-niebla shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                                        <div className="p-6 flex justify-between items-center bg-nieve border-b border-niebla">
+                                            <h3 className="font-bold text-lg text-alpino flex items-center gap-3">
+                                                <day.icon size={20} className="text-alpino" />
                                                 {day.title}
                                             </h3>
                                         </div>
@@ -151,13 +151,13 @@ const PackageInfo = ({ tour, onClose }) => {
                                                         className="w-full md:w-32 h-24 object-cover rounded-md"
                                                     />
                                                     <div className="flex-1">
-                                                        <p className="text-slate-600 text-sm leading-relaxed mb-4">
+                                                        <p className="text-pizarra text-sm leading-relaxed mb-4">
                                                             {day.description}
                                                         </p>
                                                         {day.tags.length > 0 && (
-                                                            <div className="flex gap-3 text-xs font-bold text-slate-500 uppercase flex-wrap">
+                                                            <div className="flex gap-3 text-xs font-bold text-niebla uppercase flex-wrap">
                                                                 {day.tags.map((tag, idx) => (
-                                                                    <span key={idx} className="bg-slate-100 px-2 py-1 rounded">
+                                                                    <span key={idx} className="bg-nieve px-2 py-1 rounded">
                                                                         {tag}
                                                                     </span>
                                                                 ))}
@@ -168,13 +168,13 @@ const PackageInfo = ({ tour, onClose }) => {
                                             )}
                                             {!day.image && (
                                                 <>
-                                                    <p className="text-slate-600 text-sm leading-relaxed mb-4">
+                                                    <p className="text-pizarra text-sm leading-relaxed mb-4">
                                                         {day.description}
                                                     </p>
                                                     {day.tags.length > 0 && (
-                                                        <div className="flex gap-3 text-xs font-bold text-slate-500 uppercase">
+                                                        <div className="flex gap-3 text-xs font-bold text-niebla uppercase">
                                                             {day.tags.map((tag, idx) => (
-                                                                <span key={idx} className="bg-slate-100 px-2 py-1 rounded">
+                                                                <span key={idx} className="bg-nieve px-2 py-1 rounded">
                                                                     {tag}
                                                                 </span>
                                                             ))}
@@ -190,9 +190,9 @@ const PackageInfo = ({ tour, onClose }) => {
                     </section>
 
                     {/* Map Section */}
-                    <section id="map" className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                        <h2 className="font-serif text-2xl font-bold text-emerald-700 mb-4">Mapa del Área</h2>
-                        <div className="w-full h-64 bg-slate-200 rounded-lg flex items-center justify-center text-slate-400">
+                    <section id="map" className="bg-white p-6 rounded-xl shadow-sm border border-niebla">
+                        <h2 className="font-serif text-2xl font-bold text-alpino mb-4">Mapa del Área</h2>
+                        <div className="w-full h-64 bg-niebla rounded-lg flex items-center justify-center text-niebla">
                             <MapPin size={48} className="mr-2" />
                             <span className="text-lg">Vista de Google Maps Interactiva</span>
                         </div>
@@ -205,8 +205,8 @@ const PackageInfo = ({ tour, onClose }) => {
                     <div className="sticky top-28 space-y-6">
 
                         {/* Navigation Box */}
-                        <div className="bg-white p-6 rounded-xl shadow-lg border-t-4 border-emerald-600">
-                            <h3 className="font-bold text-white bg-emerald-600 -mx-6 -mt-6 p-4 rounded-t-lg mb-6 text-center uppercase tracking-widest text-sm">
+                        <div className="bg-white p-6 rounded-xl shadow-lg border-t-4 border-alpino">
+                            <h3 className="font-bold text-white bg-alpino -mx-6 -mt-6 p-4 rounded-t-lg mb-6 text-center uppercase tracking-widest text-sm">
                                 Sobre este Viaje
                             </h3>
 
@@ -221,23 +221,23 @@ const PackageInfo = ({ tour, onClose }) => {
                                     <button
                                         key={item.id}
                                         onClick={() => scrollToSection(item.id)}
-                                        className="flex items-center justify-between w-full px-4 py-3 bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700 rounded-full border border-slate-200 transition-colors group text-left"
+                                        className="flex items-center justify-between w-full px-4 py-3 bg-nieve hover:bg-nieve hover:text-alpino rounded-full border border-niebla transition-colors group text-left"
                                     >
                                         <span className="font-medium text-sm flex items-center gap-2">
-                                            <item.icon size={16} className="text-emerald-600" />
+                                            <item.icon size={16} className="text-alpino" />
                                             {item.label}
                                         </span>
-                                        <ChevronRight size={14} className="text-slate-300 group-hover:text-emerald-600" />
+                                        <ChevronRight size={14} className="text-niebla group-hover:text-alpino" />
                                     </button>
                                 ))}
                             </nav>
 
-                            <div className="mt-8 pt-6 border-t border-slate-100 text-center">
-                                <p className="text-slate-500 text-xs mb-2 uppercase font-bold">¿Listo para ir?</p>
-                                <button className="w-full bg-emerald-600 text-white font-bold py-3 rounded-full hover:bg-emerald-700 transition shadow-md uppercase tracking-widest text-sm mb-3">
+                            <div className="mt-8 pt-6 border-t border-niebla text-center">
+                                <p className="text-niebla text-xs mb-2 uppercase font-bold">¿Listo para ir?</p>
+                                <button className="w-full bg-alpino text-white font-bold py-3 rounded-full hover:bg-alpino transition shadow-md uppercase tracking-widest text-sm mb-3">
                                     Planear mi Viaje
                                 </button>
-                                <button className="w-full bg-white text-emerald-600 border border-emerald-600 font-bold py-3 rounded-full hover:bg-emerald-600 hover:text-white transition text-sm flex items-center justify-center gap-2">
+                                <button className="w-full bg-white text-alpino border border-alpino font-bold py-3 rounded-full hover:bg-alpino hover:text-white transition text-sm flex items-center justify-center gap-2">
                                     <Download size={16} />
                                     Descargar PDF
                                 </button>
@@ -245,7 +245,7 @@ const PackageInfo = ({ tour, onClose }) => {
                         </div>
 
                         {/* Quick Contact Card */}
-                        <div className="bg-emerald-600 p-6 rounded-xl shadow-md text-white flex items-center gap-4">
+                        <div className="bg-alpino p-6 rounded-xl shadow-md text-white flex items-center gap-4">
                             <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-xl">
                                 <MessageCircle size={24} />
                             </div>
@@ -261,7 +261,7 @@ const PackageInfo = ({ tour, onClose }) => {
             </main>
 
             {/* Footer */}
-            <footer className="bg-slate-900 text-white py-8 text-center text-sm">
+            <footer className="bg-pizarra text-white py-8 text-center text-sm">
                 <p>© 2025 DOLOVIBES. Todos los derechos reservados.</p>
             </footer>
         </div>

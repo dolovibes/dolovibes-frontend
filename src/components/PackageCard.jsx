@@ -16,13 +16,13 @@ const PackageCard = ({ pkg }) => {
         } else if (level?.includes('avanzado') || level?.includes('advanced') || level?.includes('alto') || level?.includes('high') || level?.includes('difícil')) {
             return 'text-red-600';
         }
-        return 'text-slate-600';
+        return 'text-pizarra';
     };
 
     return (
         <Link
             to={`/paquete/${pkg.slug}`}
-            className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-slate-100"
+            className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-niebla"
         >
             {/* Image */}
             <div className="relative h-56 overflow-hidden">
@@ -32,7 +32,7 @@ const PackageCard = ({ pkg }) => {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 {/* Overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-pizarra/60 via-transparent to-transparent"></div>
 
                 {/* Discount badge */}
                 {pkg.hasDiscount && (
@@ -45,21 +45,21 @@ const PackageCard = ({ pkg }) => {
                 <div className="absolute bottom-4 right-4">
                     <div className="bg-white rounded-xl px-4 py-2 shadow-lg">
                         {pkg.originalPrice && (
-                            <p className="text-slate-400 text-xs line-through">{pkg.originalPrice}</p>
+                            <p className="text-niebla text-xs line-through">{pkg.originalPrice}</p>
                         )}
-                        <p className="text-emerald-600 font-bold text-lg">{pkg.price}</p>
+                        <p className="text-alpino font-bold text-lg">{pkg.price}</p>
                     </div>
                 </div>
             </div>
 
             {/* Content */}
             <div className="p-6">
-                <h3 className="text-xl font-bold text-slate-900 group-hover:text-emerald-600 transition-colors mb-2">
+                <h3 className="text-xl font-bold text-grafito group-hover:text-alpino transition-colors mb-2">
                     {pkg.title}
                 </h3>
 
                 {/* Meta info */}
-                <div className="flex flex-wrap gap-4 text-sm text-slate-500 mb-4">
+                <div className="flex flex-wrap gap-4 text-sm text-niebla mb-4">
                     <span className="flex items-center gap-1">
                         <MapPin className="w-4 h-4" />
                         {pkg.location}
@@ -74,12 +74,12 @@ const PackageCard = ({ pkg }) => {
                 </div>
 
                 {/* Description */}
-                <p className="text-slate-600 text-sm line-clamp-2 mb-4">
+                <p className="text-pizarra text-sm line-clamp-2 mb-4">
                     {pkg.description}
                 </p>
 
                 {/* CTA */}
-                <div className="flex items-center text-emerald-600 font-semibold text-sm group-hover:gap-3 gap-2 transition-all">
+                <div className="flex items-center text-alpino font-semibold text-sm group-hover:gap-3 gap-2 transition-all">
                     {t('recommendations.viewDetails')}
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </div>

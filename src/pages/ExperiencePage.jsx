@@ -15,12 +15,12 @@ const ExperiencePage = ({ onOpenQuote }) => {
 
     if (!experience) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-100">
+            <div className="min-h-screen flex items-center justify-center bg-nieve">
                 <div className="text-center">
-                    <h1 className="text-2xl font-bold text-slate-800 mb-4">Experiencia no encontrada</h1>
+                    <h1 className="text-2xl font-bold text-grafito mb-4">Experiencia no encontrada</h1>
                     <button
                         onClick={() => navigate('/')}
-                        className="bg-emerald-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-emerald-700 transition-colors"
+                        className="bg-alpino text-white px-6 py-3 rounded-full font-semibold hover:bg-alpino transition-colors"
                     >
                         {tCommon('buttons.backToHome')}
                     </button>
@@ -38,7 +38,7 @@ const ExperiencePage = ({ onOpenQuote }) => {
                     alt={experience.title}
                     className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-pizarra via-pizarra/40 to-transparent"></div>
 
                 {/* Info superpuesta */}
                 <div className="relative z-10 p-6 md:p-12 pb-16 md:pb-24 w-full">
@@ -55,13 +55,13 @@ const ExperiencePage = ({ onOpenQuote }) => {
             </div>
 
             {/* Paquetes disponibles */}
-            <section className="py-16 md:py-24 bg-slate-50">
+            <section className="py-16 md:py-24 bg-nieve">
                 <div className="container mx-auto px-6">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+                        <h2 className="text-3xl md:text-4xl font-bold text-grafito mb-4">
                             Paquetes Disponibles
                         </h2>
-                        <p className="text-slate-600 max-w-2xl mx-auto">
+                        <p className="text-pizarra max-w-2xl mx-auto">
                             Elige el viaje que mejor se adapte a tus fechas y preferencias
                         </p>
                     </div>
@@ -74,10 +74,10 @@ const ExperiencePage = ({ onOpenQuote }) => {
 
                     {relatedPackages.length === 0 && (
                         <div className="text-center py-12">
-                            <p className="text-slate-500 mb-4">No hay paquetes disponibles para esta experiencia aún.</p>
+                            <p className="text-niebla mb-4">No hay paquetes disponibles para esta experiencia aún.</p>
                             <button
                                 onClick={() => onOpenQuote(experience.title)}
-                                className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-full font-semibold transition-colors"
+                                className="bg-alpino hover:bg-alpino text-white px-6 py-3 rounded-full font-semibold transition-colors"
                             >
                                 Cotizar viaje personalizado
                             </button>

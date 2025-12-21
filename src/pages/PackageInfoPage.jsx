@@ -43,12 +43,12 @@ const PackageInfoPage = ({ onOpenQuote }) => {
 
     if (!pkg) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-100">
+            <div className="min-h-screen flex items-center justify-center bg-nieve">
                 <div className="text-center">
-                    <h1 className="text-2xl font-bold text-slate-800 mb-4">Paquete no encontrado</h1>
+                    <h1 className="text-2xl font-bold text-grafito mb-4">Paquete no encontrado</h1>
                     <button
                         onClick={() => navigate('/')}
-                        className="bg-emerald-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-emerald-700 transition-colors"
+                        className="bg-alpino text-white px-6 py-3 rounded-full font-semibold hover:bg-alpino transition-colors"
                     >
                         Volver al inicio
                     </button>
@@ -119,7 +119,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                     alt={pkg.title}
                     className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-pizarra via-pizarra/40 to-transparent"></div>
 
                 {/* Info superpuesta */}
                 <div className="relative z-10 p-6 md:p-12 pb-16 md:pb-24 w-full">
@@ -154,7 +154,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 {pkg.groupSize}
                             </span>
                             {pkg.guideType && (
-                                <span className="flex items-center gap-2 bg-emerald-500/80 px-4 py-2 rounded-full font-medium text-white">
+                                <span className="flex items-center gap-2 bg-alpino/80 px-4 py-2 rounded-full font-medium text-white">
                                     {pkg.guideType}
                                 </span>
                             )}
@@ -170,17 +170,17 @@ const PackageInfoPage = ({ onOpenQuote }) => {
             {/* Separador visual */}
             <div className="bg-white py-10 md:py-12">
                 <div className="container mx-auto px-6 text-center">
-                    <span className="text-emerald-600 font-semibold tracking-wider uppercase text-sm">
+                    <span className="text-alpino font-semibold tracking-wider uppercase text-sm">
                         Tu aventura día a día
                     </span>
-                    <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mt-2">
+                    <h2 className="text-2xl md:text-3xl font-bold text-grafito mt-2">
                         Itinerario
                     </h2>
                 </div>
             </div>
 
             {/* Sección de Itinerario - Layout lado a lado */}
-            <section ref={itineraryRef} className="bg-slate-50">
+            <section ref={itineraryRef} className="bg-nieve">
                 <div className="flex flex-col md:flex-row h-auto md:h-[450px]">
                     {/* Imagen izquierda */}
                     <div className="w-full md:w-1/2 h-[250px] md:h-full relative overflow-hidden">
@@ -196,34 +196,34 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                         <div>
                             {/* Badge del día */}
                             <div className="inline-flex items-center gap-2 mb-3">
-                                <div className="w-9 h-9 bg-emerald-500 rounded-lg flex items-center justify-center shadow shadow-emerald-500/20">
+                                <div className="w-9 h-9 bg-alpino rounded-lg flex items-center justify-center shadow shadow-alpino/20">
                                     <span className="text-base font-bold text-white">{pkg.itinerary[currentDay].day}</span>
                                 </div>
-                                <span className="text-emerald-600 font-semibold text-sm">
+                                <span className="text-alpino font-semibold text-sm">
                                     Día {pkg.itinerary[currentDay].day} de {pkg.itinerary.length}
                                 </span>
                             </div>
 
                             {/* Título */}
-                            <h3 className="text-xl md:text-2xl font-bold text-slate-900 mb-3 leading-tight">
+                            <h3 className="text-xl md:text-2xl font-bold text-grafito mb-3 leading-tight">
                                 {pkg.itinerary[currentDay].title}
                             </h3>
 
                             {/* Descripción - altura fija */}
-                            <p className="text-slate-600 text-sm md:text-base leading-relaxed line-clamp-4">
+                            <p className="text-pizarra text-sm md:text-base leading-relaxed line-clamp-4">
                                 {pkg.itinerary[currentDay].description}
                             </p>
                         </div>
 
                         {/* Navegación */}
-                        <div className="flex items-center justify-between pt-6 border-t border-slate-100">
+                        <div className="flex items-center justify-between pt-6 border-t border-niebla">
                             {/* Flechas */}
                             <div className="flex items-center gap-3">
                                 <button
                                     onClick={(e) => { e.preventDefault(); handlePrevDay(); }}
                                     className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${currentDay === 0
-                                        ? 'bg-slate-100 text-slate-300 cursor-not-allowed'
-                                        : 'bg-slate-100 text-slate-600 hover:bg-emerald-500 hover:text-white'
+                                        ? 'bg-nieve text-niebla cursor-not-allowed'
+                                        : 'bg-nieve text-pizarra hover:bg-alpino hover:text-white'
                                         }`}
                                 >
                                     <ChevronLeft className="w-5 h-5" />
@@ -231,8 +231,8 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 <button
                                     onClick={(e) => { e.preventDefault(); handleNextDay(); }}
                                     className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${currentDay === pkg.itinerary.length - 1
-                                        ? 'bg-slate-100 text-slate-300 cursor-not-allowed'
-                                        : 'bg-slate-100 text-slate-600 hover:bg-emerald-500 hover:text-white'
+                                        ? 'bg-nieve text-niebla cursor-not-allowed'
+                                        : 'bg-nieve text-pizarra hover:bg-alpino hover:text-white'
                                         }`}
                                 >
                                     <ChevronRight className="w-5 h-5" />
@@ -246,16 +246,16 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                         key={index}
                                         onClick={() => setCurrentDay(index)}
                                         className={`h-2 rounded-full transition-all duration-300 ${index === currentDay
-                                            ? 'w-8 bg-emerald-500'
-                                            : 'w-2 bg-slate-200 hover:bg-slate-300'
+                                            ? 'w-8 bg-alpino'
+                                            : 'w-2 bg-niebla hover:bg-niebla'
                                             }`}
                                     />
                                 ))}
                             </div>
 
                             {/* Contador */}
-                            <div className="text-slate-400 font-medium text-sm">
-                                <span className="text-slate-900 font-bold text-lg">{String(currentDay + 1).padStart(2, '0')}</span>
+                            <div className="text-niebla font-medium text-sm">
+                                <span className="text-grafito font-bold text-lg">{String(currentDay + 1).padStart(2, '0')}</span>
                                 <span className="mx-1">/</span>
                                 <span>{String(pkg.itinerary.length).padStart(2, '0')}</span>
                             </div>
@@ -272,23 +272,23 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                         <div>
                             {/* Precio destacado */}
                             <div className="mb-8">
-                                <p className="text-slate-500 text-sm uppercase tracking-wider mb-1">
+                                <p className="text-niebla text-sm uppercase tracking-wider mb-1">
                                     Precio por persona
                                 </p>
                                 <div className="flex items-baseline gap-3">
                                     {pkg.originalPrice && (
-                                        <span className="text-slate-400 line-through text-xl">
+                                        <span className="text-niebla line-through text-xl">
                                             {pkg.originalPrice}
                                         </span>
                                     )}
-                                    <span className="text-4xl md:text-5xl font-bold text-emerald-600">
+                                    <span className="text-4xl md:text-5xl font-bold text-alpino">
                                         {pkg.price}
                                     </span>
                                 </div>
                             </div>
 
                             {/* Descripción breve */}
-                            <p className="text-lg text-slate-600 leading-relaxed mb-8">
+                            <p className="text-lg text-pizarra leading-relaxed mb-8">
                                 {pkg.description}
                             </p>
 
@@ -297,21 +297,21 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 {pkg.includes.map((item, index) => (
                                     <div
                                         key={index}
-                                        className="bg-slate-50 rounded-xl overflow-hidden border border-slate-200"
+                                        className="bg-nieve rounded-xl overflow-hidden border border-niebla"
                                     >
                                         <button
                                             onClick={() => toggleInclude(index)}
-                                            className="w-full flex items-center justify-between p-4 text-left hover:bg-slate-100 transition-colors"
+                                            className="w-full flex items-center justify-between p-4 text-left hover:bg-nieve transition-colors"
                                         >
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                                <div className="w-8 h-8 bg-alpino rounded-full flex items-center justify-center flex-shrink-0">
                                                     <Check className="w-4 h-4 text-white" />
                                                 </div>
-                                                <span className="font-semibold text-slate-800">
+                                                <span className="font-semibold text-grafito">
                                                     {item.label}
                                                 </span>
                                             </div>
-                                            <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${expandedInclude === index ? 'rotate-180' : ''
+                                            <ChevronDown className={`w-5 h-5 text-niebla transition-transform duration-300 ${expandedInclude === index ? 'rotate-180' : ''
                                                 }`} />
                                         </button>
 
@@ -319,7 +319,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                         <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === index ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
                                             }`}>
                                             <div className="px-4 pb-4 pt-0">
-                                                <p className="text-slate-600 pl-11">
+                                                <p className="text-pizarra pl-11">
                                                     {item.detail}
                                                 </p>
                                             </div>
@@ -333,29 +333,29 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 {/* Additional Photos */}
                                 <button
                                     onClick={() => setIsPhotosModalOpen(true)}
-                                    className="w-full flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors text-left"
+                                    className="w-full flex items-center justify-between p-4 bg-nieve rounded-xl border border-niebla hover:bg-nieve transition-colors text-left"
                                 >
                                     <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 bg-slate-700 rounded-full flex items-center justify-center">
+                                        <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center">
                                             <span className="text-white text-sm">📷</span>
                                         </div>
-                                        <span className="font-semibold text-slate-800">Additional Photos</span>
+                                        <span className="font-semibold text-grafito">Additional Photos</span>
                                     </div>
-                                    <ChevronRight className="w-5 h-5 text-slate-400" />
+                                    <ChevronRight className="w-5 h-5 text-niebla" />
                                 </button>
 
                                 {/* How to get here */}
                                 <button
                                     onClick={() => setIsMapModalOpen(true)}
-                                    className="w-full flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors text-left"
+                                    className="w-full flex items-center justify-between p-4 bg-nieve rounded-xl border border-niebla hover:bg-nieve transition-colors text-left"
                                 >
                                     <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 bg-slate-700 rounded-full flex items-center justify-center">
+                                        <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center">
                                             <MapPin className="w-4 h-4 text-white" />
                                         </div>
-                                        <span className="font-semibold text-slate-800">How to get here</span>
+                                        <span className="font-semibold text-grafito">How to get here</span>
                                     </div>
-                                    <ChevronRight className="w-5 h-5 text-slate-400" />
+                                    <ChevronRight className="w-5 h-5 text-niebla" />
                                 </button>
                             </div>
                         </div>
@@ -369,13 +369,13 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                     className="w-full h-[400px] md:h-[500px] object-cover"
                                 />
                                 {/* Overlay gradient */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"></div>
+                                <div className="absolute inset-0 bg-gradient-to-t from-pizarra/80 via-transparent to-transparent"></div>
 
                                 {/* Book Now Button */}
                                 <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
                                     <button
                                         onClick={() => setIsQuoteModalOpen(true)}
-                                        className="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-4 rounded-xl font-bold text-lg transition-all transform hover:scale-[1.02] shadow-lg shadow-emerald-600/30"
+                                        className="w-full bg-alpino hover:bg-alpino text-white py-4 rounded-xl font-bold text-lg transition-all transform hover:scale-[1.02] shadow-lg shadow-alpino/30"
                                     >
                                         Cotizar
                                     </button>
@@ -395,10 +395,10 @@ const PackageInfoPage = ({ onOpenQuote }) => {
             {isPhotosModalOpen && (
                 <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={() => setIsPhotosModalOpen(false)}>
                     <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-between p-6 border-b border-slate-200">
-                            <h3 className="text-xl font-bold text-slate-900">Additional Photos</h3>
-                            <button onClick={() => setIsPhotosModalOpen(false)} className="p-2 hover:bg-slate-100 rounded-full">
-                                <X className="w-5 h-5 text-slate-600" />
+                        <div className="flex items-center justify-between p-6 border-b border-niebla">
+                            <h3 className="text-xl font-bold text-grafito">Additional Photos</h3>
+                            <button onClick={() => setIsPhotosModalOpen(false)} className="p-2 hover:bg-nieve rounded-full">
+                                <X className="w-5 h-5 text-pizarra" />
                             </button>
                         </div>
                         <div className="p-6 overflow-y-auto max-h-[70vh]">
@@ -421,18 +421,18 @@ const PackageInfoPage = ({ onOpenQuote }) => {
             {isMapModalOpen && (
                 <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={() => setIsMapModalOpen(false)}>
                     <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-between p-6 border-b border-slate-200">
-                            <h3 className="text-xl font-bold text-slate-900">How to get here</h3>
-                            <button onClick={() => setIsMapModalOpen(false)} className="p-2 hover:bg-slate-100 rounded-full">
-                                <X className="w-5 h-5 text-slate-600" />
+                        <div className="flex items-center justify-between p-6 border-b border-niebla">
+                            <h3 className="text-xl font-bold text-grafito">How to get here</h3>
+                            <button onClick={() => setIsMapModalOpen(false)} className="p-2 hover:bg-nieve rounded-full">
+                                <X className="w-5 h-5 text-pizarra" />
                             </button>
                         </div>
                         <div className="p-6">
-                            <div className="bg-slate-100 rounded-xl h-80 flex items-center justify-center">
+                            <div className="bg-nieve rounded-xl h-80 flex items-center justify-center">
                                 <div className="text-center">
-                                    <MapPin className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-                                    <p className="text-slate-600">Mapa próximamente</p>
-                                    <p className="text-slate-400 text-sm mt-2">{pkg.location}</p>
+                                    <MapPin className="w-12 h-12 text-niebla mx-auto mb-4" />
+                                    <p className="text-pizarra">Mapa próximamente</p>
+                                    <p className="text-niebla text-sm mt-2">{pkg.location}</p>
                                 </div>
                             </div>
                         </div>

@@ -24,7 +24,7 @@ const App = () => {
 
   return (
     <Router>
-      <div className="min-h-screen font-sans text-slate-900 bg-white">
+      <div className="min-h-screen font-sans text-grafito bg-white">
         {/* Navbar global */}
         <NavbarNew onOpenQuote={() => handleOpenQuote()} />
 

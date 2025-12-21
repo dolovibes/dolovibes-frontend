@@ -68,8 +68,8 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                     <button
                         onClick={() => handleSeasonSelect('verano')}
                         className={`group relative px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 ${selectedSeason === 'verano'
-                            ? 'bg-emerald-600 text-white scale-105 shadow-xl shadow-emerald-600/30'
-                            : 'bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-slate-100/20 hover:border-slate-200/50'
+                            ? 'bg-alpino text-white scale-105 shadow-xl shadow-alpino/30'
+                            : 'bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-nieve/20 hover:border-niebla/50'
                             }`}
                     >
                         {tCommon('seasons.summer')}
@@ -78,8 +78,8 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                     <button
                         onClick={() => handleSeasonSelect('invierno')}
                         className={`group relative px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 ${selectedSeason === 'invierno'
-                            ? 'bg-emerald-600 text-white scale-105 shadow-xl shadow-emerald-600/30'
-                            : 'bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-slate-100/20 hover:border-slate-200/50'
+                            ? 'bg-alpino text-white scale-105 shadow-xl shadow-alpino/30'
+                            : 'bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-nieve/20 hover:border-niebla/50'
                             }`}
                     >
                         {tCommon('seasons.winter')}
@@ -111,7 +111,7 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                                     <button
                                         key={experience.id}
                                         onClick={() => handleExperienceSelect(experience)}
-                                        className={`w-full px-6 py-4 text-left hover:bg-emerald-50 transition-colors border-b border-slate-100 last:border-b-0 group ${selectedExperience?.id === experience.id ? 'bg-emerald-50' : ''
+                                        className={`w-full px-6 py-4 text-left hover:bg-nieve transition-colors border-b border-niebla last:border-b-0 group ${selectedExperience?.id === experience.id ? 'bg-nieve' : ''
                                             }`}
                                     >
                                         <div className="flex items-center gap-4">
@@ -121,19 +121,19 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                                                 className="w-16 h-12 object-cover rounded-lg"
                                             />
                                             <div className="flex-1">
-                                                <h3 className="font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">
+                                                <h3 className="font-bold text-grafito group-hover:text-alpino transition-colors">
                                                     {experience.title}
                                                 </h3>
-                                                <p className="text-sm text-slate-500 truncate">{experience.shortDescription}</p>
+                                                <p className="text-sm text-niebla truncate">{experience.shortDescription}</p>
                                             </div>
-                                            <span className="text-emerald-600 font-bold text-xs">
+                                            <span className="text-alpino font-bold text-xs">
                                                 {experience.difficulty}
                                             </span>
                                         </div>
                                     </button>
                                 ))
                             ) : (
-                                <div className="px-6 py-8 text-center text-slate-500">
+                                <div className="px-6 py-8 text-center text-niebla">
                                     {t('selector.noExperiences')}
                                 </div>
                             )}

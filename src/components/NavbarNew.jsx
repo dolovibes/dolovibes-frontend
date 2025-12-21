@@ -59,9 +59,9 @@ const NavbarNew = ({ onOpenQuote }) => {
                         to="/"
                         className="flex items-center gap-2 group"
                     >
-                        <Mountain className={`w-8 h-8 transition-colors ${isDarkMode ? 'text-emerald-600' : 'text-emerald-400'
-                            } group-hover:text-emerald-500`} />
-                        <span className={`text-2xl font-bold tracking-tighter transition-colors ${isDarkMode ? 'text-slate-800' : 'text-white'
+                        <Mountain className={`w-8 h-8 transition-colors ${isDarkMode ? 'text-alpino' : 'text-bruma'
+                            } group-hover:text-alpino`} />
+                        <span className={`text-2xl font-bold tracking-tighter transition-colors ${isDarkMode ? 'text-grafito' : 'text-white'
                             }`}>
                             DOLOVIBES
                         </span>
@@ -78,7 +78,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                         >
                             <button
                                 className={`flex items-center gap-1 font-medium transition-colors px-3 py-2 rounded-lg ${isDarkMode
-                                    ? 'text-slate-600 hover:text-emerald-600 hover:bg-emerald-50'
+                                    ? 'text-pizarra hover:text-alpino hover:bg-nieve'
                                     : 'text-white/90 hover:text-white hover:bg-white/10'
                                     }`}
                             >
@@ -92,10 +92,10 @@ const NavbarNew = ({ onOpenQuote }) => {
                                 ? 'opacity-100 visible translate-y-0'
                                 : 'opacity-0 invisible -translate-y-2'
                                 }`}>
-                                <div className="bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden min-w-[480px]">
+                                <div className="bg-white rounded-xl shadow-2xl border border-niebla overflow-hidden min-w-[480px]">
                                     {/* Header */}
-                                    <div className="bg-slate-50 px-6 py-3">
-                                        <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">
+                                    <div className="bg-nieve px-6 py-3">
+                                        <h3 className="text-sm font-semibold text-pizarra uppercase tracking-wider">
                                             {t('navbar.ourExperiences')}
                                         </h3>
                                     </div>
@@ -103,7 +103,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                     <div className="grid grid-cols-2">
                                         {/* Verano */}
                                         <div className="p-5">
-                                            <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">
+                                            <h4 className="text-xs font-bold text-niebla uppercase tracking-wider mb-4">
                                                 {t('seasons.summer')}
                                             </h4>
                                             <ul className="space-y-1">
@@ -111,7 +111,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                                     <li key={exp.id}>
                                                         <button
                                                             onClick={() => handleExperienceClick(exp.slug)}
-                                                            className="w-full text-left px-3 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-lg font-medium text-sm transition-colors"
+                                                            className="w-full text-left px-3 py-2 text-pizarra hover:text-grafito hover:bg-nieve rounded-lg font-medium text-sm transition-colors"
                                                         >
                                                             {exp.title}
                                                         </button>
@@ -122,7 +122,7 @@ const NavbarNew = ({ onOpenQuote }) => {
 
                                         {/* Invierno */}
                                         <div className="p-5">
-                                            <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">
+                                            <h4 className="text-xs font-bold text-niebla uppercase tracking-wider mb-4">
                                                 {t('seasons.winter')}
                                             </h4>
                                             <ul className="space-y-1">
@@ -130,7 +130,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                                     <li key={exp.id}>
                                                         <button
                                                             onClick={() => handleExperienceClick(exp.slug)}
-                                                            className="w-full text-left px-3 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-lg font-medium text-sm transition-colors"
+                                                            className="w-full text-left px-3 py-2 text-pizarra hover:text-grafito hover:bg-nieve rounded-lg font-medium text-sm transition-colors"
                                                         >
                                                             {exp.title}
                                                         </button>
@@ -147,7 +147,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                         <Link
                             to="/about"
                             className={`font-medium transition-colors px-3 py-2 rounded-lg ${isDarkMode
-                                ? 'text-slate-600 hover:text-emerald-600 hover:bg-emerald-50'
+                                ? 'text-pizarra hover:text-alpino hover:bg-nieve'
                                 : 'text-white/90 hover:text-white hover:bg-white/10'
                                 }`}
                         >
@@ -157,7 +157,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                         {/* Botón Cotizar */}
                         <button
                             onClick={onOpenQuote}
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-full font-semibold transition-all transform hover:scale-105 shadow-lg shadow-emerald-600/25 hover:shadow-emerald-600/40"
+                            className="bg-alpino hover:bg-alpino text-white px-6 py-2.5 rounded-full font-semibold transition-all transform hover:scale-105 shadow-lg shadow-alpino/25 hover:shadow-alpino/40"
                         >
                             {t('navbar.quote')}
                         </button>
@@ -169,7 +169,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                     {/* Mobile Menu Button */}
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        className={`md:hidden p-2 rounded-lg transition-colors ${isDarkMode ? 'text-slate-800 hover:bg-slate-100' : 'text-white hover:bg-white/10'
+                        className={`md:hidden p-2 rounded-lg transition-colors ${isDarkMode ? 'text-grafito hover:bg-nieve' : 'text-white hover:bg-white/10'
                             }`}
                     >
                         {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -182,10 +182,10 @@ const NavbarNew = ({ onOpenQuote }) => {
                 }`}>
                 <div className="container mx-auto px-6 py-4">
                     {/* Experiencias Accordion */}
-                    <div className="border-b border-slate-100 pb-3 mb-3">
+                    <div className="border-b border-niebla pb-3 mb-3">
                         <button
                             onClick={() => setIsExperiencesOpen(!isExperiencesOpen)}
-                            className="w-full flex items-center justify-between py-3 text-slate-800 font-medium"
+                            className="w-full flex items-center justify-between py-3 text-grafito font-medium"
                         >
                             <span>{t('navbar.experiences')}</span>
                             <ChevronDown className={`w-5 h-5 transition-transform ${isExperiencesOpen ? 'rotate-180' : ''}`} />
@@ -196,14 +196,14 @@ const NavbarNew = ({ onOpenQuote }) => {
                             <div className="py-2">
                                 {/* Verano */}
                                 <div className="mb-4">
-                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider px-3 py-2">
+                                    <p className="text-xs font-bold text-niebla uppercase tracking-wider px-3 py-2">
                                         {t('seasons.summer')}
                                     </p>
                                     {experiences.filter(exp => exp.season === 'verano').map((exp) => (
                                         <button
                                             key={exp.id}
                                             onClick={() => handleExperienceClick(exp.slug)}
-                                            className="w-full text-left px-3 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-lg text-sm font-medium"
+                                            className="w-full text-left px-3 py-2 text-pizarra hover:text-grafito hover:bg-nieve rounded-lg text-sm font-medium"
                                         >
                                             {exp.title}
                                         </button>
@@ -211,14 +211,14 @@ const NavbarNew = ({ onOpenQuote }) => {
                                 </div>
                                 {/* Invierno */}
                                 <div>
-                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider px-3 py-2">
+                                    <p className="text-xs font-bold text-niebla uppercase tracking-wider px-3 py-2">
                                         {t('seasons.winter')}
                                     </p>
                                     {experiences.filter(exp => exp.season === 'invierno').map((exp) => (
                                         <button
                                             key={exp.id}
                                             onClick={() => handleExperienceClick(exp.slug)}
-                                            className="w-full text-left px-3 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-lg text-sm font-medium"
+                                            className="w-full text-left px-3 py-2 text-pizarra hover:text-grafito hover:bg-nieve rounded-lg text-sm font-medium"
                                         >
                                             {exp.title}
                                         </button>
@@ -232,7 +232,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                     <Link
                         to="/about"
                         onClick={() => setIsMenuOpen(false)}
-                        className="block py-3 text-slate-800 font-medium border-b border-slate-100"
+                        className="block py-3 text-grafito font-medium border-b border-niebla"
                     >
                         {t('navbar.aboutUs')}
                     </Link>
@@ -240,13 +240,13 @@ const NavbarNew = ({ onOpenQuote }) => {
                     {/* Cotizar Button */}
                     <button
                         onClick={() => { setIsMenuOpen(false); onOpenQuote(); }}
-                        className="w-full bg-emerald-600 text-white py-3 rounded-xl font-bold mt-4"
+                        className="w-full bg-alpino text-white py-3 rounded-xl font-bold mt-4"
                     >
                         {t('navbar.quote')}
                     </button>
 
                     {/* Language Switcher - Mobile */}
-                    <div className="mt-4 pt-4 border-t border-slate-100 flex justify-center">
+                    <div className="mt-4 pt-4 border-t border-niebla flex justify-center">
                         <LanguageSwitcher isDarkMode={true} />
                     </div>
                 </div>

@@ -14,16 +14,16 @@ const Footer = () => {
     const { t } = useTranslation('common');
 
     return (
-        <footer className="bg-slate-900 text-white">
+        <footer className="bg-pizarra text-white">
             {/* Main Footer */}
             <div className="container mx-auto px-6 py-16">
                 <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12">
                     {/* Logo y descripción */}
                     <div className="lg:col-span-2">
                         <h3 className="text-2xl font-bold mb-4">
-                            <span className="text-emerald-400">Dolo</span>Vibes
+                            <span className="text-bruma">Dolo</span>Vibes
                         </h3>
-                        <p className="text-slate-400 leading-relaxed max-w-md mb-6">
+                        <p className="text-niebla leading-relaxed max-w-md mb-6">
                             {t('footer.description')}
                         </p>
                         <div className="flex gap-4">
@@ -31,7 +31,7 @@ const Footer = () => {
                                 href="https://instagram.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-emerald-500 transition-colors"
+                                className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-alpino transition-colors"
                                 aria-label="Instagram"
                             >
                                 <Instagram className="w-5 h-5" />
@@ -40,7 +40,7 @@ const Footer = () => {
                                 href="https://facebook.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-emerald-500 transition-colors"
+                                className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-alpino transition-colors"
                                 aria-label="Facebook"
                             >
                                 <Facebook className="w-5 h-5" />
@@ -49,7 +49,7 @@ const Footer = () => {
                                 href="https://tiktok.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-emerald-500 transition-colors"
+                                className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-alpino transition-colors"
                                 aria-label="TikTok"
                             >
                                 <TikTokIcon className="w-5 h-5" />
@@ -62,22 +62,22 @@ const Footer = () => {
                         <h4 className="font-semibold text-lg mb-4">{t('footer.experiences')}</h4>
                         <ul className="space-y-3">
                             <li>
-                                <Link to="/experiencia/hut-2-hut" className="text-slate-400 hover:text-emerald-400 transition-colors">
+                                <Link to="/experiencia/hut-2-hut" className="text-niebla hover:text-bruma transition-colors">
                                     Hut 2 Hut
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/experiencia/hiking" className="text-slate-400 hover:text-emerald-400 transition-colors">
+                                <Link to="/experiencia/hiking" className="text-niebla hover:text-bruma transition-colors">
                                     Hiking
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/experiencia/city-lights" className="text-slate-400 hover:text-emerald-400 transition-colors">
+                                <Link to="/experiencia/city-lights" className="text-niebla hover:text-bruma transition-colors">
                                     City Lights
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/experiencia/ski-pull" className="text-slate-400 hover:text-emerald-400 transition-colors">
+                                <Link to="/experiencia/ski-pull" className="text-niebla hover:text-bruma transition-colors">
                                     Ski Pull
                                 </Link>
                             </li>
@@ -89,32 +89,32 @@ const Footer = () => {
                         <h4 className="font-semibold text-lg mb-4">{t('footer.information')}</h4>
                         <ul className="space-y-3">
                             <li>
-                                <a href="#" className="text-slate-400 hover:text-emerald-400 transition-colors">
+                                <a href="#" className="text-niebla hover:text-bruma transition-colors">
                                     {t('footer.bookingConditions')}
                                 </a>
                             </li>
                             <li>
-                                <a href="#" className="text-slate-400 hover:text-emerald-400 transition-colors">
+                                <a href="#" className="text-niebla hover:text-bruma transition-colors">
                                     {t('footer.cancellationPolicy')}
                                 </a>
                             </li>
                             <li>
-                                <a href="#" className="text-slate-400 hover:text-emerald-400 transition-colors">
+                                <a href="#" className="text-niebla hover:text-bruma transition-colors">
                                     {t('footer.contractInfo')}
                                 </a>
                             </li>
                             <li>
-                                <a href="#" className="text-slate-400 hover:text-emerald-400 transition-colors">
+                                <a href="#" className="text-niebla hover:text-bruma transition-colors">
                                     {t('footer.privacyPolicy')}
                                 </a>
                             </li>
                             <li>
-                                <a href="#" className="text-slate-400 hover:text-emerald-400 transition-colors">
+                                <a href="#" className="text-niebla hover:text-bruma transition-colors">
                                     {t('footer.cookiePolicy')}
                                 </a>
                             </li>
                             <li>
-                                <a href="#" className="text-slate-400 hover:text-emerald-400 transition-colors">
+                                <a href="#" className="text-niebla hover:text-bruma transition-colors">
                                     {t('footer.copyrights')}
                                 </a>
                             </li>
@@ -125,19 +125,19 @@ const Footer = () => {
                     <div>
                         <h4 className="font-semibold text-lg mb-4">{t('footer.contact')}</h4>
                         <ul className="space-y-3">
-                            <li className="flex items-center gap-3 text-slate-400">
-                                <MapPin className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                            <li className="flex items-center gap-3 text-niebla">
+                                <MapPin className="w-5 h-5 text-bruma flex-shrink-0" />
                                 <span>Monterrey, México</span>
                             </li>
                             <li>
-                                <a href="tel:+528112345678" className="flex items-center gap-3 text-slate-400 hover:text-emerald-400 transition-colors">
-                                    <Phone className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                                <a href="tel:+528112345678" className="flex items-center gap-3 text-niebla hover:text-bruma transition-colors">
+                                    <Phone className="w-5 h-5 text-bruma flex-shrink-0" />
                                     <span>+52 81 1234 5678</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="mailto:info@dolovibes.com" className="flex items-center gap-3 text-slate-400 hover:text-emerald-400 transition-colors">
-                                    <Mail className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                                <a href="mailto:info@dolovibes.com" className="flex items-center gap-3 text-niebla hover:text-bruma transition-colors">
+                                    <Mail className="w-5 h-5 text-bruma flex-shrink-0" />
                                     <span>info@dolovibes.com</span>
                                 </a>
                             </li>
@@ -150,11 +150,11 @@ const Footer = () => {
             <div className="border-t border-white/10">
                 <div className="container mx-auto px-6 py-6">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                        <p className="text-slate-500 text-sm">
+                        <p className="text-niebla text-sm">
                             © {new Date().getFullYear()} DoloVibes. {t('footer.allRightsReserved')}
                         </p>
                         <div className="flex gap-6 text-sm">
-                            <Link to="/about" className="text-slate-500 hover:text-white transition-colors">
+                            <Link to="/about" className="text-niebla hover:text-white transition-colors">
                                 {t('navbar.aboutUs')}
                             </Link>
                         </div>

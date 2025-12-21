@@ -3,7 +3,16 @@
 @tailwind utilities;
 
 :root {
-  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* Brand Colors */
+  --color-grafito: #1C1C1C;
+  --color-pizarra: #374257;
+  --color-alpino: #66806C;
+  --color-bruma: #A9BFA7;
+  --color-niebla: #A3B5B6;
+  --color-nieve: #EFEFE6;
+
+  /* Typography */
+  font-family: 'Poppins', system-ui, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -24,7 +33,28 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background-color: #ffffff;
+  background-color: var(--color-nieve);
+  color: var(--color-grafito);
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Headings use Poppins Bold */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+}
+
+/* Editorial/Meta text */
+.font-mono,
+code,
+pre,
+.meta-text {
+  font-family: 'IBM Plex Mono', monospace;
 }
 
 /* Custom animations */
@@ -84,19 +114,20 @@ input,
 select,
 textarea {
   background-color: #ffffff;
-  color: #1e293b;
-  border: 1px solid #e2e8f0;
+  color: var(--color-grafito);
+  border: 1px solid var(--color-niebla);
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
   outline: none;
   transition: all 0.2s;
+  font-family: 'Poppins', sans-serif;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
-  border-color: #10b981;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  border-color: var(--color-alpino);
+  box-shadow: 0 0 0 3px rgba(102, 128, 108, 0.15);
 }
 
 /* Animaciones adicionales para el nuevo Hero */
@@ -129,7 +160,7 @@ textarea:focus {
 
 /* Gradiente radial para viñeta del video */
 .bg-radial-gradient {
-  background: radial-gradient(ellipse at center, transparent 0%, rgba(15, 23, 42, 0.3) 100%);
+  background: radial-gradient(ellipse at center, transparent 0%, rgba(28, 28, 28, 0.3) 100%);
 }
 
 /* Asegurar que el video cubra todo */
@@ -146,4 +177,21 @@ a {
 /* Estilos para el scroll suave en toda la app */
 * {
   scroll-behavior: smooth;
+}
+
+/* Brand accent color classes */
+.text-brand-primary {
+  color: var(--color-alpino);
+}
+
+.bg-brand-primary {
+  background-color: var(--color-alpino);
+}
+
+.hover\:bg-brand-primary:hover {
+  background-color: var(--color-alpino);
+}
+
+.border-brand {
+  border-color: var(--color-alpino);
 }

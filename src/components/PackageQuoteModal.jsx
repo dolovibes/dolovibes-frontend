@@ -55,7 +55,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
             {/* Backdrop */}
             <div
-                className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm"
+                className="absolute inset-0 bg-pizarra/70 backdrop-blur-sm"
                 onClick={handleClose}
             ></div>
 
@@ -64,13 +64,13 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                 {/* Close button */}
                 <button
                     onClick={handleClose}
-                    className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center text-slate-600 hover:text-slate-900 transition-colors shadow-lg"
+                    className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center text-pizarra hover:text-grafito transition-colors shadow-lg"
                 >
                     <X className="w-5 h-5" />
                 </button>
 
                 {isSubmitted ? (
-                    <div className="bg-gradient-to-br from-emerald-600 to-emerald-700 p-12 text-center text-white min-h-[400px] flex flex-col items-center justify-center">
+                    <div className="bg-gradient-to-br from-alpino to-alpino p-12 text-center text-white min-h-[400px] flex flex-col items-center justify-center">
                         <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
                             <CheckCircle className="w-10 h-10 text-white" />
                         </div>
@@ -84,11 +84,11 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                 ) : (
                     <>
                         {/* Header */}
-                        <div className="bg-gradient-to-r from-slate-900 to-slate-800 p-6 md:p-8 text-center">
+                        <div className="bg-gradient-to-r from-pizarra to-pizarra p-6 md:p-8 text-center">
                             <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
                                 {packageTitle}
                             </h3>
-                            <p className="text-emerald-400 text-base font-medium mb-1">
+                            <p className="text-bruma text-base font-medium mb-1">
                                 ¿Estás listo para el viaje más espectacular de tu vida?
                             </p>
                             <p className="text-white/60 text-sm">
@@ -102,7 +102,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                 {/* Nombre y Apellido */}
                                 <div className="grid md:grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                                        <label className="block text-sm font-medium text-pizarra mb-1.5">
                                             Nombre *
                                         </label>
                                         <input
@@ -111,12 +111,12 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.nombre}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all text-sm"
                                             placeholder="Tu nombre"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                                        <label className="block text-sm font-medium text-pizarra mb-1.5">
                                             Apellido *
                                         </label>
                                         <input
@@ -125,7 +125,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.apellido}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all text-sm"
                                             placeholder="Tu apellido"
                                         />
                                     </div>
@@ -134,7 +134,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                 {/* Ciudad, Estado, País */}
                                 <div className="grid md:grid-cols-3 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                                        <label className="block text-sm font-medium text-pizarra mb-1.5">
                                             Ciudad *
                                         </label>
                                         <input
@@ -143,12 +143,12 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.ciudad}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all text-sm"
                                             placeholder="Ciudad"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                                        <label className="block text-sm font-medium text-pizarra mb-1.5">
                                             Estado *
                                         </label>
                                         <input
@@ -157,12 +157,12 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.estado}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all text-sm"
                                             placeholder="Estado"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                                        <label className="block text-sm font-medium text-pizarra mb-1.5">
                                             País *
                                         </label>
                                         <input
@@ -171,7 +171,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.pais}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all text-sm"
                                             placeholder="País"
                                         />
                                     </div>
@@ -180,7 +180,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                 {/* Email y Teléfono */}
                                 <div className="grid md:grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                                        <label className="block text-sm font-medium text-pizarra mb-1.5">
                                             Email *
                                         </label>
                                         <input
@@ -189,12 +189,12 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.email}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all text-sm"
                                             placeholder="tucorreo@email.com"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                                        <label className="block text-sm font-medium text-pizarra mb-1.5">
                                             Teléfono *
                                         </label>
                                         <input
@@ -203,7 +203,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.telefono}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all text-sm"
                                             placeholder="+52 123 456 7890"
                                         />
                                     </div>
@@ -211,14 +211,14 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
 
                                 {/* Cómo te gustaría ser contactado */}
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                                    <label className="block text-sm font-medium text-pizarra mb-1.5">
                                         ¿Cómo te gustaría ser contactado? *
                                     </label>
                                     <select
                                         name="contacto"
                                         value={formData.contacto}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all bg-white text-sm"
+                                        className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all bg-white text-sm"
                                     >
                                         <option value="whatsapp">WhatsApp</option>
                                         <option value="telefono">Llamada telefónica</option>
@@ -229,7 +229,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                 {/* Mes del viaje y Número de pasajeros */}
                                 <div className="grid md:grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                                        <label className="block text-sm font-medium text-pizarra mb-1.5">
                                             Mes del viaje *
                                         </label>
                                         <input
@@ -238,18 +238,18 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.mesViaje}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all text-sm"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                                        <label className="block text-sm font-medium text-pizarra mb-1.5">
                                             Número de pasajeros *
                                         </label>
                                         <select
                                             name="pasajeros"
                                             value={formData.pasajeros}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all bg-white text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all bg-white text-sm"
                                         >
                                             {[1, 2, 3, 4, 5, 6, 7, 8, '9+'].map(n => (
                                                 <option key={n} value={n}>{n} {n === 1 ? 'persona' : 'personas'}</option>
@@ -260,7 +260,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
 
                                 {/* Tipo de viaje */}
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                                    <label className="block text-sm font-medium text-pizarra mb-1.5">
                                         Tipo de viaje *
                                     </label>
                                     <div className="grid grid-cols-2 gap-3">
@@ -268,8 +268,8 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             type="button"
                                             onClick={() => setFormData(prev => ({ ...prev, tipoViaje: 'guiado' }))}
                                             className={`p-3 rounded-xl border-2 transition-all text-center ${formData.tipoViaje === 'guiado'
-                                                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                                                    : 'border-slate-200 hover:border-slate-300 text-slate-600'
+                                                    ? 'border-alpino bg-nieve text-alpino'
+                                                    : 'border-niebla hover:border-bruma text-pizarra'
                                                 }`}
                                         >
                                             <span className="font-semibold block text-sm">Guiado</span>
@@ -279,8 +279,8 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             type="button"
                                             onClick={() => setFormData(prev => ({ ...prev, tipoViaje: 'autoguiado' }))}
                                             className={`p-3 rounded-xl border-2 transition-all text-center ${formData.tipoViaje === 'autoguiado'
-                                                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                                                    : 'border-slate-200 hover:border-slate-300 text-slate-600'
+                                                    ? 'border-alpino bg-nieve text-alpino'
+                                                    : 'border-niebla hover:border-bruma text-pizarra'
                                                 }`}
                                         >
                                             <span className="font-semibold block text-sm">Autoguiado</span>
@@ -291,7 +291,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
 
                                 {/* Servicios adicionales */}
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                                    <label className="block text-sm font-medium text-pizarra mb-1.5">
                                         Servicios adicionales
                                     </label>
                                     <textarea
@@ -299,7 +299,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                         value={formData.serviciosAdicionales}
                                         onChange={handleChange}
                                         rows={3}
-                                        className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all resize-none text-sm"
+                                        className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all resize-none text-sm"
                                         placeholder="Carpool, cena especial, pick up en aeropuerto..."
                                     />
                                 </div>
@@ -308,7 +308,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white py-3.5 rounded-xl font-bold text-base transition-all transform hover:scale-[1.02] shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2"
+                                    className="w-full bg-alpino hover:bg-alpino disabled:bg-bruma text-white py-3.5 rounded-xl font-bold text-base transition-all transform hover:scale-[1.02] shadow-lg shadow-alpino/30 flex items-center justify-center gap-2"
                                 >
                                     {isSubmitting ? (
                                         <>
@@ -323,7 +323,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                     )}
                                 </button>
 
-                                <p className="text-center text-slate-500 text-xs">
+                                <p className="text-center text-niebla text-xs">
                                     Te responderemos en menos de 24 horas
                                 </p>
                             </form>

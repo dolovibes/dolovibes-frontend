@@ -38,29 +38,29 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
     };
 
     return (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm" onClick={onClose}></div>
-            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg relative z-10 overflow-hidden animate-fade-in-up">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-2 sm:p-4">
+            <div className="absolute inset-0 bg-pizarra/70 backdrop-blur-sm" onClick={onClose}></div>
+            <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] relative z-10 overflow-hidden animate-fade-in-up">
 
                 {/* Header con diseño oscuro */}
-                <div className="bg-gradient-to-r from-slate-900 to-slate-800 p-6 text-white flex justify-between items-center">
+                <div className="bg-gradient-to-r from-pizarra to-pizarra p-4 sm:p-6 text-white flex justify-between items-center">
                     <div>
-                        <h3 className="text-xl font-bold">{t('quoteModal.title')}</h3>
-                        <p className="text-emerald-400 text-sm">{t('quoteModal.step')} {step < 3 ? step : 2} {t('quoteModal.of')} 2</p>
+                        <h3 className="text-lg sm:text-xl font-bold">{t('quoteModal.title')}</h3>
+                        <p className="text-bruma text-xs sm:text-sm">{t('quoteModal.step')} {step < 3 ? step : 2} {t('quoteModal.of')} 2</p>
                     </div>
                     <button onClick={onClose} className="hover:bg-white/10 p-2 rounded-full transition-colors"><X size={24} /></button>
                 </div>
 
-                <div className="p-8">
+                <div className="p-4 sm:p-6 md:p-8 overflow-y-auto max-h-[calc(90vh-100px)]">
                     {step === 1 && (
                         <div className="space-y-4">
-                            <h4 className="text-lg font-semibold text-slate-800 mb-4">{t('quoteModal.step1Title')}</h4>
+                            <h4 className="text-lg font-semibold text-grafito mb-4">{t('quoteModal.step1Title')}</h4>
 
                             {/* Experiencia de interés */}
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">{t('quoteModal.interestLabel')}</label>
+                                <label className="block text-sm font-medium text-pizarra mb-1">{t('quoteModal.interestLabel')}</label>
                                 <select
-                                    className="w-full border border-slate-200 rounded-xl p-3 focus:ring-emerald-500 focus:border-emerald-500"
+                                    className="w-full border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                     value={formData.interest}
                                     onChange={(e) => setFormData({ ...formData, interest: e.target.value })}
                                 >
@@ -72,17 +72,17 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                             {/* Fecha y Viajeros */}
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">{t('quoteModal.dateLabel')}</label>
+                                    <label className="block text-sm font-medium text-pizarra mb-1">{t('quoteModal.dateLabel')}</label>
                                     <input
                                         type="month"
-                                        className="w-full border border-slate-200 rounded-xl p-3 focus:ring-emerald-500 focus:border-emerald-500"
+                                        className="w-full border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                         onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">{t('quoteModal.travelersLabel')}</label>
+                                    <label className="block text-sm font-medium text-pizarra mb-1">{t('quoteModal.travelersLabel')}</label>
                                     <select
-                                        className="w-full border border-slate-200 rounded-xl p-3 focus:ring-emerald-500 focus:border-emerald-500"
+                                        className="w-full border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                         value={formData.guests}
                                         onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
                                     >
@@ -93,11 +93,11 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
 
                             {/* ¿Cómo te gustaría ser contactado? - EN PASO 1 */}
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">
+                                <label className="block text-sm font-medium text-pizarra mb-1">
                                     ¿Cómo te gustaría ser contactado? *
                                 </label>
                                 <select
-                                    className="w-full border border-slate-200 rounded-xl p-3 focus:ring-emerald-500 focus:border-emerald-500"
+                                    className="w-full border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                     value={formData.contacto}
                                     onChange={(e) => setFormData({ ...formData, contacto: e.target.value })}
                                 >
@@ -109,9 +109,9 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
 
                             {/* Notas */}
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">{t('quoteModal.notesLabel')}</label>
+                                <label className="block text-sm font-medium text-pizarra mb-1">{t('quoteModal.notesLabel')}</label>
                                 <textarea
-                                    className="w-full border border-slate-200 rounded-xl p-3 focus:ring-emerald-500 focus:border-emerald-500 h-24"
+                                    className="w-full border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino h-24"
                                     placeholder={t('quoteModal.notesPlaceholder')}
                                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                                 ></textarea>
@@ -119,7 +119,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
 
                             <button
                                 onClick={() => setStep(2)}
-                                className="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl hover:bg-emerald-700 transition-colors flex justify-center items-center gap-2 mt-4"
+                                className="w-full bg-alpino text-white font-bold py-3 rounded-xl hover:bg-alpino transition-colors flex justify-center items-center gap-2 mt-4"
                             >
                                 {t('buttons.next')} <ArrowRight size={18} />
                             </button>
@@ -128,40 +128,40 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
 
                     {step === 2 && (
                         <form onSubmit={handleSubmit} className="space-y-4">
-                            <h4 className="text-lg font-semibold text-slate-800 mb-4">{t('quoteModal.step2Title')}</h4>
+                            <h4 className="text-lg font-semibold text-grafito mb-4">{t('quoteModal.step2Title')}</h4>
 
                             {/* Nombre */}
                             <div className="relative">
-                                <User className="absolute left-3 top-3.5 text-slate-400" size={18} />
+                                <User className="absolute left-3 top-3.5 text-niebla" size={18} />
                                 <input
                                     type="text"
                                     placeholder={t('quoteModal.namePlaceholder')}
                                     required
-                                    className="w-full pl-10 border border-slate-200 rounded-xl p-3 focus:ring-emerald-500 focus:border-emerald-500"
+                                    className="w-full pl-10 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 />
                             </div>
 
                             {/* Email */}
                             <div className="relative">
-                                <Mail className="absolute left-3 top-3.5 text-slate-400" size={18} />
+                                <Mail className="absolute left-3 top-3.5 text-niebla" size={18} />
                                 <input
                                     type="email"
                                     placeholder={t('quoteModal.emailPlaceholder')}
                                     required
-                                    className="w-full pl-10 border border-slate-200 rounded-xl p-3 focus:ring-emerald-500 focus:border-emerald-500"
+                                    className="w-full pl-10 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 />
                             </div>
 
                             {/* Teléfono */}
                             <div className="relative">
-                                <Phone className="absolute left-3 top-3.5 text-slate-400" size={18} />
+                                <Phone className="absolute left-3 top-3.5 text-niebla" size={18} />
                                 <input
                                     type="tel"
                                     placeholder={t('quoteModal.phonePlaceholder')}
                                     required
-                                    className="w-full pl-10 border border-slate-200 rounded-xl p-3 focus:ring-emerald-500 focus:border-emerald-500"
+                                    className="w-full pl-10 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                 />
                             </div>
@@ -170,13 +170,13 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                 <button
                                     type="button"
                                     onClick={() => setStep(1)}
-                                    className="flex-1 bg-slate-100 text-slate-600 font-bold py-3 rounded-xl hover:bg-slate-200 transition-colors"
+                                    className="flex-1 bg-nieve text-pizarra font-bold py-3 rounded-xl hover:bg-bruma transition-colors"
                                 >
                                     {t('buttons.back')}
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-[2] bg-emerald-600 text-white font-bold py-3 rounded-xl hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-200"
+                                    className="flex-[2] bg-alpino text-white font-bold py-3 rounded-xl hover:bg-alpino transition-colors shadow-lg shadow-bruma"
                                 >
                                     {t('buttons.submit')}
                                 </button>
@@ -186,11 +186,11 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
 
                     {step === 3 && (
                         <div className="text-center py-8 animate-fade-in">
-                            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <CheckCircle className="w-8 h-8 text-emerald-600" />
+                            <div className="w-16 h-16 bg-bruma rounded-full flex items-center justify-center mx-auto mb-4">
+                                <CheckCircle className="w-8 h-8 text-alpino" />
                             </div>
-                            <h3 className="text-2xl font-bold text-slate-800 mb-2">{t('quoteModal.successTitle')}</h3>
-                            <p className="text-slate-600">{t('quoteModal.successMessage')}</p>
+                            <h3 className="text-2xl font-bold text-grafito mb-2">{t('quoteModal.successTitle')}</h3>
+                            <p className="text-pizarra">{t('quoteModal.successMessage')}</p>
                         </div>
                     )}
                 </div>

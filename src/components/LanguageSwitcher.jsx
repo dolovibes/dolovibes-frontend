@@ -35,7 +35,7 @@ const LanguageSwitcher = ({ isDarkMode = false }) => {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium text-sm transition-colors ${isDarkMode
-                    ? 'text-slate-600 hover:text-emerald-600 hover:bg-emerald-50'
+                    ? 'text-pizarra hover:text-alpino hover:bg-nieve'
                     : 'text-white/90 hover:text-white hover:bg-white/10'
                     }`}
             >
@@ -50,12 +50,12 @@ const LanguageSwitcher = ({ isDarkMode = false }) => {
                 ? 'opacity-100 visible translate-y-0'
                 : 'opacity-0 invisible -translate-y-2'
                 }`}>
-                <div className="bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden min-w-[140px]">
+                <div className="bg-white rounded-xl shadow-xl border border-niebla overflow-hidden min-w-[140px]">
                     {languages.map((lang) => (
                         <button
                             key={lang.code}
                             onClick={() => handleLanguageChange(lang.code)}
-                            className={`w-full px-4 py-3 text-left flex items-center gap-3 hover:bg-emerald-50 transition-colors ${currentLanguage.code === lang.code ? 'bg-emerald-50 text-emerald-600' : 'text-slate-700'
+                            className={`w-full px-4 py-3 text-left flex items-center gap-3 hover:bg-nieve transition-colors ${currentLanguage.code === lang.code ? 'bg-nieve text-alpino' : 'text-pizarra'
                                 }`}
                         >
                             <span className="text-lg">{lang.flag}</span>
