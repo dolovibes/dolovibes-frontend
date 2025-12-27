@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { getPackageBySlug } from '../data/packages';
 import PackageQuoteModal from '../components/PackageQuoteModal';
+import PhotoGalleryModal from '../components/PhotoGalleryModal';
 import Footer from '../components/Footer';
 
 const PackageInfoPage = ({ onOpenQuote }) => {
@@ -22,6 +23,11 @@ const PackageInfoPage = ({ onOpenQuote }) => {
     const { slug } = useParams();
     const navigate = useNavigate();
     const pkg = getPackageBySlug(slug);
+
+    // Scroll al inicio cuando carga la página
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [slug]);
 
     // Estado para el carrusel de itinerario
     const [currentDay, setCurrentDay] = useState(0);
@@ -48,7 +54,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                     <h1 className="text-2xl font-bold text-grafito mb-4">Paquete no encontrado</h1>
                     <button
                         onClick={() => navigate('/')}
-                        className="bg-alpino text-white px-6 py-3 rounded-full font-semibold hover:bg-alpino transition-colors"
+                        className="bg-pizarra text-white px-6 py-3 rounded-full font-semibold hover:bg-pizarra transition-colors"
                     >
                         Volver al inicio
                     </button>
@@ -141,12 +147,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 <Clock className="w-4 h-4" />
                                 {pkg.duration}
                             </span>
-                            <span className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium ${pkg.difficulty?.toLowerCase().includes('bajo') || pkg.difficulty?.toLowerCase().includes('fácil')
-                                ? 'bg-green-500/80 text-white'
-                                : pkg.difficulty?.toLowerCase().includes('intermedio') || pkg.difficulty?.toLowerCase().includes('moderado')
-                                    ? 'bg-amber-500/80 text-white'
-                                    : 'bg-red-500/80 text-white'
-                                }`}>
+                            <span className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
                                 {pkg.difficulty}
                             </span>
                             <span className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
@@ -154,7 +155,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 {pkg.groupSize}
                             </span>
                             {pkg.guideType && (
-                                <span className="flex items-center gap-2 bg-alpino/80 px-4 py-2 rounded-full font-medium text-white">
+                                <span className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
                                     {pkg.guideType}
                                 </span>
                             )}
@@ -170,7 +171,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
             {/* Separador visual */}
             <div className="bg-white py-10 md:py-12">
                 <div className="container mx-auto px-6 text-center">
-                    <span className="text-alpino font-semibold tracking-wider uppercase text-sm">
+                    <span className="text-pizarra font-semibold tracking-wider uppercase text-sm">
                         Tu aventura día a día
                     </span>
                     <h2 className="text-2xl md:text-3xl font-bold text-grafito mt-2">
@@ -196,10 +197,10 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                         <div>
                             {/* Badge del día */}
                             <div className="inline-flex items-center gap-2 mb-3">
-                                <div className="w-9 h-9 bg-alpino rounded-lg flex items-center justify-center shadow shadow-alpino/20">
+                                <div className="w-9 h-9 bg-pizarra rounded-lg flex items-center justify-center shadow shadow-pizarra/20">
                                     <span className="text-base font-bold text-white">{pkg.itinerary[currentDay].day}</span>
                                 </div>
-                                <span className="text-alpino font-semibold text-sm">
+                                <span className="text-pizarra font-semibold text-sm">
                                     Día {pkg.itinerary[currentDay].day} de {pkg.itinerary.length}
                                 </span>
                             </div>
@@ -223,7 +224,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                     onClick={(e) => { e.preventDefault(); handlePrevDay(); }}
                                     className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${currentDay === 0
                                         ? 'bg-nieve text-niebla cursor-not-allowed'
-                                        : 'bg-nieve text-pizarra hover:bg-alpino hover:text-white'
+                                        : 'bg-nieve text-pizarra hover:bg-pizarra hover:text-white'
                                         }`}
                                 >
                                     <ChevronLeft className="w-5 h-5" />
@@ -232,7 +233,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                     onClick={(e) => { e.preventDefault(); handleNextDay(); }}
                                     className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${currentDay === pkg.itinerary.length - 1
                                         ? 'bg-nieve text-niebla cursor-not-allowed'
-                                        : 'bg-nieve text-pizarra hover:bg-alpino hover:text-white'
+                                        : 'bg-nieve text-pizarra hover:bg-pizarra hover:text-white'
                                         }`}
                                 >
                                     <ChevronRight className="w-5 h-5" />
@@ -246,7 +247,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                         key={index}
                                         onClick={() => setCurrentDay(index)}
                                         className={`h-2 rounded-full transition-all duration-300 ${index === currentDay
-                                            ? 'w-8 bg-alpino'
+                                            ? 'w-8 bg-pizarra'
                                             : 'w-2 bg-niebla hover:bg-niebla'
                                             }`}
                                     />
@@ -281,7 +282,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                             {pkg.originalPrice}
                                         </span>
                                     )}
-                                    <span className="text-4xl md:text-5xl font-bold text-alpino">
+                                    <span className="text-4xl md:text-5xl font-bold text-pizarra">
                                         {pkg.price}
                                     </span>
                                 </div>
@@ -304,7 +305,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                             className="w-full flex items-center justify-between p-4 text-left hover:bg-nieve transition-colors"
                                         >
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 bg-alpino rounded-full flex items-center justify-center flex-shrink-0">
+                                                <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center flex-shrink-0">
                                                     <Check className="w-4 h-4 text-white" />
                                                 </div>
                                                 <span className="font-semibold text-grafito">
@@ -339,7 +340,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                         <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center">
                                             <span className="text-white text-sm">📷</span>
                                         </div>
-                                        <span className="font-semibold text-grafito">Additional Photos</span>
+                                        <span className="font-semibold text-grafito">Fotos adicionales</span>
                                     </div>
                                     <ChevronRight className="w-5 h-5 text-niebla" />
                                 </button>
@@ -353,7 +354,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                         <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center">
                                             <MapPin className="w-4 h-4 text-white" />
                                         </div>
-                                        <span className="font-semibold text-grafito">How to get here</span>
+                                        <span className="font-semibold text-grafito">Cómo llegar</span>
                                     </div>
                                     <ChevronRight className="w-5 h-5 text-niebla" />
                                 </button>
@@ -375,7 +376,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
                                     <button
                                         onClick={() => setIsQuoteModalOpen(true)}
-                                        className="w-full bg-alpino hover:bg-alpino text-white py-4 rounded-xl font-bold text-lg transition-all transform hover:scale-[1.02] shadow-lg shadow-alpino/30"
+                                        className="w-full bg-pizarra hover:bg-pizarra/90 text-white py-4 rounded-xl font-bold text-lg transition-all transform hover:scale-[1.02] shadow-lg shadow-pizarra/30"
                                     >
                                         Cotizar
                                     </button>
@@ -392,37 +393,19 @@ const PackageInfoPage = ({ onOpenQuote }) => {
             </section>
 
             {/* Modal de Fotos Adicionales */}
-            {isPhotosModalOpen && (
-                <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={() => setIsPhotosModalOpen(false)}>
-                    <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-between p-6 border-b border-niebla">
-                            <h3 className="text-xl font-bold text-grafito">Additional Photos</h3>
-                            <button onClick={() => setIsPhotosModalOpen(false)} className="p-2 hover:bg-nieve rounded-full">
-                                <X className="w-5 h-5 text-pizarra" />
-                            </button>
-                        </div>
-                        <div className="p-6 overflow-y-auto max-h-[70vh]">
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                {pkg.itinerary?.map((day, index) => (
-                                    <img
-                                        key={index}
-                                        src={day.image}
-                                        alt={`Foto ${index + 1}`}
-                                        className="w-full h-40 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer"
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <PhotoGalleryModal
+                isOpen={isPhotosModalOpen}
+                onClose={() => setIsPhotosModalOpen(false)}
+                photos={pkg.itinerary?.map(day => day.image) || []}
+                packageTitle={pkg.title}
+            />
 
             {/* Modal de Mapa */}
             {isMapModalOpen && (
                 <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={() => setIsMapModalOpen(false)}>
                     <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-between p-6 border-b border-niebla">
-                            <h3 className="text-xl font-bold text-grafito">How to get here</h3>
+                            <h3 className="text-xl font-bold text-grafito">Cómo llegar</h3>
                             <button onClick={() => setIsMapModalOpen(false)} className="p-2 hover:bg-nieve rounded-full">
                                 <X className="w-5 h-5 text-pizarra" />
                             </button>

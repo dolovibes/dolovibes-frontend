@@ -46,7 +46,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                 <div className="bg-gradient-to-r from-pizarra to-pizarra p-4 sm:p-6 text-white flex justify-between items-center">
                     <div>
                         <h3 className="text-lg sm:text-xl font-bold">{t('quoteModal.title')}</h3>
-                        <p className="text-bruma text-xs sm:text-sm">{t('quoteModal.step')} {step < 3 ? step : 2} {t('quoteModal.of')} 2</p>
+                        <p className="text-nieve text-xs sm:text-sm">{t('quoteModal.step')} {step < 3 ? step : 2} {t('quoteModal.of')} 2</p>
                     </div>
                     <button onClick={onClose} className="hover:bg-white/10 p-2 rounded-full transition-colors"><X size={24} /></button>
                 </div>
@@ -119,7 +119,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
 
                             <button
                                 onClick={() => setStep(2)}
-                                className="w-full bg-alpino text-white font-bold py-3 rounded-xl hover:bg-alpino transition-colors flex justify-center items-center gap-2 mt-4"
+                                className="w-full bg-pizarra text-white font-bold py-3 rounded-xl hover:bg-pizarra/90 transition-colors flex justify-center items-center gap-2 mt-4"
                             >
                                 {t('buttons.next')} <ArrowRight size={18} />
                             </button>
@@ -176,7 +176,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-[2] bg-alpino text-white font-bold py-3 rounded-xl hover:bg-alpino transition-colors shadow-lg shadow-bruma"
+                                    className="flex-[2] bg-pizarra text-white font-bold py-3 rounded-xl hover:bg-pizarra/90 transition-colors shadow-lg shadow-pizarra/30"
                                 >
                                     {t('buttons.submit')}
                                 </button>

@@ -89,10 +89,10 @@ export const packages = [
             { day: 7, title: "Alleghe", description: "Descenso final a Alleghe. Celebración y despedida.", image: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&q=80&w=800" }
         ],
         includes: [
-            { label: "Guía experto", detail: "Guía certificado especializado en la Alta Via 1." },
-            { label: "6 noches en refugios", detail: "Alojamiento en los refugios más emblemáticos de la ruta." },
-            { label: "Media pensión", detail: "Desayuno y cena incluidos cada día." },
-            { label: "Transporte de equipaje", detail: "Servicio de transporte de tu equipaje principal." }
+            { label: "Incluido en el costo", detail: "Guía experto, 6 noches en refugios, media pensión, transporte de equipaje." },
+            { label: "No incluido en el costo", detail: "Alojamiento en los refugios más emblemáticos de la ruta." },
+            { label: "Informaciones adicionales", detail: "Desayuno y cena incluidos cada día." },
+            { label: "Servicios a solicitud", detail: "" }
         ],
         notIncludes: ["Vuelos", "Almuerzos", "Seguro", "Propinas"],
         difficulty: "Avanzado",

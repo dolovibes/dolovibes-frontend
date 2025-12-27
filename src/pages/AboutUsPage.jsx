@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Footer from '../components/Footer';
 
 const AboutUsPage = ({ onOpenQuote }) => {
     const { t } = useTranslation('about');
+
+    // Scroll al inicio cuando carga la página
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     // URL de imagen placeholder - reemplazar con foto real del cliente
     const clientPhoto = "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1000";

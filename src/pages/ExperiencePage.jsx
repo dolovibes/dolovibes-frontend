@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getExperienceBySlug } from '../data/experiences';
@@ -12,6 +12,11 @@ const ExperiencePage = ({ onOpenQuote }) => {
     const navigate = useNavigate();
     const experience = getExperienceBySlug(slug);
     const relatedPackages = getPackagesByExperience(slug);
+
+    // Scroll al inicio cuando carga la página
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [slug]);
 
     if (!experience) {
         return (

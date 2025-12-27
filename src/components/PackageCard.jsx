@@ -47,14 +47,14 @@ const PackageCard = ({ pkg }) => {
                         {pkg.originalPrice && (
                             <p className="text-niebla text-xs line-through">{pkg.originalPrice}</p>
                         )}
-                        <p className="text-alpino font-bold text-lg">{pkg.price}</p>
+                        <p className="text-pizarra font-bold text-lg">{pkg.price}</p>
                     </div>
                 </div>
             </div>
 
             {/* Content */}
             <div className="p-6">
-                <h3 className="text-xl font-bold text-grafito group-hover:text-alpino transition-colors mb-2">
+                <h3 className="text-xl font-bold text-grafito group-hover:text-pizarra transition-colors mb-2">
                     {pkg.title}
                 </h3>
 
@@ -68,7 +68,7 @@ const PackageCard = ({ pkg }) => {
                         <Clock className="w-4 h-4" />
                         {pkg.duration}
                     </span>
-                    <span className={`flex items-center gap-1 font-medium ${getDifficultyColor(pkg.difficulty)}`}>
+                    <span className="flex items-center gap-1">
                         {pkg.difficulty}
                     </span>
                 </div>
@@ -79,7 +79,7 @@ const PackageCard = ({ pkg }) => {
                 </p>
 
                 {/* CTA */}
-                <div className="flex items-center text-alpino font-semibold text-sm group-hover:gap-3 gap-2 transition-all">
+                <div className="flex items-center text-pizarra font-semibold text-sm group-hover:gap-3 gap-2 transition-all">
                     {t('recommendations.viewDetails')}
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </div>

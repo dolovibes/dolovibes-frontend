@@ -18,6 +18,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
     });
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [validationError, setValidationError] = useState(false);
 
     if (!isOpen) return null;
 
@@ -28,6 +29,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setValidationError(false);
         setIsSubmitting(true);
 
         // Simular envío
@@ -37,6 +39,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
             setTimeout(() => {
                 onClose();
                 setIsSubmitted(false);
+                setValidationError(false);
                 setFormData({
                     nombre: '', apellido: '', ciudad: '', estado: '', pais: '',
                     email: '', telefono: '', contacto: 'whatsapp', mesViaje: '',
@@ -46,9 +49,18 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
         }, 1500);
     };
 
+    // Cuando el usuario intenta enviar pero el formulario es inválido (native HTML validation)
+    const handleInvalid = (e) => {
+        e.preventDefault();
+        setValidationError(true);
+        // Scroll hacia arriba para ver el mensaje de error
+        e.target.closest('form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
     const handleClose = () => {
         onClose();
         setIsSubmitted(false);
+        setValidationError(false);
     };
 
     return (
@@ -70,7 +82,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                 </button>
 
                 {isSubmitted ? (
-                    <div className="bg-gradient-to-br from-alpino to-alpino p-12 text-center text-white min-h-[400px] flex flex-col items-center justify-center">
+                    <div className="bg-gradient-to-br from-pizarra to-pizarra p-12 text-center text-white min-h-[400px] flex flex-col items-center justify-center">
                         <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
                             <CheckCircle className="w-10 h-10 text-white" />
                         </div>
@@ -88,7 +100,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                             <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
                                 {packageTitle}
                             </h3>
-                            <p className="text-bruma text-base font-medium mb-1">
+                            <p className="text-white text-base font-medium mb-1">
                                 ¿Estás listo para el viaje más espectacular de tu vida?
                             </p>
                             <p className="text-white/60 text-sm">
@@ -98,7 +110,18 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
 
                         {/* Form */}
                         <div className="overflow-y-auto max-h-[calc(90vh-180px)]">
-                            <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-5">
+                            {/* Mensaje de error de validación */}
+                            {validationError && (
+                                <div className="mx-6 md:mx-8 mt-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 animate-pulse">
+                                    <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <span className="text-red-500 font-bold">!</span>
+                                    </div>
+                                    <p className="text-red-700 text-sm font-medium">
+                                        Por favor completa todos los campos obligatorios marcados con *
+                                    </p>
+                                </div>
+                            )}
+                            <form onSubmit={handleSubmit} onInvalid={handleInvalid} className="p-6 md:p-8 space-y-5">
                                 {/* Nombre y Apellido */}
                                 <div className="grid md:grid-cols-2 gap-4">
                                     <div>
@@ -111,7 +134,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.nombre}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
                                             placeholder="Tu nombre"
                                         />
                                     </div>
@@ -125,7 +148,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.apellido}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
                                             placeholder="Tu apellido"
                                         />
                                     </div>
@@ -143,7 +166,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.ciudad}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
                                             placeholder="Ciudad"
                                         />
                                     </div>
@@ -157,7 +180,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.estado}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
                                             placeholder="Estado"
                                         />
                                     </div>
@@ -171,7 +194,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.pais}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
                                             placeholder="País"
                                         />
                                     </div>
@@ -189,7 +212,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.email}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
                                             placeholder="tucorreo@email.com"
                                         />
                                     </div>
@@ -203,7 +226,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.telefono}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
                                             placeholder="+52 123 456 7890"
                                         />
                                     </div>
@@ -218,7 +241,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                         name="contacto"
                                         value={formData.contacto}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all bg-white text-sm"
+                                        className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all bg-white text-sm"
                                     >
                                         <option value="whatsapp">WhatsApp</option>
                                         <option value="telefono">Llamada telefónica</option>
@@ -238,7 +261,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.mesViaje}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
                                         />
                                     </div>
                                     <div>
@@ -249,7 +272,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             name="pasajeros"
                                             value={formData.pasajeros}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all bg-white text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all bg-white text-sm"
                                         >
                                             {[1, 2, 3, 4, 5, 6, 7, 8, '9+'].map(n => (
                                                 <option key={n} value={n}>{n} {n === 1 ? 'persona' : 'personas'}</option>
@@ -268,8 +291,8 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             type="button"
                                             onClick={() => setFormData(prev => ({ ...prev, tipoViaje: 'guiado' }))}
                                             className={`p-3 rounded-xl border-2 transition-all text-center ${formData.tipoViaje === 'guiado'
-                                                    ? 'border-alpino bg-nieve text-alpino'
-                                                    : 'border-niebla hover:border-bruma text-pizarra'
+                                                ? 'border-pizarra bg-nieve text-pizarra'
+                                                : 'border-pizarra hover:border-bruma text-pizarra'
                                                 }`}
                                         >
                                             <span className="font-semibold block text-sm">Guiado</span>
@@ -279,8 +302,8 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             type="button"
                                             onClick={() => setFormData(prev => ({ ...prev, tipoViaje: 'autoguiado' }))}
                                             className={`p-3 rounded-xl border-2 transition-all text-center ${formData.tipoViaje === 'autoguiado'
-                                                    ? 'border-alpino bg-nieve text-alpino'
-                                                    : 'border-niebla hover:border-bruma text-pizarra'
+                                                ? 'border-pizarra bg-nieve text-pizarra'
+                                                : 'border-pizarra hover:border-bruma text-pizarra'
                                                 }`}
                                         >
                                             <span className="font-semibold block text-sm">Autoguiado</span>
@@ -299,7 +322,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                         value={formData.serviciosAdicionales}
                                         onChange={handleChange}
                                         rows={3}
-                                        className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all resize-none text-sm"
+                                        className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all resize-none text-sm"
                                         placeholder="Carpool, cena especial, pick up en aeropuerto..."
                                     />
                                 </div>
@@ -308,7 +331,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="w-full bg-alpino hover:bg-alpino disabled:bg-bruma text-white py-3.5 rounded-xl font-bold text-base transition-all transform hover:scale-[1.02] shadow-lg shadow-alpino/30 flex items-center justify-center gap-2"
+                                    className="w-full bg-pizarra hover:bg-pizarra/90 disabled:bg-bruma text-white py-3.5 rounded-xl font-bold text-base transition-all transform hover:scale-[1.02] shadow-lg shadow-pizarra/30 flex items-center justify-center gap-2"
                                 >
                                     {isSubmitting ? (
                                         <>

@@ -161,7 +161,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                             {/* Botón Cotizar */}
                             <button
                                 onClick={onOpenQuote}
-                                className="bg-alpino hover:bg-alpino text-white px-6 py-2.5 rounded-full font-semibold transition-all transform hover:scale-105 shadow-lg shadow-alpino/25 hover:shadow-alpino/40"
+                                className="bg-pizarra hover:bg-pizarra/90 text-white px-6 py-2.5 rounded-full font-semibold transition-all transform hover:scale-105 shadow-lg shadow-pizarra/25 hover:shadow-pizarra/40"
                             >
                                 {t('navbar.quote')}
                             </button>
@@ -244,7 +244,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                         {/* Cotizar Button */}
                         <button
                             onClick={() => { setIsMenuOpen(false); onOpenQuote(); }}
-                            className="w-full bg-alpino text-white py-3 rounded-xl font-bold mt-4"
+                            className="w-full bg-pizarra text-white py-3 rounded-xl font-bold mt-4"
                         >
                             {t('navbar.quote')}
                         </button>

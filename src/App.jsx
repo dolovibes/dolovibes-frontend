@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // Componentes
 import NavbarNew from './components/NavbarNew';
-import BookingForm from './components/BookingForm';
 import QuoteModal from './components/QuoteModal';
 
 // Páginas

@@ -68,8 +68,8 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                     <button
                         onClick={() => handleSeasonSelect('verano')}
                         className={`group relative px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 ${selectedSeason === 'verano'
-                            ? 'bg-alpino text-white scale-105 shadow-xl shadow-alpino/30'
-                            : 'bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-nieve/20 hover:border-niebla/50'
+                                ? 'bg-pizarra text-white scale-105 shadow-xl shadow-pizarra/30'
+                                : 'bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-nieve/20 hover:border-niebla/50'
                             }`}
                     >
                         {tCommon('seasons.summer')}
@@ -78,8 +78,8 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                     <button
                         onClick={() => handleSeasonSelect('invierno')}
                         className={`group relative px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 ${selectedSeason === 'invierno'
-                            ? 'bg-alpino text-white scale-105 shadow-xl shadow-alpino/30'
-                            : 'bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-nieve/20 hover:border-niebla/50'
+                                ? 'bg-pizarra text-white scale-105 shadow-xl shadow-pizarra/30'
+                                : 'bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-nieve/20 hover:border-niebla/50'
                             }`}
                     >
                         {tCommon('seasons.winter')}
@@ -105,7 +105,7 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                     </button>
 
                     {isExperienceDropdownOpen && (
-                        <div className="absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl z-50 animate-fade-in-up max-h-80 overflow-y-auto">
+                        <div className="absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl z-50 animate-fade-in-up">
                             {filteredExperiences.length > 0 ? (
                                 filteredExperiences.map((experience) => (
                                     <button
@@ -118,17 +118,11 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                                             <img
                                                 src={experience.image}
                                                 alt={experience.title}
-                                                className="w-16 h-12 object-cover rounded-lg"
+                                                className="w-14 h-10 object-cover rounded-lg"
                                             />
-                                            <div className="flex-1">
-                                                <h3 className="font-bold text-grafito group-hover:text-alpino transition-colors">
-                                                    {experience.title}
-                                                </h3>
-                                                <p className="text-sm text-niebla truncate">{experience.shortDescription}</p>
-                                            </div>
-                                            <span className="text-alpino font-bold text-xs">
-                                                {experience.difficulty}
-                                            </span>
+                                            <h3 className="font-bold text-grafito group-hover:text-pizarra transition-colors">
+                                                {experience.title}
+                                            </h3>
                                         </div>
                                     </button>
                                 ))

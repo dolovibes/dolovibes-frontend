@@ -19,13 +19,13 @@ const VideoHero = ({ onExperienceSelect }) => {
 
     // Videos del hero - versión desktop (16:9) y móvil (9:16)
     const videoDesktop = "/videos/hero-video.mp4";
-    const videoMobile = "/videos/hero-video-mobile.mp4";
+    const videoMobile = "/videos/hero-video-mobile-trecime.mp4";
 
     // Fallback images
     const fallbackImage = "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=1920";
 
     return (
-        <div className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
+        <div className="relative min-h-[100svh] flex items-center justify-center">
             {/* Video de fondo */}
             <div className="absolute inset-0 z-0">
                 <video
@@ -65,20 +65,14 @@ const VideoHero = ({ onExperienceSelect }) => {
             {/* Contenido central */}
             <div className="container mx-auto px-4 sm:px-6 relative z-10 py-16 md:py-20">
                 <div className="text-center mb-8 md:mb-12 mt-10">
-                    <span className="inline-block py-2 px-4 rounded-full bg-alpino/20 border border-bruma/30 text-bruma text-xs sm:text-sm font-semibold mb-4 md:mb-6 backdrop-blur-sm animate-fade-in">
-                        {t('hero.badge')}
-                    </span>
                     <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight mb-3 md:mb-4 animate-fade-in-up drop-shadow-lg">
                         {t('hero.title')}
                         <br className="hidden sm:block" />
                         <span className="sm:hidden"> </span>
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-bruma to-teal-300">
+                        <span className="text-white">
                             {t('hero.titleHighlight')}
                         </span>
                     </h1>
-                    <p className="text-sm sm:text-base md:text-lg lg:text-xl text-nieve/90 max-w-xl md:max-w-2xl mx-auto mb-8 md:mb-12 animate-fade-in-up delay-200 px-2 drop-shadow-md">
-                        {t('hero.subtitle')}
-                    </p>
                 </div>
 
                 {/* Selector de experiencias */}
