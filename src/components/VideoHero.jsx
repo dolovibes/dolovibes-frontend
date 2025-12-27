@@ -5,7 +5,6 @@ import ExperienceSelector from './ExperienceSelector';
 const VideoHero = ({ onExperienceSelect }) => {
     const { t } = useTranslation('home');
     const [isMobile, setIsMobile] = useState(false);
-    const [videoLoaded, setVideoLoaded] = useState(false);
 
     // Detectar si es móvil para usar el video correcto
     useEffect(() => {
@@ -21,9 +20,6 @@ const VideoHero = ({ onExperienceSelect }) => {
     const videoDesktop = "/videos/hero-video.mp4";
     const videoMobile = "/videos/hero-video-mobile-trecime.mp4";
 
-    // Fallback images
-    const fallbackImage = "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=1920";
-
     return (
         <div className="relative min-h-[100svh] flex items-center justify-center">
             {/* Video de fondo */}
@@ -35,25 +31,10 @@ const VideoHero = ({ onExperienceSelect }) => {
                     muted
                     playsInline
                     preload="auto"
-                    className={`
-                        w-full h-full object-cover
-                        transition-opacity duration-1000
-                        ${videoLoaded ? 'opacity-100' : 'opacity-0'}
-                    `}
-                    poster={fallbackImage}
-                    onLoadedData={() => setVideoLoaded(true)}
+                    className="w-full h-full object-cover"
                 >
                     <source src={isMobile ? videoMobile : videoDesktop} type="video/mp4" />
                 </video>
-
-                {/* Imagen de fallback mientras carga el video */}
-                {!videoLoaded && (
-                    <img
-                        src={fallbackImage}
-                        alt="Dolomitas"
-                        className="absolute inset-0 w-full h-full object-cover"
-                    />
-                )}
 
                 {/* Overlay con gradiente para legibilidad */}
                 <div className="absolute inset-0 bg-gradient-to-b from-pizarra/40 via-transparent to-pizarra/60"></div>
