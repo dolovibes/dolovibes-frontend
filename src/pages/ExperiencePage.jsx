@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { getExperienceBySlug } from '../data/experiences';
-import { getPackagesByExperience } from '../data/packages';
+import { useExperience, usePackagesByExperience } from '../services/hooks';
 import Footer from '../components/Footer';
 import PackageCard from '../components/PackageCard';
 
@@ -10,13 +9,27 @@ const ExperiencePage = ({ onOpenQuote }) => {
     const { t: tCommon } = useTranslation('common');
     const { slug } = useParams();
     const navigate = useNavigate();
-    const experience = getExperienceBySlug(slug);
-    const relatedPackages = getPackagesByExperience(slug);
+    
+    // Usar hooks de React Query para datos dinámicos
+    const { data: experience, isLoading: loadingExperience } = useExperience(slug);
+    const { data: relatedPackages = [], isLoading: loadingPackages } = usePackagesByExperience(slug);
 
     // Scroll al inicio cuando carga la página
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [slug]);
+
+    // Estado de carga
+    if (loadingExperience || loadingPackages) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-nieve">
+                <div className="animate-pulse text-center">
+                    <div className="w-16 h-16 border-4 border-alpino border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-pizarra">Cargando experiencia...</p>
+                </div>
+            </div>
+        );
+    }
 
     if (!experience) {
         return (

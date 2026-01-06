@@ -13,7 +13,7 @@ import {
     Check,
     X
 } from 'lucide-react';
-import { getPackageBySlug } from '../data/packages';
+import { usePackage } from '../services/hooks';
 import PackageQuoteModal from '../components/PackageQuoteModal';
 import PhotoGalleryModal from '../components/PhotoGalleryModal';
 import Footer from '../components/Footer';
@@ -22,7 +22,9 @@ const PackageInfoPage = ({ onOpenQuote }) => {
     const { t: tCommon } = useTranslation('common');
     const { slug } = useParams();
     const navigate = useNavigate();
-    const pkg = getPackageBySlug(slug);
+    
+    // Usar hook de React Query para datos dinámicos
+    const { data: pkg, isLoading, error } = usePackage(slug);
 
     // Scroll al inicio cuando carga la página
     useEffect(() => {
@@ -47,7 +49,19 @@ const PackageInfoPage = ({ onOpenQuote }) => {
     // Referencia para la sección de itinerario (para swipe/wheel)
     const itineraryRef = React.useRef(null);
 
-    if (!pkg) {
+    // Estado de carga
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-nieve">
+                <div className="animate-pulse text-center">
+                    <div className="w-16 h-16 border-4 border-alpino border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-pizarra">Cargando paquete...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!pkg || error) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-nieve">
                 <div className="text-center">
