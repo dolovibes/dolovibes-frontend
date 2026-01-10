@@ -285,12 +285,11 @@ const transformPackages = (data) => {
     title: item.title,
     slug: item.slug,
     location: item.location,
-    // Precios: guardamos el monto numérico para conversión futura
-    price: `${item.baseCurrency} ${item.priceAmount?.toLocaleString()}`,
+    // Precios: siempre en MXN (moneda base), se convierten en el frontend
+    price: `MXN ${item.priceAmount?.toLocaleString()}`,
     priceAmount: item.priceAmount,
-    baseCurrency: item.baseCurrency,
     originalPrice: item.originalPriceAmount 
-      ? `${item.baseCurrency} ${item.originalPriceAmount?.toLocaleString()}`
+      ? `MXN ${item.originalPriceAmount?.toLocaleString()}`
       : null,
     originalPriceAmount: item.originalPriceAmount,
     duration: item.duration,

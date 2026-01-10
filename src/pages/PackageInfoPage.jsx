@@ -11,7 +11,8 @@ import {
     ChevronRight,
     ChevronDown,
     Check,
-    X
+    X,
+    Calendar
 } from 'lucide-react';
 import { usePackage } from '../services/hooks';
 import { useCurrencyContext, parsePrice } from '../utils/currency';
@@ -178,8 +179,9 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 </span>
                             )}
                             {pkg.availableDates && (
-                                <span className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                                    {pkg.availableDates}
+                                <span className="flex items-center gap-2 bg-emerald-500/20 backdrop-blur-sm px-4 py-2 rounded-full border border-emerald-400/30">
+                                    <Calendar className="w-4 h-4" />
+                                    <span className="font-medium">{pkg.availableDates}</span>
                                 </span>
                             )}
                         </div>
