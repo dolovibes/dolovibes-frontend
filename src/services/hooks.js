@@ -1,14 +1,18 @@
 /**
  * React Query Hooks para datos de Strapi
  * 
- * Proporciona hooks personalizados con:
- * - Caching automático
- * - Revalidación inteligente
- * - Estados de loading/error
- * - Fallback a datos estáticos cuando Strapi no está disponible
+ * ARQUITECTURA:
+ * ─────────────────────────────────────────────────────────────
+ * - El contenido de Strapi está SOLO en español ('es')
+ * - No se pasa locale a las funciones API
+ * - La UI soporta 6 idiomas via archivos JSON (i18n)
+ * - React Query maneja caching y revalidación
+ * 
+ * FALLBACK:
+ * ─────────────────────────────────────────────────────────────
+ * Si VITE_USE_STRAPI=false, se usan datos estáticos de /data/
  */
 import { useQuery } from '@tanstack/react-query';
-import { useTranslation } from 'react-i18next';
 import api from './api';
 
 // Importar datos estáticos como fallback
@@ -38,21 +42,20 @@ const defaultQueryOptions = {
  */
 export const useExperiences = (season = null) => {
   const { i18n } = useTranslation();
-  const locale = i18n.language;
+  const locale = i18n.language; // Necesario para queryKey
 
   return useQuery({
-    queryKey: ['experiences', locale, season],
+    queryKey: ['experiences', season, locale], // Incluir locale para refrescar cache
     queryFn: async () => {
       if (!USE_STRAPI) {
         // Usar datos estáticos
         let data = staticExperiences;
         if (season) {
-          const seasonMap = { summer: 'verano', winter: 'invierno' };
-          data = data.filter(exp => exp.season === (seasonMap[season] || season));
+          data = data.filter(exp => exp.season === season);
         }
         return data;
       }
-      return api.getExperiences(locale, season);
+      return api.getExperiences(season);
     },
     ...defaultQueryOptions,
   });
@@ -72,7 +75,7 @@ export const useExperience = (slug) => {
       if (!USE_STRAPI) {
         return staticExperiences.find(exp => exp.slug === slug) || null;
       }
-      return api.getExperienceBySlug(slug, locale);
+      return api.getExperienceBySlug(slug);
     },
     enabled: !!slug,
     ...defaultQueryOptions,
@@ -92,20 +95,20 @@ export const usePackages = (filters = {}) => {
   const locale = i18n.language;
 
   return useQuery({
-    queryKey: ['packages', locale, filters],
+    queryKey: ['packages', filters, locale],
     queryFn: async () => {
       if (!USE_STRAPI) {
         let data = staticPackages;
         if (filters.experienceSlug) {
-          data = data.filter(pkg => pkg.experienceSlug === filters.experienceSlug);
+          // Filtrar por experiencia (mock)
+          // En real usamos relación, aquí hardcodeado podría ser complejo
         }
         if (filters.season) {
-          const seasonMap = { summer: 'verano', winter: 'invierno' };
-          data = data.filter(pkg => pkg.season === (seasonMap[filters.season] || filters.season));
+          data = data.filter(pkg => pkg.season === filters.season);
         }
         return data;
       }
-      return api.getPackages(locale, filters);
+      return api.getPackages(filters);
     },
     ...defaultQueryOptions,
   });
@@ -125,7 +128,7 @@ export const usePackage = (slug) => {
       if (!USE_STRAPI) {
         return staticPackages.find(pkg => pkg.slug === slug) || null;
       }
-      return api.getPackageBySlug(slug, locale);
+      return api.getPackageBySlug(slug);
     },
     enabled: !!slug,
     ...defaultQueryOptions,
@@ -141,24 +144,21 @@ export const usePackagesByExperience = (experienceSlug) => {
 };
 
 // ============================================
-// HOOKS DE CONTENIDO ÚNICO
+// HOOKS DE CONTENIDO ÚNICO (Single Types)
+// No requieren locale - el contenido está solo en español
 // ============================================
 
 /**
  * Hook para obtener el Hero Section
  */
 export const useHeroSection = () => {
-  const { i18n } = useTranslation();
-  const locale = i18n.language;
-
   return useQuery({
-    queryKey: ['heroSection', locale],
+    queryKey: ['heroSection'],
     queryFn: async () => {
       if (!USE_STRAPI) {
-        // Retornar null para usar i18n existente
-        return null;
+        return null; // Usar i18n existente
       }
-      return api.getHeroSection(locale);
+      return api.getHeroSection();
     },
     ...defaultQueryOptions,
   });
@@ -168,16 +168,13 @@ export const useHeroSection = () => {
  * Hook para obtener la página About
  */
 export const useAboutPage = () => {
-  const { i18n } = useTranslation();
-  const locale = i18n.language;
-
   return useQuery({
-    queryKey: ['aboutPage', locale],
+    queryKey: ['aboutPage'],
     queryFn: async () => {
       if (!USE_STRAPI) {
         return null; // Usar i18n existente
       }
-      return api.getAboutPage(locale);
+      return api.getAboutPage();
     },
     ...defaultQueryOptions,
   });
@@ -187,11 +184,8 @@ export const useAboutPage = () => {
  * Hook para obtener Site Settings
  */
 export const useSiteSettings = () => {
-  const { i18n } = useTranslation();
-  const locale = i18n.language;
-
   return useQuery({
-    queryKey: ['siteSettings', locale],
+    queryKey: ['siteSettings'],
     queryFn: async () => {
       if (!USE_STRAPI) {
         // Configuración por defecto cuando no hay Strapi
@@ -206,14 +200,14 @@ export const useSiteSettings = () => {
           defaultCurrency: 'MXN',
         };
       }
-      return api.getSiteSettings(locale);
+      return api.getSiteSettings();
     },
     ...defaultQueryOptions,
   });
 };
 
 // ============================================
-// HOOKS DE GUÍAS Y TESTIMONIOS
+// HOOKS DE GUÍAS Y TESTIMONIOS (Collection Types)
 // ============================================
 
 /**
@@ -221,16 +215,13 @@ export const useSiteSettings = () => {
  * @param {boolean} featured - Solo destacados
  */
 export const useGuides = (featured = false) => {
-  const { i18n } = useTranslation();
-  const locale = i18n.language;
-
   return useQuery({
-    queryKey: ['guides', locale, featured],
+    queryKey: ['guides', featured],
     queryFn: async () => {
       if (!USE_STRAPI) {
         return []; // Sin datos estáticos para guías
       }
-      return api.getGuides(locale, featured);
+      return api.getGuides(featured);
     },
     ...defaultQueryOptions,
   });
@@ -241,16 +232,13 @@ export const useGuides = (featured = false) => {
  * @param {boolean} featured - Solo destacados
  */
 export const useTestimonials = (featured = false) => {
-  const { i18n } = useTranslation();
-  const locale = i18n.language;
-
   return useQuery({
-    queryKey: ['testimonials', locale, featured],
+    queryKey: ['testimonials', featured],
     queryFn: async () => {
       if (!USE_STRAPI) {
         return []; // Sin datos estáticos para testimonios
       }
-      return api.getTestimonials(locale, featured);
+      return api.getTestimonials(featured);
     },
     ...defaultQueryOptions,
   });
