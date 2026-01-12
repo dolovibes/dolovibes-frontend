@@ -1,0 +1,67 @@
+{
+    "navbar": {
+        "experiences": "Experiências",
+        "ourExperiences": "Nossas Experiências",
+        "packages": "Pacotes",
+        "ourPackages": "Nossos Pacotes",
+        "aboutUs": "Sobre Nós",
+        "quote": "Orçamento",
+        "viewAllExperiences": "Ver todas as experiências →",
+        "viewAllPackages": "Ver todos os pacotes →"
+    },
+    "seasons": {
+        "summer": "Verão",
+        "winter": "Inverno"
+    },
+    "buttons": {
+        "next": "Próximo Passo",
+        "back": "Voltar",
+        "submit": "Enviar Solicitação",
+        "close": "Fechar",
+        "goBack": "Voltar",
+        "backToHome": "Voltar ao Início"
+    },
+    "labels": {
+        "perPerson": "por pessoa",
+        "days": "Dias",
+        "persons": "Pes."
+    },
+    "recommendations": {
+        "basedOnSelection": "Com base na sua seleção",
+        "title": "Nossas Recomendações",
+        "subtitle": "As melhores viagens de {{experience}} para você",
+        "offer": "OFERTA",
+        "viewDetails": "Ver detalhes"
+    },
+    "footer": {
+        "description": "Experiências de montanha únicas nas Dolomitas italianas. Aventura, natureza e cultura em cada viagem.",
+        "experiences": "Experiências",
+        "information": "Informações",
+        "contact": "Contato",
+        "bookingConditions": "Condições de Reserva",
+        "cancellationPolicy": "Política de Cancelamento",
+        "contractInfo": "Informações do Contrato",
+        "privacyPolicy": "Política de Privacidade",
+        "cookiePolicy": "Política de Cookies",
+        "copyrights": "Direitos Autorais",
+        "allRightsReserved": "Todos os direitos reservados."
+    },
+    "quoteModal": {
+        "title": "Solicite Seu Orçamento",
+        "step": "Passo",
+        "of": "de",
+        "step1Title": "O que você tem em mente?",
+        "step2Title": "Seus Dados de Contato",
+        "interestLabel": "Interesse Principal",
+        "customPlan": "Planejamento Personalizado",
+        "dateLabel": "Data Aproximada",
+        "travelersLabel": "Viajantes",
+        "notesLabel": "Notas ou Pedidos Especiais",
+        "notesPlaceholder": "Ex: Quero ver o pôr do sol nas Dolomitas, nível físico médio...",
+        "namePlaceholder": "Nome Completo",
+        "emailPlaceholder": "Email",
+        "phonePlaceholder": "Telefone (WhatsApp)",
+        "successTitle": "Solicitação Recebida!",
+        "successMessage": "Um especialista DOLOVIBES entrará em contato em breve para planejar sua viagem."
+    }
+}

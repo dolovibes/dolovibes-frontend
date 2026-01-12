@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Mountain, Menu, X, ChevronDown } from 'lucide-react';
 import { experiences } from '../data/experiences';
 import LanguageSwitcher from './LanguageSwitcher';
+import CurrencySelector from './CurrencySelector';
 
 const NavbarNew = ({ onOpenQuote }) => {
     const { t } = useTranslation('common');
@@ -166,6 +167,9 @@ const NavbarNew = ({ onOpenQuote }) => {
                                 {t('navbar.quote')}
                             </button>
 
+                            {/* Currency Selector */}
+                            <CurrencySelector isDarkMode={!isDarkMode} compact />
+
                             {/* Language Switcher */}
                             <LanguageSwitcher isDarkMode={isDarkMode} />
                         </div>
@@ -250,7 +254,8 @@ const NavbarNew = ({ onOpenQuote }) => {
                         </button>
 
                         {/* Language Switcher - Mobile */}
-                        <div className="mt-4 pt-4 border-t border-niebla flex justify-center">
+                        <div className="mt-4 pt-4 border-t border-niebla flex justify-center gap-4">
+                            <CurrencySelector isDarkMode={true} />
                             <LanguageSwitcher isDarkMode={true} />
                         </div>
                     </div>

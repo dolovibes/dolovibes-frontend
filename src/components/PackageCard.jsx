@@ -2,9 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { MapPin, Clock, ArrowRight } from 'lucide-react';
+import { useCurrencyContext, parsePrice } from '../utils/currency';
 
 const PackageCard = ({ pkg }) => {
     const { t } = useTranslation('common');
+    const { formatPrice } = useCurrencyContext();
 
     // Función para obtener el color del nivel de dificultad
     const getDifficultyColor = (difficulty) => {
@@ -18,6 +20,13 @@ const PackageCard = ({ pkg }) => {
         }
         return 'text-pizarra';
     };
+
+    // Convertir precios de string a número y formatear con moneda del usuario
+    const priceNumeric = parsePrice(pkg.price);
+    const originalPriceNumeric = pkg.originalPrice ? parsePrice(pkg.originalPrice) : null;
+    
+    const formattedPrice = formatPrice(priceNumeric);
+    const formattedOriginalPrice = originalPriceNumeric ? formatPrice(originalPriceNumeric) : null;
 
     return (
         <Link
@@ -44,10 +53,10 @@ const PackageCard = ({ pkg }) => {
                 {/* Price */}
                 <div className="absolute bottom-4 right-4">
                     <div className="bg-white rounded-xl px-4 py-2 shadow-lg">
-                        {pkg.originalPrice && (
-                            <p className="text-niebla text-xs line-through">{pkg.originalPrice}</p>
+                        {formattedOriginalPrice && (
+                            <p className="text-niebla text-xs line-through">{formattedOriginalPrice}</p>
                         )}
-                        <p className="text-pizarra font-bold text-lg">{pkg.price}</p>
+                        <p className="text-pizarra font-bold text-lg">{formattedPrice}</p>
                     </div>
                 </div>
             </div>

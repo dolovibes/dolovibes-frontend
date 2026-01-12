@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useSiteSettings } from '../services/hooks';
 import { MapPin, Phone, Mail, Instagram, Facebook, FileText } from 'lucide-react';
 
 // TikTok icon component (not in lucide-react)
@@ -12,6 +13,26 @@ const TikTokIcon = ({ className }) => (
 
 const Footer = () => {
     const { t } = useTranslation('common');
+    const { data: siteSettings, isLoading } = useSiteSettings();
+
+    // Valores por defecto si no hay datos de Strapi
+    const location = siteSettings?.location || 'Monterrey, México';
+    const phone = siteSettings?.phone || '+52 81 1234 5678';
+    const email = siteSettings?.email || 'info@dolovibes.com';
+    const instagramUrl = siteSettings?.instagramUrl || 'https://instagram.com';
+    const facebookUrl = siteSettings?.facebookUrl || 'https://facebook.com';
+    const tiktokUrl = siteSettings?.tiktokUrl || 'https://tiktok.com';
+    const footerDescription = siteSettings?.footerDescription || t('footer.description');
+
+    if (isLoading) {
+        return (
+            <footer className="bg-pizarra text-white">
+                <div className="container mx-auto px-6 py-16">
+                    <div className="text-center text-niebla">Cargando...</div>
+                </div>
+            </footer>
+        );
+    }
 
     return (
         <footer className="bg-pizarra text-white">
@@ -26,11 +47,11 @@ const Footer = () => {
                             className="h-20 w-auto brightness-0 invert"
                         />
                         <p className="text-niebla leading-relaxed max-w-md mb-6">
-                            {t('footer.description')}
+                            {footerDescription}
                         </p>
                         <div className="flex gap-4">
                             <a
-                                href="https://instagram.com"
+                                href={instagramUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-alpino transition-colors"
@@ -39,7 +60,7 @@ const Footer = () => {
                                 <Instagram className="w-5 h-5" />
                             </a>
                             <a
-                                href="https://facebook.com"
+                                href={facebookUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-alpino transition-colors"
@@ -48,7 +69,7 @@ const Footer = () => {
                                 <Facebook className="w-5 h-5" />
                             </a>
                             <a
-                                href="https://tiktok.com"
+                                href={tiktokUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-alpino transition-colors"
@@ -129,18 +150,18 @@ const Footer = () => {
                         <ul className="space-y-3">
                             <li className="flex items-center gap-3 text-niebla">
                                 <MapPin className="w-5 h-5 text-bruma flex-shrink-0" />
-                                <span>Monterrey, México</span>
+                                <span>{location}</span>
                             </li>
                             <li>
-                                <a href="tel:+528112345678" className="flex items-center gap-3 text-niebla hover:text-bruma transition-colors">
+                                <a href={`tel:${phone.replace(/\s/g, '')}`} className="flex items-center gap-3 text-niebla hover:text-bruma transition-colors">
                                     <Phone className="w-5 h-5 text-bruma flex-shrink-0" />
-                                    <span>+52 81 1234 5678</span>
+                                    <span>{phone}</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="mailto:info@dolovibes.com" className="flex items-center gap-3 text-niebla hover:text-bruma transition-colors">
+                                <a href={`mailto:${email}`} className="flex items-center gap-3 text-niebla hover:text-bruma transition-colors">
                                     <Mail className="w-5 h-5 text-bruma flex-shrink-0" />
-                                    <span>info@dolovibes.com</span>
+                                    <span>{email}</span>
                                 </a>
                             </li>
                         </ul>

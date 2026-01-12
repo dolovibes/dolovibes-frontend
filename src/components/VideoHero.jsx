@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useHeroSection } from '../services/hooks';
 import ExperienceSelector from './ExperienceSelector';
 
 const VideoHero = ({ onExperienceSelect }) => {
     const { t } = useTranslation('home');
+    const { data: heroData, isLoading } = useHeroSection();
     const [isMobile, setIsMobile] = useState(false);
 
     // Detectar si es móvil para usar el video correcto
@@ -17,8 +19,21 @@ const VideoHero = ({ onExperienceSelect }) => {
     }, []);
 
     // Videos del hero - versión desktop (16:9) y móvil (9:16)
-    const videoDesktop = "/videos/hero-video.mp4";
-    const videoMobile = "/videos/hero-video-mobile-trecime.mp4";
+    const videoDesktop = heroData?.videoDesktop || "/videos/hero-video.mp4";
+    const videoMobile = heroData?.videoMobile || "/videos/hero-video-mobile-trecime.mp4";
+
+    // Textos del hero
+    const title = heroData?.title || t('hero.title');
+    const titleHighlight = heroData?.titleHighlight || t('hero.titleHighlight');
+    const badge = heroData?.badge || t('hero.badge');
+
+    if (isLoading) {
+        return (
+            <div className="relative min-h-[100svh] flex items-center justify-center bg-pizarra">
+                <div className="text-white text-lg">Cargando...</div>
+            </div>
+        );
+    }
 
     return (
         <div className="relative min-h-[100svh] flex items-center justify-center">
@@ -47,11 +62,11 @@ const VideoHero = ({ onExperienceSelect }) => {
             <div className="container mx-auto px-4 sm:px-6 relative z-10 py-16 md:py-20">
                 <div className="text-center mb-8 md:mb-12 mt-10">
                     <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight mb-3 md:mb-4 animate-fade-in-up drop-shadow-lg">
-                        {t('hero.title')}
+                        {title}
                         <br className="hidden sm:block" />
                         <span className="sm:hidden"> </span>
                         <span className="text-white">
-                            {t('hero.titleHighlight')}
+                            {titleHighlight}
                         </span>
                     </h1>
                 </div>

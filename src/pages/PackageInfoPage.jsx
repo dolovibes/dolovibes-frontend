@@ -11,9 +11,11 @@ import {
     ChevronRight,
     ChevronDown,
     Check,
-    X
+    X,
+    Calendar
 } from 'lucide-react';
-import { getPackageBySlug } from '../data/packages';
+import { usePackage } from '../services/hooks';
+import { useCurrencyContext, parsePrice } from '../utils/currency';
 import PackageQuoteModal from '../components/PackageQuoteModal';
 import PhotoGalleryModal from '../components/PhotoGalleryModal';
 import HikingLevelModal from '../components/HikingLevelModal';
@@ -24,12 +26,12 @@ const PackageInfoPage = ({ onOpenQuote }) => {
     const { t: tPackage } = useTranslation('packageInfo');
     const { slug } = useParams();
     const navigate = useNavigate();
-    const pkg = getPackageBySlug(slug);
-
-    // Scroll al inicio cuando carga la página
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, [slug]);
+    
+    // Usar hook de React Query para datos dinámicos
+    const { data: pkg, isLoading, error } = usePackage(slug);
+    
+    // Contexto de moneda para conversión de precios
+    const { formatPrice, currency } = useCurrencyContext();
 
     // Estado para el carrusel de itinerario
     const [currentDay, setCurrentDay] = useState(0);
@@ -52,7 +54,57 @@ const PackageInfoPage = ({ onOpenQuote }) => {
     // Referencia para la sección de itinerario (para swipe/wheel)
     const itineraryRef = React.useRef(null);
 
-    if (!pkg) {
+    // Scroll al inicio cuando carga la página
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [slug]);
+
+    // Soporte para swipe/wheel en trackpad - DEBE estar antes de early returns
+    useEffect(() => {
+        const section = itineraryRef.current;
+        if (!section || !pkg) return;
+
+        let lastScrollTime = 0;
+        const scrollThreshold = 50;
+        const scrollDebounce = 500;
+
+        const handleWheel = (e) => {
+            const deltaX = Math.abs(e.deltaX);
+            const deltaY = Math.abs(e.deltaY);
+            const now = Date.now();
+
+            if (now - lastScrollTime < scrollDebounce) return;
+
+            const delta = deltaX > deltaY ? e.deltaX : e.deltaY;
+
+            if (Math.abs(delta) > scrollThreshold && pkg.itinerary) {
+                if (delta > 0 && currentDay < pkg.itinerary.length - 1) {
+                    setCurrentDay(prev => prev + 1);
+                    lastScrollTime = now;
+                } else if (delta < 0 && currentDay > 0) {
+                    setCurrentDay(prev => prev - 1);
+                    lastScrollTime = now;
+                }
+            }
+        };
+
+        section.addEventListener('wheel', handleWheel, { passive: true });
+        return () => section.removeEventListener('wheel', handleWheel);
+    }, [currentDay, pkg]);
+
+    // Estado de carga
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-nieve">
+                <div className="animate-pulse text-center">
+                    <div className="w-16 h-16 border-4 border-alpino border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-pizarra">Cargando paquete...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!pkg || error) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-nieve">
                 <div className="text-center">
@@ -78,48 +130,11 @@ const PackageInfoPage = ({ onOpenQuote }) => {
         }
     };
 
-    // Soporte para swipe/wheel en trackpad
-    React.useEffect(() => {
-        const section = itineraryRef.current;
-        if (!section || !pkg) return;
-
-        let isScrolling = false;
-        let lastScrollTime = 0;
-        const scrollThreshold = 50;
-        const scrollDebounce = 500; // ms entre cambios de día
-
-        const handleWheel = (e) => {
-            // Solo procesar scroll horizontal o vertical significativo
-            const deltaX = Math.abs(e.deltaX);
-            const deltaY = Math.abs(e.deltaY);
-            const now = Date.now();
-
-            // Debounce para evitar cambios muy rápidos
-            if (now - lastScrollTime < scrollDebounce) return;
-
-            // Usar deltaX para scroll horizontal (trackpad) o deltaY para scroll vertical
-            const delta = deltaX > deltaY ? e.deltaX : e.deltaY;
-
-            if (Math.abs(delta) > scrollThreshold) {
-                if (delta > 0 && currentDay < pkg.itinerary.length - 1) {
-                    setCurrentDay(prev => prev + 1);
-                    lastScrollTime = now;
-                } else if (delta < 0 && currentDay > 0) {
-                    setCurrentDay(prev => prev - 1);
-                    lastScrollTime = now;
-                }
-            }
-        };
-
-        section.addEventListener('wheel', handleWheel, { passive: true });
-        return () => section.removeEventListener('wheel', handleWheel);
-    }, [currentDay, pkg]);
-
     const toggleInclude = (index) => {
         setExpandedInclude(expandedInclude === index ? null : index);
     };
 
-    const currentItinerary = pkg.itinerary[currentDay];
+    const currentItinerary = pkg.itinerary?.[currentDay];
 
     return (
         <div className="min-h-screen bg-white">
@@ -165,8 +180,9 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 </span>
                             )}
                             {pkg.availableDates && (
-                                <span className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                                    {pkg.availableDates}
+                                <span className="flex items-center gap-2 bg-emerald-500/20 backdrop-blur-sm px-4 py-2 rounded-full border border-emerald-400/30">
+                                    <Calendar className="w-4 h-4" />
+                                    <span className="font-medium">{pkg.availableDates}</span>
                                 </span>
                             )}
                         </div>
@@ -284,11 +300,11 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 <div className="flex items-baseline gap-3">
                                     {pkg.originalPrice && (
                                         <span className="text-niebla line-through text-xl">
-                                            {pkg.originalPrice}
+                                            {formatPrice(parsePrice(pkg.originalPrice))}
                                         </span>
                                     )}
                                     <span className="text-4xl md:text-5xl font-bold text-pizarra">
-                                        {pkg.price}
+                                        {formatPrice(parsePrice(pkg.price))}
                                     </span>
                                 </div>
                             </div>

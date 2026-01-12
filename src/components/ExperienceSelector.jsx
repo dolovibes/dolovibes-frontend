@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronDown } from 'lucide-react';
-import { getExperiencesBySeason, getExperienceBySlug } from '../data/experiences';
-import { getPackagesByExperience } from '../data/packages';
+import { useExperiences, usePackagesByExperience } from '../services/hooks';
 
 const ExperienceSelector = ({ onExperienceSelect }) => {
     const { t } = useTranslation('home');
@@ -10,15 +9,31 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
     const [step, setStep] = useState(1);
     const [selectedSeason, setSelectedSeason] = useState(null);
     const [selectedExperience, setSelectedExperience] = useState(null);
-    const [filteredExperiences, setFilteredExperiences] = useState([]);
     const [isExperienceDropdownOpen, setIsExperienceDropdownOpen] = useState(false);
 
+    // Mapeo de temporadas para la API
+    const seasonApiMap = { verano: 'summer', invierno: 'winter' };
+    
+    // Obtener experiencias de la API/datos estáticos
+    const { data: allExperiences = [], isLoading } = useExperiences();
+    
+    // Filtrar por temporada seleccionada
+    const filteredExperiences = useMemo(() => {
+        if (!selectedSeason) return [];
+        return allExperiences.filter(exp => exp.season === selectedSeason);
+    }, [allExperiences, selectedSeason]);
+
+    // Obtener paquetes de la experiencia seleccionada
+    const { data: relatedPackages = [] } = usePackagesByExperience(
+        selectedExperience?.slug
+    );
+
+    // Notificar al padre cuando cambian los paquetes
     useEffect(() => {
-        if (selectedSeason) {
-            const experiences = getExperiencesBySeason(selectedSeason);
-            setFilteredExperiences(experiences);
+        if (selectedExperience && relatedPackages.length > 0 && onExperienceSelect) {
+            onExperienceSelect(selectedExperience, relatedPackages);
         }
-    }, [selectedSeason]);
+    }, [selectedExperience, relatedPackages, onExperienceSelect]);
 
     const handleSeasonSelect = (season) => {
         setSelectedSeason(season);
@@ -34,21 +49,13 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
     const handleExperienceSelect = (experience) => {
         setSelectedExperience(experience);
         setIsExperienceDropdownOpen(false);
-
-        // Get packages for this experience
-        const packages = getPackagesByExperience(experience.slug);
-
-        // Notify parent with selected experience and packages
-        if (onExperienceSelect) {
-            onExperienceSelect(experience, packages);
-        }
+        // Los paquetes se cargarán automáticamente via usePackagesByExperience
     };
 
     const handleReset = () => {
         setStep(1);
         setSelectedSeason(null);
         setSelectedExperience(null);
-        setFilteredExperiences([]);
         setIsExperienceDropdownOpen(false);
         // Reset parent state
         if (onExperienceSelect) {

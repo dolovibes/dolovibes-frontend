@@ -1,0 +1,15 @@
+{
+    "hero": {
+        "badge": "ENTDECKEN SIE IHR NÄCHSTES ABENTEUER",
+        "title": "Erleben Sie unvergessliche",
+        "titleHighlight": "Erlebnisse",
+        "subtitle": "Wählen Sie Ihre ideale Jahreszeit und entdecken Sie die Abenteuer, die wir für Sie vorbereitet haben"
+    },
+    "selector": {
+        "whenQuestion": "Ihr nächstes Abenteuer beginnt hier",
+        "whatQuestion": "Welche Art von Erlebnis möchten Sie haben?",
+        "selectExperience": "Erlebnis auswählen",
+        "changeSeason": "Jahreszeit ändern",
+        "noExperiences": "Keine Erlebnisse für diese Jahreszeit verfügbar"
+    }
+}

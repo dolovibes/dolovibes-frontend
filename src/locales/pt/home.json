@@ -1,0 +1,15 @@
+{
+    "hero": {
+        "badge": "DESCUBRA SUA PRÓXIMA AVENTURA",
+        "title": "Viva experiências",
+        "titleHighlight": "inesquecíveis",
+        "subtitle": "Selecione sua estação ideal e descubra as aventuras que preparamos para você"
+    },
+    "selector": {
+        "whenQuestion": "Sua próxima aventura começa aqui",
+        "whatQuestion": "Que tipo de experiência você gostaria de ter?",
+        "selectExperience": "Selecione uma experiência",
+        "changeSeason": "Mudar estação",
+        "noExperiences": "Nenhuma experiência disponível para esta estação"
+    }
+}

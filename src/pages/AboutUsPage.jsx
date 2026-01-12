@@ -1,17 +1,46 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useAboutPage } from '../services/hooks';
 import Footer from '../components/Footer';
 
 const AboutUsPage = ({ onOpenQuote }) => {
     const { t } = useTranslation('about');
+    const { data: aboutData, isLoading } = useAboutPage();
 
     // Scroll al inicio cuando carga la página
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
 
-    // URL de imagen placeholder - reemplazar con foto real del cliente
-    const clientPhoto = "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1000";
+    // Datos de la página
+    const pageTitle = aboutData?.pageTitle || t('title');
+    const mainPhoto = aboutData?.mainPhoto || "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1000";
+    const photoAlt = aboutData?.photoAlt || t('photoAlt');
+    
+    const origin = {
+        title: aboutData?.origin?.title || t('origin.title'),
+        text: aboutData?.origin?.text || t('origin.text')
+    };
+    const essence = {
+        title: aboutData?.essence?.title || t('essence.title'),
+        text: aboutData?.essence?.text || t('essence.text')
+    };
+    const vision = {
+        title: aboutData?.vision?.title || t('vision.title'),
+        text: aboutData?.vision?.text || t('vision.text')
+    };
+    const mission = {
+        title: aboutData?.mission?.title || t('mission.title'),
+        text: aboutData?.mission?.text || t('mission.text')
+    };
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-white flex items-center justify-center">
+                <div className="text-pizarra text-lg">Cargando...</div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-white">
@@ -21,7 +50,7 @@ const AboutUsPage = ({ onOpenQuote }) => {
             {/* Título centrado */}
             <div className="text-center py-16 md:py-20">
                 <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-grafito">
-                    {t('title')}
+                    {pageTitle}
                 </h1>
             </div>
 
@@ -34,40 +63,40 @@ const AboutUsPage = ({ onOpenQuote }) => {
                         {/* Cómo nació Dolovibes */}
                         <section>
                             <h2 className="text-2xl md:text-3xl font-bold text-grafito mb-4">
-                                {t('origin.title')}
+                                {origin.title}
                             </h2>
                             <p className="text-pizarra text-lg leading-relaxed">
-                                {t('origin.text')}
+                                {origin.text}
                             </p>
                         </section>
 
                         {/* Nuestra esencia */}
                         <section>
                             <h2 className="text-2xl md:text-3xl font-bold text-grafito mb-4">
-                                {t('essence.title')}
+                                {essence.title}
                             </h2>
                             <p className="text-pizarra text-lg leading-relaxed">
-                                {t('essence.text')}
+                                {essence.text}
                             </p>
                         </section>
 
                         {/* Visión */}
                         <section>
                             <h2 className="text-2xl md:text-3xl font-bold text-grafito mb-4">
-                                {t('vision.title')}
+                                {vision.title}
                             </h2>
                             <p className="text-pizarra text-lg leading-relaxed">
-                                {t('vision.text')}
+                                {vision.text}
                             </p>
                         </section>
 
                         {/* Misión */}
                         <section>
                             <h2 className="text-2xl md:text-3xl font-bold text-grafito mb-4">
-                                {t('mission.title')}
+                                {mission.title}
                             </h2>
                             <p className="text-pizarra text-lg leading-relaxed">
-                                {t('mission.text')}
+                                {mission.text}
                             </p>
                         </section>
                     </div>
@@ -76,8 +105,8 @@ const AboutUsPage = ({ onOpenQuote }) => {
                     <div className="lg:sticky lg:top-28">
                         <div className="relative">
                             <img
-                                src={clientPhoto}
-                                alt={t('photoAlt')}
+                                src={mainPhoto}
+                                alt={photoAlt}
                                 className="w-full h-auto rounded-2xl shadow-2xl object-cover"
                                 style={{ minHeight: '600px', maxHeight: '700px' }}
                             />

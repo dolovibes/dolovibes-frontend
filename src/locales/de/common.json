@@ -1,0 +1,67 @@
+{
+    "navbar": {
+        "experiences": "Erlebnisse",
+        "ourExperiences": "Unsere Erlebnisse",
+        "packages": "Pakete",
+        "ourPackages": "Unsere Pakete",
+        "aboutUs": "Über Uns",
+        "quote": "Angebot",
+        "viewAllExperiences": "Alle Erlebnisse ansehen →",
+        "viewAllPackages": "Alle Pakete ansehen →"
+    },
+    "seasons": {
+        "summer": "Sommer",
+        "winter": "Winter"
+    },
+    "buttons": {
+        "next": "Nächster Schritt",
+        "back": "Zurück",
+        "submit": "Anfrage Senden",
+        "close": "Schließen",
+        "goBack": "Zurück",
+        "backToHome": "Zurück zur Startseite"
+    },
+    "labels": {
+        "perPerson": "pro Person",
+        "days": "Tage",
+        "persons": "Pers."
+    },
+    "recommendations": {
+        "basedOnSelection": "Basierend auf Ihrer Auswahl",
+        "title": "Unsere Empfehlungen",
+        "subtitle": "Die besten {{experience}} Reisen für Sie",
+        "offer": "ANGEBOT",
+        "viewDetails": "Details ansehen"
+    },
+    "footer": {
+        "description": "Einzigartige Bergerlebnisse in den italienischen Dolomiten. Abenteuer, Natur und Kultur bei jeder Reise.",
+        "experiences": "Erlebnisse",
+        "information": "Informationen",
+        "contact": "Kontakt",
+        "bookingConditions": "Buchungsbedingungen",
+        "cancellationPolicy": "Stornierungsbedingungen",
+        "contractInfo": "Vertragsinformationen",
+        "privacyPolicy": "Datenschutz",
+        "cookiePolicy": "Cookie-Richtlinie",
+        "copyrights": "Urheberrecht",
+        "allRightsReserved": "Alle Rechte vorbehalten."
+    },
+    "quoteModal": {
+        "title": "Angebot Anfordern",
+        "step": "Schritt",
+        "of": "von",
+        "step1Title": "Was haben Sie im Sinn?",
+        "step2Title": "Ihre Kontaktdaten",
+        "interestLabel": "Hauptinteresse",
+        "customPlan": "Individuelle Planung",
+        "dateLabel": "Ungefähres Datum",
+        "travelersLabel": "Reisende",
+        "notesLabel": "Notizen oder Besondere Wünsche",
+        "notesPlaceholder": "z.B.: Ich möchte den Sonnenuntergang in den Dolomiten sehen, mittleres Fitnesslevel...",
+        "namePlaceholder": "Vollständiger Name",
+        "emailPlaceholder": "E-Mail",
+        "phonePlaceholder": "Telefon (WhatsApp)",
+        "successTitle": "Anfrage Erhalten!",
+        "successMessage": "Ein DOLOVIBES Experte wird Sie bald kontaktieren, um Ihre Reise zu planen."
+    }
+}
