@@ -1,1 +1,31 @@
-{}
+{
+    "dayOf": "Jour {{current}} sur {{total}}",
+    "pricePerPerson": "Prix par personne",
+    "additionalPhotos": "Photos supplémentaires",
+    "howToGetHere": "Comment s'y rendre",
+    "mapComingSoon": "Carte bientôt disponible",
+    "notSureLevel": "Vous n'êtes pas sûr de votre niveau de randonnée? Faites notre évaluation",
+    "packageNotFound": "Forfait non trouvé",
+    "packageNotFoundDesc": "Le forfait que vous recherchez n'existe pas ou a été supprimé.",
+    "yourAdventure": "Votre aventure jour par jour",
+    "itinerary": "Itinéraire",
+    "includes": "Inclus dans le prix",
+    "notIncludes": "Non inclus",
+    "quote": "Demander un devis",
+    "quoteResponse": "Nous vous répondrons sous 24 heures",
+    "viewPackages": "Voir les forfaits",
+    "difficulty": {
+        "easy": "Facile",
+        "intermediate": "Intermédiaire",
+        "advanced": "Avancé"
+    },
+    "galleryCaptions": {
+        "hut-2-hut-dolomitas-clasico": {
+            "1": "Refuge Auronzo - Premier jour de randonnée",
+            "2": "Vue panoramique des Tre Cime di Lavaredo",
+            "3": "Sentier vers le Lac de Braies",
+            "4": "Coucher de soleil depuis le refuge",
+            "5": "Groupe de randonneurs au Col Giau"
+        }
+    }
+}

@@ -1,1 +1,31 @@
-{}
+{
+    "dayOf": "Dia {{current}} de {{total}}",
+    "pricePerPerson": "Preço por pessoa",
+    "additionalPhotos": "Fotos adicionais",
+    "howToGetHere": "Como chegar",
+    "mapComingSoon": "Mapa em breve",
+    "notSureLevel": "Não tem certeza do seu nível de hiking? Faça nossa avaliação",
+    "packageNotFound": "Pacote não encontrado",
+    "packageNotFoundDesc": "O pacote que você está procurando não existe ou foi removido.",
+    "yourAdventure": "Sua aventura dia a dia",
+    "itinerary": "Itinerário",
+    "includes": "Incluído no custo",
+    "notIncludes": "Não incluído",
+    "quote": "Solicitar orçamento",
+    "quoteResponse": "Responderemos em até 24 horas",
+    "viewPackages": "Ver pacotes",
+    "difficulty": {
+        "easy": "Fácil",
+        "intermediate": "Intermediário",
+        "advanced": "Avançado"
+    },
+    "galleryCaptions": {
+        "hut-2-hut-dolomitas-clasico": {
+            "1": "Refúgio Auronzo - Primeiro dia da travessia",
+            "2": "Vista panorâmica das Tre Cime di Lavaredo",
+            "3": "Trilha para o Lago di Braies",
+            "4": "Pôr do sol do refúgio",
+            "5": "Grupo de caminhantes no Passo Giau"
+        }
+    }
+}

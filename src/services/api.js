@@ -1,276 +1,334 @@
 /**
- * Servicios API para comunicación con Strapi
+ * API de DoloVibes - Cliente para Strapi CMS
  * 
- * Proporciona funciones para obtener:
- * - Experiencias
- * - Paquetes
- * - Hero Section
- * - About Page
- * - Site Settings
- * - Guías
- * - Testimonios
+ * ARQUITECTURA:
+ * ─────────────────────────────────────────────────────────────
  * 
- * NOTA: El contenido de Strapi está solo en español.
- * La UI del sitio soporta múltiples idiomas (archivos JSON).
+ * TIPOS DE CONTENIDO EN STRAPI 5:
+ * 
+ *   Single Types (endpoint = singularName):
+ *   ├── hero-section   → /api/hero-section
+ *   ├── about-page     → /api/about-page
+ *   └── site-setting   → /api/site-setting
+ * 
+ *   Collection Types (endpoint = pluralName):
+ *   ├── experiences    → /api/experiences
+ *   ├── packages       → /api/packages
+ *   ├── guides         → /api/guides
+ *   └── testimonials   → /api/testimonials
+ * 
+ * MANEJO DE LOCALES (i18n):
+ * ─────────────────────────────────────────────────────────────
+ * - Strapi soporta múltiples idiomas
+ * - DEFAULT_LOCALE = 'es' (idioma base con contenido completo)
+ * - Si el contenido no existe en el idioma solicitado, usa español
+ * - El frontend detecta el idioma del usuario y lo pasa a las APIs
+ * 
+ * POPULATE:
+ * ─────────────────────────────────────────────────────────────
+ * - populate=* NO funciona bien para media en Strapi 5
+ * - Usamos populate explícito para cada relación/media
  */
 import strapiClient, { getStrapiMediaUrl } from './strapiClient';
+import i18n from '../i18n';
 
-// Locale fijo - contenido solo en español
-const CONTENT_LOCALE = 'es';
+// ═══════════════════════════════════════════════════════════════
+// CONFIGURACIÓN DE LOCALES
+// ═══════════════════════════════════════════════════════════════
+
+const DEFAULT_LOCALE = 'es'; // Idioma con contenido completo garantizado
+const SUPPORTED_STRAPI_LOCALES = ['es', 'en']; // Idiomas disponibles en Strapi
 
 /**
- * Wrapper simplificado para peticiones a Strapi
- * Siempre usa locale español ya que el contenido está solo en ES
+ * Obtiene el locale actual para Strapi
+ * Si el idioma del usuario no tiene contenido en Strapi, usa español
  */
-const fetchFromStrapi = async (endpoint, params, transformFn, isSingleType = false) => {
-  // Forzar locale español para todo el contenido
-  const finalParams = { ...params, locale: CONTENT_LOCALE };
-  const response = await strapiClient.get(endpoint, { params: finalParams });
-  const data = response.data.data;
-  
-  if (isSingleType) {
-    return transformFn ? transformFn(data) : data;
-  }
-  
-  return transformFn ? transformFn(data) : data;
+const getCurrentLocale = () => {
+  const userLang = i18n.language?.substring(0, 2) || DEFAULT_LOCALE;
+  return SUPPORTED_STRAPI_LOCALES.includes(userLang) ? userLang : DEFAULT_LOCALE;
 };
 
-// ============================================
-// EXPERIENCIAS
-// ============================================
+// ═══════════════════════════════════════════════════════════════
+// WRAPPER PRINCIPAL
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * Wrapper centralizado para peticiones a Strapi con fallback de idioma
+ * 
+ * @param {string} endpoint - Ruta del API (ej: '/experiences')
+ * @param {object} params - Parámetros de query (populate, filters, etc.)
+ * @param {function} transformFn - Función para transformar la respuesta
+ * @param {boolean} isSingleType - true = no agregar locale
+ * @returns {Promise<any>} Datos transformados
+ */
+const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSingleType = false) => {
+  const locale = getCurrentLocale();
+
+  // Collection Types requieren locale, Single Types no
+  const finalParams = isSingleType
+    ? { ...params }
+    : { ...params, locale };
+
+  try {
+    const response = await strapiClient.get(endpoint, { params: finalParams });
+    const data = response.data.data;
+
+    // Si no hay datos y no estamos en el idioma default, intentar con español
+    if ((!data || (Array.isArray(data) && data.length === 0)) && locale !== DEFAULT_LOCALE && !isSingleType) {
+      const fallbackParams = { ...params, locale: DEFAULT_LOCALE };
+      const fallbackResponse = await strapiClient.get(endpoint, { params: fallbackParams });
+      const fallbackData = fallbackResponse.data.data;
+      return transformFn ? transformFn(fallbackData) : fallbackData;
+    }
+
+    return transformFn ? transformFn(data) : data;
+  } catch (error) {
+    // Si falla, intentar con español como fallback
+    if (locale !== DEFAULT_LOCALE && !isSingleType) {
+      try {
+        const fallbackParams = { ...params, locale: DEFAULT_LOCALE };
+        const fallbackResponse = await strapiClient.get(endpoint, { params: fallbackParams });
+        const fallbackData = fallbackResponse.data.data;
+        return transformFn ? transformFn(fallbackData) : fallbackData;
+      } catch {
+        throw error; // Si también falla el fallback, propagar error original
+      }
+    }
+    throw error;
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════
+// EXPERIENCIAS (Collection Type)
+// Endpoint: /api/experiences
+// ═══════════════════════════════════════════════════════════════
+
+const EXPERIENCE_POPULATE = {
+  thumbnail: true,
+  heroImage: true,
+  packages: {
+    populate: ['thumbnail', 'heroImage']
+  }
+};
 
 /**
  * Obtiene todas las experiencias
- * @param {string} season - Filtro por temporada (summer/winter)
- * @returns {Promise<Array>} Lista de experiencias
+ * @param {string|null} season - Filtrar por temporada ('summer' | 'winter')
  */
-export const getExperiences = async (locale = 'es', season = null) => {
+export const getExperiences = async (season = null) => {
   const params = {
-    populate: '*',
+    populate: EXPERIENCE_POPULATE,
     'pagination[pageSize]': 100,
   };
-  
+
   if (season) {
     params['filters[season][$eq]'] = season;
   }
-  
+
   return fetchFromStrapi('/experiences', params, transformExperiences);
 };
 
 /**
  * Obtiene una experiencia por slug
- * @param {string} slug - Slug de la experiencia
- * @returns {Promise<Object>} Experiencia
+ * @param {string} slug - Slug único de la experiencia
  */
-export const getExperienceBySlug = async (slug, locale = 'es') => {
+export const getExperienceBySlug = async (slug) => {
   const params = {
     'filters[slug][$eq]': slug,
-    populate: '*',
+    populate: EXPERIENCE_POPULATE,
   };
-  
+
   const experiences = await fetchFromStrapi('/experiences', params, transformExperiences);
   return experiences[0] || null;
 };
 
-// ============================================
-// PAQUETES
-// ============================================
+// ═══════════════════════════════════════════════════════════════
+// PAQUETES (Collection Type)
+// Endpoint: /api/packages
+// ═══════════════════════════════════════════════════════════════
+
+const PACKAGE_POPULATE = {
+  thumbnail: true,
+  heroImage: true,
+  gallery: {
+    populate: ['image']
+  },
+  itinerary: {
+    populate: ['image']
+  },
+  includes: true,
+  startDates: true,
+  experience: true,
+  locationInfo: true,
+};
 
 /**
  * Obtiene todos los paquetes
- * @param {string} locale - Idioma
- * @param {object} filters - Filtros adicionales
- * @returns {Promise<Array>} Lista de paquetes
+ * @param {object} filters - Filtros opcionales
+ * @param {string} filters.experienceSlug - Filtrar por experiencia
+ * @param {string} filters.season - Filtrar por temporada
  */
-export const getPackages = async (locale = 'es', filters = {}) => {
+export const getPackages = async (filters = {}) => {
   const params = {
-    locale,
-    populate: {
-      thumbnail: true,
-      heroImage: true,
-      gallery: {
-        populate: ['image']
-      },
-      itinerary: {
-        populate: ['image']
-      },
-      includes: true,
-      startDates: true,
-      experience: true,
-      locationInfo: true,
-    },
+    populate: PACKAGE_POPULATE,
     'pagination[pageSize]': 100,
   };
-  
-  // Aplicar filtros
+
   if (filters.experienceSlug) {
     params['filters[experience][slug][$eq]'] = filters.experienceSlug;
   }
   if (filters.season) {
     params['filters[season][$eq]'] = filters.season;
   }
-  
+
   return fetchFromStrapi('/packages', params, transformPackages);
 };
 
 /**
  * Obtiene un paquete por slug
- * @param {string} slug - Slug del paquete
- * @param {string} locale - Idioma
- * @returns {Promise<Object>} Paquete completo
+ * @param {string} slug - Slug único del paquete
  */
-export const getPackageBySlug = async (slug, locale = 'es') => {
+export const getPackageBySlug = async (slug) => {
   const params = {
-    locale,
     'filters[slug][$eq]': slug,
-    populate: {
-      thumbnail: true,
-      heroImage: true,
-      gallery: {
-        populate: ['image']
-      },
-      itinerary: {
-        populate: ['image']
-      },
-      includes: true,
-      startDates: true,
-      experience: true,
-      locationInfo: true,
-    },
+    populate: PACKAGE_POPULATE,
   };
-  
+
   const packages = await fetchFromStrapi('/packages', params, transformPackages);
   return packages[0] || null;
 };
 
 /**
- * Obtiene paquetes por experiencia
+ * Obtiene paquetes de una experiencia específica
  * @param {string} experienceSlug - Slug de la experiencia
- * @param {string} locale - Idioma
- * @returns {Promise<Array>} Lista de paquetes
  */
-export const getPackagesByExperience = async (experienceSlug, locale = 'es') => {
-  return getPackages(locale, { experienceSlug });
+export const getPackagesByExperience = async (experienceSlug) => {
+  return getPackages({ experienceSlug });
 };
 
-// ============================================
+// ═══════════════════════════════════════════════════════════════
 // HERO SECTION (Single Type)
-// ============================================
+// Endpoint: /api/hero-section
+// ═══════════════════════════════════════════════════════════════
+
+const HERO_POPULATE = {
+  videoDesktop: true,
+  videoMobile: true,
+  fallbackImage: true,
+};
 
 /**
  * Obtiene el contenido del Hero Section
- * @param {string} locale - Idioma
- * @returns {Promise<Object>} Datos del hero
  */
-export const getHeroSection = async (locale = 'es') => {
-  const params = {
-    locale,
-    populate: '*',
-  };
-  
-  return fetchFromStrapi('/hero-section', params, transformHeroSection, true);
+export const getHeroSection = async () => {
+  return fetchFromStrapi('/hero-section', { populate: HERO_POPULATE }, transformHeroSection, true);
 };
 
-// ============================================
+// ═══════════════════════════════════════════════════════════════
 // ABOUT PAGE (Single Type)
-// ============================================
+// Endpoint: /api/about-page
+// ═══════════════════════════════════════════════════════════════
+
+const ABOUT_POPULATE = {
+  mainPhoto: true,
+  team: {
+    populate: ['photo']
+  },
+  values: true,
+  origin: true,
+  essence: true,
+  vision: true,
+  mission: true,
+};
 
 /**
  * Obtiene el contenido de la página About
- * @param {string} locale - Idioma
- * @returns {Promise<Object>} Datos de about
  */
-export const getAboutPage = async (locale = 'es') => {
-  const params = {
-    locale,
-    populate: {
-      mainPhoto: true,
-      team: {
-        populate: ['photo']
-      },
-      values: true,
-    },
-  };
-  
-  return fetchFromStrapi('/about-page', params, transformAboutPage, true);
+export const getAboutPage = async () => {
+  return fetchFromStrapi('/about-page', { populate: ABOUT_POPULATE }, transformAboutPage, true);
 };
 
-// ============================================
+// ═══════════════════════════════════════════════════════════════
 // SITE SETTINGS (Single Type)
-// ============================================
+// Endpoint: /api/site-setting (singular!)
+// ═══════════════════════════════════════════════════════════════
+
+const SETTINGS_POPULATE = {
+  logo: true,
+  logoDark: true,
+  favicon: true,
+  legalPages: true,
+};
 
 /**
  * Obtiene la configuración del sitio
- * @param {string} locale - Idioma
- * @returns {Promise<Object>} Configuración
  */
-export const getSiteSettings = async (locale = 'es') => {
-  const params = {
-    locale,
-    populate: '*',
-  };
-  
-  return fetchFromStrapi('/site-setting', params, transformSiteSettings, true);
+export const getSiteSettings = async () => {
+  return fetchFromStrapi('/site-setting', { populate: SETTINGS_POPULATE }, transformSiteSettings, true);
 };
 
-// ============================================
-// GUÍAS
-// ============================================
+// ═══════════════════════════════════════════════════════════════
+// GUÍAS (Collection Type)
+// Endpoint: /api/guides
+// ═══════════════════════════════════════════════════════════════
+
+const GUIDE_POPULATE = {
+  photo: true,
+  certifications: true,
+  languages: true,
+};
 
 /**
- * Obtiene todos los guías
- * @param {string} locale - Idioma
- * @param {boolean} featured - Solo destacados
- * @returns {Promise<Array>} Lista de guías
+ * Obtiene guías
+ * @param {boolean} featured - Solo guías destacados
  */
-export const getGuides = async (locale = 'es', featured = false) => {
+export const getGuides = async (featured = false) => {
   const params = {
-    locale,
-    populate: '*',
+    populate: GUIDE_POPULATE,
   };
-  
+
   if (featured) {
     params['filters[featured][$eq]'] = true;
   }
-  
+
   return fetchFromStrapi('/guides', params, transformGuides);
 };
 
-// ============================================
-// TESTIMONIOS
-// ============================================
+// ═══════════════════════════════════════════════════════════════
+// TESTIMONIOS (Collection Type)
+// Endpoint: /api/testimonials
+// ═══════════════════════════════════════════════════════════════
+
+const TESTIMONIAL_POPULATE = {
+  photo: true,
+  package: true,
+};
 
 /**
  * Obtiene testimonios
- * @param {string} locale - Idioma
- * @param {boolean} featured - Solo destacados
- * @returns {Promise<Array>} Lista de testimonios
+ * @param {boolean} featured - Solo testimonios destacados
  */
-export const getTestimonials = async (locale = 'es', featured = false) => {
+export const getTestimonials = async (featured = false) => {
   const params = {
-    locale,
-    populate: '*',
+    populate: TESTIMONIAL_POPULATE,
   };
-  
+
   if (featured) {
     params['filters[featured][$eq]'] = true;
   }
-  
+
   return fetchFromStrapi('/testimonials', params, transformTestimonials);
 };
 
-// ============================================
+// ═══════════════════════════════════════════════════════════════
 // TRANSFORMADORES DE DATOS
-// Convierte formato Strapi al formato del frontend
-// ============================================
+// Convierte formato Strapi → formato Frontend
+// ═══════════════════════════════════════════════════════════════
 
-/**
- * Transforma experiencias de Strapi al formato del frontend
- */
 const transformExperiences = (data) => {
   if (!data) return [];
   const items = Array.isArray(data) ? data : [data];
-  
+
   return items.map((item) => ({
     id: item.id,
     title: item.title,
@@ -288,23 +346,19 @@ const transformExperiences = (data) => {
   }));
 };
 
-/**
- * Transforma paquetes de Strapi al formato del frontend
- */
 const transformPackages = (data) => {
   if (!data) return [];
   const items = Array.isArray(data) ? data : [data];
-  
+
   return items.map((item) => ({
     id: item.id,
     experienceSlug: item.experience?.slug || '',
     title: item.title,
     slug: item.slug,
     location: item.location,
-    // Precios: siempre en MXN (moneda base), se convierten en el frontend
     price: `MXN ${item.priceAmount?.toLocaleString()}`,
     priceAmount: item.priceAmount,
-    originalPrice: item.originalPriceAmount 
+    originalPrice: item.originalPriceAmount
       ? `MXN ${item.originalPriceAmount?.toLocaleString()}`
       : null,
     originalPriceAmount: item.originalPriceAmount,
@@ -312,7 +366,6 @@ const transformPackages = (data) => {
     rating: item.rating,
     image: getStrapiMediaUrl(item.thumbnail?.url),
     heroImage: getStrapiMediaUrl(item.heroImage?.url),
-    // Gallery ahora es un componente con imagen y caption
     gallery: item.gallery?.map(g => ({
       url: getStrapiMediaUrl(g.image?.url),
       caption: g.caption || '',
@@ -338,7 +391,6 @@ const transformPackages = (data) => {
     guideType: item.guideType,
     availableDates: item.availableDates,
     startDates: item.startDates?.map(sd => sd.displayText || sd.date) || [],
-    // Información de ubicación
     locationInfo: item.locationInfo ? {
       howToGetThere: item.locationInfo.howToGetThere,
       latitude: item.locationInfo.latitude,
@@ -350,12 +402,9 @@ const transformPackages = (data) => {
   }));
 };
 
-/**
- * Transforma Hero Section
- */
 const transformHeroSection = (data) => {
   if (!data) return null;
-  
+
   return {
     title: data.title,
     titleHighlight: data.titleHighlight,
@@ -367,41 +416,35 @@ const transformHeroSection = (data) => {
   };
 };
 
-/**
- * Transforma About Page
- */
 const transformAboutPage = (data) => {
   if (!data) return null;
-  
+
   return {
     pageTitle: data.pageTitle,
     mainPhoto: getStrapiMediaUrl(data.mainPhoto?.url),
     photoAlt: data.photoAlt,
-    origin: {
-      title: data.origin?.title,
-      text: data.origin?.content,
-    },
-    essence: {
-      title: data.essence?.title,
-      text: data.essence?.content,
-    },
-    vision: {
-      title: data.vision?.title,
-      text: data.vision?.content,
-    },
-    mission: {
-      title: data.mission?.title,
-      text: data.mission?.content,
-    },
+    origin: data.origin ? {
+      title: data.origin.title,
+      text: data.origin.content,
+    } : null,
+    essence: data.essence ? {
+      title: data.essence.title,
+      text: data.essence.content,
+    } : null,
+    vision: data.vision ? {
+      title: data.vision.title,
+      text: data.vision.content,
+    } : null,
+    mission: data.mission ? {
+      title: data.mission.title,
+      text: data.mission.content,
+    } : null,
   };
 };
 
-/**
- * Transforma Site Settings
- */
 const transformSiteSettings = (data) => {
   if (!data) return null;
-  
+
   return {
     siteName: data.siteName,
     logo: getStrapiMediaUrl(data.logo?.url),
@@ -425,13 +468,10 @@ const transformSiteSettings = (data) => {
   };
 };
 
-/**
- * Transforma Guías
- */
 const transformGuides = (data) => {
   if (!data) return [];
   const items = Array.isArray(data) ? data : [data];
-  
+
   return items.map((item) => ({
     id: item.id,
     name: item.name,
@@ -446,13 +486,10 @@ const transformGuides = (data) => {
   }));
 };
 
-/**
- * Transforma Testimonios
- */
 const transformTestimonials = (data) => {
   if (!data) return [];
   const items = Array.isArray(data) ? data : [data];
-  
+
   return items.map((item) => ({
     id: item.id,
     clientName: item.clientName,
@@ -465,6 +502,10 @@ const transformTestimonials = (data) => {
     featured: item.featured,
   }));
 };
+
+// ═══════════════════════════════════════════════════════════════
+// EXPORTS
+// ═══════════════════════════════════════════════════════════════
 
 export default {
   getExperiences,

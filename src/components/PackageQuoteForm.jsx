@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { CheckCircle, Send } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const PackageQuoteForm = ({ packageTitle }) => {
+    const { t } = useTranslation('quoteForm');
     const [formData, setFormData] = useState({
         nombre: '',
         apellido: '',
@@ -42,10 +44,10 @@ const PackageQuoteForm = ({ packageTitle }) => {
                     <CheckCircle className="w-10 h-10 text-white" />
                 </div>
                 <h3 className="text-2xl md:text-3xl font-bold mb-4">
-                    ¡Solicitud Enviada!
+                    {t('requestSent')}
                 </h3>
                 <p className="text-white/80 text-lg">
-                    Nos pondremos en contacto contigo muy pronto para planificar tu viaje a <strong>{packageTitle}</strong>.
+                    {t('contactSoon')} <strong>{packageTitle}</strong>.
                 </p>
             </div>
         );
@@ -59,10 +61,10 @@ const PackageQuoteForm = ({ packageTitle }) => {
                     {packageTitle}
                 </h3>
                 <p className="text-bruma text-lg font-medium mb-1">
-                    ¿Estás listo para el viaje más espectacular de tu vida?
+                    {t('readyForTrip')}
                 </p>
                 <p className="text-white/60 text-sm">
-                    Completa la información
+                    {t('completeInfo')}
                 </p>
             </div>
 
@@ -72,7 +74,7 @@ const PackageQuoteForm = ({ packageTitle }) => {
                 <div className="grid md:grid-cols-2 gap-4">
                     <div>
                         <label className="block text-sm font-medium text-pizarra mb-2">
-                            Nombre *
+                            {t('firstName')} *
                         </label>
                         <input
                             type="text"
@@ -81,12 +83,12 @@ const PackageQuoteForm = ({ packageTitle }) => {
                             value={formData.nombre}
                             onChange={handleChange}
                             className="w-full px-4 py-3 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all"
-                            placeholder="Tu nombre"
+                            placeholder={t('yourName')}
                         />
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-pizarra mb-2">
-                            Apellido *
+                            {t('lastName')} *
                         </label>
                         <input
                             type="text"
@@ -95,7 +97,7 @@ const PackageQuoteForm = ({ packageTitle }) => {
                             value={formData.apellido}
                             onChange={handleChange}
                             className="w-full px-4 py-3 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all"
-                            placeholder="Tu apellido"
+                            placeholder={t('yourLastName')}
                         />
                     </div>
                 </div>
@@ -104,7 +106,7 @@ const PackageQuoteForm = ({ packageTitle }) => {
                 <div className="grid md:grid-cols-3 gap-4">
                     <div>
                         <label className="block text-sm font-medium text-pizarra mb-2">
-                            Ciudad *
+                            {t('city')} *
                         </label>
                         <input
                             type="text"
@@ -113,12 +115,12 @@ const PackageQuoteForm = ({ packageTitle }) => {
                             value={formData.ciudad}
                             onChange={handleChange}
                             className="w-full px-4 py-3 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all"
-                            placeholder="Ciudad"
+                            placeholder={t('city')}
                         />
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-pizarra mb-2">
-                            Estado *
+                            {t('state')} *
                         </label>
                         <input
                             type="text"
@@ -127,12 +129,12 @@ const PackageQuoteForm = ({ packageTitle }) => {
                             value={formData.estado}
                             onChange={handleChange}
                             className="w-full px-4 py-3 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all"
-                            placeholder="Estado"
+                            placeholder={t('state')}
                         />
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-pizarra mb-2">
-                            País *
+                            {t('country')} *
                         </label>
                         <input
                             type="text"
@@ -141,7 +143,7 @@ const PackageQuoteForm = ({ packageTitle }) => {
                             value={formData.pais}
                             onChange={handleChange}
                             className="w-full px-4 py-3 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all"
-                            placeholder="País"
+                            placeholder={t('country')}
                         />
                     </div>
                 </div>
@@ -150,7 +152,7 @@ const PackageQuoteForm = ({ packageTitle }) => {
                 <div className="grid md:grid-cols-2 gap-4">
                     <div>
                         <label className="block text-sm font-medium text-pizarra mb-2">
-                            Email *
+                            {t('email')} *
                         </label>
                         <input
                             type="email"
@@ -159,12 +161,12 @@ const PackageQuoteForm = ({ packageTitle }) => {
                             value={formData.email}
                             onChange={handleChange}
                             className="w-full px-4 py-3 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all"
-                            placeholder="tucorreo@email.com"
+                            placeholder="email@example.com"
                         />
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-pizarra mb-2">
-                            Teléfono *
+                            {t('phone')} *
                         </label>
                         <input
                             type="tel"
@@ -173,7 +175,7 @@ const PackageQuoteForm = ({ packageTitle }) => {
                             value={formData.telefono}
                             onChange={handleChange}
                             className="w-full px-4 py-3 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all"
-                            placeholder="+52 123 456 7890"
+                            placeholder="+1 123 456 7890"
                         />
                     </div>
                 </div>
@@ -181,7 +183,7 @@ const PackageQuoteForm = ({ packageTitle }) => {
                 {/* Cómo te gustaría ser contactado */}
                 <div>
                     <label className="block text-sm font-medium text-pizarra mb-2">
-                        ¿Cómo te gustaría ser contactado? *
+                        {t('howContact')} *
                     </label>
                     <select
                         name="contacto"
@@ -189,9 +191,9 @@ const PackageQuoteForm = ({ packageTitle }) => {
                         onChange={handleChange}
                         className="w-full px-4 py-3 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all bg-white"
                     >
-                        <option value="whatsapp">WhatsApp</option>
-                        <option value="telefono">Llamada telefónica</option>
-                        <option value="correo">Correo electrónico</option>
+                        <option value="whatsapp">{t('whatsapp')}</option>
+                        <option value="telefono">{t('phoneCall')}</option>
+                        <option value="correo">{t('emailOption')}</option>
                     </select>
                 </div>
 
@@ -199,7 +201,7 @@ const PackageQuoteForm = ({ packageTitle }) => {
                 <div className="grid md:grid-cols-2 gap-4">
                     <div>
                         <label className="block text-sm font-medium text-pizarra mb-2">
-                            Mes del viaje *
+                            {t('travelMonth')} *
                         </label>
                         <input
                             type="month"
@@ -212,7 +214,7 @@ const PackageQuoteForm = ({ packageTitle }) => {
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-pizarra mb-2">
-                            Número de pasajeros *
+                            {t('passengers')} *
                         </label>
                         <select
                             name="pasajeros"
@@ -221,7 +223,7 @@ const PackageQuoteForm = ({ packageTitle }) => {
                             className="w-full px-4 py-3 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all bg-white"
                         >
                             {[1, 2, 3, 4, 5, 6, 7, 8, '9+'].map(n => (
-                                <option key={n} value={n}>{n} {n === 1 ? 'persona' : 'personas'}</option>
+                                <option key={n} value={n}>{n} {n === 1 ? t('person') : t('persons')}</option>
                             ))}
                         </select>
                     </div>
@@ -230,30 +232,30 @@ const PackageQuoteForm = ({ packageTitle }) => {
                 {/* Tipo de viaje */}
                 <div>
                     <label className="block text-sm font-medium text-pizarra mb-2">
-                        Tipo de viaje *
+                        {t('tripType')} *
                     </label>
                     <div className="grid grid-cols-2 gap-4">
                         <button
                             type="button"
                             onClick={() => setFormData(prev => ({ ...prev, tipoViaje: 'guiado' }))}
                             className={`p-4 rounded-xl border-2 transition-all text-center ${formData.tipoViaje === 'guiado'
-                                    ? 'border-alpino bg-nieve text-alpino'
-                                    : 'border-niebla hover:border-bruma text-pizarra'
+                                ? 'border-alpino bg-nieve text-alpino'
+                                : 'border-niebla hover:border-bruma text-pizarra'
                                 }`}
                         >
-                            <span className="font-semibold block">Guiado</span>
-                            <span className="text-xs opacity-70">Con guía experto</span>
+                            <span className="font-semibold block">{t('guided')}</span>
+                            <span className="text-xs opacity-70">{t('withExpert')}</span>
                         </button>
                         <button
                             type="button"
                             onClick={() => setFormData(prev => ({ ...prev, tipoViaje: 'autoguiado' }))}
                             className={`p-4 rounded-xl border-2 transition-all text-center ${formData.tipoViaje === 'autoguiado'
-                                    ? 'border-alpino bg-nieve text-alpino'
-                                    : 'border-niebla hover:border-bruma text-pizarra'
+                                ? 'border-alpino bg-nieve text-alpino'
+                                : 'border-niebla hover:border-bruma text-pizarra'
                                 }`}
                         >
-                            <span className="font-semibold block">Autoguiado</span>
-                            <span className="text-xs opacity-70">Por tu cuenta</span>
+                            <span className="font-semibold block">{t('selfGuided')}</span>
+                            <span className="text-xs opacity-70">{t('onYourOwn')}</span>
                         </button>
                     </div>
                 </div>
@@ -261,7 +263,7 @@ const PackageQuoteForm = ({ packageTitle }) => {
                 {/* Servicios adicionales */}
                 <div>
                     <label className="block text-sm font-medium text-pizarra mb-2">
-                        Servicios adicionales
+                        {t('additionalServices')}
                     </label>
                     <textarea
                         name="serviciosAdicionales"
@@ -269,7 +271,7 @@ const PackageQuoteForm = ({ packageTitle }) => {
                         onChange={handleChange}
                         rows={4}
                         className="w-full px-4 py-3 border border-niebla rounded-xl focus:ring-2 focus:ring-alpino focus:border-alpino transition-all resize-none"
-                        placeholder="Carpool, cena especial, pick up en aeropuerto, necesidades dietéticas, etc."
+                        placeholder={t('servicesPlaceholder')}
                     />
                 </div>
 
@@ -282,18 +284,18 @@ const PackageQuoteForm = ({ packageTitle }) => {
                     {isSubmitting ? (
                         <>
                             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                            Enviando...
+                            {t('sending')}
                         </>
                     ) : (
                         <>
                             <Send className="w-5 h-5" />
-                            Solicitar Cotización
+                            {t('requestQuote')}
                         </>
                     )}
                 </button>
 
                 <p className="text-center text-niebla text-sm">
-                    Te responderemos en menos de 24 horas
+                    {t('responseTime')}
                 </p>
             </form>
         </div>

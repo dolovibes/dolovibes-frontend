@@ -8,13 +8,24 @@
     "packageNotFound": "Paquete no encontrado",
     "packageNotFoundDesc": "El paquete que buscas no existe o fue eliminado.",
     "yourAdventure": "Tu aventura día a día",
+    "itinerary": "Itinerario",
     "includes": "Incluido en el costo",
     "notIncludes": "No incluido",
     "quote": "Cotizar",
+    "quoteResponse": "Te responderemos en menos de 24 horas",
     "viewPackages": "Ver paquetes",
     "difficulty": {
         "easy": "Fácil",
         "intermediate": "Intermedio",
         "advanced": "Avanzado"
+    },
+    "galleryCaptions": {
+        "hut-2-hut-dolomitas-clasico": {
+            "1": "Refugio Auronzo - Primer día de travesía",
+            "2": "Vista panorámica de las Tre Cime di Lavaredo",
+            "3": "Sendero hacia el Lago di Braies",
+            "4": "Atardecer desde el refugio",
+            "5": "Grupo de senderistas en el paso Giau"
+        }
     }
 }
