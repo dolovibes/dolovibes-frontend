@@ -185,7 +185,9 @@ const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSing
         const transformedSpanishData = transformFn ? transformFn(spanishData) : spanishData;
 
         // Enriquecer datos actuales con media de español (DESPUÉS de transformar)
-        return enrichWithSpanishMedia(transformedData, transformedSpanishData);
+        const enrichedData = enrichWithSpanishMedia(transformedData, transformedSpanishData);
+        
+        return enrichedData;
       } catch (spanishError) {
         // Si falla obtener español, continuar con datos actuales
         console.warn('[Strapi] Could not fetch Spanish fallback for media:', spanishError.message);
