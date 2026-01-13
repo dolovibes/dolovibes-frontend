@@ -86,12 +86,7 @@ export const usePackage = (slug) => {
 
   return useQuery({
     queryKey: ['package', slug, locale],
-    queryFn: async () => {
-      if (!USE_STRAPI) {
-        return staticPackages.find(pkg => pkg.slug === slug) || null;
-      }
-      return api.getPackageBySlug(slug);
-    },
+    queryFn: () => api.getPackageBySlug(slug),
     enabled: !!slug,
     ...defaultQueryOptions,
   });

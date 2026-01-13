@@ -64,13 +64,32 @@ export const buildPopulateParams = (populate) => {
 };
 
 /**
- * Obtiene la URL base de Strapi para medios
- * @returns {string} URL base para imágenes/videos
+ * Obtiene la URL completa de un archivo media de Strapi
+ * Maneja diferentes formatos:
+ * - String path: '/uploads/image.jpg'
+ * - URL completa: 'http://localhost:1337/uploads/image.jpg'
+ * - Objeto media de Strapi: { url: '/uploads/image.jpg', ... }
+ * @param {string|object} media - Path o objeto media de Strapi
+ * @returns {string|null} URL completa del archivo
  */
-export const getStrapiMediaUrl = (path) => {
-  if (!path) return null;
-  if (path.startsWith('http')) return path;
-  return `${STRAPI_URL}${path}`;
+export const getStrapiMediaUrl = (media) => {
+  if (!media) return null;
+
+  // Si es un string (path o URL completa)
+  if (typeof media === 'string') {
+    if (media.startsWith('http')) return media;
+    return `${STRAPI_URL}${media}`;
+  }
+
+  // Si es un objeto con propiedad url
+  if (typeof media === 'object' && media.url) {
+    if (media.url.startsWith('http')) return media.url;
+    return `${STRAPI_URL}${media.url}`;
+  }
+
+  // Fallback: si no hay URL válida
+  console.warn('[Strapi] Invalid media format:', media);
+  return null;
 };
 
 export default strapiClient;
