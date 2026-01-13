@@ -2,6 +2,14 @@
 
 Frontend del sitio web de Dolovibes, agencia de viajes especializada en experiencias en los Dolomitas. Construido con React 18, Vite 7, React Router y i18next.
 
+---
+
+## 🚀 ¿Primera vez configurando el proyecto completo?
+
+**👉 Lee la [Guía de Setup Completa](./SETUP.md)** - Incluye configuración de Frontend + Backend paso a paso.
+
+---
+
 ## 📋 Requisitos Previos
 
 - Node.js 20+ LTS
