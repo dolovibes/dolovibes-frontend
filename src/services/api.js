@@ -117,6 +117,7 @@ export const getExperiences = async (season = null) => {
   const params = {
     populate: EXPERIENCE_POPULATE,
     'pagination[pageSize]': 100,
+    'sort': 'displayOrder:asc',  // Ordenar por campo displayOrder
   };
 
   if (season) {
@@ -170,6 +171,7 @@ export const getPackages = async (filters = {}) => {
   const params = {
     populate: PACKAGE_POPULATE,
     'pagination[pageSize]': 100,
+    'sort': 'displayOrder:asc',  // Ordenar por campo displayOrder
   };
 
   if (filters.experienceSlug) {
@@ -414,8 +416,6 @@ const transformSiteSettings = (data) => {
     })) || [],
   };
 };
-
-
 
 // ═══════════════════════════════════════════════════════════════
 // EXPORTS

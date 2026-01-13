@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import VideoHero from '../components/VideoHero';
 import PackageRecommendations from '../components/PackageRecommendations';
 import Footer from '../components/Footer';
-import { packages } from '../data/packages';
+import { usePackages } from '../services/hooks';
 
 const HomePage = () => {
     const { t } = useTranslation('common');
@@ -12,6 +12,12 @@ const HomePage = () => {
     const [selectedExperience, setSelectedExperience] = useState(null);
     const [selectedPackages, setSelectedPackages] = useState([]);
     const recommendationsRef = useRef(null);
+
+    // 🔄 Paquetes desde Strapi (dinámicos y administrables)
+    const { data: allPackages = [], isLoading } = usePackages();
+
+    // Paquetes destacados: los primeros 4 de Strapi
+    const featuredPackages = allPackages.slice(0, 4);
 
     // Key para forzar re-mount del VideoHero cuando navegamos al home
     const [heroKey, setHeroKey] = useState(Date.now());
@@ -26,9 +32,6 @@ const HomePage = () => {
         // Cambiar key para forzar re-mount
         setHeroKey(Date.now());
     }, [location.key]);
-
-    // Paquetes destacados para mostrar por defecto (mezclando verano e invierno)
-    const featuredPackages = packages.slice(0, 4);
 
     const handleExperienceSelect = (experience, pkgs) => {
         setSelectedExperience(experience);
@@ -58,6 +61,7 @@ const HomePage = () => {
                 <PackageRecommendations
                     packages={displayPackages}
                     experienceTitle={displayTitle}
+                    isLoading={isLoading}
                 />
             </div>
             <Footer />
@@ -66,4 +70,3 @@ const HomePage = () => {
 };
 
 export default HomePage;
-

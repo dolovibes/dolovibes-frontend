@@ -7,21 +7,10 @@
  * - React Query maneja caching y revalidación por locale
  * - La UI soporta los mismos 4 idiomas via i18n
  * - Invalidación de cache al cambiar idioma
- * 
- * FALLBACK:
- * ─────────────────────────────────────────────────────────────
- * Si VITE_USE_STRAPI=false, se usan datos estáticos de /data/
  */
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import api from './api';
-
-// Importar datos estáticos como fallback
-import { experiences as staticExperiences } from '../data/experiences';
-import { packages as staticPackages } from '../data/packages';
-
-// Determinar si usar Strapi o datos estáticos
-const USE_STRAPI = import.meta.env.VITE_USE_STRAPI === 'true';
 
 /**
  * Configuración por defecto para queries
@@ -43,21 +32,11 @@ const defaultQueryOptions = {
  */
 export const useExperiences = (season = null) => {
   const { i18n } = useTranslation();
-  const locale = i18n.language; // Necesario para queryKey
+  const locale = i18n.language;
 
   return useQuery({
-    queryKey: ['experiences', season, locale], // Incluir locale para refrescar cache
-    queryFn: async () => {
-      if (!USE_STRAPI) {
-        // Usar datos estáticos
-        let data = staticExperiences;
-        if (season) {
-          data = data.filter(exp => exp.season === season);
-        }
-        return data;
-      }
-      return api.getExperiences(season);
-    },
+    queryKey: ['experiences', season, locale],
+    queryFn: () => api.getExperiences(season),
     ...defaultQueryOptions,
   });
 };
@@ -72,12 +51,7 @@ export const useExperience = (slug) => {
 
   return useQuery({
     queryKey: ['experience', slug, locale],
-    queryFn: async () => {
-      if (!USE_STRAPI) {
-        return staticExperiences.find(exp => exp.slug === slug) || null;
-      }
-      return api.getExperienceBySlug(slug);
-    },
+    queryFn: () => api.getExperienceBySlug(slug),
     enabled: !!slug,
     ...defaultQueryOptions,
   });
@@ -97,20 +71,7 @@ export const usePackages = (filters = {}) => {
 
   return useQuery({
     queryKey: ['packages', filters, locale],
-    queryFn: async () => {
-      if (!USE_STRAPI) {
-        let data = staticPackages;
-        if (filters.experienceSlug) {
-          // Filtrar por experiencia (mock)
-          // En real usamos relación, aquí hardcodeado podría ser complejo
-        }
-        if (filters.season) {
-          data = data.filter(pkg => pkg.season === filters.season);
-        }
-        return data;
-      }
-      return api.getPackages(filters);
-    },
+    queryFn: () => api.getPackages(filters),
     ...defaultQueryOptions,
   });
 };
@@ -146,21 +107,18 @@ export const usePackagesByExperience = (experienceSlug) => {
 
 // ============================================
 // HOOKS DE CONTENIDO ÚNICO (Single Types)
-// No requieren locale - el contenido está solo en español
 // ============================================
 
 /**
  * Hook para obtener el Hero Section
  */
 export const useHeroSection = () => {
+  const { i18n } = useTranslation();
+  const locale = i18n.language;
+
   return useQuery({
-    queryKey: ['heroSection'],
-    queryFn: async () => {
-      if (!USE_STRAPI) {
-        return null; // Usar i18n existente
-      }
-      return api.getHeroSection();
-    },
+    queryKey: ['heroSection', locale],
+    queryFn: () => api.getHeroSection(),
     ...defaultQueryOptions,
   });
 };
@@ -169,14 +127,12 @@ export const useHeroSection = () => {
  * Hook para obtener la página About
  */
 export const useAboutPage = () => {
+  const { i18n } = useTranslation();
+  const locale = i18n.language;
+
   return useQuery({
-    queryKey: ['aboutPage'],
-    queryFn: async () => {
-      if (!USE_STRAPI) {
-        return null; // Usar i18n existente
-      }
-      return api.getAboutPage();
-    },
+    queryKey: ['aboutPage', locale],
+    queryFn: () => api.getAboutPage(),
     ...defaultQueryOptions,
   });
 };
@@ -187,22 +143,7 @@ export const useAboutPage = () => {
 export const useSiteSettings = () => {
   return useQuery({
     queryKey: ['siteSettings'],
-    queryFn: async () => {
-      if (!USE_STRAPI) {
-        // Configuración por defecto cuando no hay Strapi
-        return {
-          siteName: 'Dolovibes',
-          location: 'Monterrey, México',
-          phone: '+52 81 1234 5678',
-          email: 'info@dolovibes.com',
-          instagramUrl: 'https://instagram.com',
-          facebookUrl: 'https://facebook.com',
-          tiktokUrl: 'https://tiktok.com',
-          defaultCurrency: 'MXN',
-        };
-      }
-      return api.getSiteSettings();
-    },
+    queryFn: () => api.getSiteSettings(),
     ...defaultQueryOptions,
   });
 };
