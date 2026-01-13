@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
-const PhotoGalleryModal = ({ isOpen, onClose, photos, packageTitle }) => {
+const PhotoGalleryModal = ({ isOpen, onClose, photos, packageTitle, packageSlug }) => {
+    const { t } = useTranslation('packageInfo');
     const [currentIndex, setCurrentIndex] = useState(0);
 
     // Reset to first photo when modal opens
@@ -35,6 +37,20 @@ const PhotoGalleryModal = ({ isOpen, onClose, photos, packageTitle }) => {
     };
 
     const currentPhoto = photos[currentIndex];
+
+    // Obtener caption traducido o usar el del CMS como fallback
+    const getTranslatedCaption = () => {
+        if (!packageSlug) return currentPhoto.caption;
+
+        const translatedCaption = t(`galleryCaptions.${packageSlug}.${currentIndex + 1}`, {
+            defaultValue: ''
+        });
+
+        // Si hay traducción, usarla; si no, usar la del CMS
+        return translatedCaption || currentPhoto.caption;
+    };
+
+    const caption = getTranslatedCaption();
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
@@ -85,9 +101,9 @@ const PhotoGalleryModal = ({ isOpen, onClose, photos, packageTitle }) => {
             </div>
 
             {/* Caption (if available) */}
-            {currentPhoto.caption && (
+            {caption && (
                 <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 bg-black/70 px-6 py-3 rounded-full text-white text-center max-w-2xl">
-                    {currentPhoto.caption}
+                    {caption}
                 </div>
             )}
         </div>

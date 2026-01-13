@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useSiteSettings } from '../services/hooks';
+import { useSiteSettings, useExperiences } from '../services/hooks';
 import { MapPin, Phone, Mail, Instagram, Facebook, FileText } from 'lucide-react';
 
 // TikTok icon component (not in lucide-react)
@@ -14,15 +14,20 @@ const TikTokIcon = ({ className }) => (
 const Footer = () => {
     const { t } = useTranslation('common');
     const { data: siteSettings, isLoading } = useSiteSettings();
+    const { data: experiences = [] } = useExperiences();
 
-    // Valores por defecto si no hay datos de Strapi
+    // Tomar las primeras 4 experiencias para mostrar en el footer
+    const footerExperiences = experiences.slice(0, 4);
+
+    // Datos de contacto de Strapi (no requieren traducción)
     const location = siteSettings?.location || 'Monterrey, México';
     const phone = siteSettings?.phone || '+52 81 1234 5678';
     const email = siteSettings?.email || 'info@dolovibes.com';
     const instagramUrl = siteSettings?.instagramUrl || 'https://instagram.com';
     const facebookUrl = siteSettings?.facebookUrl || 'https://facebook.com';
     const tiktokUrl = siteSettings?.tiktokUrl || 'https://tiktok.com';
-    const footerDescription = siteSettings?.footerDescription || t('footer.description');
+    // Textos: siempre de i18n
+    const footerDescription = t('footer.description');
 
     if (isLoading) {
         return (
@@ -84,26 +89,16 @@ const Footer = () => {
                     <div>
                         <h4 className="font-semibold text-lg mb-4">{t('footer.experiences')}</h4>
                         <ul className="space-y-3">
-                            <li>
-                                <Link to="/experiencia/hut-2-hut" className="text-niebla hover:text-bruma transition-colors">
-                                    Hut 2 Hut
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/experiencia/hiking" className="text-niebla hover:text-bruma transition-colors">
-                                    Hiking
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/experiencia/city-lights" className="text-niebla hover:text-bruma transition-colors">
-                                    City Lights
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/experiencia/ski-pull" className="text-niebla hover:text-bruma transition-colors">
-                                    Ski Pull
-                                </Link>
-                            </li>
+                            {footerExperiences.map((exp) => (
+                                <li key={exp.id || exp.slug}>
+                                    <Link
+                                        to={`/experiencia/${exp.slug}`}
+                                        className="text-niebla hover:text-bruma transition-colors"
+                                    >
+                                        {exp.title}
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
                     </div>
 

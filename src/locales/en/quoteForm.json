@@ -1,66 +1,33 @@
 {
-    "title": "Quote your experience",
-    "subtitle": "Are you ready for the most spectacular trip of your life?",
+    "requestSent": "Request Sent!",
+    "contactSoon": "We'll contact you soon to plan your trip to",
+    "readyForTrip": "Are you ready for the most spectacular trip of your life?",
     "completeInfo": "Complete the information",
-    "form": {
-        "firstName": "First Name",
-        "lastName": "Last Name",
-        "city": "City",
-        "state": "State",
-        "country": "Country",
-        "email": "Email",
-        "phone": "Phone",
-        "contactMethod": "How would you like to be contacted?",
-        "travelMonth": "Travel month",
-        "passengers": "Number of passengers",
-        "tripType": "Trip type",
-        "additionalServices": "Additional services",
-        "additionalServicesPlaceholder": "Any special requests?"
-    },
-    "placeholders": {
-        "firstName": "Your first name",
-        "lastName": "Your last name",
-        "city": "Your city",
-        "state": "Your state",
-        "country": "Your country",
-        "email": "your@email.com",
-        "phone": "+1 000 000 0000"
-    },
-    "contactOptions": {
-        "whatsapp": "WhatsApp",
-        "email": "Email",
-        "phone": "Phone call"
-    },
-    "tripTypes": {
-        "guided": "Guided",
-        "guidedDesc": "With expert guide",
-        "selfGuided": "Self-guided",
-        "selfGuidedDesc": "At your own pace"
-    },
-    "months": {
-        "january": "January",
-        "february": "February",
-        "march": "March",
-        "april": "April",
-        "may": "May",
-        "june": "June",
-        "july": "July",
-        "august": "August",
-        "september": "September",
-        "october": "October",
-        "november": "November",
-        "december": "December",
-        "selectMonth": "Select a month"
-    },
-    "validation": {
-        "requiredFields": "Please complete all required fields marked with *"
-    },
-    "success": {
-        "title": "Request Sent!",
-        "message": "We will contact you very soon to plan your trip."
-    },
-    "buttons": {
-        "submit": "Submit request",
-        "sending": "Sending..."
-    }
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "city": "City",
+    "state": "State",
+    "country": "Country",
+    "email": "Email",
+    "phone": "Phone",
+    "howContact": "How would you like to be contacted?",
+    "whatsapp": "WhatsApp",
+    "phoneCall": "Phone call",
+    "emailOption": "Email",
+    "travelMonth": "Travel month",
+    "passengers": "Number of passengers",
+    "person": "person",
+    "persons": "persons",
+    "tripType": "Trip type",
+    "guided": "Guided",
+    "withExpert": "With expert guide",
+    "selfGuided": "Self-guided",
+    "onYourOwn": "On your own",
+    "additionalServices": "Additional services",
+    "servicesPlaceholder": "Carpool, special dinner, airport pickup, dietary needs, etc.",
+    "sending": "Sending...",
+    "requestQuote": "Request Quote",
+    "responseTime": "We'll respond within 24 hours",
+    "yourName": "Your first name",
+    "yourLastName": "Your last name"
 }

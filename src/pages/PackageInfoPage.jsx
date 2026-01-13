@@ -26,10 +26,10 @@ const PackageInfoPage = ({ onOpenQuote }) => {
     const { t: tPackage } = useTranslation('packageInfo');
     const { slug } = useParams();
     const navigate = useNavigate();
-    
+
     // Usar hook de React Query para datos dinámicos
     const { data: pkg, isLoading, error } = usePackage(slug);
-    
+
     // Contexto de moneda para conversión de precios
     const { formatPrice, currency } = useCurrencyContext();
 
@@ -193,10 +193,10 @@ const PackageInfoPage = ({ onOpenQuote }) => {
             <div className="bg-white py-10 md:py-12">
                 <div className="container mx-auto px-6 text-center">
                     <span className="text-pizarra font-semibold tracking-wider uppercase text-sm">
-                        Tu aventura día a día
+                        {tPackage('yourAdventure')}
                     </span>
                     <h2 className="text-2xl md:text-3xl font-bold text-grafito mt-2">
-                        Itinerario
+                        {tPackage('itinerary')}
                     </h2>
                 </div>
             </div>
@@ -207,7 +207,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                     {/* Imagen izquierda */}
                     <div className="w-full md:w-1/2 h-[250px] md:h-full relative overflow-hidden">
                         <img
-                            src={pkg.itinerary[currentDay].image}
+                            src={pkg.itinerary[currentDay].image || pkg.heroImage || pkg.image}
                             alt={`Día ${pkg.itinerary[currentDay].day}`}
                             className="w-full h-full object-cover transition-all duration-500"
                         />
@@ -363,19 +363,21 @@ const PackageInfoPage = ({ onOpenQuote }) => {
 
                             {/* Botones adicionales */}
                             <div className="space-y-3">
-                                {/* Additional Photos */}
-                                <button
-                                    onClick={() => setIsPhotosModalOpen(true)}
-                                    className="w-full flex items-center justify-between p-4 bg-nieve rounded-xl border border-niebla hover:bg-nieve transition-colors text-left"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center">
-                                            <span className="text-white text-sm">📷</span>
+                                {/* Additional Photos - Solo mostrar si hay galería */}
+                                {pkg.gallery && pkg.gallery.length > 0 && pkg.gallery.some(g => g.url) && (
+                                    <button
+                                        onClick={() => setIsPhotosModalOpen(true)}
+                                        className="w-full flex items-center justify-between p-4 bg-nieve rounded-xl border border-niebla hover:bg-nieve transition-colors text-left"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center">
+                                                <span className="text-white text-sm">📷</span>
+                                            </div>
+                                            <span className="font-semibold text-grafito">{tPackage('additionalPhotos')}</span>
                                         </div>
-                                        <span className="font-semibold text-grafito">{tPackage('additionalPhotos')}</span>
-                                    </div>
-                                    <ChevronRight className="w-5 h-5 text-niebla" />
-                                </button>
+                                        <ChevronRight className="w-5 h-5 text-niebla" />
+                                    </button>
+                                )}
 
                                 {/* How to get here */}
                                 <button
@@ -413,7 +415,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                         {tPackage('quote')}
                                     </button>
                                     <p className="text-center text-white/70 text-sm mt-3">
-                                        Te responderemos en menos de 24 horas
+                                        {tPackage('quoteResponse')}
                                     </p>
                                 </div>
                             </div>
@@ -428,8 +430,9 @@ const PackageInfoPage = ({ onOpenQuote }) => {
             <PhotoGalleryModal
                 isOpen={isPhotosModalOpen}
                 onClose={() => setIsPhotosModalOpen(false)}
-                photos={pkg.itinerary?.map(day => day.image) || []}
+                photos={pkg.gallery || []}
                 packageTitle={pkg.title}
+                packageSlug={pkg.slug}
             />
 
             {/* Modal de Mapa */}

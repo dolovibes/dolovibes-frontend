@@ -1,1 +1,31 @@
-{}
+{
+    "dayOf": "Giorno {{current}} di {{total}}",
+    "pricePerPerson": "Prezzo per persona",
+    "additionalPhotos": "Foto aggiuntive",
+    "howToGetHere": "Come arrivare",
+    "mapComingSoon": "Mappa in arrivo",
+    "notSureLevel": "Non sei sicuro del tuo livello di hiking? Fai la nostra valutazione",
+    "packageNotFound": "Pacchetto non trovato",
+    "packageNotFoundDesc": "Il pacchetto che stai cercando non esiste o è stato rimosso.",
+    "yourAdventure": "La tua avventura giorno per giorno",
+    "itinerary": "Itinerario",
+    "includes": "Incluso nel costo",
+    "notIncludes": "Non incluso",
+    "quote": "Richiedi preventivo",
+    "quoteResponse": "Risponderemo entro 24 ore",
+    "viewPackages": "Vedi pacchetti",
+    "difficulty": {
+        "easy": "Facile",
+        "intermediate": "Intermedio",
+        "advanced": "Avanzato"
+    },
+    "galleryCaptions": {
+        "hut-2-hut-dolomitas-clasico": {
+            "1": "Rifugio Auronzo - Primo giorno di trekking",
+            "2": "Vista panoramica delle Tre Cime di Lavaredo",
+            "3": "Sentiero verso il Lago di Braies",
+            "4": "Tramonto dal rifugio",
+            "5": "Gruppo di escursionisti al Passo Giau"
+        }
+    }
+}

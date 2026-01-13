@@ -11,16 +11,17 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
     const [selectedExperience, setSelectedExperience] = useState(null);
     const [isExperienceDropdownOpen, setIsExperienceDropdownOpen] = useState(false);
 
-    // Mapeo de temporadas para la API
-    const seasonApiMap = { verano: 'summer', invierno: 'winter' };
-    
-    // Obtener experiencias de la API/datos estáticos
+    // Mapeo de temporadas para el filtro
+    const seasonMap = { verano: ['verano', 'summer'], invierno: ['invierno', 'winter'] };
+
+    // Obtener experiencias de Strapi
     const { data: allExperiences = [], isLoading } = useExperiences();
-    
-    // Filtrar por temporada seleccionada
+
+    // Filtrar por temporada seleccionada (soporta ambos formatos)
     const filteredExperiences = useMemo(() => {
         if (!selectedSeason) return [];
-        return allExperiences.filter(exp => exp.season === selectedSeason);
+        const validSeasons = seasonMap[selectedSeason] || [];
+        return allExperiences.filter(exp => validSeasons.includes(exp.season));
     }, [allExperiences, selectedSeason]);
 
     // Obtener paquetes de la experiencia seleccionada
@@ -75,8 +76,8 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                     <button
                         onClick={() => handleSeasonSelect('verano')}
                         className={`group relative px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 ${selectedSeason === 'verano'
-                                ? 'bg-pizarra text-white scale-105 shadow-xl shadow-pizarra/30'
-                                : 'bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-nieve/20 hover:border-niebla/50'
+                            ? 'bg-pizarra text-white scale-105 shadow-xl shadow-pizarra/30'
+                            : 'bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-nieve/20 hover:border-niebla/50'
                             }`}
                     >
                         {tCommon('seasons.summer')}
@@ -85,8 +86,8 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                     <button
                         onClick={() => handleSeasonSelect('invierno')}
                         className={`group relative px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 ${selectedSeason === 'invierno'
-                                ? 'bg-pizarra text-white scale-105 shadow-xl shadow-pizarra/30'
-                                : 'bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-nieve/20 hover:border-niebla/50'
+                            ? 'bg-pizarra text-white scale-105 shadow-xl shadow-pizarra/30'
+                            : 'bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-nieve/20 hover:border-niebla/50'
                             }`}
                     >
                         {tCommon('seasons.winter')}

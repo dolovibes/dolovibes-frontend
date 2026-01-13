@@ -1,66 +1,33 @@
 {
-    "title": "Cotiza tu experiencia",
-    "subtitle": "¿Estás listo para el viaje más espectacular de tu vida?",
+    "requestSent": "¡Solicitud Enviada!",
+    "contactSoon": "Nos pondremos en contacto contigo muy pronto para planificar tu viaje a",
+    "readyForTrip": "¿Estás listo para el viaje más espectacular de tu vida?",
     "completeInfo": "Completa la información",
-    "form": {
-        "firstName": "Nombre",
-        "lastName": "Apellido",
-        "city": "Ciudad",
-        "state": "Estado",
-        "country": "País",
-        "email": "Correo electrónico",
-        "phone": "Teléfono",
-        "contactMethod": "¿Cómo te gustaría ser contactado?",
-        "travelMonth": "Mes de viaje",
-        "passengers": "Número de pasajeros",
-        "tripType": "Tipo de viaje",
-        "additionalServices": "Servicios adicionales",
-        "additionalServicesPlaceholder": "¿Alguna solicitud especial?"
-    },
-    "placeholders": {
-        "firstName": "Tu nombre",
-        "lastName": "Tu apellido",
-        "city": "Tu ciudad",
-        "state": "Tu estado",
-        "country": "Tu país",
-        "email": "tu@email.com",
-        "phone": "+52 000 000 0000"
-    },
-    "contactOptions": {
-        "whatsapp": "WhatsApp",
-        "email": "Correo electrónico",
-        "phone": "Llamada telefónica"
-    },
-    "tripTypes": {
-        "guided": "Guiado",
-        "guidedDesc": "Con guía experto",
-        "selfGuided": "Auto-guiado",
-        "selfGuidedDesc": "A tu ritmo"
-    },
-    "months": {
-        "january": "Enero",
-        "february": "Febrero",
-        "march": "Marzo",
-        "april": "Abril",
-        "may": "Mayo",
-        "june": "Junio",
-        "july": "Julio",
-        "august": "Agosto",
-        "september": "Septiembre",
-        "october": "Octubre",
-        "november": "Noviembre",
-        "december": "Diciembre",
-        "selectMonth": "Selecciona un mes"
-    },
-    "validation": {
-        "requiredFields": "Por favor completa todos los campos obligatorios marcados con *"
-    },
-    "success": {
-        "title": "¡Solicitud Enviada!",
-        "message": "Nos pondremos en contacto contigo muy pronto para planificar tu viaje."
-    },
-    "buttons": {
-        "submit": "Enviar solicitud",
-        "sending": "Enviando..."
-    }
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "city": "Ciudad",
+    "state": "Estado",
+    "country": "País",
+    "email": "Email",
+    "phone": "Teléfono",
+    "howContact": "¿Cómo te gustaría ser contactado?",
+    "whatsapp": "WhatsApp",
+    "phoneCall": "Llamada telefónica",
+    "emailOption": "Correo electrónico",
+    "travelMonth": "Mes del viaje",
+    "passengers": "Número de pasajeros",
+    "person": "persona",
+    "persons": "personas",
+    "tripType": "Tipo de viaje",
+    "guided": "Guiado",
+    "withExpert": "Con guía experto",
+    "selfGuided": "Autoguiado",
+    "onYourOwn": "Por tu cuenta",
+    "additionalServices": "Servicios adicionales",
+    "servicesPlaceholder": "Carpool, cena especial, pick up en aeropuerto, necesidades dietéticas, etc.",
+    "sending": "Enviando...",
+    "requestQuote": "Solicitar Cotización",
+    "responseTime": "Te responderemos en menos de 24 horas",
+    "yourName": "Tu nombre",
+    "yourLastName": "Tu apellido"
 }

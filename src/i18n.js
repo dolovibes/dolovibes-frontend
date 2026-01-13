@@ -32,25 +32,9 @@ import quoteFormIT from './locales/it/quoteForm.json';
 import hikingLevelIT from './locales/it/hikingLevel.json';
 import legalIT from './locales/it/legal.json';
 
-// Importar traducciones en portugués
-import commonPT from './locales/pt/common.json';
-import homePT from './locales/pt/home.json';
-import aboutPT from './locales/pt/about.json';
-import experiencesPT from './locales/pt/experiences.json';
-import packageInfoPT from './locales/pt/packageInfo.json';
-import quoteFormPT from './locales/pt/quoteForm.json';
-import hikingLevelPT from './locales/pt/hikingLevel.json';
-import legalPT from './locales/pt/legal.json';
 
-// Importar traducciones en francés
-import commonFR from './locales/fr/common.json';
-import homeFR from './locales/fr/home.json';
-import aboutFR from './locales/fr/about.json';
-import experiencesFR from './locales/fr/experiences.json';
-import packageInfoFR from './locales/fr/packageInfo.json';
-import quoteFormFR from './locales/fr/quoteForm.json';
-import hikingLevelFR from './locales/fr/hikingLevel.json';
-import legalFR from './locales/fr/legal.json';
+
+
 
 // Importar traducciones en alemán
 import commonDE from './locales/de/common.json';
@@ -136,26 +120,6 @@ i18nInstance.init({
       hikingLevel: hikingLevelIT,
       legal: legalIT,
     },
-    pt: {
-      common: commonPT,
-      home: homePT,
-      about: aboutPT,
-      experiences: experiencesPT,
-      packageInfo: packageInfoPT,
-      quoteForm: quoteFormPT,
-      hikingLevel: hikingLevelPT,
-      legal: legalPT,
-    },
-    fr: {
-      common: commonFR,
-      home: homeFR,
-      about: aboutFR,
-      experiences: experiencesFR,
-      packageInfo: packageInfoFR,
-      quoteForm: quoteFormFR,
-      hikingLevel: hikingLevelFR,
-      legal: legalFR,
-    },
     de: {
       common: commonDE,
       home: homeDE,
@@ -170,7 +134,7 @@ i18nInstance.init({
   // Si la detección está deshabilitada, usar español por defecto
   lng: LANGUAGE_DETECTION_ENABLED ? undefined : 'es',
   fallbackLng: 'en', // Idioma de respaldo (inglés tiene contenido más completo)
-  supportedLngs: ['es', 'en', 'it', 'pt', 'fr', 'de'], // Idiomas soportados
+  supportedLngs: ['es', 'en', 'it', 'de'], // Idiomas soportados (optimizados por ROI)
   defaultNS: 'common', // Namespace por defecto
   
   // Configuración del detector (solo aplica si está habilitado)
@@ -196,10 +160,10 @@ export const getCurrentLanguage = () => i18nInstance.language;
 
 /**
  * Cambia el idioma manualmente
- * @param {string} lang - 'es', 'en', 'it', 'pt', 'fr', 'de'
+ * @param {string} lang - 'es', 'en', 'it', 'de'
  */
 export const changeLanguage = (lang) => {
-  if (['es', 'en', 'it', 'pt', 'fr', 'de'].includes(lang)) {
+  if (['es', 'en', 'it', 'de'].includes(lang)) {
     i18nInstance.changeLanguage(lang);
     localStorage.setItem('preferredLanguage', lang);
   }
@@ -249,25 +213,18 @@ export const COUNTRY_LANGUAGE_MAP = {
   // Italiano
   IT: 'it',
   SM: 'it',
-  // Portugués
-  BR: 'pt',
-  PT: 'pt',
-  // Francés
-  FR: 'fr',
-  BE: 'fr',
-  CH: 'fr', // Suiza tiene varios idiomas, usamos francés
-  LU: 'fr',
-  MC: 'fr',
   // Alemán
   DE: 'de',
   AT: 'de',
+  CH: 'de', // Suiza (alemán prioritario en región Dolomitas)
   LI: 'de',
+  // Francés y Portugués removidos (bajo ROI)
 };
 
 /**
  * Detecta el idioma óptimo basado en código de país
  * @param {string} countryCode - Código ISO del país (MX, US, etc.)
- * @returns {string} Idioma ('es', 'en', 'it', 'pt', 'fr', 'de')
+ * @returns {string} Idioma ('es', 'en', 'it', 'de')
  */
 export const detectLanguageByCountry = (countryCode) => {
   return COUNTRY_LANGUAGE_MAP[countryCode?.toUpperCase()] || 'en';

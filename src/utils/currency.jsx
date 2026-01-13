@@ -34,8 +34,9 @@ const EXCHANGE_RATE_API_URL = 'https://v6.exchangerate-api.com/v6';
 export const BASE_CURRENCY = 'MXN';
 
 // Monedas soportadas con configuración completa
+// Optimización: 4 monedas principales (México + Europa + Internacional + Suiza)
 export const SUPPORTED_CURRENCIES = {
-  // Moneda base
+  // Moneda base - Mercado mexicano
   MXN: { 
     symbol: '$', 
     name: 'Peso Mexicano', 
@@ -45,26 +46,7 @@ export const SUPPORTED_CURRENCIES = {
     flag: '🇲🇽',
     decimals: 0
   },
-  // Norteamérica
-  USD: { 
-    symbol: '$', 
-    name: 'US Dollar', 
-    nameShort: 'USD',
-    locale: 'en-US', 
-    position: 'before',
-    flag: '🇺🇸',
-    decimals: 2
-  },
-  CAD: { 
-    symbol: 'CA$', 
-    name: 'Canadian Dollar', 
-    nameShort: 'CAD',
-    locale: 'en-CA', 
-    position: 'before',
-    flag: '🇨🇦',
-    decimals: 2
-  },
-  // Europa
+  // Mercado europeo - Italia/Dolomitas (40% turismo) + Alemania (35%) + España
   EUR: { 
     symbol: '€', 
     name: 'Euro', 
@@ -74,15 +56,17 @@ export const SUPPORTED_CURRENCIES = {
     flag: '🇪🇺',
     decimals: 2
   },
-  GBP: { 
-    symbol: '£', 
-    name: 'British Pound', 
-    nameShort: 'GBP',
-    locale: 'en-GB', 
+  // Internacional - Norteamérica + referencia global
+  USD: { 
+    symbol: '$', 
+    name: 'US Dollar', 
+    nameShort: 'USD',
+    locale: 'en-US', 
     position: 'before',
-    flag: '🇬🇧',
+    flag: '🇺🇸',
     decimals: 2
   },
+  // Turismo suizo en Dolomitas (8% mercado)
   CHF: { 
     symbol: 'CHF', 
     name: 'Swiss Franc', 
@@ -91,62 +75,6 @@ export const SUPPORTED_CURRENCIES = {
     position: 'before',
     flag: '🇨🇭',
     decimals: 2
-  },
-  // Latinoamérica
-  ARS: { 
-    symbol: 'AR$', 
-    name: 'Peso Argentino', 
-    nameShort: 'ARS',
-    locale: 'es-AR', 
-    position: 'before',
-    flag: '🇦🇷',
-    decimals: 0
-  },
-  COP: { 
-    symbol: 'CO$', 
-    name: 'Peso Colombiano', 
-    nameShort: 'COP',
-    locale: 'es-CO', 
-    position: 'before',
-    flag: '🇨🇴',
-    decimals: 0
-  },
-  CLP: { 
-    symbol: 'CL$', 
-    name: 'Peso Chileno', 
-    nameShort: 'CLP',
-    locale: 'es-CL', 
-    position: 'before',
-    flag: '🇨🇱',
-    decimals: 0
-  },
-  BRL: { 
-    symbol: 'R$', 
-    name: 'Real Brasileño', 
-    nameShort: 'BRL',
-    locale: 'pt-BR', 
-    position: 'before',
-    flag: '🇧🇷',
-    decimals: 2
-  },
-  PEN: { 
-    symbol: 'S/', 
-    name: 'Sol Peruano', 
-    nameShort: 'PEN',
-    locale: 'es-PE', 
-    position: 'before',
-    flag: '🇵🇪',
-    decimals: 2
-  },
-  // Asia/Oceanía
-  JPY: { 
-    symbol: '¥', 
-    name: 'Japanese Yen', 
-    nameShort: 'JPY',
-    locale: 'ja-JP', 
-    position: 'before',
-    flag: '🇯🇵',
-    decimals: 0
   },
   AUD: { 
     symbol: 'A$', 
@@ -169,32 +97,14 @@ export const SUPPORTED_CURRENCIES = {
 };
 
 // Mapeo de países a monedas (ISO 3166-1 alpha-2)
+// Simplificado para 4 monedas: MXN, EUR, USD, CHF
 export const COUNTRY_CURRENCY_MAP = {
-  // Latinoamérica
+  // México
   MX: 'MXN',
-  AR: 'ARS',
-  CO: 'COP',
-  CL: 'CLP',
-  PE: 'PEN',
-  BR: 'BRL',
-  VE: 'USD', // Venezuela usa USD
-  EC: 'USD', // Ecuador usa USD
-  UY: 'USD',
-  PY: 'USD',
-  BO: 'USD',
-  CR: 'USD',
-  PA: 'USD',
-  GT: 'USD',
-  HN: 'USD',
-  SV: 'USD',
-  NI: 'USD',
-  DO: 'USD',
-  CU: 'USD',
-  PR: 'USD',
-  // Norteamérica
+  // Norteamérica + Internacional
   US: 'USD',
-  CA: 'CAD',
-  // Europa - Zona Euro
+  CA: 'USD',
+  // Europa - Zona Euro (Italia, Alemania, España, etc.)
   DE: 'EUR',
   FR: 'EUR',
   IT: 'EUR',
@@ -214,16 +124,10 @@ export const COUNTRY_CURRENCY_MAP = {
   LT: 'EUR',
   MT: 'EUR',
   CY: 'EUR',
-  // Reino Unido
-  GB: 'GBP',
-  // Suiza
+  // Suiza y Liechtenstein
   CH: 'CHF',
   LI: 'CHF',
-  // Asia/Oceanía
-  JP: 'JPY',
-  AU: 'AUD',
-  NZ: 'NZD',
-  // Default para otros
+  // Default para resto del mundo
   DEFAULT: 'USD',
 };
 

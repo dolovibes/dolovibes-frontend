@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Mountain, Menu, X, ChevronDown } from 'lucide-react';
-import { experiences } from '../data/experiences';
+import { useExperiences } from '../services/hooks';
 import LanguageSwitcher from './LanguageSwitcher';
 import CurrencySelector from './CurrencySelector';
 
@@ -14,6 +14,17 @@ const NavbarNew = ({ onOpenQuote }) => {
     const dropdownRef = useRef(null);
     const navigate = useNavigate();
     const location = useLocation();
+
+    // 🔄 Experiencias desde Strapi (dinámicas y administrables)
+    const { data: experiences = [], isLoading: loadingExperiences } = useExperiences();
+
+    // Filtrar por temporada (Strapi puede usar 'summer'/'winter' o 'verano'/'invierno')
+    const summerExperiences = experiences.filter(exp =>
+        exp.season === 'summer' || exp.season === 'verano'
+    );
+    const winterExperiences = experiences.filter(exp =>
+        exp.season === 'winter' || exp.season === 'invierno'
+    );
 
     // Páginas con fondo blanco que necesitan navbar oscuro desde el inicio
     const isWhiteBackgroundPage = location.pathname === '/about' ||
@@ -112,8 +123,8 @@ const NavbarNew = ({ onOpenQuote }) => {
                                                     {t('seasons.summer')}
                                                 </h4>
                                                 <ul className="space-y-1">
-                                                    {experiences.filter(exp => exp.season === 'verano').map((exp) => (
-                                                        <li key={exp.id}>
+                                                    {summerExperiences.map((exp) => (
+                                                        <li key={exp.id || exp.slug}>
                                                             <button
                                                                 onClick={() => handleExperienceClick(exp.slug)}
                                                                 className="w-full text-left px-3 py-2 text-pizarra hover:text-grafito hover:bg-nieve rounded-lg font-medium text-sm transition-colors"
@@ -131,8 +142,8 @@ const NavbarNew = ({ onOpenQuote }) => {
                                                     {t('seasons.winter')}
                                                 </h4>
                                                 <ul className="space-y-1">
-                                                    {experiences.filter(exp => exp.season === 'invierno').map((exp) => (
-                                                        <li key={exp.id}>
+                                                    {winterExperiences.map((exp) => (
+                                                        <li key={exp.id || exp.slug}>
                                                             <button
                                                                 onClick={() => handleExperienceClick(exp.slug)}
                                                                 className="w-full text-left px-3 py-2 text-pizarra hover:text-grafito hover:bg-nieve rounded-lg font-medium text-sm transition-colors"
@@ -207,9 +218,9 @@ const NavbarNew = ({ onOpenQuote }) => {
                                         <p className="text-xs font-bold text-niebla uppercase tracking-wider px-3 py-2">
                                             {t('seasons.summer')}
                                         </p>
-                                        {experiences.filter(exp => exp.season === 'verano').map((exp) => (
+                                        {summerExperiences.map((exp) => (
                                             <button
-                                                key={exp.id}
+                                                key={exp.id || exp.slug}
                                                 onClick={() => handleExperienceClick(exp.slug)}
                                                 className="w-full text-left px-3 py-2 text-pizarra hover:text-grafito hover:bg-nieve rounded-lg text-sm font-medium"
                                             >
@@ -222,9 +233,9 @@ const NavbarNew = ({ onOpenQuote }) => {
                                         <p className="text-xs font-bold text-niebla uppercase tracking-wider px-3 py-2">
                                             {t('seasons.winter')}
                                         </p>
-                                        {experiences.filter(exp => exp.season === 'invierno').map((exp) => (
+                                        {winterExperiences.map((exp) => (
                                             <button
-                                                key={exp.id}
+                                                key={exp.id || exp.slug}
                                                 onClick={() => handleExperienceClick(exp.slug)}
                                                 className="w-full text-left px-3 py-2 text-pizarra hover:text-grafito hover:bg-nieve rounded-lg text-sm font-medium"
                                             >
