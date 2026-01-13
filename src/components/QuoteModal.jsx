@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { X, User, Mail, Phone, ArrowRight, CheckCircle } from 'lucide-react';
-import { experiences } from '../data/experiences';
+import { useExperiences } from '../services/hooks';
 
 const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
     const { t } = useTranslation('common');
+    const { data: experiences = [], isLoading: experiencesLoading } = useExperiences();
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
         name: "",
@@ -63,6 +64,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                     className="w-full border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                     value={formData.interest}
                                     onChange={(e) => setFormData({ ...formData, interest: e.target.value })}
+                                    disabled={experiencesLoading}
                                 >
                                     <option value="Personalizado">{t('quoteModal.customPlan')}</option>
                                     {experiences.map(exp => <option key={exp.id} value={exp.title}>{exp.title}</option>)}
