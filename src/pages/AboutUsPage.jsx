@@ -5,6 +5,7 @@ import Footer from '../components/Footer';
 
 const AboutUsPage = ({ onOpenQuote }) => {
     const { t } = useTranslation('about');
+    const { t: tCommon } = useTranslation('common');
     const { data: aboutData, isLoading } = useAboutPage();
 
     // Scroll al inicio cuando carga la página
@@ -16,7 +17,7 @@ const AboutUsPage = ({ onOpenQuote }) => {
     const pageTitle = aboutData?.pageTitle || t('title');
     const mainPhoto = aboutData?.mainPhoto || "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1000";
     const photoAlt = aboutData?.photoAlt || t('photoAlt');
-    
+
     const origin = {
         title: aboutData?.origin?.title || t('origin.title'),
         text: aboutData?.origin?.text || t('origin.text')
@@ -37,7 +38,7 @@ const AboutUsPage = ({ onOpenQuote }) => {
     if (isLoading) {
         return (
             <div className="min-h-screen bg-white flex items-center justify-center">
-                <div className="text-pizarra text-lg">Cargando...</div>
+                <div className="text-pizarra text-lg">{tCommon('loading.generic')}</div>
             </div>
         );
     }

@@ -19,12 +19,32 @@
         "submit": "Invia Richiesta",
         "close": "Chiudi",
         "goBack": "Torna",
-        "backToHome": "Torna alla Home"
+        "backToHome": "Torna alla Home",
+        "quoteCustomTrip": "Preventivo viaggio personalizzato"
     },
     "labels": {
         "perPerson": "a persona",
         "days": "Giorni",
         "persons": "Pers."
+    },
+    "loading": {
+        "experience": "Caricamento esperienza...",
+        "package": "Caricamento pacchetto...",
+        "generic": "Caricamento..."
+    },
+    "contactMethod": {
+        "label": "Come vorresti essere contattato? *",
+        "whatsapp": "WhatsApp",
+        "phone": "Telefonata",
+        "email": "Email"
+    },
+    "availablePackages": {
+        "title": "Pacchetti Disponibili",
+        "subtitle": "Scegli il viaggio che meglio si adatta alle tue date e preferenze"
+    },
+    "experiences": {
+        "notFound": "Esperienza non trovata",
+        "noPackages": "Non ci sono ancora pacchetti disponibili per questa esperienza."
     },
     "recommendations": {
         "basedOnSelection": "In base alla tua selezione",

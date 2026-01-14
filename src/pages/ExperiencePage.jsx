@@ -9,7 +9,7 @@ const ExperiencePage = ({ onOpenQuote }) => {
     const { t: tCommon } = useTranslation('common');
     const { slug } = useParams();
     const navigate = useNavigate();
-    
+
     // Usar hooks de React Query para datos dinámicos
     const { data: experience, isLoading: loadingExperience } = useExperience(slug);
     const { data: relatedPackages = [], isLoading: loadingPackages } = usePackagesByExperience(slug);
@@ -25,7 +25,7 @@ const ExperiencePage = ({ onOpenQuote }) => {
             <div className="min-h-screen flex items-center justify-center bg-nieve">
                 <div className="animate-pulse text-center">
                     <div className="w-16 h-16 border-4 border-alpino border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-pizarra">Cargando experiencia...</p>
+                    <p className="text-pizarra">{tCommon('loading.experience')}</p>
                 </div>
             </div>
         );
@@ -77,10 +77,10 @@ const ExperiencePage = ({ onOpenQuote }) => {
                 <div className="container mx-auto px-6">
                     <div className="text-center mb-12">
                         <h2 className="text-3xl md:text-4xl font-bold text-grafito mb-4">
-                            Paquetes Disponibles
+                            {tCommon('availablePackages.title')}
                         </h2>
                         <p className="text-pizarra max-w-2xl mx-auto">
-                            Elige el viaje que mejor se adapte a tus fechas y preferencias
+                            {tCommon('availablePackages.subtitle')}
                         </p>
                     </div>
 

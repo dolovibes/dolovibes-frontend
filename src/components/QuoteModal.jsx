@@ -96,16 +96,16 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                             {/* ¿Cómo te gustaría ser contactado? - EN PASO 1 */}
                             <div>
                                 <label className="block text-sm font-medium text-pizarra mb-1">
-                                    ¿Cómo te gustaría ser contactado? *
+                                    {t('contactMethod.label')}
                                 </label>
                                 <select
                                     className="w-full border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                     value={formData.contacto}
                                     onChange={(e) => setFormData({ ...formData, contacto: e.target.value })}
                                 >
-                                    <option value="whatsapp">WhatsApp</option>
-                                    <option value="telefono">Llamada telefónica</option>
-                                    <option value="correo">Correo electrónico</option>
+                                    <option value="whatsapp">{t('contactMethod.whatsapp')}</option>
+                                    <option value="telefono">{t('contactMethod.phone')}</option>
+                                    <option value="correo">{t('contactMethod.email')}</option>
                                 </select>
                             </div>
 

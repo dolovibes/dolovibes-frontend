@@ -5,6 +5,7 @@ import ExperienceSelector from './ExperienceSelector';
 
 const VideoHero = ({ onExperienceSelect }) => {
     const { t } = useTranslation('home');
+    const { t: tCommon } = useTranslation('common');
     const { data: heroData, isLoading } = useHeroSection();
     const [isMobile, setIsMobile] = useState(false);
 
@@ -30,7 +31,7 @@ const VideoHero = ({ onExperienceSelect }) => {
     if (isLoading) {
         return (
             <div className="relative min-h-[100svh] flex items-center justify-center bg-pizarra">
-                <div className="text-white text-lg">Cargando...</div>
+                <div className="text-white text-lg">{tCommon('loading.generic')}</div>
             </div>
         );
     }
