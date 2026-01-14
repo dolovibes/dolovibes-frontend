@@ -19,14 +19,16 @@ const Footer = () => {
     // Tomar las primeras 4 experiencias para mostrar en el footer
     const footerExperiences = experiences.slice(0, 4);
 
-    // Datos de contacto de Strapi (no requieren traducción)
+    // Datos desde Strapi con fallbacks
+    const logoUrl = siteSettings?.logo || '/logo-dark.svg';
     const location = siteSettings?.location || 'Monterrey, México';
     const phone = siteSettings?.phone || '+52 81 1234 5678';
     const email = siteSettings?.email || 'info@dolovibes.com';
     const instagramUrl = siteSettings?.instagramUrl || 'https://instagram.com';
     const facebookUrl = siteSettings?.facebookUrl || 'https://facebook.com';
     const tiktokUrl = siteSettings?.tiktokUrl || 'https://tiktok.com';
-    // Textos: siempre de i18n
+    
+    // Textos de i18n con fallback
     const footerDescription = t('footer.description');
 
     if (isLoading) {
@@ -47,7 +49,7 @@ const Footer = () => {
                     {/* Logo y descripción */}
                     <div className="lg:col-span-2">
                         <img
-                            src="/logo-dark.svg"
+                            src={logoUrl}
                             alt="DoloVibes"
                             className="h-20 w-auto brightness-0 invert"
                         />

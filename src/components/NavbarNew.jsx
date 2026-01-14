@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Mountain, Menu, X, ChevronDown } from 'lucide-react';
-import { useExperiences } from '../services/hooks';
+import { useExperiences, useSiteSettings } from '../services/hooks';
 import LanguageSwitcher from './LanguageSwitcher';
 import CurrencySelector from './CurrencySelector';
 
@@ -15,8 +15,12 @@ const NavbarNew = ({ onOpenQuote }) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // 🔄 Experiencias desde Strapi (dinámicas y administrables)
+    // 🔄 Experiencias y settings desde Strapi
     const { data: experiences = [], isLoading: loadingExperiences } = useExperiences();
+    const { data: siteSettings } = useSiteSettings();
+
+    // Logo desde Strapi con fallback
+    const logoUrl = siteSettings?.logoDark || '/logo-dark.svg';
 
     // Filtrar por temporada (Strapi puede usar 'summer'/'winter' o 'verano'/'invierno')
     const summerExperiences = experiences.filter(exp =>
@@ -74,7 +78,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                             className="flex items-center"
                         >
                             <img
-                                src="/logo-dark.svg"
+                                src={logoUrl}
                                 alt="DoloVibes"
                                 className={`w-auto transition-all duration-300 ${isDarkMode
                                     ? 'h-10 md:h-[5.5rem]' // Tamaño cuando hay scroll

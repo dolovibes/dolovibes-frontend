@@ -12,28 +12,26 @@ const AboutUsPage = ({ onOpenQuote }) => {
         window.scrollTo(0, 0);
     }, []);
 
-    // Datos de la página
-    // TEXTOS: Siempre de i18n (traducciones por idioma)
-    // MEDIA: De Strapi (imágenes, videos)
-    const pageTitle = t('title');
+    // Datos de la página - priorizar Strapi (multiidioma), fallback a i18n
+    const pageTitle = aboutData?.pageTitle || t('title');
     const mainPhoto = aboutData?.mainPhoto || "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1000";
-    const photoAlt = t('photoAlt');
+    const photoAlt = aboutData?.photoAlt || t('photoAlt');
     
     const origin = {
-        title: t('origin.title'),
-        text: t('origin.text')
+        title: aboutData?.origin?.title || t('origin.title'),
+        text: aboutData?.origin?.text || t('origin.text')
     };
     const essence = {
-        title: t('essence.title'),
-        text: t('essence.text')
+        title: aboutData?.essence?.title || t('essence.title'),
+        text: aboutData?.essence?.text || t('essence.text')
     };
     const vision = {
-        title: t('vision.title'),
-        text: t('vision.text')
+        title: aboutData?.vision?.title || t('vision.title'),
+        text: aboutData?.vision?.text || t('vision.text')
     };
     const mission = {
-        title: t('mission.title'),
-        text: t('mission.text')
+        title: aboutData?.mission?.title || t('mission.title'),
+        text: aboutData?.mission?.text || t('mission.text')
     };
 
     if (isLoading) {

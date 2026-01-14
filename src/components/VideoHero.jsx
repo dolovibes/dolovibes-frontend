@@ -18,15 +18,14 @@ const VideoHero = ({ onExperienceSelect }) => {
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
-    // Videos del hero - usar Strapi solo para media, no para textos
+    // Videos del hero - usar Strapi o fallback a archivos locales
     const videoDesktop = heroData?.videoDesktop || "/videos/hero-video.mp4";
     const videoMobile = heroData?.videoMobile || "/videos/hero-video-mobile-trecime.mp4";
 
-    // Textos del hero - SIEMPRE usar traducciones i18n
-    // El contenido de Strapi está solo en español, pero la UI soporta 6 idiomas
-    const title = t('hero.title');
-    const titleHighlight = t('hero.titleHighlight');
-    const badge = t('hero.badge');
+    // Textos del hero - priorizar Strapi (multiidioma), fallback a i18n
+    const title = heroData?.title || t('hero.title');
+    const titleHighlight = heroData?.titleHighlight || t('hero.titleHighlight');
+    const badge = heroData?.badge || t('hero.badge');
 
     if (isLoading) {
         return (
