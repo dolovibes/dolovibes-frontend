@@ -6,22 +6,24 @@
  */
 
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCurrencyContext, SUPPORTED_CURRENCIES } from '../utils/currency';
 
-const CurrencySelector = ({ 
-  isDarkMode = false, 
+const CurrencySelector = ({
+  isDarkMode = false,
   showFlag = true,
   showLabel = false,
   compact = false,
 }) => {
+  const { t } = useTranslation('common');
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
-  
+
   const { currency, setCurrency, loading } = useCurrencyContext();
-  
+
   const currentCurrency = SUPPORTED_CURRENCIES[currency] || SUPPORTED_CURRENCIES.MXN;
-  
+
   // Convertir objeto a array para iterar
   const currencyList = Object.entries(SUPPORTED_CURRENCIES).map(([code, config]) => ({
     code,
@@ -71,7 +73,7 @@ const CurrencySelector = ({
     }
 
     const currentIndex = currencyList.findIndex(c => c.code === currency);
-    
+
     switch (event.key) {
       case 'ArrowDown':
         event.preventDefault();
@@ -119,7 +121,7 @@ const CurrencySelector = ({
     focus:outline-none focus:ring-2 focus:ring-offset-1
     ${compact ? 'text-sm' : 'text-base'}
   `;
-  
+
   const buttonStyles = isDarkMode
     ? `${baseButtonStyles} text-white hover:bg-white/10 focus:ring-white/50`
     : `${baseButtonStyles} text-gray-700 hover:bg-gray-100 focus:ring-amber-500`;
@@ -138,10 +140,10 @@ const CurrencySelector = ({
 
   if (loading) {
     return (
-      <div 
+      <div
         className={`${baseButtonStyles} opacity-50 cursor-wait ${isDarkMode ? 'text-white' : 'text-gray-500'}`}
         aria-busy="true"
-        aria-label="Cargando moneda..."
+        aria-label={t('currency.loading')}
       >
         <span className="animate-pulse">💱</span>
         <span className={compact ? 'hidden' : 'block'}>---</span>
@@ -150,8 +152,8 @@ const CurrencySelector = ({
   }
 
   return (
-    <div 
-      ref={dropdownRef} 
+    <div
+      ref={dropdownRef}
       className="relative"
       onKeyDown={handleKeyDown}
     >
@@ -163,28 +165,28 @@ const CurrencySelector = ({
         className={buttonStyles}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
-        aria-label={`Moneda actual: ${currentCurrency.name}. Haga clic para cambiar.`}
+        aria-label={t('currency.currentLabel', { currency: currentCurrency.name })}
       >
         {showFlag && (
-          <span 
-            className="text-lg leading-none" 
-            role="img" 
+          <span
+            className="text-lg leading-none"
+            role="img"
             aria-hidden="true"
           >
             {currentCurrency.flag}
           </span>
         )}
-        
+
         <span className={compact && !showLabel ? 'font-medium' : 'font-medium'}>
           {currency}
         </span>
-        
+
         {showLabel && (
           <span className="hidden sm:inline text-sm opacity-75">
             {currentCurrency.nameShort}
           </span>
         )}
-        
+
         {/* Flecha indicadora */}
         <svg
           className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
@@ -205,12 +207,12 @@ const CurrencySelector = ({
             ${dropdownStyles}
           `}
           role="listbox"
-          aria-label="Seleccionar moneda"
+          aria-label={t('currency.selectLabel')}
           tabIndex={-1}
         >
           {currencyList.map((curr) => {
             const isActive = curr.code === currency;
-            
+
             return (
               <li key={curr.code}>
                 <button
@@ -225,32 +227,32 @@ const CurrencySelector = ({
                   role="option"
                   aria-selected={isActive}
                 >
-                  <span 
-                    className="text-xl leading-none" 
-                    role="img" 
+                  <span
+                    className="text-xl leading-none"
+                    role="img"
                     aria-hidden="true"
                   >
                     {curr.flag}
                   </span>
-                  
+
                   <div className="flex flex-col">
                     <span className="font-medium">{curr.code}</span>
                     <span className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                       {curr.name}
                     </span>
                   </div>
-                  
+
                   {isActive && (
-                    <svg 
-                      className="w-5 h-5 ml-auto text-amber-500" 
-                      fill="currentColor" 
+                    <svg
+                      className="w-5 h-5 ml-auto text-amber-500"
+                      fill="currentColor"
                       viewBox="0 0 20 20"
                       aria-hidden="true"
                     >
-                      <path 
-                        fillRule="evenodd" 
-                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" 
-                        clipRule="evenodd" 
+                      <path
+                        fillRule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clipRule="evenodd"
                       />
                     </svg>
                   )}

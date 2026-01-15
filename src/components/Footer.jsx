@@ -27,15 +27,15 @@ const Footer = () => {
     const instagramUrl = siteSettings?.instagramUrl || 'https://instagram.com';
     const facebookUrl = siteSettings?.facebookUrl || 'https://facebook.com';
     const tiktokUrl = siteSettings?.tiktokUrl || 'https://tiktok.com';
-    
-    // Textos de i18n con fallback
-    const footerDescription = t('footer.description');
+
+    // Textos de i18n con fallback - priorizar Strapi
+    const footerDescription = siteSettings?.footerDescription || t('footer.description');
 
     if (isLoading) {
         return (
             <footer className="bg-pizarra text-white">
                 <div className="container mx-auto px-6 py-16">
-                    <div className="text-center text-niebla">Cargando...</div>
+                    <div className="text-center text-niebla">{t('loading.generic')}</div>
                 </div>
             </footer>
         );

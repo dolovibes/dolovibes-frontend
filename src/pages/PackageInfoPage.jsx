@@ -14,7 +14,7 @@ import {
     X,
     Calendar
 } from 'lucide-react';
-import { usePackage } from '../services/hooks';
+import { usePackage, useSiteTexts } from '../services/hooks';
 import { useCurrencyContext, parsePrice } from '../utils/currency';
 import PackageQuoteModal from '../components/PackageQuoteModal';
 import PhotoGalleryModal from '../components/PhotoGalleryModal';
@@ -29,6 +29,10 @@ const PackageInfoPage = ({ onOpenQuote }) => {
 
     // Usar hook de React Query para datos dinámicos
     const { data: pkg, isLoading, error } = usePackage(slug);
+    const { data: siteTexts } = useSiteTexts();
+
+    // Textos con fallback: Strapi > i18n
+    const loadingText = siteTexts?.loadingPackage || tCommon('loading.package');
 
     // Contexto de moneda para conversión de precios
     const { formatPrice, currency } = useCurrencyContext();
@@ -98,7 +102,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
             <div className="min-h-screen flex items-center justify-center bg-nieve">
                 <div className="animate-pulse text-center">
                     <div className="w-16 h-16 border-4 border-alpino border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-pizarra">Cargando paquete...</p>
+                    <p className="text-pizarra">{loadingText}</p>
                 </div>
             </div>
         );
@@ -208,7 +212,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                     <div className="w-full md:w-1/2 h-[250px] md:h-full relative overflow-hidden">
                         <img
                             src={pkg.itinerary[currentDay].image || pkg.heroImage || pkg.image}
-                            alt={`Día ${pkg.itinerary[currentDay].day}`}
+                            alt={tPackage('day', { number: pkg.itinerary[currentDay].day })}
                             className="w-full h-full object-cover transition-all duration-500"
                         />
                     </div>

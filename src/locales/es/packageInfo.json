@@ -1,4 +1,5 @@
 {
+    "day": "Día {{number}}",
     "dayOf": "Día {{current}} de {{total}}",
     "pricePerPerson": "Precio por persona",
     "additionalPhotos": "Fotos adicionales",

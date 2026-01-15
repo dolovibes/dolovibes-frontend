@@ -143,6 +143,21 @@ export const useSiteSettings = () => {
   });
 };
 
+/**
+ * Hook para obtener Site Texts (textos globales)
+ * Prioriza Strapi, componentes usan fallback a i18n si no hay datos
+ */
+export const useSiteTexts = () => {
+  const { i18n } = useTranslation();
+  const locale = i18n.language;
+
+  return useQuery({
+    queryKey: ['siteTexts', locale],
+    queryFn: () => api.getSiteTexts(),
+    ...defaultQueryOptions,
+  });
+};
+
 // ============================================
 export default {
   useExperiences,
@@ -153,4 +168,6 @@ export default {
   useHeroSection,
   useAboutPage,
   useSiteSettings,
+  useSiteTexts,
 };
+

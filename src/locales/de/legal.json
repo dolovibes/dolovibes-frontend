@@ -1,1 +1,289 @@
-{}
+{
+    "terms": {
+        "title": "Buchungsbedingungen",
+        "intro": "Diese Buchungsbedingungen regeln die Beauftragung von Dienstleistungen, die von Dolovibes S de RL, operierend als Dolo Vibes, angeboten werden.",
+        "acceptance": "Mit der Buchung akzeptiert der Kunde diese Bedingungen.",
+        "questions": "Haben Sie Fragen?",
+        "questionsDesc": "Wenn Sie Fragen zu unseren Buchungsbedingungen haben, zögern Sie nicht, uns zu kontaktieren.",
+        "backToHome": "Zurück zur Startseite",
+        "back": "Zurück",
+        "sections": [
+            {
+                "id": 1,
+                "title": "Definitionen",
+                "icon": "FileText",
+                "content": [
+                    {
+                        "term": "Kunde",
+                        "desc": "Eine Person, die die vom Unternehmen angebotenen Dienstleistungen in Anspruch nimmt."
+                    },
+                    {
+                        "term": "Dienstleistungen",
+                        "desc": "Wandern, Trekking, Unterkunft und damit verbundene Aktivitätspakete."
+                    },
+                    {
+                        "term": "Anbieter",
+                        "desc": "Unabhängige Dritte, die direkt Dienstleistungen wie Unterkunft, Führungen oder Transport erbringen."
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "title": "Vertragsgegenstand",
+                "icon": "FileText",
+                "text": "Das Unternehmen fungiert als Organisator von touristischen Erlebnissen und Servicevermittler und verwaltet die Beauftragung lokaler Anbieter für die in jedem Paket enthaltenen Dienstleistungen."
+            },
+            {
+                "id": 3,
+                "title": "Buchungsprozess",
+                "icon": "Calendar",
+                "bullets": [
+                    "Die Reservierung gilt als vorläufig, bis die entsprechende Anzahlung eingegangen ist.",
+                    "Nach Erhalt der Anzahlung sendet das Unternehmen dem Kunden eine schriftliche Bestätigung.",
+                    "Das Unternehmen behält sich das Recht vor, eine Reservierung abzulehnen, wenn keine Verfügbarkeit bei den Anbietern besteht."
+                ]
+            },
+            {
+                "id": 4,
+                "title": "Zahlungen",
+                "icon": "CreditCard",
+                "subsections": [
+                    {
+                        "subtitle": "4.1 Anzahlung",
+                        "text": "Zur Bestätigung der Reservierung ist eine Mindestzahlung von 50% des Gesamtpaketpreises erforderlich."
+                    },
+                    {
+                        "subtitle": "4.2 Schlusszahlung",
+                        "text": "100% des Betrags müssen spätestens 45 Tage vor Reisebeginn bezahlt werden. Detaillierte Informationen zu Hotels, Hütten und Endlogistik werden erst nach vollständiger Zahlung bereitgestellt."
+                    },
+                    {
+                        "subtitle": "4.3 Nichtzahlung",
+                        "text": "Wenn der Kunde die Schlusszahlung nicht innerhalb der angegebenen Frist leistet, kann das Unternehmen die Reservierung ohne Recht auf Rückerstattung der Anzahlung stornieren."
+                    }
+                ]
+            },
+            {
+                "id": 5,
+                "title": "Preise",
+                "icon": "CreditCard",
+                "text": "Die Preise sind in Euro angegeben und unterliegen:",
+                "bullets": [
+                    "Wechselkursen",
+                    "Verfügbarkeit der Anbieter",
+                    "Änderungen der Tarife Dritter",
+                    "Lokale Steuern"
+                ],
+                "note": "Das Unternehmen behält sich das Recht vor, die Preise vor der endgültigen Bestätigung anzupassen."
+            },
+            {
+                "id": 6,
+                "title": "Reiserouten-Änderungen",
+                "icon": "AlertTriangle",
+                "text": "Das Unternehmen kann Routen, Unterkünfte oder Aktivitäten aus folgenden Gründen ändern:",
+                "bullets": [
+                    "Sicherheit",
+                    "Wetter",
+                    "Verfügbarkeit",
+                    "Höhere Gewalt"
+                ],
+                "note": "Ähnliche Alternativen werden nach Möglichkeit angeboten, ohne automatische Rückerstattungen."
+            },
+            {
+                "id": 7,
+                "title": "Stornierungen durch den Kunden",
+                "icon": "AlertTriangle",
+                "text": "Die Stornierungsrichtlinien hängen von den beteiligten Anbietern ab. Generell:",
+                "bullets": [
+                    "Stornierungen mehr als 45 Tage im Voraus: Teilrückerstattung basierend auf bereits entstandenen Kosten",
+                    "Stornierungen weniger als 45 Tage: nicht erstattungsfähig"
+                ],
+                "warning": "Einige Dienstleistungen können ab dem Zeitpunkt der Buchung zu 100% nicht erstattungsfähig sein."
+            },
+            {
+                "id": 8,
+                "title": "Stornierungen durch das Unternehmen",
+                "icon": "AlertTriangle",
+                "text": "Das Unternehmen kann die Reise wegen höherer Gewalt, mangelnder Mindestteilnehmerzahl oder operativer Unmöglichkeit stornieren. In diesen Fällen kann der Kunde wählen:",
+                "bullets": [
+                    "Reise-Neuterminierung",
+                    "Guthaben für eine zukünftige Reise",
+                    "Teil- oder Vollrückerstattung entsprechend der bereits an Anbieter gebundenen Kosten"
+                ]
+            },
+            {
+                "id": 9,
+                "title": "Reservierungsübertragung",
+                "icon": "CheckCircle",
+                "text": "Der Kunde kann seine Reservierung auf eine andere Person übertragen, sofern:",
+                "bullets": [
+                    "Diese die physischen Anforderungen der Tour erfüllt",
+                    "Schriftliche Benachrichtigung mindestens 45 Tage im Voraus erfolgt",
+                    "Mögliche Verwaltungskosten übernommen werden"
+                ]
+            },
+            {
+                "id": 10,
+                "title": "Kundenpflichten",
+                "icon": "CheckCircle",
+                "text": "Der Kunde verpflichtet sich:",
+                "bullets": [
+                    "Über eine angemessene körperliche Verfassung zu verfügen",
+                    "Sicherheitsregeln zu befolgen",
+                    "Anweisungen von Guides und Anbietern zu respektieren",
+                    "Relevante medizinische Bedingungen zu melden"
+                ],
+                "warning": "Nichteinhaltung kann zum Ausschluss von der Aktivität ohne Recht auf Rückerstattung führen."
+            },
+            {
+                "id": 11,
+                "title": "Selbstgeführte Touren",
+                "icon": "AlertTriangle",
+                "text": "Bei selbstgeführten Touren akzeptiert der Kunde, dass:",
+                "bullets": [
+                    "Er keine Guide-Begleitung während der Routen hat",
+                    "Er für die Bewertung der Sicherheitsbedingungen verantwortlich ist",
+                    "Er den bereitgestellten allgemeinen Anweisungen folgen muss"
+                ],
+                "note": "Das Unternehmen ist nicht verantwortlich für Vorfälle während ungeführter Routen."
+            },
+            {
+                "id": 12,
+                "title": "Anbieterverantwortung",
+                "icon": "Shield",
+                "text": "Lokale Anbieter sind direkt für die ordnungsgemäße Erbringung ihrer Dienstleistungen verantwortlich. Das Unternehmen ist nicht verantwortlich für Handlungen oder Unterlassungen dieser Anbieter, obwohl es den Kunden bei der Lösungsfindung unterstützt, wenn möglich."
+            },
+            {
+                "id": 13,
+                "title": "Haftungsbeschränkung",
+                "icon": "Shield",
+                "text": "Die Haftung des Unternehmens ist auf den vom Kunden für die beauftragten Dienstleistungen gezahlten Betrag beschränkt, außer in Fällen nachgewiesener grober Fahrlässigkeit."
+            },
+            {
+                "id": 14,
+                "title": "Reiseversicherung",
+                "icon": "Shield",
+                "text": "Der Kunde ist für den Abschluss einer Reiseversicherung verantwortlich, die Folgendes abdeckt:",
+                "bullets": [
+                    "Bergaktivitäten",
+                    "Unfälle",
+                    "Evakuierung",
+                    "Stornierungen"
+                ],
+                "warning": "Versicherung ist nicht in unseren Paketen enthalten."
+            },
+            {
+                "id": 15,
+                "title": "Anwendbares Recht",
+                "icon": "Scale",
+                "text": "Dieser Vertrag unterliegt den Gesetzen der Vereinigten Mexikanischen Staaten. Im Ausland durchgeführte Aktivitäten unterliegen auch den lokalen Vorschriften des Landes, in dem sie stattfinden."
+            },
+            {
+                "id": 16,
+                "title": "Annahme",
+                "icon": "CheckCircle",
+                "text": "Die Zahlung der Anzahlung oder des Gesamtbetrags bedeutet die ausdrückliche Annahme dieser Buchungsbedingungen."
+            }
+        ]
+    },
+    "cancellation": {
+        "title": "Stornierungs- und Rückerstattungsrichtlinie",
+        "intro": "Die Stornierungsrichtlinien variieren je nach Paket und beteiligten Anbietern, da wir mit Hotels, Hütten und lokalen Guides zusammenarbeiten, die ihre eigenen Richtlinien haben.",
+        "clientTitle": "Stornierungen durch den Kunden",
+        "clientGeneral": "Generell:",
+        "moreThan45": "Stornierungen mehr als 45 Tage vor Reisebeginn:",
+        "moreThan45Desc": "Teilrückerstattung abzüglich Verwaltungskosten und bereits gebuchter Dienstleistungen.",
+        "lessThan45": "Stornierungen weniger als 45 Tage vor der Reise:",
+        "lessThan45Desc": "Nicht erstattungsfähig.",
+        "nonRefundable": "Einige Dienstleistungen können ab dem Zeitpunkt der Buchung zu 100% nicht erstattungsfähig sein, insbesondere in der Hochsaison oder für bestimmte Unterkünfte.",
+        "companyTitle": "Stornierungen oder Änderungen durch das Unternehmen",
+        "companyIntro": "Das Unternehmen kann die Reiseroute aus folgenden Gründen ändern oder stornieren:",
+        "companyReasons": [
+            "Wetterbedingungen",
+            "Sicherheitsgründe",
+            "Höhere Gewalt",
+            "Mangelnde Verfügbarkeit von Anbietern"
+        ],
+        "clientOptions": "In diesen Fällen kann der Kunde wählen:",
+        "options": [
+            "Die Reise neu terminieren",
+            "Ein Guthaben für eine zukünftige Reise erhalten",
+            "Teil- oder Vollrückerstattung, abhängig von den bereits an Anbieter gebundenen Kosten"
+        ],
+        "noShow": "Nichterscheinen",
+        "noShowDesc": "Wenn der Kunde nicht am vereinbarten Ort und Datum erscheint, gilt dies als verspätete Stornierung und es besteht kein Recht auf Rückerstattung.",
+        "refunds": "Rückerstattungen",
+        "refundsDesc": "Rückerstattungen erfolgen, wenn anwendbar, über dieselbe Zahlungsmethode, innerhalb von 15-30 Werktagen, abhängig von der Zahlungsplattform.",
+        "importantNote": "Wichtiger Hinweis",
+        "importantNoteDesc": "Die spezifischen Richtlinien jedes Pakets werden während des Buchungsprozesses detailliert und sind Teil der vom Kunden bei Vertragsabschluss akzeptierten Buchungsbedingungen."
+    },
+    "privacy": {
+        "title": "Datenschutzhinweis",
+        "intro": "In Übereinstimmung mit dem Bundesgesetz zum Schutz personenbezogener Daten im Besitz von Privatpersonen ist Dolovibes S de RL mit Sitz in Monterrey Nuevo León für die Verwendung und den Schutz Ihrer personenbezogenen Daten verantwortlich.",
+        "dataTitle": "Von uns erfasste personenbezogene Daten",
+        "dataIntro": "Wir können folgende Daten erfassen:",
+        "dataList": [
+            "Vollständiger Name",
+            "E-Mail",
+            "Telefon",
+            "Nationalität",
+            "Notfallkontaktinformationen",
+            "Für die Erbringung touristischer Dienstleistungen erforderliche Daten",
+            "Freiwillig bereitgestellte relevante Gesundheitsinformationen"
+        ],
+        "dataNote": "Wir erfassen keine Finanzdaten direkt; Zahlungen werden über externe Zahlungsplattformen abgewickelt.",
+        "purposeTitle": "Zwecke der Datenverarbeitung",
+        "purposeList": [
+            "Reservierungen bearbeiten",
+            "Touristische Dienstleistungen verwalten",
+            "Den Kunden vor, während und nach der Reise kontaktieren",
+            "Gesetzlichen Verpflichtungen nachkommen",
+            "Informationen zum beauftragten Service senden"
+        ],
+        "additionalPurpose": "Zusätzlich können wir Ihre Daten für Werbeaktionen und kommerzielle Mitteilungen verwenden.",
+        "cancelNote": "Sie können die Stornierung dieser Verwendung jederzeit beantragen.",
+        "transferTitle": "Datenübertragung",
+        "transferIntro": "Ihre Daten können geteilt werden mit:",
+        "transferList": [
+            "Touristischen Anbietern (Hotels, Guides, Transport)",
+            "Zahlungsplattformen",
+            "Behörden, wenn gesetzlich erforderlich"
+        ],
+        "transferNote": "Es werden nur die für die Erbringung der Dienstleistung unbedingt erforderlichen Daten geteilt.",
+        "arcoTitle": "ARCO-Rechte",
+        "arcoIntro": "Sie haben das Recht auf:",
+        "arcoRights": [
+            "Zugang",
+            "Berichtigung",
+            "Löschung",
+            "Widerspruch"
+        ],
+        "arcoNote": "zur Verarbeitung Ihrer personenbezogenen Daten.",
+        "arcoEmail": "Um diese Rechte auszuüben, können Sie eine Anfrage an die E-Mail senden:",
+        "securityTitle": "Sicherheitsmaßnahmen",
+        "securityDesc": "Das Unternehmen implementiert administrative, technische und physische Maßnahmen zum Schutz Ihrer personenbezogenen Daten vor Beschädigung, Verlust, Änderung oder unbefugter Verwendung.",
+        "changesTitle": "Änderungen des Datenschutzhinweises",
+        "changesDesc": "Das Unternehmen kann diesen Datenschutzhinweis ändern. Alle Änderungen werden auf dieser Website veröffentlicht."
+    },
+    "cookies": {
+        "title": "Cookie-Richtlinie",
+        "intro": "Diese Website verwendet Cookies, um die Benutzererfahrung zu verbessern.",
+        "whatTitle": "Was sind Cookies?",
+        "whatDesc": "Cookies sind kleine Dateien, die auf Ihrem Gerät gespeichert werden, wenn Sie eine Website besuchen, und ermöglichen die Erkennung Ihres Browsers.",
+        "typesTitle": "Arten von Cookies, die wir verwenden",
+        "necessary": "Notwendige Cookies",
+        "necessaryDesc": "Ermöglichen grundlegende Website-Funktionen wie den Zugang zu sicheren Bereichen und den Buchungsprozess.",
+        "analytics": "Analyse-Cookies",
+        "analyticsDesc": "Helfen uns zu verstehen, wie Benutzer mit der Website interagieren, um unsere Dienste zu verbessern (z.B. Google Analytics).",
+        "marketing": "Marketing-Cookies",
+        "marketingDesc": "Werden verwendet, um relevante Werbung auf externen Plattformen anzuzeigen.",
+        "managementTitle": "Cookie-Verwaltung",
+        "managementDesc1": "Der Benutzer kann die Verwendung von Cookies über das Cookie-Banner beim Betreten der Website akzeptieren, ablehnen oder konfigurieren.",
+        "managementDesc2": "Sie können Cookies auch über Ihre Browsereinstellungen löschen.",
+        "changesTitle": "Änderungen der Cookie-Richtlinie",
+        "changesDesc": "Diese Richtlinie kann jederzeit aktualisiert werden. Änderungen werden auf dieser Seite veröffentlicht."
+    },
+    "common": {
+        "back": "Zurück",
+        "backToHome": "Zurück zur Startseite"
+    }
+}

@@ -4,7 +4,186 @@
         "intro": "These Booking Conditions regulate the contracting of services offered by Dolovibes S de RL, operating as Dolo Vibes.",
         "acceptance": "By making a reservation, the client accepts these conditions.",
         "questions": "Have questions?",
-        "questionsDesc": "If you have questions about our booking conditions, don't hesitate to contact us."
+        "questionsDesc": "If you have questions about our booking conditions, don't hesitate to contact us.",
+        "backToHome": "Back to Home",
+        "back": "Back",
+        "sections": [
+            {
+                "id": 1,
+                "title": "Definitions",
+                "icon": "FileText",
+                "content": [
+                    {
+                        "term": "Client",
+                        "desc": "A person who contracts the services offered by the Company."
+                    },
+                    {
+                        "term": "Services",
+                        "desc": "Hiking, trekking, accommodation, and related activity packages."
+                    },
+                    {
+                        "term": "Provider",
+                        "desc": "Independent third parties that directly provide services such as accommodation, guides, or transportation."
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "title": "Object of the Contract",
+                "icon": "FileText",
+                "text": "The Company acts as an organizer of tourist experiences and service intermediary, managing the contracting of local providers for the provision of services included in each package."
+            },
+            {
+                "id": 3,
+                "title": "Booking Process",
+                "icon": "Calendar",
+                "bullets": [
+                    "The reservation is considered provisional until the corresponding deposit payment is received.",
+                    "Once the initial payment is received, the Company will send written confirmation to the client.",
+                    "The Company reserves the right to reject a reservation if there is no availability with providers."
+                ]
+            },
+            {
+                "id": 4,
+                "title": "Payments",
+                "icon": "CreditCard",
+                "subsections": [
+                    {
+                        "subtitle": "4.1 Deposit",
+                        "text": "A minimum payment of 50% of the total package price is required to confirm the reservation."
+                    },
+                    {
+                        "subtitle": "4.2 Final Payment",
+                        "text": "100% of the amount must be paid no later than 45 days before the start of the trip. Detailed information about hotels, refuges, and final logistics will be provided only after full payment is received."
+                    },
+                    {
+                        "subtitle": "4.3 Non-Payment",
+                        "text": "If the client does not make the final payment within the indicated period, the Company may cancel the reservation without the right to a deposit refund."
+                    }
+                ]
+            },
+            {
+                "id": 5,
+                "title": "Prices",
+                "icon": "CreditCard",
+                "text": "Prices are quoted in euros and are subject to:",
+                "bullets": [
+                    "Exchange rates",
+                    "Provider availability",
+                    "Changes in third-party rates",
+                    "Local taxes"
+                ],
+                "note": "The Company reserves the right to adjust prices before final confirmation."
+            },
+            {
+                "id": 6,
+                "title": "Itinerary Changes",
+                "icon": "AlertTriangle",
+                "text": "The Company may modify routes, accommodations, or activities for reasons of:",
+                "bullets": [
+                    "Safety",
+                    "Weather",
+                    "Availability",
+                    "Force majeure"
+                ],
+                "note": "Similar alternatives will be offered whenever possible, without automatic refunds."
+            },
+            {
+                "id": 7,
+                "title": "Cancellations by the Client",
+                "icon": "AlertTriangle",
+                "text": "Cancellation policies depend on the providers involved. Generally:",
+                "bullets": [
+                    "Cancellations more than 45 days in advance: partial refund based on costs already incurred",
+                    "Cancellations less than 45 days: non-refundable"
+                ],
+                "warning": "Some services may be 100% non-refundable from the time of booking."
+            },
+            {
+                "id": 8,
+                "title": "Cancellations by the Company",
+                "icon": "AlertTriangle",
+                "text": "The Company may cancel the trip due to force majeure, lack of minimum participants, or operational impossibility. In these cases, the client may choose:",
+                "bullets": [
+                    "Trip rescheduling",
+                    "Credit for a future trip",
+                    "Partial or full refund, according to costs already committed to providers"
+                ]
+            },
+            {
+                "id": 9,
+                "title": "Reservation Transfer",
+                "icon": "CheckCircle",
+                "text": "The client may transfer their reservation to another person, provided that:",
+                "bullets": [
+                    "They meet the physical requirements of the tour",
+                    "Notification is given in writing with at least 45 days notice",
+                    "Possible administrative costs are assumed"
+                ]
+            },
+            {
+                "id": 10,
+                "title": "Client Obligations",
+                "icon": "CheckCircle",
+                "text": "The client agrees to:",
+                "bullets": [
+                    "Have adequate physical condition",
+                    "Follow safety rules",
+                    "Respect guide and provider instructions",
+                    "Report relevant medical conditions"
+                ],
+                "warning": "Non-compliance may result in exclusion from the activity without the right to a refund."
+            },
+            {
+                "id": 11,
+                "title": "Self-Guided Tours",
+                "icon": "AlertTriangle",
+                "text": "In self-guided tours, the client accepts that:",
+                "bullets": [
+                    "They will not have guide accompaniment during routes",
+                    "They are responsible for assessing safety conditions",
+                    "They must follow the general instructions provided"
+                ],
+                "note": "The Company is not responsible for incidents during unguided routes."
+            },
+            {
+                "id": 12,
+                "title": "Provider Responsibility",
+                "icon": "Shield",
+                "text": "Local providers are directly responsible for the proper provision of their services. The Company is not responsible for acts or omissions of said providers, although it will support the client in managing solutions when possible."
+            },
+            {
+                "id": 13,
+                "title": "Limitation of Liability",
+                "icon": "Shield",
+                "text": "The Company's liability is limited to the amount paid by the client for the contracted services, except in cases of proven gross negligence."
+            },
+            {
+                "id": 14,
+                "title": "Travel Insurance",
+                "icon": "Shield",
+                "text": "The client is responsible for purchasing travel insurance that covers:",
+                "bullets": [
+                    "Mountain activities",
+                    "Accidents",
+                    "Evacuation",
+                    "Cancellations"
+                ],
+                "warning": "Insurance is not included in our packages."
+            },
+            {
+                "id": 15,
+                "title": "Applicable Law",
+                "icon": "Scale",
+                "text": "This contract is governed by the laws of the United Mexican States. Activities carried out abroad are also subject to the local regulations of the country where they take place."
+            },
+            {
+                "id": 16,
+                "title": "Acceptance",
+                "icon": "CheckCircle",
+                "text": "Payment of the deposit or full amount implies express acceptance of these Booking Conditions."
+            }
+        ]
     },
     "cancellation": {
         "title": "Cancellation and Refund Policy",

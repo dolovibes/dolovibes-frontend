@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useExperience, usePackagesByExperience } from '../services/hooks';
+import { useExperience, usePackagesByExperience, useSiteTexts } from '../services/hooks';
 import Footer from '../components/Footer';
 import PackageCard from '../components/PackageCard';
 
@@ -9,11 +9,16 @@ const ExperiencePage = ({ onOpenQuote }) => {
     const { t: tCommon } = useTranslation('common');
     const { slug } = useParams();
     const navigate = useNavigate();
-    
+
     // Usar hooks de React Query para datos dinámicos
     const { data: experience, isLoading: loadingExperience } = useExperience(slug);
     const { data: relatedPackages = [], isLoading: loadingPackages } = usePackagesByExperience(slug);
+    const { data: siteTexts } = useSiteTexts();
 
+    // Textos con fallback: Strapi > i18n
+    const loadingText = siteTexts?.loadingExperience || tCommon('loading.experience');
+    const packagesTitle = siteTexts?.availablePackagesTitle || tCommon('availablePackages.title');
+    const packagesSubtitle = siteTexts?.availablePackagesSubtitle || tCommon('availablePackages.subtitle');
     // Scroll al inicio cuando carga la página
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -25,7 +30,7 @@ const ExperiencePage = ({ onOpenQuote }) => {
             <div className="min-h-screen flex items-center justify-center bg-nieve">
                 <div className="animate-pulse text-center">
                     <div className="w-16 h-16 border-4 border-alpino border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-pizarra">Cargando experiencia...</p>
+                    <p className="text-pizarra">{loadingText}</p>
                 </div>
             </div>
         );
@@ -77,10 +82,10 @@ const ExperiencePage = ({ onOpenQuote }) => {
                 <div className="container mx-auto px-6">
                     <div className="text-center mb-12">
                         <h2 className="text-3xl md:text-4xl font-bold text-grafito mb-4">
-                            Paquetes Disponibles
+                            {packagesTitle}
                         </h2>
                         <p className="text-pizarra max-w-2xl mx-auto">
-                            Elige el viaje que mejor se adapte a tus fechas y preferencias
+                            {packagesSubtitle}
                         </p>
                     </div>
 

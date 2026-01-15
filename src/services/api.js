@@ -81,7 +81,7 @@ const enrichWithSpanishMedia = (currentData, spanishData) => {
 
       // Copiar campos de media que estén vacíos o null
       const enrichedItem = { ...item };
-      
+
       // Image y heroImage
       if (!enrichedItem.image && spanishItem.image) {
         enrichedItem.image = spanishItem.image;
@@ -112,7 +112,7 @@ const enrichWithSpanishMedia = (currentData, spanishData) => {
   // Para objetos individuales
   if (typeof currentData === 'object') {
     const enrichedItem = { ...currentData };
-    
+
     if (!enrichedItem.image && spanishData.image) {
       enrichedItem.image = spanishData.image;
     }
@@ -122,7 +122,7 @@ const enrichWithSpanishMedia = (currentData, spanishData) => {
     if ((!enrichedItem.gallery || enrichedItem.gallery.length === 0) && spanishData.gallery) {
       enrichedItem.gallery = spanishData.gallery;
     }
-    
+
     return enrichedItem;
   }
 
@@ -180,13 +180,13 @@ const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSing
         const spanishParams = { ...params, locale: DEFAULT_LOCALE };
         const spanishResponse = await strapiClient.get(endpoint, { params: spanishParams });
         const spanishData = spanishResponse.data.data;
-        
+
         // Transformar datos españoles también
         const transformedSpanishData = transformFn ? transformFn(spanishData) : spanishData;
 
         // Enriquecer datos actuales con media de español (DESPUÉS de transformar)
         const enrichedData = enrichWithSpanishMedia(transformedData, transformedSpanishData);
-        
+
         return enrichedData;
       } catch (spanishError) {
         // Si falla obtener español, continuar con datos actuales
@@ -383,6 +383,18 @@ export const getSiteSettings = async () => {
   return fetchFromStrapi('/site-setting', { populate: SETTINGS_POPULATE }, transformSiteSettings, true);
 };
 
+// ═══════════════════════════════════════════════════════════════
+// SITE TEXTS (Single Type)
+// Endpoint: /api/site-text
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * Obtiene los textos globales del sitio
+ */
+export const getSiteTexts = async () => {
+  return fetchFromStrapi('/site-text', {}, transformSiteTexts, true);
+};
+
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -538,6 +550,19 @@ const transformSiteSettings = (data) => {
   };
 };
 
+const transformSiteTexts = (data) => {
+  if (!data) return null;
+
+  return {
+    loadingExperience: data.loadingExperience,
+    loadingPackage: data.loadingPackage,
+    loadingGeneric: data.loadingGeneric,
+    availablePackagesTitle: data.availablePackagesTitle,
+    availablePackagesSubtitle: data.availablePackagesSubtitle,
+    contactMethodLabel: data.contactMethodLabel,
+  };
+};
+
 // ═══════════════════════════════════════════════════════════════
 // EXPORTS
 // ═══════════════════════════════════════════════════════════════
@@ -551,4 +576,5 @@ export default {
   getHeroSection,
   getAboutPage,
   getSiteSettings,
+  getSiteTexts,
 };

@@ -27,6 +27,21 @@
         "days": "Days",
         "persons": "Pers."
     },
+    "loading": {
+        "experience": "Loading experience...",
+        "package": "Loading package...",
+        "generic": "Loading..."
+    },
+    "contactMethod": {
+        "label": "How would you like to be contacted? *",
+        "whatsapp": "WhatsApp",
+        "phone": "Phone call",
+        "email": "Email"
+    },
+    "availablePackages": {
+        "title": "Available Packages",
+        "subtitle": "Choose the trip that best fits your dates and preferences"
+    },
     "experiences": {
         "notFound": "Experience not found",
         "noPackages": "No packages available for this experience yet."
@@ -68,5 +83,10 @@
         "phonePlaceholder": "Phone (WhatsApp)",
         "successTitle": "Request Received!",
         "successMessage": "A DOLOVIBES expert will contact you soon to plan your trip."
+    },
+    "currency": {
+        "loading": "Loading currency...",
+        "currentLabel": "Current currency: {{currency}}. Click to change.",
+        "selectLabel": "Select currency"
     }
 }
