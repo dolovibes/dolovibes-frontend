@@ -83,5 +83,10 @@
         "phonePlaceholder": "Telefon (WhatsApp)",
         "successTitle": "Anfrage Erhalten!",
         "successMessage": "Ein DOLOVIBES Experte wird Sie bald kontaktieren, um Ihre Reise zu planen."
+    },
+    "currency": {
+        "loading": "Währung wird geladen...",
+        "currentLabel": "Aktuelle Währung: {{currency}}. Klicken Sie zum Ändern.",
+        "selectLabel": "Währung auswählen"
     }
 }

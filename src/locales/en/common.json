@@ -83,5 +83,10 @@
         "phonePlaceholder": "Phone (WhatsApp)",
         "successTitle": "Request Received!",
         "successMessage": "A DOLOVIBES expert will contact you soon to plan your trip."
+    },
+    "currency": {
+        "loading": "Loading currency...",
+        "currentLabel": "Current currency: {{currency}}. Click to change.",
+        "selectLabel": "Select currency"
     }
 }

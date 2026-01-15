@@ -28,8 +28,8 @@ const Footer = () => {
     const facebookUrl = siteSettings?.facebookUrl || 'https://facebook.com';
     const tiktokUrl = siteSettings?.tiktokUrl || 'https://tiktok.com';
 
-    // Textos de i18n con fallback
-    const footerDescription = t('footer.description');
+    // Textos de i18n con fallback - priorizar Strapi
+    const footerDescription = siteSettings?.footerDescription || t('footer.description');
 
     if (isLoading) {
         return (
