@@ -212,7 +212,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                     <div className="w-full md:w-1/2 h-[250px] md:h-full relative overflow-hidden">
                         <img
                             src={pkg.itinerary[currentDay].image || pkg.heroImage || pkg.image}
-                            alt={`Día ${pkg.itinerary[currentDay].day}`}
+                            alt={tPackage('day', { number: pkg.itinerary[currentDay].day })}
                             className="w-full h-full object-cover transition-all duration-500"
                         />
                     </div>
