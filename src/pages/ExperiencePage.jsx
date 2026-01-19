@@ -70,7 +70,7 @@ const ExperiencePage = ({ onOpenQuote }) => {
                             {experience.title}
                         </h1>
 
-                        <p className="text-xl md:text-2xl text-white/80 max-w-3xl">
+                        <p className="text-xl md:text-2xl text-white/80 max-w-5xl">
                             {experience.longDescription || experience.shortDescription}
                         </p>
                     </div>
