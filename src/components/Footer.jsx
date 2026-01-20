@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useSiteSettings, useExperiences } from '../services/hooks';
+import { useSiteSettings, useFooterExperiences } from '../services/hooks';
 import { MapPin, Phone, Mail, Instagram, Facebook, FileText } from 'lucide-react';
 
 // TikTok icon component (not in lucide-react)
@@ -14,10 +14,8 @@ const TikTokIcon = ({ className }) => (
 const Footer = () => {
     const { t } = useTranslation('common');
     const { data: siteSettings, isLoading } = useSiteSettings();
-    const { data: experiences = [] } = useExperiences();
-
-    // Tomar las primeras 4 experiencias para mostrar en el footer
-    const footerExperiences = experiences.slice(0, 4);
+    // Usar useFooterExperiences para obtener solo las experiencias marcadas para el footer
+    const { data: footerExperiences = [] } = useFooterExperiences();
 
     // Datos desde Strapi con fallbacks
     const logoUrl = siteSettings?.logo || '/logo-dark.svg';
@@ -87,7 +85,7 @@ const Footer = () => {
                         </div>
                     </div>
 
-                    {/* Experiencias */}
+                    {/* Experiencias - Todas ordenadas */}
                     <div>
                         <h4 className="font-semibold text-lg mb-4">{t('footer.experiences')}</h4>
                         <ul className="space-y-3">
@@ -104,12 +102,22 @@ const Footer = () => {
                         </ul>
                     </div>
 
-                    {/* Información */}
+                    {/* Información Legal */}
                     <div>
                         <h4 className="font-semibold text-lg mb-4">{t('footer.information')}</h4>
                         <ul className="space-y-3">
                             <li>
                                 <Link to="/terminos" className="text-niebla hover:text-bruma transition-colors">
+                                    {t('footer.termsAndConditions')}
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/aviso-legal" className="text-niebla hover:text-bruma transition-colors">
+                                    {t('footer.legalNotice')}
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/condiciones-reserva" className="text-niebla hover:text-bruma transition-colors">
                                     {t('footer.bookingConditions')}
                                 </Link>
                             </li>
@@ -117,11 +125,6 @@ const Footer = () => {
                                 <Link to="/cancelaciones" className="text-niebla hover:text-bruma transition-colors">
                                     {t('footer.cancellationPolicy')}
                                 </Link>
-                            </li>
-                            <li>
-                                <a href="#" className="text-niebla hover:text-bruma transition-colors">
-                                    {t('footer.contractInfo')}
-                                </a>
                             </li>
                             <li>
                                 <Link to="/privacidad" className="text-niebla hover:text-bruma transition-colors">
@@ -132,11 +135,6 @@ const Footer = () => {
                                 <Link to="/cookies" className="text-niebla hover:text-bruma transition-colors">
                                     {t('footer.cookiePolicy')}
                                 </Link>
-                            </li>
-                            <li>
-                                <a href="#" className="text-niebla hover:text-bruma transition-colors">
-                                    {t('footer.copyrights')}
-                                </a>
                             </li>
                         </ul>
                     </div>

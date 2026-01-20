@@ -129,6 +129,42 @@ const enrichWithSpanishMedia = (currentData, spanishData) => {
   return currentData;
 };
 
+// ═══════════════════════════════════════════════════════════════
+// CACHE EN MEMORIA PARA DATOS ESPAÑOLES
+// ═══════════════════════════════════════════════════════════════
+// Evita requests duplicados al obtener imágenes de español
+// Los datos se cachean por 5 minutos
+
+const spanishDataCache = new Map();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+
+/**
+ * Obtiene datos españoles desde cache o API
+ */
+const getSpanishDataCached = async (endpoint, params, transformFn) => {
+  const cacheKey = `${endpoint}:${JSON.stringify(params)}`;
+  const cached = spanishDataCache.get(cacheKey);
+  
+  // Verificar si hay cache válido
+  if (cached && Date.now() < cached.expiry) {
+    return cached.data;
+  }
+  
+  // Obtener datos frescos
+  const spanishParams = { ...params, locale: DEFAULT_LOCALE };
+  const response = await strapiClient.get(endpoint, { params: spanishParams });
+  const data = response.data.data;
+  const transformedData = transformFn ? transformFn(data) : data;
+  
+  // Guardar en cache
+  spanishDataCache.set(cacheKey, {
+    data: transformedData,
+    expiry: Date.now() + CACHE_TTL,
+  });
+  
+  return transformedData;
+};
+
 /**
  * Wrapper centralizado para peticiones a Strapi con fallback de idioma
  * 
@@ -136,6 +172,9 @@ const enrichWithSpanishMedia = (currentData, spanishData) => {
  * 1. Si el locale NO es español, obtiene datos en ambos idiomas
  * 2. Enriquece los datos del locale actual con imágenes de español
  * 3. Si no hay datos en el locale actual, usa español completo
+ * 
+ * OPTIMIZACIÓN: Los datos españoles se cachean en memoria para evitar
+ * requests duplicados cuando hay múltiples componentes pidiendo datos.
  * 
  * @param {string} endpoint - Ruta del API (ej: '/experiences')
  * @param {object} params - Parámetros de query (populate, filters, etc.)
@@ -163,10 +202,8 @@ const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSing
     // Si no hay datos, intentar con español como fallback completo
     if (!data || (Array.isArray(data) && data.length === 0)) {
       if (locale !== DEFAULT_LOCALE) {
-        const fallbackParams = { ...params, locale: DEFAULT_LOCALE };
-        const fallbackResponse = await strapiClient.get(endpoint, { params: fallbackParams });
-        const fallbackData = fallbackResponse.data.data;
-        return transformFn ? transformFn(fallbackData) : fallbackData;
+        // Usar cache para datos españoles
+        return getSpanishDataCached(endpoint, params, transformFn);
       }
       return transformFn ? transformFn(data) : data;
     }
@@ -177,12 +214,8 @@ const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSing
     // Si tenemos datos pero NO estamos en español, enriquecer con imágenes de español
     if (locale !== DEFAULT_LOCALE) {
       try {
-        const spanishParams = { ...params, locale: DEFAULT_LOCALE };
-        const spanishResponse = await strapiClient.get(endpoint, { params: spanishParams });
-        const spanishData = spanishResponse.data.data;
-
-        // Transformar datos españoles también
-        const transformedSpanishData = transformFn ? transformFn(spanishData) : spanishData;
+        // Usar cache para evitar requests duplicados
+        const transformedSpanishData = await getSpanishDataCached(endpoint, params, transformFn);
 
         // Enriquecer datos actuales con media de español (DESPUÉS de transformar)
         const enrichedData = enrichWithSpanishMedia(transformedData, transformedSpanishData);
@@ -200,10 +233,7 @@ const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSing
     // Error principal: intentar fallback completo a español
     if (locale !== DEFAULT_LOCALE) {
       try {
-        const fallbackParams = { ...params, locale: DEFAULT_LOCALE };
-        const fallbackResponse = await strapiClient.get(endpoint, { params: fallbackParams });
-        const fallbackData = fallbackResponse.data.data;
-        return transformFn ? transformFn(fallbackData) : fallbackData;
+        return getSpanishDataCached(endpoint, params, transformFn);
       } catch {
         throw error;
       }
@@ -257,6 +287,21 @@ export const getExperienceBySlug = async (slug) => {
   return experiences[0] || null;
 };
 
+/**
+ * Obtiene las experiencias para mostrar en el footer
+ * Solo retorna experiencias con showInFooter=true, ordenadas por footerDisplayOrder
+ */
+export const getFooterExperiences = async () => {
+  const params = {
+    populate: EXPERIENCE_POPULATE,
+    'pagination[pageSize]': 20,
+    'sort': 'footerDisplayOrder:asc',
+    'filters[showInFooter][$eq]': true,
+  };
+
+  return fetchFromStrapi('/experiences', params, transformExperiences);
+};
+
 // ═══════════════════════════════════════════════════════════════
 // PAQUETES (Collection Type)
 // Endpoint: /api/packages
@@ -272,9 +317,13 @@ const PACKAGE_POPULATE = {
     populate: ['image']
   },
   includes: true,
+  notIncludes: true,
+  additionalInfo: true,
+  additionalServices: true,
+  mapImage: true,
   startDates: true,
+  tags: true,
   experience: true,
-  locationInfo: true,
 };
 
 /**
@@ -320,6 +369,21 @@ export const getPackageBySlug = async (slug) => {
  */
 export const getPackagesByExperience = async (experienceSlug) => {
   return getPackages({ experienceSlug });
+};
+
+/**
+ * Obtiene los paquetes destacados para mostrar en el home
+ * Solo retorna paquetes con showInHome=true, ordenados por homeDisplayOrder
+ */
+export const getFeaturedPackages = async () => {
+  const params = {
+    populate: PACKAGE_POPULATE,
+    'pagination[pageSize]': 20,
+    'sort': 'homeDisplayOrder:asc',
+    'filters[showInHome][$eq]': true,
+  };
+
+  return fetchFromStrapi('/packages', params, transformPackages);
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -412,15 +476,12 @@ const transformExperiences = (data) => {
     title: item.title,
     slug: item.slug,
     season: item.season === 'summer' ? 'verano' : 'invierno',
-    tags: item.tags?.map(t => t.name) || [],
     image: getStrapiMediaUrl(item.thumbnail),
     heroImage: getStrapiMediaUrl(item.heroImage),
-    shortDescription: item.shortDescription,
     longDescription: item.longDescription,
-    highlights: item.highlights?.map(h => h.text) || [],
-    whatToExpect: item.whatToExpect,
-    difficulty: item.difficulty,
-    bestFor: item.bestFor,
+    // Campos para footer
+    showInFooter: item.showInFooter ?? true, // Default true para backwards compatibility
+    footerDisplayOrder: item.footerDisplayOrder || 0,
   }));
 };
 
@@ -428,58 +489,70 @@ const transformPackages = (data) => {
   if (!data) return [];
   const items = Array.isArray(data) ? data : [data];
 
-  return items.map((item) => ({
-    id: item.id,
-    documentId: item.documentId, // Necesario para enrichWithSpanishMedia
-    experienceSlug: item.experience?.slug || '',
-    title: item.title,
-    slug: item.slug,
-    location: item.location,
-    price: `MXN ${item.priceAmount?.toLocaleString()}`,
-    priceAmount: item.priceAmount,
-    originalPrice: item.originalPriceAmount
-      ? `MXN ${item.originalPriceAmount?.toLocaleString()}`
-      : null,
-    originalPriceAmount: item.originalPriceAmount,
-    duration: item.duration,
-    rating: item.rating,
-    // Pasar objeto media completo - getStrapiMediaUrl maneja ambos formatos
-    image: getStrapiMediaUrl(item.thumbnail),
-    heroImage: getStrapiMediaUrl(item.heroImage),
-    gallery: item.gallery?.map(g => ({
-      url: getStrapiMediaUrl(g.image),
-      caption: g.caption || '',
-      alt: g.caption || item.title,
-    })) || [],
-    tags: item.tags?.map(t => t.name) || [],
-    hasDiscount: item.hasDiscount,
-    season: item.season === 'summer' ? 'verano' : 'invierno',
-    description: item.description,
-    itinerary: item.itinerary?.map(day => ({
-      day: day.day,
-      title: day.title,
-      description: day.description,
-      image: getStrapiMediaUrl(day.image),
-    })) || [],
-    includes: item.includes?.map(inc => ({
-      label: inc.label,
-      detail: inc.detail,
-    })) || [],
-    notIncludes: item.notIncludes?.map(ni => ni.text) || [],
-    difficulty: item.difficulty,
-    groupSize: item.groupSize,
-    guideType: item.guideType,
-    availableDates: item.availableDates,
-    startDates: item.startDates?.map(sd => sd.displayText || sd.date) || [],
-    locationInfo: item.locationInfo ? {
-      howToGetThere: item.locationInfo.howToGetThere,
-      latitude: item.locationInfo.latitude,
-      longitude: item.locationInfo.longitude,
-      googleMapsUrl: item.locationInfo.googleMapsUrl,
-      nearestAirport: item.locationInfo.nearestAirport,
-      nearestCity: item.locationInfo.nearestCity,
-    } : null,
-  }));
+  return items.map((item) => {
+    // Determinar si mostrar descuento: solo si hasDiscount=true Y hay originalPriceAmount
+    const showDiscount = item.hasDiscount === true && item.originalPriceAmount && item.originalPriceAmount > item.priceAmount;
+
+    return {
+      id: item.id,
+      documentId: item.documentId, // Necesario para enrichWithSpanishMedia
+      experienceSlug: item.experience?.slug || '',
+      title: item.title,
+      slug: item.slug,
+      location: item.location,
+      // Precios en EUR (vienen como priceAmount desde Strapi) - el frontend se encarga de la conversión
+      priceEUR: item.priceAmount,
+      originalPriceEUR: showDiscount ? item.originalPriceAmount : null,
+      hasDiscount: showDiscount,
+      duration: item.duration,
+      rating: item.rating,
+      // Pasar objeto media completo - getStrapiMediaUrl maneja ambos formatos
+      image: getStrapiMediaUrl(item.thumbnail),
+      heroImage: getStrapiMediaUrl(item.heroImage),
+      gallery: item.gallery?.map(g => ({
+        url: getStrapiMediaUrl(g.image),
+        caption: g.caption || '',
+        alt: g.caption || item.title,
+      })) || [],
+      tags: item.tags?.map(t => t.name) || [],
+      season: item.season === 'summer' ? 'verano' : 'invierno',
+      description: item.description,
+      itinerary: item.itinerary?.map(day => ({
+        day: day.day,
+        title: day.title,
+        description: day.description,
+        image: getStrapiMediaUrl(day.image),
+      })) || [],
+      includes: item.includes?.map(inc => ({
+        label: inc.label,
+        detail: inc.detail,
+      })) || [],
+      // notIncludes ahora usa el mismo formato que includes (con label y detail)
+      notIncludes: item.notIncludes?.map(ni => ({
+        label: ni.label,
+        detail: ni.detail,
+      })) || [],
+      // Nuevos campos de información adicional
+      additionalInfo: item.additionalInfo?.map(info => ({
+        label: info.label,
+        detail: info.detail,
+      })) || [],
+      additionalServices: item.additionalServices?.map(svc => ({
+        label: svc.label,
+        detail: svc.detail,
+      })) || [],
+      // Imagen de mapa (solo imagen, sin coordenadas)
+      mapImage: getStrapiMediaUrl(item.mapImage),
+      difficulty: item.difficulty,
+      groupSize: item.groupSize,
+      guideType: item.guideType,
+      availableDates: item.availableDates,
+      startDates: item.startDates?.map(sd => sd.displayText || sd.date) || [],
+      // Campos para recomendaciones del home
+      showInHome: item.showInHome || false,
+      homeDisplayOrder: item.homeDisplayOrder || 0,
+    };
+  });
 };
 
 const transformHeroSection = (data) => {

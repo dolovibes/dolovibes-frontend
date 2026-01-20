@@ -3,10 +3,13 @@
  * 
  * ESTADO: ACTIVADO
  * 
+ * IMPORTANTE: Los precios se capturan en EUROS (EUR) en el CMS
+ * 
  * Funcionalidades:
+ * - Moneda base: EUR (todos los precios en Strapi se almacenan en euros)
  * - Detección automática de moneda por ubicación del usuario
  * - Conversión de precios en tiempo real con cache
- * - Soporte para múltiples monedas (MXN, USD, EUR, GBP)
+ * - Soporte para múltiples monedas (EUR, USD, MXN, CHF, etc.)
  * - Persistencia de preferencias en localStorage
  * - Fallbacks para navegadores antiguos y errores de red
  */
@@ -31,25 +34,26 @@ const GEO_API_URL = 'https://ipapi.co/json/';
 const EXCHANGE_RATE_API_URL = 'https://v6.exchangerate-api.com/v6';
 
 // Moneda base del sistema (precios en Strapi/datos estáticos)
-export const BASE_CURRENCY = 'MXN';
+// IMPORTANTE: Los precios se capturan en EUR en el CMS
+export const BASE_CURRENCY = 'EUR';
 
 // Monedas soportadas con configuración completa
 // Optimización: 4 monedas principales (México + Europa + Internacional + Suiza)
 export const SUPPORTED_CURRENCIES = {
   // Moneda base - Mercado mexicano
-  MXN: { 
-    symbol: '$', 
-    name: 'Peso Mexicano', 
+  MXN: {
+    symbol: '$',
+    name: 'Peso Mexicano',
     nameShort: 'MXN',
-    locale: 'es-MX', 
+    locale: 'es-MX',
     position: 'before',
     flag: '🇲🇽',
     decimals: 0
   },
   // Mercado europeo - Italia/Dolomitas (40% turismo) + Alemania (35%) + España
-  EUR: { 
-    symbol: '€', 
-    name: 'Euro', 
+  EUR: {
+    symbol: '€',
+    name: 'Euro',
     nameShort: 'EUR',
     locale: 'es-ES',
     position: 'after',
@@ -57,39 +61,39 @@ export const SUPPORTED_CURRENCIES = {
     decimals: 2
   },
   // Internacional - Norteamérica + referencia global
-  USD: { 
-    symbol: '$', 
-    name: 'US Dollar', 
+  USD: {
+    symbol: '$',
+    name: 'US Dollar',
     nameShort: 'USD',
-    locale: 'en-US', 
+    locale: 'en-US',
     position: 'before',
     flag: '🇺🇸',
     decimals: 2
   },
   // Turismo suizo en Dolomitas (8% mercado)
-  CHF: { 
-    symbol: 'CHF', 
-    name: 'Swiss Franc', 
+  CHF: {
+    symbol: 'CHF',
+    name: 'Swiss Franc',
     nameShort: 'CHF',
-    locale: 'de-CH', 
+    locale: 'de-CH',
     position: 'before',
     flag: '🇨🇭',
     decimals: 2
   },
-  AUD: { 
-    symbol: 'A$', 
-    name: 'Australian Dollar', 
+  AUD: {
+    symbol: 'A$',
+    name: 'Australian Dollar',
     nameShort: 'AUD',
-    locale: 'en-AU', 
+    locale: 'en-AU',
     position: 'before',
     flag: '🇦🇺',
     decimals: 2
   },
-  NZD: { 
-    symbol: 'NZ$', 
-    name: 'New Zealand Dollar', 
+  NZD: {
+    symbol: 'NZ$',
+    name: 'New Zealand Dollar',
     nameShort: 'NZD',
-    locale: 'en-NZ', 
+    locale: 'en-NZ',
     position: 'before',
     flag: '🇳🇿',
     decimals: 2
@@ -175,7 +179,7 @@ export const detectUserLocation = async () => {
         'Accept': 'application/json',
       },
     });
-    
+
     clearTimeout(timeoutId);
 
     if (!response.ok) {
@@ -183,7 +187,7 @@ export const detectUserLocation = async () => {
     }
 
     const data = await response.json();
-    
+
     const result = {
       country: data.country_code || null,
       countryName: data.country_name || null,
@@ -233,7 +237,7 @@ export const detectUserCurrency = async () => {
 
   // 3. Fallback por idioma del navegador
   const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
-  
+
   // México
   if (browserLang.startsWith('es-mx')) return 'MXN';
   // Argentina
@@ -286,28 +290,28 @@ export const detectUserCurrency = async () => {
 /**
  * Tasas de fallback aproximadas (actualizadas manualmente)
  * Se usan cuando la API no está disponible
- * Tasas aproximadas a enero 2026 (MXN como base, 1 MXN = X moneda)
+ * Tasas aproximadas a enero 2026 (EUR como base, 1 EUR = X moneda)
  */
 const getFallbackRates = () => {
   return {
-    MXN: 1,
+    EUR: 1,        // Moneda base
     // Norteamérica
-    USD: 0.058,    // 1 MXN ≈ 0.058 USD (17.2 MXN/USD)
-    CAD: 0.079,    // 1 MXN ≈ 0.079 CAD
+    USD: 1.09,     // 1 EUR ≈ 1.09 USD
+    CAD: 1.49,     // 1 EUR ≈ 1.49 CAD
+    MXN: 18.8,     // 1 EUR ≈ 18.8 MXN
     // Europa
-    EUR: 0.053,    // 1 MXN ≈ 0.053 EUR
-    GBP: 0.045,    // 1 MXN ≈ 0.045 GBP
-    CHF: 0.051,    // 1 MXN ≈ 0.051 CHF
+    GBP: 0.85,     // 1 EUR ≈ 0.85 GBP
+    CHF: 0.96,     // 1 EUR ≈ 0.96 CHF
     // Latinoamérica
-    ARS: 52.9,     // 1 MXN ≈ 52.9 ARS
-    COP: 230,      // 1 MXN ≈ 230 COP
-    CLP: 52,       // 1 MXN ≈ 52 CLP
-    BRL: 0.29,     // 1 MXN ≈ 0.29 BRL
-    PEN: 0.22,     // 1 MXN ≈ 0.22 PEN
+    ARS: 998,      // 1 EUR ≈ 998 ARS
+    COP: 4320,     // 1 EUR ≈ 4320 COP
+    CLP: 978,      // 1 EUR ≈ 978 CLP
+    BRL: 5.45,     // 1 EUR ≈ 5.45 BRL
+    PEN: 4.13,     // 1 EUR ≈ 4.13 PEN
     // Asia/Oceanía
-    JPY: 8.7,      // 1 MXN ≈ 8.7 JPY
-    AUD: 0.089,    // 1 MXN ≈ 0.089 AUD
-    NZD: 0.097,    // 1 MXN ≈ 0.097 NZD
+    JPY: 164,      // 1 EUR ≈ 164 JPY
+    AUD: 1.68,     // 1 EUR ≈ 1.68 AUD
+    NZD: 1.83,     // 1 EUR ≈ 1.83 NZD
   };
 };
 
@@ -335,34 +339,34 @@ export const fetchExchangeRates = async () => {
       `${EXCHANGE_RATE_API_URL}/${EXCHANGE_RATE_API_KEY}/latest/${BASE_CURRENCY}`,
       { signal: controller.signal }
     );
-    
+
     clearTimeout(timeoutId);
-    
+
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
 
     const data = await response.json();
-    
+
     if (data.result === 'success') {
       ratesCache = data.conversion_rates;
       ratesCacheExpiry = Date.now() + CACHE_DURATION;
-      
+
       // Guardar en localStorage como backup
       try {
         localStorage.setItem('dolovibes_rates', JSON.stringify({
           rates: ratesCache,
           expiry: ratesCacheExpiry,
         }));
-      } catch (e) {}
-      
+      } catch (e) { }
+
       return ratesCache;
     }
-    
+
     throw new Error(data['error-type'] || 'Unknown error');
   } catch (error) {
     console.warn('[Currency] Exchange rate fetch failed:', error.message);
-    
+
     // Intentar recuperar del localStorage
     try {
       const cached = localStorage.getItem('dolovibes_rates');
@@ -371,8 +375,8 @@ export const fetchExchangeRates = async () => {
         ratesCache = rates;
         return rates;
       }
-    } catch (e) {}
-    
+    } catch (e) { }
+
     // Usar tasas de fallback
     return getFallbackRates();
   }
@@ -383,15 +387,15 @@ export const fetchExchangeRates = async () => {
 // ============================================
 
 /**
- * Convierte un precio de la moneda base a otra moneda
- * @param {number} amount - Monto en MXN
+ * Convierte un precio desde la moneda base (EUR) a otra moneda
+ * @param {number} amount - Monto en EUR
  * @param {string} targetCurrency - Moneda destino
  * @param {Object} rates - Tasas (opcional, usa cache)
  * @returns {number} Monto convertido
  */
 export const convertPrice = (amount, targetCurrency, rates = null) => {
   if (!amount || isNaN(amount)) return 0;
-  
+
   // Si la moneda es la base, no convertir
   if (targetCurrency === BASE_CURRENCY) {
     return amount;
@@ -399,13 +403,27 @@ export const convertPrice = (amount, targetCurrency, rates = null) => {
 
   const exchangeRates = rates || ratesCache || getFallbackRates();
   const rate = exchangeRates[targetCurrency];
-  
+
   if (!rate) {
     console.warn(`[Currency] No rate for ${targetCurrency}, using original`);
     return amount;
   }
 
   return amount * rate;
+};
+
+/**
+ * Convierte un precio desde EUR a otra moneda
+ * Útil para precios almacenados en EUR en Strapi
+ * NOTA: Esta función ahora es equivalente a convertPrice ya que EUR es la moneda base
+ * @param {number} amountInEUR - Monto en EUR
+ * @param {string} targetCurrency - Moneda destino
+ * @param {Object} rates - Tasas (opcional, usa cache)
+ * @returns {number} Monto convertido
+ */
+export const convertFromEUR = (amountInEUR, targetCurrency, rates = null) => {
+  // Ahora que EUR es la moneda base, esta función es simplemente un alias de convertPrice
+  return convertPrice(amountInEUR, targetCurrency, rates);
 };
 
 /**
@@ -416,9 +434,9 @@ export const convertPrice = (amount, targetCurrency, rates = null) => {
  * @param {object} options - Opciones adicionales
  * @returns {string} Precio formateado
  */
-export const formatCurrency = (amount, currency = 'MXN', options = {}) => {
-  const config = SUPPORTED_CURRENCIES[currency] || SUPPORTED_CURRENCIES.MXN;
-  
+export const formatCurrency = (amount, currency = 'EUR', options = {}) => {
+  const config = SUPPORTED_CURRENCIES[currency] || SUPPORTED_CURRENCIES.EUR;
+
   const {
     showCurrencyCode = true,
     showSymbol = true,
@@ -429,7 +447,7 @@ export const formatCurrency = (amount, currency = 'MXN', options = {}) => {
 
   // Formatear número
   let formattedNumber;
-  
+
   try {
     // Intl.NumberFormat - navegadores modernos
     formattedNumber = new Intl.NumberFormat(config.locale, {
@@ -443,7 +461,7 @@ export const formatCurrency = (amount, currency = 'MXN', options = {}) => {
 
   // Construir resultado
   let result = '';
-  
+
   if (showSymbol) {
     if (config.position === 'before') {
       result = `${config.symbol}${formattedNumber}`;
@@ -463,13 +481,13 @@ export const formatCurrency = (amount, currency = 'MXN', options = {}) => {
 
 /**
  * Convierte y formatea un precio en un solo paso
- * @param {number} amountInMXN - Monto en pesos mexicanos
+ * @param {number} amountInEUR - Monto en euros
  * @param {string} targetCurrency - Moneda destino
  * @param {Object} rates - Tasas (opcional)
  * @returns {string} Precio convertido y formateado
  */
-export const formatConvertedPrice = (amountInMXN, targetCurrency, rates = null) => {
-  const converted = convertPrice(amountInMXN, targetCurrency, rates);
+export const formatConvertedPrice = (amountInEUR, targetCurrency, rates = null) => {
+  const converted = convertPrice(amountInEUR, targetCurrency, rates);
   return formatCurrency(converted, targetCurrency);
 };
 
@@ -511,7 +529,7 @@ export const getUserCurrency = () => {
 export const clearUserCurrency = () => {
   try {
     localStorage.removeItem(CURRENCY_STORAGE_KEY);
-  } catch (e) {}
+  } catch (e) { }
 };
 
 // ============================================
@@ -535,7 +553,7 @@ export const useCurrency = () => {
     const init = async () => {
       try {
         setLoading(true);
-        
+
         // Cargar tasas de cambio
         const fetchedRates = await fetchExchangeRates();
         if (mounted) setRates(fetchedRates);
@@ -566,9 +584,9 @@ export const useCurrency = () => {
     }
   }, []);
 
-  // Convertir precio
-  const convert = useCallback((amountInMXN) => {
-    return convertPrice(amountInMXN, currency, rates);
+  // Convertir precio (desde EUR)
+  const convert = useCallback((amountInEUR) => {
+    return convertPrice(amountInEUR, currency, rates);
   }, [currency, rates]);
 
   // Formatear precio
@@ -576,9 +594,15 @@ export const useCurrency = () => {
     return formatCurrency(amount, currency, options);
   }, [currency]);
 
-  // Convertir y formatear
-  const formatPrice = useCallback((amountInMXN, options = {}) => {
-    const converted = convertPrice(amountInMXN, currency, rates);
+  // Convertir y formatear desde EUR (precios de Strapi)
+  const formatPrice = useCallback((amountInEUR, options = {}) => {
+    const converted = convertPrice(amountInEUR, currency, rates);
+    return formatCurrency(converted, currency, options);
+  }, [currency, rates]);
+
+  // Alias para compatibilidad - ahora formatPrice y formatPriceFromEUR son equivalentes
+  const formatPriceFromEUR = useCallback((amountInEUR, options = {}) => {
+    const converted = convertPrice(amountInEUR, currency, rates);
     return formatCurrency(converted, currency, options);
   }, [currency, rates]);
 
@@ -591,6 +615,7 @@ export const useCurrency = () => {
     convert,
     format,
     formatPrice,
+    formatPriceFromEUR,
     currencies: SUPPORTED_CURRENCIES,
   };
 };
@@ -607,7 +632,7 @@ const CurrencyContext = createContext(null);
  */
 export const CurrencyProvider = ({ children }) => {
   const currencyState = useCurrency();
-  
+
   return (
     <CurrencyContext.Provider value={currencyState}>
       {children}
@@ -633,7 +658,7 @@ export const useCurrencyContext = () => {
 
 /**
  * Extrae el valor numérico de un precio en formato string
- * Ej: "MXN 25,000" -> 25000, "$15,000 MXN" -> 15000
+ * Ej: "€25,000" -> 25000, "$15,000 USD" -> 15000
  * @param {string|number} priceString - Precio como string o número
  * @returns {number} Valor numérico del precio
  */

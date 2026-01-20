@@ -1,62 +1,16 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-
-// Importar traducciones en español
-import commonES from './locales/es/common.json';
-import homeES from './locales/es/home.json';
-import aboutES from './locales/es/about.json';
-import experiencesES from './locales/es/experiences.json';
-import packageInfoES from './locales/es/packageInfo.json';
-import quoteFormES from './locales/es/quoteForm.json';
-import hikingLevelES from './locales/es/hikingLevel.json';
-import legalES from './locales/es/legal.json';
-
-// Importar traducciones en inglés
-import commonEN from './locales/en/common.json';
-import homeEN from './locales/en/home.json';
-import aboutEN from './locales/en/about.json';
-import experiencesEN from './locales/en/experiences.json';
-import packageInfoEN from './locales/en/packageInfo.json';
-import quoteFormEN from './locales/en/quoteForm.json';
-import hikingLevelEN from './locales/en/hikingLevel.json';
-import legalEN from './locales/en/legal.json';
-
-// Importar traducciones en italiano
-import commonIT from './locales/it/common.json';
-import homeIT from './locales/it/home.json';
-import aboutIT from './locales/it/about.json';
-import experiencesIT from './locales/it/experiences.json';
-import packageInfoIT from './locales/it/packageInfo.json';
-import quoteFormIT from './locales/it/quoteForm.json';
-import hikingLevelIT from './locales/it/hikingLevel.json';
-import legalIT from './locales/it/legal.json';
-
-
-
-
-
-// Importar traducciones en alemán
-import commonDE from './locales/de/common.json';
-import homeDE from './locales/de/home.json';
-import aboutDE from './locales/de/about.json';
-import experiencesDE from './locales/de/experiences.json';
-import packageInfoDE from './locales/de/packageInfo.json';
-import quoteFormDE from './locales/de/quoteForm.json';
-import hikingLevelDE from './locales/de/hikingLevel.json';
-import legalDE from './locales/de/legal.json';
+import HttpBackend from 'i18next-http-backend';
 
 // ============================================
-// CONFIGURACIÓN DE AUTO-DETECCIÓN DE IDIOMA
+// CONFIGURACIÓN DE I18N CON LAZY LOADING
 // ============================================
-// ESTADO: ACTIVADO ✅
 // 
-// El idioma se detecta automáticamente:
-// 1. Primero busca preferencia guardada en localStorage
-// 2. Después detecta idioma del navegador
-// 3. Como fallback usa español (es)
+// OPTIMIZACIÓN: Las traducciones se cargan bajo demanda
+// Solo se descarga el idioma que el usuario necesita
+// Reduce el bundle inicial en ~100KB+
 //
-// IMPLEMENTADO: Junio 2025
 // ============================================
 
 const LANGUAGE_DETECTION_ENABLED = true;
@@ -80,72 +34,53 @@ const languageDetectorOptions = {
 const i18nInstance = i18n.createInstance();
 
 // Aplicar plugins
-i18nInstance.use(initReactI18next);
-
-// Solo usar detector si está habilitado
-if (LANGUAGE_DETECTION_ENABLED) {
-  i18nInstance.use(LanguageDetector);
-}
+i18nInstance
+  .use(HttpBackend) // Carga archivos JSON bajo demanda
+  .use(LanguageDetector) // Detecta idioma del usuario
+  .use(initReactI18next); // Integración con React
 
 // Inicializar
 i18nInstance.init({
-  resources: {
-    es: {
-      common: commonES,
-      home: homeES,
-      about: aboutES,
-      experiences: experiencesES,
-      packageInfo: packageInfoES,
-      quoteForm: quoteFormES,
-      hikingLevel: hikingLevelES,
-      legal: legalES,
+  // Configuración del backend HTTP para cargar traducciones
+  backend: {
+    // Ruta a los archivos de traducción
+    loadPath: '/locales/{{lng}}/{{ns}}.json',
+    
+    // Cache de traducciones en el navegador
+    requestOptions: {
+      cache: 'default',
     },
-    en: {
-      common: commonEN,
-      home: homeEN,
-      about: aboutEN,
-      experiences: experiencesEN,
-      packageInfo: packageInfoEN,
-      quoteForm: quoteFormEN,
-      hikingLevel: hikingLevelEN,
-      legal: legalEN,
-    },
-    it: {
-      common: commonIT,
-      home: homeIT,
-      about: aboutIT,
-      experiences: experiencesIT,
-      packageInfo: packageInfoIT,
-      quoteForm: quoteFormIT,
-      hikingLevel: hikingLevelIT,
-      legal: legalIT,
-    },
-    de: {
-      common: commonDE,
-      home: homeDE,
-      about: aboutDE,
-      experiences: experiencesDE,
-      packageInfo: packageInfoDE,
-      quoteForm: quoteFormDE,
-      hikingLevel: hikingLevelDE,
-      legal: legalDE,
-    }
   },
+  
   // Si la detección está deshabilitada, usar español por defecto
   lng: LANGUAGE_DETECTION_ENABLED ? undefined : 'es',
-  fallbackLng: 'en', // Idioma de respaldo (inglés tiene contenido más completo)
-  supportedLngs: ['es', 'en', 'it', 'de'], // Idiomas soportados (optimizados por ROI)
-  defaultNS: 'common', // Namespace por defecto
+  fallbackLng: 'en', // Idioma de respaldo
+  supportedLngs: ['es', 'en', 'it', 'de'], // Idiomas soportados
   
-  // Configuración del detector (solo aplica si está habilitado)
-  detection: LANGUAGE_DETECTION_ENABLED ? languageDetectorOptions : undefined,
+  // Namespaces disponibles
+  ns: ['common', 'home', 'about', 'experiences', 'packageInfo', 'quoteForm', 'hikingLevel', 'legal'],
+  defaultNS: 'common',
+  
+  // Precargar namespaces críticos para el primer render
+  preload: ['es', 'en'], // Precargar español e inglés (los más comunes)
+  
+  // Configuración del detector
+  detection: languageDetectorOptions,
   
   interpolation: {
     escapeValue: false, // React ya escapa por defecto
   },
   
+  // Configuración de carga
+  load: 'languageOnly', // Solo cargar 'es', no 'es-MX'
+  
   // Configuración de desarrollo
-  debug: import.meta.env.DEV && false, // Cambiar a true para debug
+  debug: import.meta.env.DEV && false,
+  
+  // Comportamiento de carga
+  react: {
+    useSuspense: true, // Usar React Suspense para estados de carga
+  },
 });
 
 // ============================================
@@ -154,7 +89,7 @@ i18nInstance.init({
 
 /**
  * Obtiene el idioma actual
- * @returns {string} 'es' o 'en'
+ * @returns {string} 'es', 'en', 'it', 'de'
  */
 export const getCurrentLanguage = () => i18nInstance.language;
 
@@ -179,51 +114,24 @@ export const getSavedLanguage = () => {
 
 /**
  * Mapea país a idioma preferido
- * Útil cuando se detecta el país por IP
  */
 export const COUNTRY_LANGUAGE_MAP = {
   // Español
-  MX: 'es',
-  ES: 'es',
-  AR: 'es',
-  CO: 'es',
-  PE: 'es',
-  CL: 'es',
-  EC: 'es',
-  VE: 'es',
-  UY: 'es',
-  PY: 'es',
-  BO: 'es',
-  CR: 'es',
-  PA: 'es',
-  GT: 'es',
-  HN: 'es',
-  SV: 'es',
-  NI: 'es',
-  DO: 'es',
-  CU: 'es',
-  PR: 'es',
+  MX: 'es', ES: 'es', AR: 'es', CO: 'es', PE: 'es', CL: 'es',
+  EC: 'es', VE: 'es', UY: 'es', PY: 'es', BO: 'es', CR: 'es',
+  PA: 'es', GT: 'es', HN: 'es', SV: 'es', NI: 'es', DO: 'es',
+  CU: 'es', PR: 'es',
   // Inglés
-  US: 'en',
-  GB: 'en',
-  CA: 'en',
-  AU: 'en',
-  NZ: 'en',
-  IE: 'en',
+  US: 'en', GB: 'en', CA: 'en', AU: 'en', NZ: 'en', IE: 'en',
   // Italiano
-  IT: 'it',
-  SM: 'it',
+  IT: 'it', SM: 'it',
   // Alemán
-  DE: 'de',
-  AT: 'de',
-  CH: 'de', // Suiza (alemán prioritario en región Dolomitas)
-  LI: 'de',
-  // Francés y Portugués removidos (bajo ROI)
+  DE: 'de', AT: 'de', CH: 'de', LI: 'de',
 };
 
 /**
  * Detecta el idioma óptimo basado en código de país
- * @param {string} countryCode - Código ISO del país (MX, US, etc.)
+ * @param {string} countryCode - Código ISO del país
  * @returns {string} Idioma ('es', 'en', 'it', 'de')
  */
 export const detectLanguageByCountry = (countryCode) => {

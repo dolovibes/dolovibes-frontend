@@ -1,0 +1,15 @@
+{
+    "hero": {
+        "badge": "DISCOVER YOUR NEXT ADVENTURE",
+        "title": "Live unforgettable",
+        "titleHighlight": "experiences",
+        "subtitle": "Select your ideal season and discover the adventures we have prepared for you"
+    },
+    "selector": {
+        "whenQuestion": "Your next adventure starts here",
+        "whatQuestion": "What experience would you like to have?",
+        "selectExperience": "Select an experience",
+        "changeSeason": "Change season",
+        "noExperiences": "No experiences available for this season"
+    }
+}

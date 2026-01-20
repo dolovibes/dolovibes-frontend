@@ -153,30 +153,34 @@ const HikingLevelModal = ({ isOpen, onClose }) => {
                 {/* Content */}
                 <div className="p-6 overflow-y-auto max-h-[60vh]">
                     {!showResult ? (
-                        <div className="space-y-4">
+                        <div key={`question-${currentQuestion}`} className="space-y-4">
                             <h4 className="text-lg font-semibold text-grafito mb-6">
                                 {questions[currentQuestion].question}
                             </h4>
-                            {questions[currentQuestion].options.map((option) => (
-                                <button
-                                    key={option.value}
-                                    onClick={() => handleAnswer(questions[currentQuestion].id, option.value)}
-                                    className={`w-full p-4 text-left rounded-xl border-2 transition-all hover:border-pizarra hover:bg-nieve group ${answers[questions[currentQuestion].id] === option.value
-                                        ? 'border-pizarra bg-nieve'
-                                        : 'border-niebla'
-                                        }`}
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <span className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${answers[questions[currentQuestion].id] === option.value
-                                            ? 'bg-pizarra text-white'
-                                            : 'bg-nieve text-pizarra group-hover:bg-pizarra group-hover:text-white'
-                                            }`}>
-                                            {option.value}
-                                        </span>
-                                        <span className="text-pizarra">{option.text}</span>
-                                    </div>
-                                </button>
-                            ))}
+                            {questions[currentQuestion].options.map((option) => {
+                                // Verificar si esta opción específica está seleccionada para ESTA pregunta
+                                const isSelected = answers[questions[currentQuestion].id] === option.value;
+                                return (
+                                    <button
+                                        key={option.value}
+                                        onClick={() => handleAnswer(questions[currentQuestion].id, option.value)}
+                                        className={`w-full p-4 text-left rounded-xl border-2 transition-all hover:border-pizarra hover:bg-nieve group ${isSelected
+                                            ? 'border-pizarra bg-nieve'
+                                            : 'border-niebla'
+                                            }`}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <span className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${isSelected
+                                                ? 'bg-pizarra text-white'
+                                                : 'bg-nieve text-pizarra group-hover:bg-pizarra group-hover:text-white'
+                                                }`}>
+                                                {option.value}
+                                            </span>
+                                            <span className="text-pizarra">{option.text}</span>
+                                        </div>
+                                    </button>
+                                );
+                            })}
                         </div>
                     ) : (
                         <div className="text-center">

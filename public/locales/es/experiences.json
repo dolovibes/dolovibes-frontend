@@ -1,0 +1,30 @@
+{
+    "page": {
+        "notFound": "Experiencia no encontrada",
+        "notFoundMessage": "La experiencia que buscas no existe o ha sido removida."
+    },
+    "details": {
+        "about": "Sobre esta experiencia",
+        "itinerary": "Itinerario",
+        "includes": "Incluye",
+        "notIncludes": "No incluye",
+        "day": "Día"
+    },
+    "booking": {
+        "upcomingDates": "Próximas fechas",
+        "requestQuote": "Solicitar Cotización",
+        "noCommitment": "Sin compromiso • Respuesta en 24h",
+        "questions": "¿Tienes dudas?",
+        "contactWhatsapp": "Contáctanos por WhatsApp"
+    },
+    "related": {
+        "title": "Otras experiencias de"
+    },
+    "difficulty": {
+        "easy": "Fácil",
+        "moderate": "Moderado",
+        "intermediate": "Intermedio",
+        "advanced": "Avanzado",
+        "expert": "Experto"
+    }
+}
