@@ -57,6 +57,21 @@ export const useExperience = (slug) => {
   });
 };
 
+/**
+ * Hook para obtener experiencias para el footer
+ * Solo retorna experiencias con showInFooter=true, ordenadas por footerDisplayOrder
+ */
+export const useFooterExperiences = () => {
+  const { i18n } = useTranslation();
+  const locale = i18n.language;
+
+  return useQuery({
+    queryKey: ['footerExperiences', locale],
+    queryFn: () => api.getFooterExperiences(),
+    ...defaultQueryOptions,
+  });
+};
+
 // ============================================
 // HOOKS DE PAQUETES
 // ============================================
@@ -98,6 +113,21 @@ export const usePackage = (slug) => {
  */
 export const usePackagesByExperience = (experienceSlug) => {
   return usePackages({ experienceSlug });
+};
+
+/**
+ * Hook para obtener paquetes destacados para el home
+ * Solo retorna paquetes con showInHome=true, ordenados por homeDisplayOrder
+ */
+export const useFeaturedPackages = () => {
+  const { i18n } = useTranslation();
+  const locale = i18n.language;
+
+  return useQuery({
+    queryKey: ['featuredPackages', locale],
+    queryFn: () => api.getFeaturedPackages(),
+    ...defaultQueryOptions,
+  });
 };
 
 // ============================================
@@ -162,9 +192,11 @@ export const useSiteTexts = () => {
 export default {
   useExperiences,
   useExperience,
+  useFooterExperiences,
   usePackages,
   usePackage,
   usePackagesByExperience,
+  useFeaturedPackages,
   useHeroSection,
   useAboutPage,
   useSiteSettings,

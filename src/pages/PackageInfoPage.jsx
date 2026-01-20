@@ -15,7 +15,7 @@ import {
     Calendar
 } from 'lucide-react';
 import { usePackage, useSiteTexts } from '../services/hooks';
-import { useCurrencyContext, parsePrice } from '../utils/currency';
+import { useCurrencyContext } from '../utils/currency';
 import PackageQuoteModal from '../components/PackageQuoteModal';
 import PhotoGalleryModal from '../components/PhotoGalleryModal';
 import HikingLevelModal from '../components/HikingLevelModal';
@@ -35,7 +35,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
     const loadingText = siteTexts?.loadingPackage || tCommon('loading.package');
 
     // Contexto de moneda para conversión de precios
-    const { formatPrice, currency } = useCurrencyContext();
+    const { formatPriceFromEUR, currency } = useCurrencyContext();
 
     // Estado para el carrusel de itinerario
     const [currentDay, setCurrentDay] = useState(0);
@@ -171,13 +171,17 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 <Clock className="w-4 h-4" />
                                 {pkg.duration}
                             </span>
-                            <span className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                                {pkg.difficulty}
-                            </span>
-                            <span className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                                <Users className="w-4 h-4" />
-                                {pkg.groupSize}
-                            </span>
+                            {pkg.difficulty && (
+                                <span className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                                    {pkg.difficulty}
+                                </span>
+                            )}
+                            {pkg.groupSize && (
+                                <span className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                                    <Users className="w-4 h-4" />
+                                    {pkg.groupSize}
+                                </span>
+                            )}
                             {pkg.guideType && (
                                 <span className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
                                     {pkg.guideType}
@@ -302,13 +306,13 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                     {tPackage('pricePerPerson')}
                                 </p>
                                 <div className="flex items-baseline gap-3">
-                                    {pkg.originalPrice && (
+                                    {pkg.hasDiscount && pkg.originalPriceEUR && (
                                         <span className="text-niebla line-through text-xl">
-                                            {formatPrice(parsePrice(pkg.originalPrice))}
+                                            {formatPriceFromEUR(pkg.originalPriceEUR)}
                                         </span>
                                     )}
                                     <span className="text-4xl md:text-5xl font-bold text-pizarra">
-                                        {formatPrice(parsePrice(pkg.price))}
+                                        {formatPriceFromEUR(pkg.priceEUR)}
                                     </span>
                                 </div>
                             </div>
@@ -330,40 +334,160 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                             </button>
 
                             {/* Incluye - Desplegables */}
-                            <div className="space-y-3 mb-6">
-                                {pkg.includes.map((item, index) => (
-                                    <div
-                                        key={index}
-                                        className="bg-nieve rounded-xl overflow-hidden border border-niebla"
-                                    >
-                                        <button
-                                            onClick={() => toggleInclude(index)}
-                                            className="w-full flex items-center justify-between p-4 text-left hover:bg-nieve transition-colors"
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center flex-shrink-0">
-                                                    <Check className="w-4 h-4 text-white" />
-                                                </div>
-                                                <span className="font-semibold text-grafito">
-                                                    {item.label}
-                                                </span>
+                            {pkg.includes && pkg.includes.length > 0 && (
+                                <div className="mb-6">
+                                    <h3 className="text-lg font-bold text-grafito mb-3">{tPackage('whatsIncluded')}</h3>
+                                    <div className="space-y-3">
+                                        {pkg.includes.map((item, index) => (
+                                            <div
+                                                key={`inc-${index}`}
+                                                className="bg-nieve rounded-xl overflow-hidden border border-niebla"
+                                            >
+                                                <button
+                                                    onClick={() => toggleInclude(`inc-${index}`)}
+                                                    className="w-full flex items-center justify-between p-4 text-left hover:bg-nieve transition-colors"
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center flex-shrink-0">
+                                                            <Check className="w-4 h-4 text-white" />
+                                                        </div>
+                                                        <span className="font-semibold text-grafito">
+                                                            {item.label}
+                                                        </span>
+                                                    </div>
+                                                    {item.detail && (
+                                                        <ChevronDown className={`w-5 h-5 text-niebla transition-transform duration-300 ${expandedInclude === `inc-${index}` ? 'rotate-180' : ''}`} />
+                                                    )}
+                                                </button>
+                                                {item.detail && (
+                                                    <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `inc-${index}` ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
+                                                        <div className="px-4 pb-4 pt-0">
+                                                            <p className="text-pizarra pl-11">{item.detail}</p>
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </div>
-                                            <ChevronDown className={`w-5 h-5 text-niebla transition-transform duration-300 ${expandedInclude === index ? 'rotate-180' : ''
-                                                }`} />
-                                        </button>
-
-                                        {/* Contenido expandible */}
-                                        <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === index ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
-                                            }`}>
-                                            <div className="px-4 pb-4 pt-0">
-                                                <p className="text-pizarra pl-11">
-                                                    {item.detail}
-                                                </p>
-                                            </div>
-                                        </div>
+                                        ))}
                                     </div>
-                                ))}
-                            </div>
+                                </div>
+                            )}
+
+                            {/* No Incluye - Desplegables */}
+                            {pkg.notIncludes && pkg.notIncludes.length > 0 && (
+                                <div className="mb-6">
+                                    <h3 className="text-lg font-bold text-grafito mb-3">{tPackage('whatsNotIncluded')}</h3>
+                                    <div className="space-y-3">
+                                        {pkg.notIncludes.map((item, index) => (
+                                            <div
+                                                key={`notinc-${index}`}
+                                                className="bg-nieve rounded-xl overflow-hidden border border-niebla"
+                                            >
+                                                <button
+                                                    onClick={() => toggleInclude(`notinc-${index}`)}
+                                                    className="w-full flex items-center justify-between p-4 text-left hover:bg-nieve transition-colors"
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                                            <X className="w-4 h-4 text-white" />
+                                                        </div>
+                                                        <span className="font-semibold text-grafito">
+                                                            {item.label}
+                                                        </span>
+                                                    </div>
+                                                    {item.detail && (
+                                                        <ChevronDown className={`w-5 h-5 text-niebla transition-transform duration-300 ${expandedInclude === `notinc-${index}` ? 'rotate-180' : ''}`} />
+                                                    )}
+                                                </button>
+                                                {item.detail && (
+                                                    <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `notinc-${index}` ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
+                                                        <div className="px-4 pb-4 pt-0">
+                                                            <p className="text-pizarra pl-11">{item.detail}</p>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Información Adicional - Desplegables */}
+                            {pkg.additionalInfo && pkg.additionalInfo.length > 0 && (
+                                <div className="mb-6">
+                                    <h3 className="text-lg font-bold text-grafito mb-3">{tPackage('additionalInformation')}</h3>
+                                    <div className="space-y-3">
+                                        {pkg.additionalInfo.map((item, index) => (
+                                            <div
+                                                key={`info-${index}`}
+                                                className="bg-nieve rounded-xl overflow-hidden border border-niebla"
+                                            >
+                                                <button
+                                                    onClick={() => toggleInclude(`info-${index}`)}
+                                                    className="w-full flex items-center justify-between p-4 text-left hover:bg-nieve transition-colors"
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                                            <span className="text-white text-sm">ℹ️</span>
+                                                        </div>
+                                                        <span className="font-semibold text-grafito">
+                                                            {item.label}
+                                                        </span>
+                                                    </div>
+                                                    {item.detail && (
+                                                        <ChevronDown className={`w-5 h-5 text-niebla transition-transform duration-300 ${expandedInclude === `info-${index}` ? 'rotate-180' : ''}`} />
+                                                    )}
+                                                </button>
+                                                {item.detail && (
+                                                    <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `info-${index}` ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
+                                                        <div className="px-4 pb-4 pt-0">
+                                                            <p className="text-pizarra pl-11">{item.detail}</p>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Servicios a Solicitud - Desplegables */}
+                            {pkg.additionalServices && pkg.additionalServices.length > 0 && (
+                                <div className="mb-6">
+                                    <h3 className="text-lg font-bold text-grafito mb-3">{tPackage('additionalServices')}</h3>
+                                    <div className="space-y-3">
+                                        {pkg.additionalServices.map((item, index) => (
+                                            <div
+                                                key={`svc-${index}`}
+                                                className="bg-nieve rounded-xl overflow-hidden border border-niebla"
+                                            >
+                                                <button
+                                                    onClick={() => toggleInclude(`svc-${index}`)}
+                                                    className="w-full flex items-center justify-between p-4 text-left hover:bg-nieve transition-colors"
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                                            <span className="text-white text-sm">⭐</span>
+                                                        </div>
+                                                        <span className="font-semibold text-grafito">
+                                                            {item.label}
+                                                        </span>
+                                                    </div>
+                                                    {item.detail && (
+                                                        <ChevronDown className={`w-5 h-5 text-niebla transition-transform duration-300 ${expandedInclude === `svc-${index}` ? 'rotate-180' : ''}`} />
+                                                    )}
+                                                </button>
+                                                {item.detail && (
+                                                    <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `svc-${index}` ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
+                                                        <div className="px-4 pb-4 pt-0">
+                                                            <p className="text-pizarra pl-11">{item.detail}</p>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
 
                             {/* Botones adicionales */}
                             <div className="space-y-3">
@@ -383,19 +507,21 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                     </button>
                                 )}
 
-                                {/* How to get here */}
-                                <button
-                                    onClick={() => setIsMapModalOpen(true)}
-                                    className="w-full flex items-center justify-between p-4 bg-nieve rounded-xl border border-niebla hover:bg-nieve transition-colors text-left"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center">
-                                            <MapPin className="w-4 h-4 text-white" />
+                                {/* How to get here - Solo mostrar si hay mapImage */}
+                                {pkg.mapImage && (
+                                    <button
+                                        onClick={() => setIsMapModalOpen(true)}
+                                        className="w-full flex items-center justify-between p-4 bg-nieve rounded-xl border border-niebla hover:bg-nieve transition-colors text-left"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center">
+                                                <MapPin className="w-4 h-4 text-white" />
+                                            </div>
+                                            <span className="font-semibold text-grafito">{tPackage('howToGetHere')}</span>
                                         </div>
-                                        <span className="font-semibold text-grafito">{tPackage('howToGetHere')}</span>
-                                    </div>
-                                    <ChevronRight className="w-5 h-5 text-niebla" />
-                                </button>
+                                        <ChevronRight className="w-5 h-5 text-niebla" />
+                                    </button>
+                                )}
                             </div>
                         </div>
 
@@ -450,13 +576,21 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                             </button>
                         </div>
                         <div className="p-6">
-                            <div className="bg-nieve rounded-xl h-80 flex items-center justify-center">
-                                <div className="text-center">
-                                    <MapPin className="w-12 h-12 text-niebla mx-auto mb-4" />
-                                    <p className="text-pizarra">{tPackage('mapComingSoon')}</p>
-                                    <p className="text-niebla text-sm mt-2">{pkg.location}</p>
+                            {pkg.mapImage ? (
+                                <img
+                                    src={pkg.mapImage}
+                                    alt={`Mapa de ${pkg.title}`}
+                                    className="w-full h-auto max-h-[70vh] object-contain rounded-xl"
+                                />
+                            ) : (
+                                <div className="bg-nieve rounded-xl h-80 flex items-center justify-center">
+                                    <div className="text-center">
+                                        <MapPin className="w-12 h-12 text-niebla mx-auto mb-4" />
+                                        <p className="text-pizarra">{tPackage('mapComingSoon')}</p>
+                                        <p className="text-niebla text-sm mt-2">{pkg.location}</p>
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
                     </div>
                 </div>

@@ -56,14 +56,14 @@
     "footer": {
         "description": "Einzigartige Bergerlebnisse in den italienischen Dolomiten. Abenteuer, Natur und Kultur bei jeder Reise.",
         "experiences": "Erlebnisse",
-        "information": "Informationen",
+        "information": "Rechtliche Informationen",
         "contact": "Kontakt",
+        "termsAndConditions": "Allgemeine Geschäftsbedingungen",
+        "legalNotice": "Impressum",
         "bookingConditions": "Buchungsbedingungen",
         "cancellationPolicy": "Stornierungsbedingungen",
-        "contractInfo": "Vertragsinformationen",
         "privacyPolicy": "Datenschutz",
         "cookiePolicy": "Cookie-Richtlinie",
-        "copyrights": "Urheberrecht",
         "allRightsReserved": "Alle Rechte vorbehalten."
     },
     "quoteModal": {

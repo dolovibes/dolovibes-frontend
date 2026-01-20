@@ -257,6 +257,21 @@ export const getExperienceBySlug = async (slug) => {
   return experiences[0] || null;
 };
 
+/**
+ * Obtiene las experiencias para mostrar en el footer
+ * Solo retorna experiencias con showInFooter=true, ordenadas por footerDisplayOrder
+ */
+export const getFooterExperiences = async () => {
+  const params = {
+    populate: EXPERIENCE_POPULATE,
+    'pagination[pageSize]': 20,
+    'sort': 'footerDisplayOrder:asc',
+    'filters[showInFooter][$eq]': true,
+  };
+
+  return fetchFromStrapi('/experiences', params, transformExperiences);
+};
+
 // ═══════════════════════════════════════════════════════════════
 // PAQUETES (Collection Type)
 // Endpoint: /api/packages
@@ -272,9 +287,13 @@ const PACKAGE_POPULATE = {
     populate: ['image']
   },
   includes: true,
+  notIncludes: true,
+  additionalInfo: true,
+  additionalServices: true,
+  mapImage: true,
   startDates: true,
+  tags: true,
   experience: true,
-  locationInfo: true,
 };
 
 /**
@@ -320,6 +339,21 @@ export const getPackageBySlug = async (slug) => {
  */
 export const getPackagesByExperience = async (experienceSlug) => {
   return getPackages({ experienceSlug });
+};
+
+/**
+ * Obtiene los paquetes destacados para mostrar en el home
+ * Solo retorna paquetes con showInHome=true, ordenados por homeDisplayOrder
+ */
+export const getFeaturedPackages = async () => {
+  const params = {
+    populate: PACKAGE_POPULATE,
+    'pagination[pageSize]': 20,
+    'sort': 'homeDisplayOrder:asc',
+    'filters[showInHome][$eq]': true,
+  };
+
+  return fetchFromStrapi('/packages', params, transformPackages);
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -412,15 +446,12 @@ const transformExperiences = (data) => {
     title: item.title,
     slug: item.slug,
     season: item.season === 'summer' ? 'verano' : 'invierno',
-    tags: item.tags?.map(t => t.name) || [],
     image: getStrapiMediaUrl(item.thumbnail),
     heroImage: getStrapiMediaUrl(item.heroImage),
-    shortDescription: item.shortDescription,
     longDescription: item.longDescription,
-    highlights: item.highlights?.map(h => h.text) || [],
-    whatToExpect: item.whatToExpect,
-    difficulty: item.difficulty,
-    bestFor: item.bestFor,
+    // Campos para footer
+    showInFooter: item.showInFooter ?? true, // Default true para backwards compatibility
+    footerDisplayOrder: item.footerDisplayOrder || 0,
   }));
 };
 
@@ -428,58 +459,70 @@ const transformPackages = (data) => {
   if (!data) return [];
   const items = Array.isArray(data) ? data : [data];
 
-  return items.map((item) => ({
-    id: item.id,
-    documentId: item.documentId, // Necesario para enrichWithSpanishMedia
-    experienceSlug: item.experience?.slug || '',
-    title: item.title,
-    slug: item.slug,
-    location: item.location,
-    price: `MXN ${item.priceAmount?.toLocaleString()}`,
-    priceAmount: item.priceAmount,
-    originalPrice: item.originalPriceAmount
-      ? `MXN ${item.originalPriceAmount?.toLocaleString()}`
-      : null,
-    originalPriceAmount: item.originalPriceAmount,
-    duration: item.duration,
-    rating: item.rating,
-    // Pasar objeto media completo - getStrapiMediaUrl maneja ambos formatos
-    image: getStrapiMediaUrl(item.thumbnail),
-    heroImage: getStrapiMediaUrl(item.heroImage),
-    gallery: item.gallery?.map(g => ({
-      url: getStrapiMediaUrl(g.image),
-      caption: g.caption || '',
-      alt: g.caption || item.title,
-    })) || [],
-    tags: item.tags?.map(t => t.name) || [],
-    hasDiscount: item.hasDiscount,
-    season: item.season === 'summer' ? 'verano' : 'invierno',
-    description: item.description,
-    itinerary: item.itinerary?.map(day => ({
-      day: day.day,
-      title: day.title,
-      description: day.description,
-      image: getStrapiMediaUrl(day.image),
-    })) || [],
-    includes: item.includes?.map(inc => ({
-      label: inc.label,
-      detail: inc.detail,
-    })) || [],
-    notIncludes: item.notIncludes?.map(ni => ni.text) || [],
-    difficulty: item.difficulty,
-    groupSize: item.groupSize,
-    guideType: item.guideType,
-    availableDates: item.availableDates,
-    startDates: item.startDates?.map(sd => sd.displayText || sd.date) || [],
-    locationInfo: item.locationInfo ? {
-      howToGetThere: item.locationInfo.howToGetThere,
-      latitude: item.locationInfo.latitude,
-      longitude: item.locationInfo.longitude,
-      googleMapsUrl: item.locationInfo.googleMapsUrl,
-      nearestAirport: item.locationInfo.nearestAirport,
-      nearestCity: item.locationInfo.nearestCity,
-    } : null,
-  }));
+  return items.map((item) => {
+    // Determinar si mostrar descuento: solo si hasDiscount=true Y hay originalPriceEUR
+    const showDiscount = item.hasDiscount === true && item.originalPriceEUR && item.originalPriceEUR > item.priceEUR;
+
+    return {
+      id: item.id,
+      documentId: item.documentId, // Necesario para enrichWithSpanishMedia
+      experienceSlug: item.experience?.slug || '',
+      title: item.title,
+      slug: item.slug,
+      location: item.location,
+      // Precios en EUR - el frontend se encarga de la conversión a la moneda del usuario
+      priceEUR: item.priceEUR,
+      originalPriceEUR: showDiscount ? item.originalPriceEUR : null,
+      hasDiscount: showDiscount,
+      duration: item.duration,
+      rating: item.rating,
+      // Pasar objeto media completo - getStrapiMediaUrl maneja ambos formatos
+      image: getStrapiMediaUrl(item.thumbnail),
+      heroImage: getStrapiMediaUrl(item.heroImage),
+      gallery: item.gallery?.map(g => ({
+        url: getStrapiMediaUrl(g.image),
+        caption: g.caption || '',
+        alt: g.caption || item.title,
+      })) || [],
+      tags: item.tags?.map(t => t.name) || [],
+      season: item.season === 'summer' ? 'verano' : 'invierno',
+      description: item.description,
+      itinerary: item.itinerary?.map(day => ({
+        day: day.day,
+        title: day.title,
+        description: day.description,
+        image: getStrapiMediaUrl(day.image),
+      })) || [],
+      includes: item.includes?.map(inc => ({
+        label: inc.label,
+        detail: inc.detail,
+      })) || [],
+      // notIncludes ahora usa el mismo formato que includes (con label y detail)
+      notIncludes: item.notIncludes?.map(ni => ({
+        label: ni.label,
+        detail: ni.detail,
+      })) || [],
+      // Nuevos campos de información adicional
+      additionalInfo: item.additionalInfo?.map(info => ({
+        label: info.label,
+        detail: info.detail,
+      })) || [],
+      additionalServices: item.additionalServices?.map(svc => ({
+        label: svc.label,
+        detail: svc.detail,
+      })) || [],
+      // Imagen de mapa (solo imagen, sin coordenadas)
+      mapImage: getStrapiMediaUrl(item.mapImage),
+      difficulty: item.difficulty,
+      groupSize: item.groupSize,
+      guideType: item.guideType,
+      availableDates: item.availableDates,
+      startDates: item.startDates?.map(sd => sd.displayText || sd.date) || [],
+      // Campos para recomendaciones del home
+      showInHome: item.showInHome || false,
+      homeDisplayOrder: item.homeDisplayOrder || 0,
+    };
+  });
 };
 
 const transformHeroSection = (data) => {

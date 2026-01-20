@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import VideoHero from '../components/VideoHero';
 import PackageRecommendations from '../components/PackageRecommendations';
 import Footer from '../components/Footer';
-import { usePackages } from '../services/hooks';
+import { useFeaturedPackages } from '../services/hooks';
 
 const HomePage = () => {
     const { t } = useTranslation('common');
@@ -13,11 +13,8 @@ const HomePage = () => {
     const [selectedPackages, setSelectedPackages] = useState([]);
     const recommendationsRef = useRef(null);
 
-    // 🔄 Paquetes desde Strapi (dinámicos y administrables)
-    const { data: allPackages = [], isLoading } = usePackages();
-
-    // Paquetes destacados: los primeros 4 de Strapi
-    const featuredPackages = allPackages.slice(0, 4);
+    // 🔄 Paquetes destacados desde Strapi (solo los que tienen showInHome=true)
+    const { data: featuredPackages = [], isLoading } = useFeaturedPackages();
 
     // Key para forzar re-mount del VideoHero cuando navegamos al home
     const [heroKey, setHeroKey] = useState(Date.now());

@@ -1,33 +1,50 @@
 {
-    "requestSent": "Anfrage Gesendet!",
-    "contactSoon": "Wir werden uns bald mit Ihnen in Verbindung setzen, um Ihre Reise nach zu planen",
-    "readyForTrip": "Sind Sie bereit für die spektakulärste Reise Ihres Lebens?",
-    "completeInfo": "Füllen Sie die Informationen aus",
-    "firstName": "Vorname",
-    "lastName": "Nachname",
-    "city": "Stadt",
-    "state": "Bundesland",
-    "country": "Land",
-    "email": "Email",
-    "phone": "Telefon",
-    "howContact": "Wie möchten Sie kontaktiert werden?",
-    "whatsapp": "WhatsApp",
-    "phoneCall": "Telefonanruf",
-    "emailOption": "Email",
-    "travelMonth": "Reisemonat",
-    "passengers": "Anzahl der Reisenden",
-    "person": "Person",
-    "persons": "Personen",
-    "tripType": "Reiseart",
-    "guided": "Geführt",
-    "withExpert": "Mit erfahrenem Guide",
-    "selfGuided": "Selbstgeführt",
-    "onYourOwn": "Auf eigene Faust",
-    "additionalServices": "Zusätzliche Dienstleistungen",
-    "servicesPlaceholder": "Fahrgemeinschaft, besonderes Abendessen, Flughafentransfer, Ernährungsbedürfnisse, etc.",
-    "sending": "Senden...",
-    "requestQuote": "Angebot Anfordern",
-    "responseTime": "Wir antworten innerhalb von 24 Stunden",
-    "yourName": "Ihr Vorname",
-    "yourLastName": "Ihr Nachname"
+    "subtitle": "Angebot anfordern",
+    "completeInfo": "Vervollständigen Sie die Informationen",
+    "success": {
+        "title": "Anfrage gesendet!",
+        "message": "Wir werden uns bald mit Ihnen in Verbindung setzen, um Ihre Reise zu planen."
+    },
+    "form": {
+        "firstName": "Vorname",
+        "lastName": "Nachname",
+        "city": "Stadt",
+        "state": "Bundesland",
+        "country": "Land",
+        "email": "E-Mail",
+        "phone": "Telefon",
+        "contactMethod": "Wie möchten Sie kontaktiert werden?",
+        "travelMonth": "Reisemonat",
+        "passengers": "Anzahl der Reisenden",
+        "tripType": "Reiseart",
+        "additionalServices": "Zusätzliche Leistungen",
+        "additionalServicesPlaceholder": "Fahrgemeinschaft, besonderes Abendessen, Flughafentransfer, Ernährungsbedürfnisse, usw."
+    },
+    "placeholders": {
+        "firstName": "Ihr Vorname",
+        "lastName": "Ihr Nachname",
+        "city": "Ihre Stadt",
+        "state": "Ihr Bundesland",
+        "country": "Ihr Land",
+        "email": "email@beispiel.de",
+        "phone": "+49 170 123 4567"
+    },
+    "contactOptions": {
+        "whatsapp": "WhatsApp",
+        "phone": "Telefonanruf",
+        "email": "E-Mail"
+    },
+    "tripTypes": {
+        "guided": "Geführt",
+        "guidedDesc": "Mit erfahrenem Guide",
+        "selfGuided": "Selbstgeführt",
+        "selfGuidedDesc": "Auf eigene Faust"
+    },
+    "validation": {
+        "requiredFields": "Bitte füllen Sie alle mit * markierten Pflichtfelder aus"
+    },
+    "buttons": {
+        "sending": "Wird gesendet...",
+        "submit": "Angebot anfordern"
+    }
 }

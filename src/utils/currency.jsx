@@ -37,19 +37,19 @@ export const BASE_CURRENCY = 'MXN';
 // Optimización: 4 monedas principales (México + Europa + Internacional + Suiza)
 export const SUPPORTED_CURRENCIES = {
   // Moneda base - Mercado mexicano
-  MXN: { 
-    symbol: '$', 
-    name: 'Peso Mexicano', 
+  MXN: {
+    symbol: '$',
+    name: 'Peso Mexicano',
     nameShort: 'MXN',
-    locale: 'es-MX', 
+    locale: 'es-MX',
     position: 'before',
     flag: '🇲🇽',
     decimals: 0
   },
   // Mercado europeo - Italia/Dolomitas (40% turismo) + Alemania (35%) + España
-  EUR: { 
-    symbol: '€', 
-    name: 'Euro', 
+  EUR: {
+    symbol: '€',
+    name: 'Euro',
     nameShort: 'EUR',
     locale: 'es-ES',
     position: 'after',
@@ -57,39 +57,39 @@ export const SUPPORTED_CURRENCIES = {
     decimals: 2
   },
   // Internacional - Norteamérica + referencia global
-  USD: { 
-    symbol: '$', 
-    name: 'US Dollar', 
+  USD: {
+    symbol: '$',
+    name: 'US Dollar',
     nameShort: 'USD',
-    locale: 'en-US', 
+    locale: 'en-US',
     position: 'before',
     flag: '🇺🇸',
     decimals: 2
   },
   // Turismo suizo en Dolomitas (8% mercado)
-  CHF: { 
-    symbol: 'CHF', 
-    name: 'Swiss Franc', 
+  CHF: {
+    symbol: 'CHF',
+    name: 'Swiss Franc',
     nameShort: 'CHF',
-    locale: 'de-CH', 
+    locale: 'de-CH',
     position: 'before',
     flag: '🇨🇭',
     decimals: 2
   },
-  AUD: { 
-    symbol: 'A$', 
-    name: 'Australian Dollar', 
+  AUD: {
+    symbol: 'A$',
+    name: 'Australian Dollar',
     nameShort: 'AUD',
-    locale: 'en-AU', 
+    locale: 'en-AU',
     position: 'before',
     flag: '🇦🇺',
     decimals: 2
   },
-  NZD: { 
-    symbol: 'NZ$', 
-    name: 'New Zealand Dollar', 
+  NZD: {
+    symbol: 'NZ$',
+    name: 'New Zealand Dollar',
     nameShort: 'NZD',
-    locale: 'en-NZ', 
+    locale: 'en-NZ',
     position: 'before',
     flag: '🇳🇿',
     decimals: 2
@@ -175,7 +175,7 @@ export const detectUserLocation = async () => {
         'Accept': 'application/json',
       },
     });
-    
+
     clearTimeout(timeoutId);
 
     if (!response.ok) {
@@ -183,7 +183,7 @@ export const detectUserLocation = async () => {
     }
 
     const data = await response.json();
-    
+
     const result = {
       country: data.country_code || null,
       countryName: data.country_name || null,
@@ -233,7 +233,7 @@ export const detectUserCurrency = async () => {
 
   // 3. Fallback por idioma del navegador
   const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
-  
+
   // México
   if (browserLang.startsWith('es-mx')) return 'MXN';
   // Argentina
@@ -335,34 +335,34 @@ export const fetchExchangeRates = async () => {
       `${EXCHANGE_RATE_API_URL}/${EXCHANGE_RATE_API_KEY}/latest/${BASE_CURRENCY}`,
       { signal: controller.signal }
     );
-    
+
     clearTimeout(timeoutId);
-    
+
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
 
     const data = await response.json();
-    
+
     if (data.result === 'success') {
       ratesCache = data.conversion_rates;
       ratesCacheExpiry = Date.now() + CACHE_DURATION;
-      
+
       // Guardar en localStorage como backup
       try {
         localStorage.setItem('dolovibes_rates', JSON.stringify({
           rates: ratesCache,
           expiry: ratesCacheExpiry,
         }));
-      } catch (e) {}
-      
+      } catch (e) { }
+
       return ratesCache;
     }
-    
+
     throw new Error(data['error-type'] || 'Unknown error');
   } catch (error) {
     console.warn('[Currency] Exchange rate fetch failed:', error.message);
-    
+
     // Intentar recuperar del localStorage
     try {
       const cached = localStorage.getItem('dolovibes_rates');
@@ -371,8 +371,8 @@ export const fetchExchangeRates = async () => {
         ratesCache = rates;
         return rates;
       }
-    } catch (e) {}
-    
+    } catch (e) { }
+
     // Usar tasas de fallback
     return getFallbackRates();
   }
@@ -383,7 +383,7 @@ export const fetchExchangeRates = async () => {
 // ============================================
 
 /**
- * Convierte un precio de la moneda base a otra moneda
+ * Convierte un precio de la moneda base (MXN) a otra moneda
  * @param {number} amount - Monto en MXN
  * @param {string} targetCurrency - Moneda destino
  * @param {Object} rates - Tasas (opcional, usa cache)
@@ -391,7 +391,7 @@ export const fetchExchangeRates = async () => {
  */
 export const convertPrice = (amount, targetCurrency, rates = null) => {
   if (!amount || isNaN(amount)) return 0;
-  
+
   // Si la moneda es la base, no convertir
   if (targetCurrency === BASE_CURRENCY) {
     return amount;
@@ -399,13 +399,47 @@ export const convertPrice = (amount, targetCurrency, rates = null) => {
 
   const exchangeRates = rates || ratesCache || getFallbackRates();
   const rate = exchangeRates[targetCurrency];
-  
+
   if (!rate) {
     console.warn(`[Currency] No rate for ${targetCurrency}, using original`);
     return amount;
   }
 
   return amount * rate;
+};
+
+/**
+ * Convierte un precio desde EUR a otra moneda
+ * Útil para precios almacenados en EUR en Strapi
+ * @param {number} amountInEUR - Monto en EUR
+ * @param {string} targetCurrency - Moneda destino
+ * @param {Object} rates - Tasas (opcional, usa cache)
+ * @returns {number} Monto convertido
+ */
+export const convertFromEUR = (amountInEUR, targetCurrency, rates = null) => {
+  if (!amountInEUR || isNaN(amountInEUR)) return 0;
+
+  // Si la moneda destino es EUR, no convertir
+  if (targetCurrency === 'EUR') {
+    return amountInEUR;
+  }
+
+  const exchangeRates = rates || ratesCache || getFallbackRates();
+
+  // Obtener tasa de EUR y moneda destino respecto a MXN
+  const eurRate = exchangeRates['EUR'];
+  const targetRate = exchangeRates[targetCurrency];
+
+  if (!eurRate || !targetRate) {
+    console.warn(`[Currency] Missing rate for EUR->>${targetCurrency}, returning EUR amount`);
+    return amountInEUR;
+  }
+
+  // Calcular: EUR -> MXN -> Target
+  // amountInEUR / eurRate = amountInMXN
+  // amountInMXN * targetRate = amountInTarget
+  const amountInMXN = amountInEUR / eurRate;
+  return amountInMXN * targetRate;
 };
 
 /**
@@ -418,7 +452,7 @@ export const convertPrice = (amount, targetCurrency, rates = null) => {
  */
 export const formatCurrency = (amount, currency = 'MXN', options = {}) => {
   const config = SUPPORTED_CURRENCIES[currency] || SUPPORTED_CURRENCIES.MXN;
-  
+
   const {
     showCurrencyCode = true,
     showSymbol = true,
@@ -429,7 +463,7 @@ export const formatCurrency = (amount, currency = 'MXN', options = {}) => {
 
   // Formatear número
   let formattedNumber;
-  
+
   try {
     // Intl.NumberFormat - navegadores modernos
     formattedNumber = new Intl.NumberFormat(config.locale, {
@@ -443,7 +477,7 @@ export const formatCurrency = (amount, currency = 'MXN', options = {}) => {
 
   // Construir resultado
   let result = '';
-  
+
   if (showSymbol) {
     if (config.position === 'before') {
       result = `${config.symbol}${formattedNumber}`;
@@ -511,7 +545,7 @@ export const getUserCurrency = () => {
 export const clearUserCurrency = () => {
   try {
     localStorage.removeItem(CURRENCY_STORAGE_KEY);
-  } catch (e) {}
+  } catch (e) { }
 };
 
 // ============================================
@@ -535,7 +569,7 @@ export const useCurrency = () => {
     const init = async () => {
       try {
         setLoading(true);
-        
+
         // Cargar tasas de cambio
         const fetchedRates = await fetchExchangeRates();
         if (mounted) setRates(fetchedRates);
@@ -566,7 +600,7 @@ export const useCurrency = () => {
     }
   }, []);
 
-  // Convertir precio
+  // Convertir precio (desde MXN)
   const convert = useCallback((amountInMXN) => {
     return convertPrice(amountInMXN, currency, rates);
   }, [currency, rates]);
@@ -576,9 +610,15 @@ export const useCurrency = () => {
     return formatCurrency(amount, currency, options);
   }, [currency]);
 
-  // Convertir y formatear
+  // Convertir y formatear (desde MXN - legacy)
   const formatPrice = useCallback((amountInMXN, options = {}) => {
     const converted = convertPrice(amountInMXN, currency, rates);
+    return formatCurrency(converted, currency, options);
+  }, [currency, rates]);
+
+  // Convertir y formatear desde EUR (nuevo - para precios de Strapi)
+  const formatPriceFromEUR = useCallback((amountInEUR, options = {}) => {
+    const converted = convertFromEUR(amountInEUR, currency, rates);
     return formatCurrency(converted, currency, options);
   }, [currency, rates]);
 
@@ -591,6 +631,7 @@ export const useCurrency = () => {
     convert,
     format,
     formatPrice,
+    formatPriceFromEUR,
     currencies: SUPPORTED_CURRENCIES,
   };
 };
@@ -607,7 +648,7 @@ const CurrencyContext = createContext(null);
  */
 export const CurrencyProvider = ({ children }) => {
   const currencyState = useCurrency();
-  
+
   return (
     <CurrencyContext.Provider value={currencyState}>
       {children}

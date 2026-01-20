@@ -2,11 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { MapPin, Clock, ArrowRight } from 'lucide-react';
-import { useCurrencyContext, parsePrice } from '../utils/currency';
+import { useCurrencyContext } from '../utils/currency';
 
 const PackageCard = ({ pkg }) => {
     const { t } = useTranslation('common');
-    const { formatPrice } = useCurrencyContext();
+    const { formatPriceFromEUR } = useCurrencyContext();
 
     // Función para obtener el color del nivel de dificultad
     const getDifficultyColor = (difficulty) => {
@@ -21,12 +21,9 @@ const PackageCard = ({ pkg }) => {
         return 'text-pizarra';
     };
 
-    // Convertir precios de string a número y formatear con moneda del usuario
-    const priceNumeric = parsePrice(pkg.price);
-    const originalPriceNumeric = pkg.originalPrice ? parsePrice(pkg.originalPrice) : null;
-    
-    const formattedPrice = formatPrice(priceNumeric);
-    const formattedOriginalPrice = originalPriceNumeric ? formatPrice(originalPriceNumeric) : null;
+    // Formatear precios desde EUR
+    const formattedPrice = formatPriceFromEUR(pkg.priceEUR);
+    const formattedOriginalPrice = pkg.hasDiscount && pkg.originalPriceEUR ? formatPriceFromEUR(pkg.originalPriceEUR) : null;
 
     return (
         <Link
@@ -77,9 +74,11 @@ const PackageCard = ({ pkg }) => {
                         <Clock className="w-4 h-4" />
                         {pkg.duration}
                     </span>
-                    <span className="flex items-center gap-1">
-                        {pkg.difficulty}
-                    </span>
+                    {pkg.difficulty && (
+                        <span className="flex items-center gap-1">
+                            {pkg.difficulty}
+                        </span>
+                    )}
                 </div>
 
                 {/* Description */}

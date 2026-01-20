@@ -1,33 +1,50 @@
 {
-    "requestSent": "¡Solicitud Enviada!",
-    "contactSoon": "Nos pondremos en contacto contigo muy pronto para planificar tu viaje a",
-    "readyForTrip": "¿Estás listo para el viaje más espectacular de tu vida?",
+    "subtitle": "Solicitar Cotización",
     "completeInfo": "Completa la información",
-    "firstName": "Nombre",
-    "lastName": "Apellido",
-    "city": "Ciudad",
-    "state": "Estado",
-    "country": "País",
-    "email": "Email",
-    "phone": "Teléfono",
-    "howContact": "¿Cómo te gustaría ser contactado?",
-    "whatsapp": "WhatsApp",
-    "phoneCall": "Llamada telefónica",
-    "emailOption": "Correo electrónico",
-    "travelMonth": "Mes del viaje",
-    "passengers": "Número de pasajeros",
-    "person": "persona",
-    "persons": "personas",
-    "tripType": "Tipo de viaje",
-    "guided": "Guiado",
-    "withExpert": "Con guía experto",
-    "selfGuided": "Autoguiado",
-    "onYourOwn": "Por tu cuenta",
-    "additionalServices": "Servicios adicionales",
-    "servicesPlaceholder": "Carpool, cena especial, pick up en aeropuerto, necesidades dietéticas, etc.",
-    "sending": "Enviando...",
-    "requestQuote": "Solicitar Cotización",
-    "responseTime": "Te responderemos en menos de 24 horas",
-    "yourName": "Tu nombre",
-    "yourLastName": "Tu apellido"
+    "success": {
+        "title": "¡Solicitud Enviada!",
+        "message": "Nos pondremos en contacto contigo muy pronto para planificar tu viaje."
+    },
+    "form": {
+        "firstName": "Nombre",
+        "lastName": "Apellido",
+        "city": "Ciudad",
+        "state": "Estado",
+        "country": "País",
+        "email": "Email",
+        "phone": "Teléfono",
+        "contactMethod": "¿Cómo te gustaría ser contactado?",
+        "travelMonth": "Mes del viaje",
+        "passengers": "Número de pasajeros",
+        "tripType": "Tipo de viaje",
+        "additionalServices": "Servicios adicionales",
+        "additionalServicesPlaceholder": "Carpool, cena especial, pick up en aeropuerto, necesidades dietéticas, etc."
+    },
+    "placeholders": {
+        "firstName": "Tu nombre",
+        "lastName": "Tu apellido",
+        "city": "Tu ciudad",
+        "state": "Tu estado/provincia",
+        "country": "Tu país",
+        "email": "correo@ejemplo.com",
+        "phone": "+52 81 1234 5678"
+    },
+    "contactOptions": {
+        "whatsapp": "WhatsApp",
+        "phone": "Llamada telefónica",
+        "email": "Correo electrónico"
+    },
+    "tripTypes": {
+        "guided": "Guiado",
+        "guidedDesc": "Con guía experto",
+        "selfGuided": "Autoguiado",
+        "selfGuidedDesc": "Por tu cuenta"
+    },
+    "validation": {
+        "requiredFields": "Por favor, completa todos los campos obligatorios marcados con *"
+    },
+    "buttons": {
+        "sending": "Enviando...",
+        "submit": "Solicitar Cotización"
+    }
 }

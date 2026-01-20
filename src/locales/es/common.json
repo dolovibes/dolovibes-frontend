@@ -56,14 +56,14 @@
     "footer": {
         "description": "Experiencias de montaña únicas en las Dolomitas italianas. Aventura, naturaleza y cultura en cada viaje.",
         "experiences": "Experiencias",
-        "information": "Información",
+        "information": "Información Legal",
         "contact": "Contacto",
+        "termsAndConditions": "Términos y Condiciones",
+        "legalNotice": "Aviso Legal",
         "bookingConditions": "Condiciones de Reserva",
         "cancellationPolicy": "Política de Cancelación",
-        "contractInfo": "Información de Contrato",
         "privacyPolicy": "Política de Privacidad",
         "cookiePolicy": "Política de Cookies",
-        "copyrights": "Derechos de Autor",
         "allRightsReserved": "Todos los derechos reservados."
     },
     "quoteModal": {
