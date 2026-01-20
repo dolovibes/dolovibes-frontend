@@ -460,8 +460,8 @@ const transformPackages = (data) => {
   const items = Array.isArray(data) ? data : [data];
 
   return items.map((item) => {
-    // Determinar si mostrar descuento: solo si hasDiscount=true Y hay originalPriceEUR
-    const showDiscount = item.hasDiscount === true && item.originalPriceEUR && item.originalPriceEUR > item.priceEUR;
+    // Determinar si mostrar descuento: solo si hasDiscount=true Y hay originalPriceAmount
+    const showDiscount = item.hasDiscount === true && item.originalPriceAmount && item.originalPriceAmount > item.priceAmount;
 
     return {
       id: item.id,
@@ -470,9 +470,9 @@ const transformPackages = (data) => {
       title: item.title,
       slug: item.slug,
       location: item.location,
-      // Precios en EUR - el frontend se encarga de la conversión a la moneda del usuario
-      priceEUR: item.priceEUR,
-      originalPriceEUR: showDiscount ? item.originalPriceEUR : null,
+      // Precios en EUR (vienen como priceAmount desde Strapi) - el frontend se encarga de la conversión
+      priceEUR: item.priceAmount,
+      originalPriceEUR: showDiscount ? item.originalPriceAmount : null,
       hasDiscount: showDiscount,
       duration: item.duration,
       rating: item.rating,
