@@ -87,9 +87,10 @@ const HikingLevelModal = ({ isOpen, onClose }) => {
         setAnswers(newAnswers);
 
         if (currentQuestion < questions.length - 1) {
-            setTimeout(() => setCurrentQuestion(currentQuestion + 1), 300);
+            // Timeout más largo para evitar problemas en mobile con scroll táctil
+            setTimeout(() => setCurrentQuestion(currentQuestion + 1), 500);
         } else {
-            setTimeout(() => setShowResult(true), 300);
+            setTimeout(() => setShowResult(true), 500);
         }
     };
 

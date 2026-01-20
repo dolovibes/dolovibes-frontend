@@ -306,7 +306,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                     {tPackage('pricePerPerson')}
                                 </p>
                                 <div className="flex items-baseline gap-3">
-                                    {pkg.hasDiscount && pkg.originalPriceEUR && (
+                                    {pkg.hasDiscount === true && pkg.originalPriceEUR && pkg.originalPriceEUR > pkg.priceEUR && (
                                         <span className="text-niebla line-through text-xl">
                                             {formatPriceFromEUR(pkg.originalPriceEUR)}
                                         </span>
