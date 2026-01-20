@@ -1,0 +1,50 @@
+{
+    "subtitle": "Preventivo",
+    "completeInfo": "Completa le informazioni",
+    "success": {
+        "title": "Richiesta Inviata!",
+        "message": "Ti contatteremo presto per pianificare il tuo viaggio."
+    },
+    "form": {
+        "firstName": "Nome",
+        "lastName": "Cognome",
+        "city": "Città",
+        "state": "Provincia",
+        "country": "Paese",
+        "email": "Email",
+        "phone": "Telefono",
+        "contactMethod": "Come preferisci essere contattato?",
+        "travelMonth": "Mese del viaggio",
+        "passengers": "Numero di passeggeri",
+        "tripType": "Tipo di viaggio",
+        "additionalServices": "Servizi aggiuntivi",
+        "additionalServicesPlaceholder": "Carpool, cena speciale, trasferimento aeroporto, esigenze alimentari, ecc."
+    },
+    "placeholders": {
+        "firstName": "Il tuo nome",
+        "lastName": "Il tuo cognome",
+        "city": "La tua città",
+        "state": "La tua provincia",
+        "country": "Il tuo paese",
+        "email": "email@esempio.com",
+        "phone": "+39 333 123 4567"
+    },
+    "contactOptions": {
+        "whatsapp": "WhatsApp",
+        "phone": "Telefonata",
+        "email": "Email"
+    },
+    "tripTypes": {
+        "guided": "Guidato",
+        "guidedDesc": "Con guida esperta",
+        "selfGuided": "Autogestito",
+        "selfGuidedDesc": "In autonomia"
+    },
+    "validation": {
+        "requiredFields": "Per favore, compila tutti i campi obbligatori contrassegnati con *"
+    },
+    "buttons": {
+        "sending": "Invio in corso...",
+        "submit": "Richiedi Preventivo"
+    }
+}

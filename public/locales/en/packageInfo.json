@@ -1,0 +1,36 @@
+{
+    "day": "Day {{number}}",
+    "dayOf": "Day {{current}} of {{total}}",
+    "pricePerPerson": "Price per person",
+    "additionalPhotos": "Additional photos",
+    "howToGetHere": "How to get here",
+    "mapComingSoon": "Map coming soon",
+    "notSureLevel": "Not sure about your hiking level? Take our assessment",
+    "packageNotFound": "Package not found",
+    "packageNotFoundDesc": "The package you're looking for doesn't exist or was removed.",
+    "yourAdventure": "Your day-by-day adventure",
+    "itinerary": "Itinerary",
+    "includes": "Included in the cost",
+    "notIncludes": "Not included",
+    "whatsIncluded": "What's included?",
+    "whatsNotIncluded": "What's not included?",
+    "additionalInformation": "Additional information",
+    "additionalServices": "Services on request",
+    "quote": "Get Quote",
+    "quoteResponse": "We'll respond within 24 hours",
+    "viewPackages": "View packages",
+    "difficulty": {
+        "easy": "Easy",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+    },
+    "galleryCaptions": {
+        "hut-2-hut-dolomitas-clasico": {
+            "1": "Auronzo Refuge - First day of the trek",
+            "2": "Panoramic view of the Tre Cime di Lavaredo",
+            "3": "Trail to Lake Braies",
+            "4": "Sunset from the refuge",
+            "5": "Hikers group at Giau Pass"
+        }
+    }
+}

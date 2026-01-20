@@ -1,0 +1,92 @@
+{
+    "navbar": {
+        "experiences": "Erlebnisse",
+        "ourExperiences": "Unsere Erlebnisse",
+        "packages": "Pakete",
+        "ourPackages": "Unsere Pakete",
+        "aboutUs": "Über Uns",
+        "quote": "Angebot",
+        "viewAllExperiences": "Alle Erlebnisse ansehen →",
+        "viewAllPackages": "Alle Pakete ansehen →"
+    },
+    "seasons": {
+        "summer": "Sommer",
+        "winter": "Winter"
+    },
+    "buttons": {
+        "next": "Nächster Schritt",
+        "back": "Zurück",
+        "submit": "Anfrage Senden",
+        "close": "Schließen",
+        "goBack": "Zurück",
+        "backToHome": "Zurück zur Startseite",
+        "quoteCustomTrip": "Individuelle Reise anfragen"
+    },
+    "labels": {
+        "perPerson": "pro Person",
+        "days": "Tage",
+        "persons": "Pers."
+    },
+    "loading": {
+        "experience": "Erlebnis wird geladen...",
+        "package": "Paket wird geladen...",
+        "generic": "Wird geladen..."
+    },
+    "contactMethod": {
+        "label": "Wie möchten Sie kontaktiert werden? *",
+        "whatsapp": "WhatsApp",
+        "phone": "Telefonanruf",
+        "email": "E-Mail"
+    },
+    "availablePackages": {
+        "title": "Verfügbare Pakete",
+        "subtitle": "Wählen Sie die Reise, die am besten zu Ihren Daten und Vorlieben passt"
+    },
+    "experiences": {
+        "notFound": "Erlebnis nicht gefunden",
+        "noPackages": "Für dieses Erlebnis sind noch keine Pakete verfügbar."
+    },
+    "recommendations": {
+        "basedOnSelection": "Basierend auf Ihrer Auswahl",
+        "title": "Unsere Empfehlungen",
+        "subtitle": "Die besten {{experience}} Reisen für Sie",
+        "offer": "ANGEBOT",
+        "viewDetails": "Details ansehen"
+    },
+    "footer": {
+        "description": "Einzigartige Bergerlebnisse in den italienischen Dolomiten. Abenteuer, Natur und Kultur bei jeder Reise.",
+        "experiences": "Erlebnisse",
+        "information": "Rechtliche Informationen",
+        "contact": "Kontakt",
+        "termsAndConditions": "Allgemeine Geschäftsbedingungen",
+        "legalNotice": "Impressum",
+        "bookingConditions": "Buchungsbedingungen",
+        "cancellationPolicy": "Stornierungsbedingungen",
+        "privacyPolicy": "Datenschutz",
+        "cookiePolicy": "Cookie-Richtlinie",
+        "allRightsReserved": "Alle Rechte vorbehalten."
+    },
+    "quoteModal": {
+        "title": "Angebot Anfordern",
+        "step": "Schritt",
+        "of": "von",
+        "step1Title": "Was haben Sie im Sinn?",
+        "step2Title": "Ihre Kontaktdaten",
+        "interestLabel": "Hauptinteresse",
+        "customPlan": "Individuelle Planung",
+        "dateLabel": "Ungefähres Datum",
+        "travelersLabel": "Reisende",
+        "notesLabel": "Notizen oder Besondere Wünsche",
+        "notesPlaceholder": "z.B.: Ich möchte den Sonnenuntergang in den Dolomiten sehen, mittleres Fitnesslevel...",
+        "namePlaceholder": "Vollständiger Name",
+        "emailPlaceholder": "E-Mail",
+        "phonePlaceholder": "Telefon (WhatsApp)",
+        "successTitle": "Anfrage Erhalten!",
+        "successMessage": "Ein DOLOVIBES Experte wird Sie bald kontaktieren, um Ihre Reise zu planen."
+    },
+    "currency": {
+        "loading": "Währung wird geladen...",
+        "currentLabel": "Aktuelle Währung: {{currency}}. Klicken Sie zum Ändern.",
+        "selectLabel": "Währung auswählen"
+    }
+}

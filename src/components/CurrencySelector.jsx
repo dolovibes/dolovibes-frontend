@@ -22,7 +22,7 @@ const CurrencySelector = ({
 
   const { currency, setCurrency, loading } = useCurrencyContext();
 
-  const currentCurrency = SUPPORTED_CURRENCIES[currency] || SUPPORTED_CURRENCIES.MXN;
+  const currentCurrency = SUPPORTED_CURRENCIES[currency] || SUPPORTED_CURRENCIES.EUR;
 
   // Convertir objeto a array para iterar
   const currencyList = Object.entries(SUPPORTED_CURRENCIES).map(([code, config]) => ({

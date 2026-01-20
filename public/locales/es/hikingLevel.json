@@ -1,0 +1,52 @@
+{
+    "title": "¿Cuál es tu nivel de hiking?",
+    "resultTitle": "Resultado de tu evaluación",
+    "questionOf": "Pregunta {{current}} de {{total}}",
+    "questions": {
+        "q1": "¿Con qué frecuencia realizas actividad física?",
+        "q2": "¿Cuánto tiempo puedes caminar de forma continua en terreno irregular?",
+        "q3": "¿Tienes experiencia previa en senderismo de montaña?",
+        "q4": "¿Cómo te sientes con subidas prolongadas y desniveles?",
+        "q5": "¿Cómo reaccionas ante el cansancio físico?"
+    },
+    "answers": {
+        "q1a": "Rara vez o solo caminatas ocasionales",
+        "q1b": "2–3 veces por semana (caminar, gimnasio, correr, bici, etc.)",
+        "q1c": "4 o más veces por semana, entrenamientos constantes",
+        "q2a": "Hasta 3–4 horas",
+        "q2b": "5–7 horas",
+        "q2c": "Más de 7 horas",
+        "q3a": "No, solo caminatas en parques o ciudad",
+        "q3b": "Algo de experiencia en senderos con subidas y bajadas",
+        "q3c": "Experiencia frecuente en montaña o trekking largo",
+        "q4a": "Me cuestan, necesito muchos descansos",
+        "q4b": "Puedo manejarlas con ritmo constante",
+        "q4c": "Me siento cómodo(a) con subidas largas y exigentes",
+        "q5a": "Me fatigo rápido",
+        "q5b": "Me canso pero puedo continuar",
+        "q5c": "Puedo mantener esfuerzo durante muchas horas"
+    },
+    "levels": {
+        "beginner": {
+            "title": "Nivel Principiante",
+            "description": "Adecuado para personas que son activas en su vida diaria, caminan ocasionalmente, pueden caminar 3–4 horas al día en terreno mayormente estable con poco desnivel.",
+            "note": "Aunque es nivel principiante, sigue siendo montaña y requiere buena actitud física y mental."
+        },
+        "intermediate": {
+            "title": "Nivel Intermedio",
+            "description": "Adecuado para personas que realizan ejercicio con regularidad, pueden caminar 5–7 horas al día, tienen experiencia previa en senderismo y se sienten cómodas con subidas y bajadas en terreno irregular.",
+            "note": "Este nivel es ideal para quienes ya han hecho hiking y buscan un reto moderado."
+        },
+        "advanced": {
+            "title": "Nivel Avanzado",
+            "description": "Adecuado para personas que entrenan de forma constante, pueden caminar 7–9 horas al día, tienen experiencia sólida en montaña y manejan bien desniveles importantes en terreno técnico.",
+            "note": "Este nivel es para rutas largas, con alta exigencia física y mental."
+        }
+    },
+    "importantNote": "Todos nuestros tours requieren que los participantes sean personas activas, tengan buena movilidad y estén en condiciones de caminar varias horas.",
+    "encouragement": "Nuestro objetivo no es que elijas el tour más difícil, sino el que mejor se adapte a ti para que disfrutes la experiencia de forma segura y memorable",
+    "buttons": {
+        "repeat": "Repetir",
+        "viewPackages": "Ver paquetes"
+    }
+}

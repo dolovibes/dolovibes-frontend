@@ -129,6 +129,42 @@ const enrichWithSpanishMedia = (currentData, spanishData) => {
   return currentData;
 };
 
+// ═══════════════════════════════════════════════════════════════
+// CACHE EN MEMORIA PARA DATOS ESPAÑOLES
+// ═══════════════════════════════════════════════════════════════
+// Evita requests duplicados al obtener imágenes de español
+// Los datos se cachean por 5 minutos
+
+const spanishDataCache = new Map();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+
+/**
+ * Obtiene datos españoles desde cache o API
+ */
+const getSpanishDataCached = async (endpoint, params, transformFn) => {
+  const cacheKey = `${endpoint}:${JSON.stringify(params)}`;
+  const cached = spanishDataCache.get(cacheKey);
+  
+  // Verificar si hay cache válido
+  if (cached && Date.now() < cached.expiry) {
+    return cached.data;
+  }
+  
+  // Obtener datos frescos
+  const spanishParams = { ...params, locale: DEFAULT_LOCALE };
+  const response = await strapiClient.get(endpoint, { params: spanishParams });
+  const data = response.data.data;
+  const transformedData = transformFn ? transformFn(data) : data;
+  
+  // Guardar en cache
+  spanishDataCache.set(cacheKey, {
+    data: transformedData,
+    expiry: Date.now() + CACHE_TTL,
+  });
+  
+  return transformedData;
+};
+
 /**
  * Wrapper centralizado para peticiones a Strapi con fallback de idioma
  * 
@@ -136,6 +172,9 @@ const enrichWithSpanishMedia = (currentData, spanishData) => {
  * 1. Si el locale NO es español, obtiene datos en ambos idiomas
  * 2. Enriquece los datos del locale actual con imágenes de español
  * 3. Si no hay datos en el locale actual, usa español completo
+ * 
+ * OPTIMIZACIÓN: Los datos españoles se cachean en memoria para evitar
+ * requests duplicados cuando hay múltiples componentes pidiendo datos.
  * 
  * @param {string} endpoint - Ruta del API (ej: '/experiences')
  * @param {object} params - Parámetros de query (populate, filters, etc.)
@@ -163,10 +202,8 @@ const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSing
     // Si no hay datos, intentar con español como fallback completo
     if (!data || (Array.isArray(data) && data.length === 0)) {
       if (locale !== DEFAULT_LOCALE) {
-        const fallbackParams = { ...params, locale: DEFAULT_LOCALE };
-        const fallbackResponse = await strapiClient.get(endpoint, { params: fallbackParams });
-        const fallbackData = fallbackResponse.data.data;
-        return transformFn ? transformFn(fallbackData) : fallbackData;
+        // Usar cache para datos españoles
+        return getSpanishDataCached(endpoint, params, transformFn);
       }
       return transformFn ? transformFn(data) : data;
     }
@@ -177,12 +214,8 @@ const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSing
     // Si tenemos datos pero NO estamos en español, enriquecer con imágenes de español
     if (locale !== DEFAULT_LOCALE) {
       try {
-        const spanishParams = { ...params, locale: DEFAULT_LOCALE };
-        const spanishResponse = await strapiClient.get(endpoint, { params: spanishParams });
-        const spanishData = spanishResponse.data.data;
-
-        // Transformar datos españoles también
-        const transformedSpanishData = transformFn ? transformFn(spanishData) : spanishData;
+        // Usar cache para evitar requests duplicados
+        const transformedSpanishData = await getSpanishDataCached(endpoint, params, transformFn);
 
         // Enriquecer datos actuales con media de español (DESPUÉS de transformar)
         const enrichedData = enrichWithSpanishMedia(transformedData, transformedSpanishData);
@@ -200,10 +233,7 @@ const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSing
     // Error principal: intentar fallback completo a español
     if (locale !== DEFAULT_LOCALE) {
       try {
-        const fallbackParams = { ...params, locale: DEFAULT_LOCALE };
-        const fallbackResponse = await strapiClient.get(endpoint, { params: fallbackParams });
-        const fallbackData = fallbackResponse.data.data;
-        return transformFn ? transformFn(fallbackData) : fallbackData;
+        return getSpanishDataCached(endpoint, params, transformFn);
       } catch {
         throw error;
       }

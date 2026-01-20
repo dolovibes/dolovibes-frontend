@@ -1,0 +1,50 @@
+{
+    "subtitle": "Request a Quote",
+    "completeInfo": "Complete the information",
+    "success": {
+        "title": "Request Sent!",
+        "message": "We'll get in touch with you soon to plan your trip."
+    },
+    "form": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "city": "City",
+        "state": "State",
+        "country": "Country",
+        "email": "Email",
+        "phone": "Phone",
+        "contactMethod": "How would you like to be contacted?",
+        "travelMonth": "Travel Month",
+        "passengers": "Number of Passengers",
+        "tripType": "Trip Type",
+        "additionalServices": "Additional Services",
+        "additionalServicesPlaceholder": "Carpool, special dinner, airport pickup, dietary needs, etc."
+    },
+    "placeholders": {
+        "firstName": "Your first name",
+        "lastName": "Your last name",
+        "city": "Your city",
+        "state": "Your state/province",
+        "country": "Your country",
+        "email": "email@example.com",
+        "phone": "+1 555 123 4567"
+    },
+    "contactOptions": {
+        "whatsapp": "WhatsApp",
+        "phone": "Phone call",
+        "email": "Email"
+    },
+    "tripTypes": {
+        "guided": "Guided",
+        "guidedDesc": "With expert guide",
+        "selfGuided": "Self-guided",
+        "selfGuidedDesc": "On your own"
+    },
+    "validation": {
+        "requiredFields": "Please complete all required fields marked with *"
+    },
+    "buttons": {
+        "sending": "Sending...",
+        "submit": "Request Quote"
+    }
+}

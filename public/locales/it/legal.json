@@ -1,0 +1,289 @@
+{
+    "terms": {
+        "title": "Condizioni di Prenotazione",
+        "intro": "Queste Condizioni di Prenotazione regolano la contrattazione dei servizi offerti da Dolovibes S de RL, operante come Dolo Vibes.",
+        "acceptance": "Effettuando una prenotazione, il cliente accetta queste condizioni.",
+        "questions": "Hai domande?",
+        "questionsDesc": "Se hai domande sulle nostre condizioni di prenotazione, non esitare a contattarci.",
+        "backToHome": "Torna alla Home",
+        "back": "Indietro",
+        "sections": [
+            {
+                "id": 1,
+                "title": "Definizioni",
+                "icon": "FileText",
+                "content": [
+                    {
+                        "term": "Cliente",
+                        "desc": "Persona che contrae i servizi offerti dall'Azienda."
+                    },
+                    {
+                        "term": "Servizi",
+                        "desc": "Pacchetti di escursionismo, trekking, alloggio e attività correlate."
+                    },
+                    {
+                        "term": "Fornitore",
+                        "desc": "Terze parti indipendenti che forniscono direttamente servizi come alloggio, guide o trasporto."
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "title": "Oggetto del Contratto",
+                "icon": "FileText",
+                "text": "L'Azienda agisce come organizzatore di esperienze turistiche e intermediario di servizi, gestendo la contrattazione di fornitori locali per la prestazione dei servizi inclusi in ogni pacchetto."
+            },
+            {
+                "id": 3,
+                "title": "Processo di Prenotazione",
+                "icon": "Calendar",
+                "bullets": [
+                    "La prenotazione è considerata provvisoria fino al ricevimento del pagamento del deposito corrispondente.",
+                    "Una volta ricevuto il pagamento iniziale, l'Azienda invierà conferma scritta al cliente.",
+                    "L'Azienda si riserva il diritto di rifiutare una prenotazione se non c'è disponibilità con i fornitori."
+                ]
+            },
+            {
+                "id": 4,
+                "title": "Pagamenti",
+                "icon": "CreditCard",
+                "subsections": [
+                    {
+                        "subtitle": "4.1 Deposito",
+                        "text": "Per confermare la prenotazione è richiesto un pagamento minimo del 50% del prezzo totale del pacchetto."
+                    },
+                    {
+                        "subtitle": "4.2 Pagamento Finale",
+                        "text": "Il 100% dell'importo deve essere pagato entro 45 giorni prima dell'inizio del viaggio. Le informazioni dettagliate su hotel, rifugi e logistica finale saranno fornite solo dopo il ricevimento del pagamento completo."
+                    },
+                    {
+                        "subtitle": "4.3 Mancato Pagamento",
+                        "text": "Se il cliente non effettua il pagamento finale entro il periodo indicato, l'Azienda può annullare la prenotazione senza diritto al rimborso del deposito."
+                    }
+                ]
+            },
+            {
+                "id": 5,
+                "title": "Prezzi",
+                "icon": "CreditCard",
+                "text": "I prezzi sono quotati in euro e sono soggetti a:",
+                "bullets": [
+                    "Tassi di cambio",
+                    "Disponibilità dei fornitori",
+                    "Modifiche delle tariffe di terze parti",
+                    "Tasse locali"
+                ],
+                "note": "L'Azienda si riserva il diritto di modificare i prezzi prima della conferma finale."
+            },
+            {
+                "id": 6,
+                "title": "Modifiche all'Itinerario",
+                "icon": "AlertTriangle",
+                "text": "L'Azienda può modificare percorsi, alloggi o attività per motivi di:",
+                "bullets": [
+                    "Sicurezza",
+                    "Meteo",
+                    "Disponibilità",
+                    "Forza maggiore"
+                ],
+                "note": "Saranno offerte alternative simili quando possibile, senza rimborsi automatici."
+            },
+            {
+                "id": 7,
+                "title": "Cancellazioni da Parte del Cliente",
+                "icon": "AlertTriangle",
+                "text": "Le politiche di cancellazione dipendono dai fornitori coinvolti. In generale:",
+                "bullets": [
+                    "Cancellazioni con più di 45 giorni di anticipo: rimborso parziale basato sui costi già sostenuti",
+                    "Cancellazioni con meno di 45 giorni: non rimborsabile"
+                ],
+                "warning": "Alcuni servizi possono essere non rimborsabili al 100% dal momento della prenotazione."
+            },
+            {
+                "id": 8,
+                "title": "Cancellazioni da Parte dell'Azienda",
+                "icon": "AlertTriangle",
+                "text": "L'Azienda può annullare il viaggio per cause di forza maggiore, mancanza del minimo di partecipanti o impossibilità operativa. In questi casi, il cliente può scegliere:",
+                "bullets": [
+                    "Riprogrammazione del viaggio",
+                    "Credito per un viaggio futuro",
+                    "Rimborso parziale o totale, secondo i costi già impegnati con i fornitori"
+                ]
+            },
+            {
+                "id": 9,
+                "title": "Trasferimento della Prenotazione",
+                "icon": "CheckCircle",
+                "text": "Il cliente può trasferire la sua prenotazione a un'altra persona, a condizione che:",
+                "bullets": [
+                    "Soddisfi i requisiti fisici del tour",
+                    "Dia notifica scritta con almeno 45 giorni di anticipo",
+                    "Assuma eventuali costi amministrativi"
+                ]
+            },
+            {
+                "id": 10,
+                "title": "Obblighi del Cliente",
+                "icon": "CheckCircle",
+                "text": "Il cliente si impegna a:",
+                "bullets": [
+                    "Avere una condizione fisica adeguata",
+                    "Seguire le regole di sicurezza",
+                    "Rispettare le istruzioni delle guide e dei fornitori",
+                    "Segnalare condizioni mediche rilevanti"
+                ],
+                "warning": "L'inadempienza può comportare l'esclusione dall'attività senza diritto al rimborso."
+            },
+            {
+                "id": 11,
+                "title": "Tour Autoguidati",
+                "icon": "AlertTriangle",
+                "text": "Nei tour autoguidati, il cliente accetta che:",
+                "bullets": [
+                    "Non avrà accompagnamento di guide durante i percorsi",
+                    "È responsabile della valutazione delle condizioni di sicurezza",
+                    "Deve seguire le istruzioni generali fornite"
+                ],
+                "note": "L'Azienda non è responsabile per incidenti durante percorsi senza guida."
+            },
+            {
+                "id": 12,
+                "title": "Responsabilità dei Fornitori",
+                "icon": "Shield",
+                "text": "I fornitori locali sono direttamente responsabili della corretta prestazione dei loro servizi. L'Azienda non è responsabile per atti o omissioni di detti fornitori, sebbene supporterà il cliente nella gestione delle soluzioni quando possibile."
+            },
+            {
+                "id": 13,
+                "title": "Limiti di Responsabilità",
+                "icon": "Shield",
+                "text": "La responsabilità dell'Azienda è limitata all'importo pagato dal cliente per i servizi contratti, salvo casi di negligenza grave comprovata."
+            },
+            {
+                "id": 14,
+                "title": "Assicurazione di Viaggio",
+                "icon": "Shield",
+                "text": "Il cliente è responsabile dell'acquisto di un'assicurazione di viaggio che copra:",
+                "bullets": [
+                    "Attività di montagna",
+                    "Infortuni",
+                    "Evacuazione",
+                    "Cancellazioni"
+                ],
+                "warning": "L'assicurazione non è inclusa nei nostri pacchetti."
+            },
+            {
+                "id": 15,
+                "title": "Legge Applicabile",
+                "icon": "Scale",
+                "text": "Questo contratto è regolato dalle leggi degli Stati Uniti Messicani. Le attività svolte all'estero sono anche soggette alle normative locali del paese in cui si svolgono."
+            },
+            {
+                "id": 16,
+                "title": "Accettazione",
+                "icon": "CheckCircle",
+                "text": "Il pagamento del deposito o dell'importo totale implica l'accettazione espressa di queste Condizioni di Prenotazione."
+            }
+        ]
+    },
+    "cancellation": {
+        "title": "Politica di Cancellazione e Rimborsi",
+        "intro": "Le politiche di cancellazione variano a seconda del pacchetto e dei fornitori coinvolti, poiché lavoriamo con hotel, rifugi e guide locali che hanno le proprie politiche.",
+        "clientTitle": "Cancellazioni da parte del cliente",
+        "clientGeneral": "In generale:",
+        "moreThan45": "Cancellazioni con più di 45 giorni prima dell'inizio del viaggio:",
+        "moreThan45Desc": "Rimborso parziale, deducendo i costi amministrativi e i servizi già prenotati.",
+        "lessThan45": "Cancellazioni con meno di 45 giorni prima del viaggio:",
+        "lessThan45Desc": "Non rimborsabile.",
+        "nonRefundable": "Alcuni servizi possono essere non rimborsabili al 100% dal momento della prenotazione, specialmente in alta stagione o per alloggi specifici.",
+        "companyTitle": "Cancellazioni o modifiche da parte dell'Azienda",
+        "companyIntro": "L'Azienda può modificare o annullare l'itinerario per cause di:",
+        "companyReasons": [
+            "Condizioni meteorologiche",
+            "Motivi di sicurezza",
+            "Forza maggiore",
+            "Mancanza di disponibilità dei fornitori"
+        ],
+        "clientOptions": "In questi casi, il cliente può scegliere di:",
+        "options": [
+            "Riprogrammare il viaggio",
+            "Ricevere un credito per un viaggio futuro",
+            "Rimborso parziale o totale, a seconda dei costi già impegnati con i fornitori"
+        ],
+        "noShow": "No-Show",
+        "noShowDesc": "Se il cliente non si presenta nel luogo e nella data concordati, sarà considerata una cancellazione tardiva e non ci sarà diritto al rimborso.",
+        "refunds": "Rimborsi",
+        "refundsDesc": "I rimborsi, quando applicabili, saranno effettuati con lo stesso metodo di pagamento utilizzato, entro un periodo di 15-30 giorni lavorativi, a seconda della piattaforma di pagamento.",
+        "importantNote": "Nota Importante",
+        "importantNoteDesc": "Le politiche specifiche di ogni pacchetto sono dettagliate durante il processo di prenotazione e fanno parte delle Condizioni di Prenotazione accettate dal cliente al momento della contrattazione."
+    },
+    "privacy": {
+        "title": "Informativa sulla Privacy",
+        "intro": "In conformità con la Legge Federale sulla Protezione dei Dati Personali in Possesso di Privati, Dolovibes S de RL, con sede a Monterrey Nuevo León, è responsabile dell'uso e della protezione dei tuoi dati personali.",
+        "dataTitle": "Dati Personali che Raccogliamo",
+        "dataIntro": "Possiamo raccogliere i seguenti dati:",
+        "dataList": [
+            "Nome completo",
+            "Email",
+            "Telefono",
+            "Nazionalità",
+            "Informazioni di contatto di emergenza",
+            "Dati necessari per la prestazione di servizi turistici",
+            "Informazioni sanitarie rilevanti fornite volontariamente"
+        ],
+        "dataNote": "Non raccogliamo dati finanziari direttamente; i pagamenti sono elaborati tramite piattaforme di pagamento esterne.",
+        "purposeTitle": "Finalità del Trattamento dei Dati",
+        "purposeList": [
+            "Elaborare prenotazioni",
+            "Gestire servizi turistici",
+            "Contattare il cliente prima, durante e dopo il viaggio",
+            "Adempiere agli obblighi legali",
+            "Inviare informazioni relative al servizio contratto"
+        ],
+        "additionalPurpose": "Inoltre, possiamo utilizzare i tuoi dati per l'invio di promozioni e comunicazioni commerciali.",
+        "cancelNote": "Puoi richiedere la cancellazione di questo uso in qualsiasi momento.",
+        "transferTitle": "Trasferimento dei Dati",
+        "transferIntro": "I tuoi dati possono essere condivisi con:",
+        "transferList": [
+            "Fornitori turistici (hotel, guide, trasporti)",
+            "Piattaforme di pagamento",
+            "Autorità quando richiesto dalla legge"
+        ],
+        "transferNote": "Vengono condivisi solo i dati strettamente necessari per la prestazione del servizio.",
+        "arcoTitle": "Diritti ARCO",
+        "arcoIntro": "Hai il diritto di:",
+        "arcoRights": [
+            "Accedere",
+            "Rettificare",
+            "Cancellare",
+            "Opporti"
+        ],
+        "arcoNote": "al trattamento dei tuoi dati personali.",
+        "arcoEmail": "Per esercitare questi diritti, puoi inviare una richiesta all'email:",
+        "securityTitle": "Misure di Sicurezza",
+        "securityDesc": "L'Azienda implementa misure amministrative, tecniche e fisiche per proteggere i tuoi dati personali da danni, perdite, alterazioni o uso non autorizzato.",
+        "changesTitle": "Modifiche all'Informativa sulla Privacy",
+        "changesDesc": "L'Azienda può modificare questa Informativa sulla Privacy. Qualsiasi modifica sarà pubblicata su questo sito web."
+    },
+    "cookies": {
+        "title": "Politica sui Cookie",
+        "intro": "Questo sito web utilizza cookie per migliorare l'esperienza dell'utente.",
+        "whatTitle": "Cosa sono i cookie?",
+        "whatDesc": "I cookie sono piccoli file che vengono memorizzati sul tuo dispositivo quando visiti un sito web e permettono di riconoscere il tuo browser.",
+        "typesTitle": "Tipi di Cookie che Utilizziamo",
+        "necessary": "Cookie necessari",
+        "necessaryDesc": "Consentono il funzionamento di base del sito, come l'accesso alle aree sicure e il processo di prenotazione.",
+        "analytics": "Cookie di analisi",
+        "analyticsDesc": "Ci aiutano a capire come gli utenti interagiscono con il sito per migliorare i nostri servizi (es. Google Analytics).",
+        "marketing": "Cookie di marketing",
+        "marketingDesc": "Utilizzati per mostrare pubblicità pertinente su piattaforme esterne.",
+        "managementTitle": "Gestione dei Cookie",
+        "managementDesc1": "L'utente può accettare, rifiutare o configurare l'uso dei cookie dal banner dei cookie quando entra nel sito.",
+        "managementDesc2": "Puoi anche eliminare i cookie dalle impostazioni del tuo browser.",
+        "changesTitle": "Modifiche alla Politica sui Cookie",
+        "changesDesc": "Questa politica può essere aggiornata in qualsiasi momento. Le modifiche saranno pubblicate su questa pagina."
+    },
+    "common": {
+        "back": "Indietro",
+        "backToHome": "Torna alla Home"
+    }
+}

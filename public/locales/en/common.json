@@ -1,0 +1,92 @@
+{
+    "navbar": {
+        "experiences": "Experiences",
+        "ourExperiences": "Our Experiences",
+        "packages": "Packages",
+        "ourPackages": "Our Packages",
+        "aboutUs": "About Us",
+        "quote": "Get Quote",
+        "viewAllExperiences": "View all experiences →",
+        "viewAllPackages": "View all packages →"
+    },
+    "seasons": {
+        "summer": "Summer",
+        "winter": "Winter"
+    },
+    "buttons": {
+        "next": "Next Step",
+        "back": "Back",
+        "submit": "Submit Request",
+        "close": "Close",
+        "goBack": "Go Back",
+        "backToHome": "Back to Home",
+        "quoteCustomTrip": "Quote custom trip"
+    },
+    "labels": {
+        "perPerson": "per person",
+        "days": "Days",
+        "persons": "Pers."
+    },
+    "loading": {
+        "experience": "Loading experience...",
+        "package": "Loading package...",
+        "generic": "Loading..."
+    },
+    "contactMethod": {
+        "label": "How would you like to be contacted? *",
+        "whatsapp": "WhatsApp",
+        "phone": "Phone call",
+        "email": "Email"
+    },
+    "availablePackages": {
+        "title": "Available Packages",
+        "subtitle": "Choose the trip that best fits your dates and preferences"
+    },
+    "experiences": {
+        "notFound": "Experience not found",
+        "noPackages": "No packages available for this experience yet."
+    },
+    "recommendations": {
+        "basedOnSelection": "Based on your selection",
+        "title": "Our Recommendations",
+        "subtitle": "The best trips of {{experience}} for you",
+        "offer": "SALE",
+        "viewDetails": "View details"
+    },
+    "footer": {
+        "description": "Unique mountain experiences in the Italian Dolomites. Adventure, nature, and culture in every trip.",
+        "experiences": "Experiences",
+        "information": "Legal Information",
+        "contact": "Contact",
+        "termsAndConditions": "Terms and Conditions",
+        "legalNotice": "Legal Notice",
+        "bookingConditions": "Booking Conditions",
+        "cancellationPolicy": "Cancellation Policy",
+        "privacyPolicy": "Privacy Policy",
+        "cookiePolicy": "Cookie Policy",
+        "allRightsReserved": "All rights reserved."
+    },
+    "quoteModal": {
+        "title": "Request Your Quote",
+        "step": "Step",
+        "of": "of",
+        "step1Title": "What do you have in mind?",
+        "step2Title": "Your Contact Information",
+        "interestLabel": "Main Interest",
+        "customPlan": "Custom Plan",
+        "dateLabel": "Approximate Date",
+        "travelersLabel": "Travelers",
+        "notesLabel": "Notes or Special Requests",
+        "notesPlaceholder": "E.g.: I want to see the sunset in the Dolomites, medium fitness level...",
+        "namePlaceholder": "Full Name",
+        "emailPlaceholder": "Email",
+        "phonePlaceholder": "Phone (WhatsApp)",
+        "successTitle": "Request Received!",
+        "successMessage": "A DOLOVIBES expert will contact you soon to plan your trip."
+    },
+    "currency": {
+        "loading": "Loading currency...",
+        "currentLabel": "Current currency: {{currency}}. Click to change.",
+        "selectLabel": "Select currency"
+    }
+}

@@ -1,0 +1,52 @@
+{
+    "title": "What's your hiking level?",
+    "resultTitle": "Your assessment result",
+    "questionOf": "Question {{current}} of {{total}}",
+    "questions": {
+        "q1": "How often do you exercise?",
+        "q2": "How long can you walk continuously on irregular terrain?",
+        "q3": "Do you have previous mountain hiking experience?",
+        "q4": "How do you feel about prolonged climbs and elevation changes?",
+        "q5": "How do you react to physical fatigue?"
+    },
+    "answers": {
+        "q1a": "Rarely or only occasional walks",
+        "q1b": "2–3 times a week (walking, gym, running, cycling, etc.)",
+        "q1c": "4 or more times a week, consistent training",
+        "q2a": "Up to 3–4 hours",
+        "q2b": "5–7 hours",
+        "q2c": "More than 7 hours",
+        "q3a": "No, only walks in parks or city",
+        "q3b": "Some experience on trails with ups and downs",
+        "q3c": "Frequent mountain or long trekking experience",
+        "q4a": "They're hard for me, I need many breaks",
+        "q4b": "I can handle them at a steady pace",
+        "q4c": "I feel comfortable with long and demanding climbs",
+        "q5a": "I get tired quickly",
+        "q5b": "I get tired but can continue",
+        "q5c": "I can maintain effort for many hours"
+    },
+    "levels": {
+        "beginner": {
+            "title": "Beginner Level",
+            "description": "Suitable for people who are active in their daily life, walk occasionally, can walk 3–4 hours a day on mostly stable terrain with little elevation change.",
+            "note": "Even though it's beginner level, it's still mountain hiking and requires good physical and mental attitude."
+        },
+        "intermediate": {
+            "title": "Intermediate Level",
+            "description": "Suitable for people who exercise regularly, can walk 5–7 hours a day, have previous hiking experience and feel comfortable with ups and downs on irregular terrain.",
+            "note": "This level is ideal for those who have done hiking and are looking for a moderate challenge."
+        },
+        "advanced": {
+            "title": "Advanced Level",
+            "description": "Suitable for people who train consistently, can walk 7–9 hours a day, have solid mountain experience and handle significant elevation changes on technical terrain well.",
+            "note": "This level is for long routes with high physical and mental demands."
+        }
+    },
+    "importantNote": "All our tours require participants to be active people, have good mobility and be able to walk several hours.",
+    "encouragement": "Our goal is not for you to choose the most difficult tour, but the one that best suits you so you can enjoy the experience safely and memorably",
+    "buttons": {
+        "repeat": "Repeat",
+        "viewPackages": "View packages"
+    }
+}

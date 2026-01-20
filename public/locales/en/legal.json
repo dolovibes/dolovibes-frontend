@@ -1,0 +1,289 @@
+{
+    "terms": {
+        "title": "Booking Conditions",
+        "intro": "These Booking Conditions regulate the contracting of services offered by Dolovibes S de RL, operating as Dolo Vibes.",
+        "acceptance": "By making a reservation, the client accepts these conditions.",
+        "questions": "Have questions?",
+        "questionsDesc": "If you have questions about our booking conditions, don't hesitate to contact us.",
+        "backToHome": "Back to Home",
+        "back": "Back",
+        "sections": [
+            {
+                "id": 1,
+                "title": "Definitions",
+                "icon": "FileText",
+                "content": [
+                    {
+                        "term": "Client",
+                        "desc": "A person who contracts the services offered by the Company."
+                    },
+                    {
+                        "term": "Services",
+                        "desc": "Hiking, trekking, accommodation, and related activity packages."
+                    },
+                    {
+                        "term": "Provider",
+                        "desc": "Independent third parties that directly provide services such as accommodation, guides, or transportation."
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "title": "Object of the Contract",
+                "icon": "FileText",
+                "text": "The Company acts as an organizer of tourist experiences and service intermediary, managing the contracting of local providers for the provision of services included in each package."
+            },
+            {
+                "id": 3,
+                "title": "Booking Process",
+                "icon": "Calendar",
+                "bullets": [
+                    "The reservation is considered provisional until the corresponding deposit payment is received.",
+                    "Once the initial payment is received, the Company will send written confirmation to the client.",
+                    "The Company reserves the right to reject a reservation if there is no availability with providers."
+                ]
+            },
+            {
+                "id": 4,
+                "title": "Payments",
+                "icon": "CreditCard",
+                "subsections": [
+                    {
+                        "subtitle": "4.1 Deposit",
+                        "text": "A minimum payment of 50% of the total package price is required to confirm the reservation."
+                    },
+                    {
+                        "subtitle": "4.2 Final Payment",
+                        "text": "100% of the amount must be paid no later than 45 days before the start of the trip. Detailed information about hotels, refuges, and final logistics will be provided only after full payment is received."
+                    },
+                    {
+                        "subtitle": "4.3 Non-Payment",
+                        "text": "If the client does not make the final payment within the indicated period, the Company may cancel the reservation without the right to a deposit refund."
+                    }
+                ]
+            },
+            {
+                "id": 5,
+                "title": "Prices",
+                "icon": "CreditCard",
+                "text": "Prices are quoted in euros and are subject to:",
+                "bullets": [
+                    "Exchange rates",
+                    "Provider availability",
+                    "Changes in third-party rates",
+                    "Local taxes"
+                ],
+                "note": "The Company reserves the right to adjust prices before final confirmation."
+            },
+            {
+                "id": 6,
+                "title": "Itinerary Changes",
+                "icon": "AlertTriangle",
+                "text": "The Company may modify routes, accommodations, or activities for reasons of:",
+                "bullets": [
+                    "Safety",
+                    "Weather",
+                    "Availability",
+                    "Force majeure"
+                ],
+                "note": "Similar alternatives will be offered whenever possible, without automatic refunds."
+            },
+            {
+                "id": 7,
+                "title": "Cancellations by the Client",
+                "icon": "AlertTriangle",
+                "text": "Cancellation policies depend on the providers involved. Generally:",
+                "bullets": [
+                    "Cancellations more than 45 days in advance: partial refund based on costs already incurred",
+                    "Cancellations less than 45 days: non-refundable"
+                ],
+                "warning": "Some services may be 100% non-refundable from the time of booking."
+            },
+            {
+                "id": 8,
+                "title": "Cancellations by the Company",
+                "icon": "AlertTriangle",
+                "text": "The Company may cancel the trip due to force majeure, lack of minimum participants, or operational impossibility. In these cases, the client may choose:",
+                "bullets": [
+                    "Trip rescheduling",
+                    "Credit for a future trip",
+                    "Partial or full refund, according to costs already committed to providers"
+                ]
+            },
+            {
+                "id": 9,
+                "title": "Reservation Transfer",
+                "icon": "CheckCircle",
+                "text": "The client may transfer their reservation to another person, provided that:",
+                "bullets": [
+                    "They meet the physical requirements of the tour",
+                    "Notification is given in writing with at least 45 days notice",
+                    "Possible administrative costs are assumed"
+                ]
+            },
+            {
+                "id": 10,
+                "title": "Client Obligations",
+                "icon": "CheckCircle",
+                "text": "The client agrees to:",
+                "bullets": [
+                    "Have adequate physical condition",
+                    "Follow safety rules",
+                    "Respect guide and provider instructions",
+                    "Report relevant medical conditions"
+                ],
+                "warning": "Non-compliance may result in exclusion from the activity without the right to a refund."
+            },
+            {
+                "id": 11,
+                "title": "Self-Guided Tours",
+                "icon": "AlertTriangle",
+                "text": "In self-guided tours, the client accepts that:",
+                "bullets": [
+                    "They will not have guide accompaniment during routes",
+                    "They are responsible for assessing safety conditions",
+                    "They must follow the general instructions provided"
+                ],
+                "note": "The Company is not responsible for incidents during unguided routes."
+            },
+            {
+                "id": 12,
+                "title": "Provider Responsibility",
+                "icon": "Shield",
+                "text": "Local providers are directly responsible for the proper provision of their services. The Company is not responsible for acts or omissions of said providers, although it will support the client in managing solutions when possible."
+            },
+            {
+                "id": 13,
+                "title": "Limitation of Liability",
+                "icon": "Shield",
+                "text": "The Company's liability is limited to the amount paid by the client for the contracted services, except in cases of proven gross negligence."
+            },
+            {
+                "id": 14,
+                "title": "Travel Insurance",
+                "icon": "Shield",
+                "text": "The client is responsible for purchasing travel insurance that covers:",
+                "bullets": [
+                    "Mountain activities",
+                    "Accidents",
+                    "Evacuation",
+                    "Cancellations"
+                ],
+                "warning": "Insurance is not included in our packages."
+            },
+            {
+                "id": 15,
+                "title": "Applicable Law",
+                "icon": "Scale",
+                "text": "This contract is governed by the laws of the United Mexican States. Activities carried out abroad are also subject to the local regulations of the country where they take place."
+            },
+            {
+                "id": 16,
+                "title": "Acceptance",
+                "icon": "CheckCircle",
+                "text": "Payment of the deposit or full amount implies express acceptance of these Booking Conditions."
+            }
+        ]
+    },
+    "cancellation": {
+        "title": "Cancellation and Refund Policy",
+        "intro": "Cancellation policies vary depending on the package and providers involved, as we work with hotels, refuges, and local guides that have their own policies.",
+        "clientTitle": "Cancellations by the client",
+        "clientGeneral": "Generally:",
+        "moreThan45": "Cancellations more than 45 days before the trip starts:",
+        "moreThan45Desc": "Partial refund, deducting administrative costs and already booked services.",
+        "lessThan45": "Cancellations less than 45 days before the trip:",
+        "lessThan45Desc": "Non-refundable.",
+        "nonRefundable": "Some services may be 100% non-refundable from the moment of booking, especially during high season or for specific accommodations.",
+        "companyTitle": "Cancellations or changes by the Company",
+        "companyIntro": "The Company may modify or cancel the itinerary due to:",
+        "companyReasons": [
+            "Weather conditions",
+            "Safety reasons",
+            "Force majeure",
+            "Lack of provider availability"
+        ],
+        "clientOptions": "In these cases, the client may choose to:",
+        "options": [
+            "Reschedule the trip",
+            "Receive credit for a future trip",
+            "Partial or full refund, depending on costs already committed to providers"
+        ],
+        "noShow": "No-Show",
+        "noShowDesc": "If the client does not show up at the agreed place and date, it will be considered a late cancellation and there will be no right to a refund.",
+        "refunds": "Refunds",
+        "refundsDesc": "Refunds, when applicable, will be made through the same payment method used, within a period of 15 to 30 business days, depending on the payment platform.",
+        "importantNote": "Important Note",
+        "importantNoteDesc": "The specific policies of each package are detailed during the booking process and are part of the Booking Conditions accepted by the client when contracting."
+    },
+    "privacy": {
+        "title": "Privacy Notice",
+        "intro": "In compliance with the Federal Law on Protection of Personal Data Held by Private Parties, Dolovibes S de RL, with address in Monterrey Nuevo León, is responsible for the use and protection of your personal data.",
+        "dataTitle": "Personal Data We Collect",
+        "dataIntro": "We may collect the following data:",
+        "dataList": [
+            "Full name",
+            "Email",
+            "Phone",
+            "Nationality",
+            "Emergency contact information",
+            "Data necessary for the provision of tourist services",
+            "Relevant health information provided voluntarily"
+        ],
+        "dataNote": "We do not collect financial data directly; payments are processed through external payment platforms.",
+        "purposeTitle": "Purposes of Data Processing",
+        "purposeList": [
+            "Process reservations",
+            "Manage tourist services",
+            "Contact the client before, during and after the trip",
+            "Comply with legal obligations",
+            "Send information related to the contracted service"
+        ],
+        "additionalPurpose": "Additionally, we may use your data for sending promotions and commercial communications.",
+        "cancelNote": "You can request the cancellation of this use at any time.",
+        "transferTitle": "Data Transfer",
+        "transferIntro": "Your data may be shared with:",
+        "transferList": [
+            "Tourist providers (hotels, guides, transportation)",
+            "Payment platforms",
+            "Authorities when legally required"
+        ],
+        "transferNote": "Only the data strictly necessary for the provision of the service is shared.",
+        "arcoTitle": "ARCO Rights",
+        "arcoIntro": "You have the right to:",
+        "arcoRights": [
+            "Access",
+            "Rectify",
+            "Cancel",
+            "Object"
+        ],
+        "arcoNote": "to the processing of your personal data.",
+        "arcoEmail": "To exercise these rights, you can send a request to the email:",
+        "securityTitle": "Security Measures",
+        "securityDesc": "The Company implements administrative, technical and physical measures to protect your personal data against damage, loss, alteration or unauthorized use.",
+        "changesTitle": "Changes to Privacy Notice",
+        "changesDesc": "The Company may modify this Privacy Notice. Any changes will be published on this website."
+    },
+    "cookies": {
+        "title": "Cookie Policy",
+        "intro": "This website uses cookies to improve the user experience.",
+        "whatTitle": "What are cookies?",
+        "whatDesc": "Cookies are small files that are stored on your device when you visit a website and allow your browser to be recognized.",
+        "typesTitle": "Types of Cookies We Use",
+        "necessary": "Necessary cookies",
+        "necessaryDesc": "Enable basic site functionality, such as access to secure areas and the booking process.",
+        "analytics": "Analytics cookies",
+        "analyticsDesc": "Help us understand how users interact with the site to improve our services (e.g., Google Analytics).",
+        "marketing": "Marketing cookies",
+        "marketingDesc": "Used to display relevant advertising on external platforms.",
+        "managementTitle": "Cookie Management",
+        "managementDesc1": "The user can accept, reject or configure the use of cookies from the cookie banner when entering the site.",
+        "managementDesc2": "You can also delete cookies from your browser settings.",
+        "changesTitle": "Changes to Cookie Policy",
+        "changesDesc": "This policy may be updated at any time. Changes will be published on this page."
+    },
+    "common": {
+        "back": "Back",
+        "backToHome": "Back to Home"
+    }
+}

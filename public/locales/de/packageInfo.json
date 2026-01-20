@@ -1,0 +1,36 @@
+{
+    "day": "Tag {{number}}",
+    "dayOf": "Tag {{current}} von {{total}}",
+    "pricePerPerson": "Preis pro Person",
+    "additionalPhotos": "Weitere Fotos",
+    "howToGetHere": "Anfahrt",
+    "mapComingSoon": "Karte kommt bald",
+    "notSureLevel": "Unsicher über Ihr Wanderniveau? Machen Sie unsere Bewertung",
+    "packageNotFound": "Paket nicht gefunden",
+    "packageNotFoundDesc": "Das gesuchte Paket existiert nicht oder wurde entfernt.",
+    "yourAdventure": "Ihr Abenteuer Tag für Tag",
+    "itinerary": "Reiseroute",
+    "includes": "Im Preis inbegriffen",
+    "notIncludes": "Nicht inbegriffen",
+    "whatsIncluded": "Was ist inbegriffen?",
+    "whatsNotIncluded": "Was ist nicht inbegriffen?",
+    "additionalInformation": "Zusätzliche Informationen",
+    "additionalServices": "Leistungen auf Anfrage",
+    "quote": "Angebot anfordern",
+    "quoteResponse": "Wir antworten innerhalb von 24 Stunden",
+    "viewPackages": "Pakete ansehen",
+    "difficulty": {
+        "easy": "Leicht",
+        "intermediate": "Mittelschwer",
+        "advanced": "Fortgeschritten"
+    },
+    "galleryCaptions": {
+        "hut-2-hut-dolomitas-clasico": {
+            "1": "Auronzo-Hütte - Erster Tag der Wanderung",
+            "2": "Panoramablick auf die Drei Zinnen",
+            "3": "Weg zum Pragser Wildsee",
+            "4": "Sonnenuntergang von der Hütte",
+            "5": "Wandergruppe am Giau-Pass"
+        }
+    }
+}

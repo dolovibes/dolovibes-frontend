@@ -31,10 +31,12 @@ const PackageCard = ({ pkg }) => {
             className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-niebla"
         >
             {/* Image */}
-            <div className="relative h-56 overflow-hidden">
+            <div className="relative h-56 overflow-hidden bg-niebla/20">
                 <img
                     src={pkg.image}
                     alt={pkg.title}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 {/* Overlay gradient */}

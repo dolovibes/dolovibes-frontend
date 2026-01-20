@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHeroSection } from '../services/hooks';
 import ExperienceSelector from './ExperienceSelector';
@@ -8,6 +8,10 @@ const VideoHero = ({ onExperienceSelect }) => {
     const { t: tCommon } = useTranslation('common');
     const { data: heroData, isLoading } = useHeroSection();
     const [isMobile, setIsMobile] = useState(false);
+    const [videoLoaded, setVideoLoaded] = useState(false);
+    const [isInView, setIsInView] = useState(false);
+    const videoRef = useRef(null);
+    const containerRef = useRef(null);
 
     // Detectar si es móvil para usar el video correcto
     useEffect(() => {
@@ -19,9 +23,39 @@ const VideoHero = ({ onExperienceSelect }) => {
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
+    // Intersection Observer para lazy load del video
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) {
+                    setIsInView(true);
+                    observer.disconnect();
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        if (containerRef.current) {
+            observer.observe(containerRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, []);
+
+    // Cargar video cuando esté en vista
+    useEffect(() => {
+        if (isInView && videoRef.current) {
+            videoRef.current.load();
+        }
+    }, [isInView]);
+
     // Videos del hero - usar Strapi o fallback a archivos locales
     const videoDesktop = heroData?.videoDesktop || "/videos/hero-video.mp4";
     const videoMobile = heroData?.videoMobile || "/videos/hero-video-mobile-trecime.mp4";
+    const videoSrc = isMobile ? videoMobile : videoDesktop;
+
+    // Imagen de poster mientras carga el video (placeholder)
+    const posterImage = heroData?.fallbackImage || "/images/hero-poster.jpg";
 
     // Textos del hero - priorizar Strapi (multiidioma), fallback a i18n
     const title = heroData?.title || t('hero.title');
@@ -37,20 +71,30 @@ const VideoHero = ({ onExperienceSelect }) => {
     }
 
     return (
-        <div className="relative min-h-[100svh] flex items-center justify-center">
-            {/* Video de fondo */}
+        <div ref={containerRef} className="relative min-h-[100svh] flex items-center justify-center">
+            {/* Video de fondo con lazy loading */}
             <div className="absolute inset-0 z-0">
-                <video
-                    key={isMobile ? 'mobile' : 'desktop'}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    preload="auto"
-                    className="w-full h-full object-cover"
-                >
-                    <source src={isMobile ? videoMobile : videoDesktop} type="video/mp4" />
-                </video>
+                {/* Placeholder de color mientras carga */}
+                <div 
+                    className={`absolute inset-0 bg-pizarra transition-opacity duration-700 ${videoLoaded ? 'opacity-0' : 'opacity-100'}`}
+                />
+                
+                {isInView && (
+                    <video
+                        ref={videoRef}
+                        key={isMobile ? 'mobile' : 'desktop'}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        preload="metadata"
+                        poster={posterImage}
+                        onCanPlay={() => setVideoLoaded(true)}
+                        className={`w-full h-full object-cover transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+                    >
+                        <source src={videoSrc} type="video/mp4" />
+                    </video>
+                )}
 
                 {/* Overlay con gradiente para legibilidad */}
                 <div className="absolute inset-0 bg-gradient-to-b from-pizarra/40 via-transparent to-pizarra/60"></div>
