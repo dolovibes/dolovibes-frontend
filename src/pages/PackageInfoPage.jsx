@@ -158,7 +158,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                             {pkg.title}
                         </h1>
 
-                        <p className="text-xl md:text-2xl text-white/80 max-w-3xl mb-6">
+                        <p className="text-xl md:text-2xl text-white/80 max-w-5xl mb-6">
                             {pkg.description}
                         </p>
 
