@@ -136,6 +136,9 @@ export const useFeaturedPackages = () => {
 
 /**
  * Hook para obtener el Hero Section
+ * NOTA: Este hook NUNCA debe bloquear el render
+ * - retry: 0 para fallar rápido si hay 404
+ * - Los componentes deben usar fallbacks
  */
 export const useHeroSection = () => {
   const { i18n } = useTranslation();
@@ -145,6 +148,12 @@ export const useHeroSection = () => {
     queryKey: ['heroSection', locale],
     queryFn: () => api.getHeroSection(),
     ...defaultQueryOptions,
+    // Override: No reintentar en hero - debe fallar rápido
+    retry: 0,
+    // No mostrar errores en consola por 404
+    meta: {
+      errorMessage: null
+    }
   });
 };
 
@@ -164,18 +173,21 @@ export const useAboutPage = () => {
 
 /**
  * Hook para obtener Site Settings
+ * NOTA: retry: 0 para fallar rápido si no está configurado en Strapi
  */
 export const useSiteSettings = () => {
   return useQuery({
     queryKey: ['siteSettings'],
     queryFn: () => api.getSiteSettings(),
     ...defaultQueryOptions,
+    retry: 0, // No reintentar - usar fallbacks
   });
 };
 
 /**
  * Hook para obtener Site Texts (textos globales)
  * Prioriza Strapi, componentes usan fallback a i18n si no hay datos
+ * NOTA: retry: 0 para fallar rápido si no está configurado en Strapi
  */
 export const useSiteTexts = () => {
   const { i18n } = useTranslation();
@@ -185,6 +197,7 @@ export const useSiteTexts = () => {
     queryKey: ['siteTexts', locale],
     queryFn: () => api.getSiteTexts(),
     ...defaultQueryOptions,
+    retry: 0, // No reintentar - usar fallbacks i18n
   });
 };
 
