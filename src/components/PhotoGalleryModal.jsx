@@ -96,6 +96,8 @@ const PhotoGalleryModal = ({ isOpen, onClose, photos, packageTitle, packageSlug 
                 <img
                     src={currentPhoto.url || currentPhoto}
                     alt={currentPhoto.alt || `${packageTitle} - Foto ${currentIndex + 1}`}
+                    loading="eager"
+                    decoding="sync"
                     className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
                 />
             </div>

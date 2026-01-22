@@ -1,14 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import VideoHero from '../components/VideoHero';
 import PackageRecommendations from '../components/PackageRecommendations';
 import Footer from '../components/Footer';
 import { useFeaturedPackages } from '../services/hooks';
+import { prefetchHomeData } from '../utils/dataPrefetch';
 
 const HomePage = () => {
-    const { t } = useTranslation('common');
+    const { t, i18n } = useTranslation('common');
     const location = useLocation();
+    const queryClient = useQueryClient();
     const [selectedExperience, setSelectedExperience] = useState(null);
     const [selectedPackages, setSelectedPackages] = useState([]);
     const recommendationsRef = useRef(null);
@@ -18,6 +21,16 @@ const HomePage = () => {
 
     // Key para forzar re-mount del VideoHero cuando navegamos al home
     const [heroKey, setHeroKey] = useState(Date.now());
+
+    // Prefetch de datos críticos en background
+    useEffect(() => {
+        // Esperar 2 segundos para que el hero cargue primero
+        const timer = setTimeout(() => {
+            prefetchHomeData(queryClient, i18n.language);
+        }, 2000);
+
+        return () => clearTimeout(timer);
+    }, [queryClient, i18n.language]);
 
     // Reset cuando navegamos de vuelta al home
     useEffect(() => {

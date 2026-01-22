@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useQueryClient } from '@tanstack/react-query';
 import { ChevronDown } from 'lucide-react';
 import { useExperiences, usePackagesByExperience } from '../services/hooks';
+import { prefetchExperience } from '../utils/dataPrefetch';
 
 const ExperienceSelector = ({ onExperienceSelect }) => {
-    const { t } = useTranslation('home');
-    const { t: tCommon } = useTranslation('common');
+    const { t, i18n } = useTranslation('home');
+    const { tCommon } = useTranslation('common');
+    const queryClient = useQueryClient();
     const [step, setStep] = useState(1);
     const [selectedSeason, setSelectedSeason] = useState(null);
     const [selectedExperience, setSelectedExperience] = useState(null);
@@ -119,6 +122,7 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                                     <button
                                         key={experience.id}
                                         onClick={() => handleExperienceSelect(experience)}
+                                        onMouseEnter={() => prefetchExperience(queryClient, experience.slug, i18n.language)}
                                         className={`w-full px-6 py-4 text-left hover:bg-nieve transition-colors border-b border-niebla last:border-b-0 group ${selectedExperience?.id === experience.id ? 'bg-nieve' : ''
                                             }`}
                                     >
@@ -126,6 +130,9 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                                             <img
                                                 src={experience.image}
                                                 alt={experience.title}
+                                                loading="lazy"
+                                                width="56"
+                                                height="40"
                                                 className="w-14 h-10 object-cover rounded-lg"
                                             />
                                             <h3 className="font-bold text-grafito group-hover:text-pizarra transition-colors">

@@ -108,8 +108,11 @@ const AboutUsPage = ({ onOpenQuote }) => {
                             <img
                                 src={mainPhoto}
                                 alt={photoAlt}
+                                loading="lazy"
+                                width="700"
+                                height="700"
                                 className="w-full h-auto rounded-2xl shadow-2xl object-cover"
-                                style={{ minHeight: '600px', maxHeight: '700px' }}
+                                style={{ minHeight: '600px', maxHeight: '700px', aspectRatio: '1/1' }}
                             />
                         </div>
                     </div>
