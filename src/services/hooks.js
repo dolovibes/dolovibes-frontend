@@ -136,6 +136,9 @@ export const useFeaturedPackages = () => {
 
 /**
  * Hook para obtener el Hero Section
+ * NOTA: Este hook NUNCA debe bloquear el render
+ * - retry: 0 para fallar rápido si hay 404
+ * - Los componentes deben usar fallbacks
  */
 export const useHeroSection = () => {
   const { i18n } = useTranslation();
@@ -145,6 +148,12 @@ export const useHeroSection = () => {
     queryKey: ['heroSection', locale],
     queryFn: () => api.getHeroSection(),
     ...defaultQueryOptions,
+    // Override: No reintentar en hero - debe fallar rápido
+    retry: 0,
+    // No mostrar errores en consola por 404
+    meta: {
+      errorMessage: null
+    }
   });
 };
 

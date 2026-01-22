@@ -3,10 +3,17 @@ import { useTranslation } from 'react-i18next';
 import { useHeroSection } from '../services/hooks';
 import ExperienceSelector from './ExperienceSelector';
 
+// Valores estáticos de fallback - se muestran INMEDIATAMENTE sin esperar API
+const FALLBACK_VIDEO_DESKTOP = "/videos/hero-video.mp4";
+const FALLBACK_VIDEO_MOBILE = "/videos/hero-video-mobile-trecime.mp4";
+
 const VideoHero = ({ onExperienceSelect }) => {
     const { t } = useTranslation('home');
-    const { t: tCommon } = useTranslation('common');
-    const { data: heroData, isLoading } = useHeroSection();
+    
+    // Hook de Strapi - NO bloqueamos el render si falla o tarda
+    // enabled: true pero no esperamos isLoading
+    const { data: heroData } = useHeroSection();
+    
     const [isMobile, setIsMobile] = useState(false);
     const [videoLoaded, setVideoLoaded] = useState(false);
     const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
@@ -48,16 +55,18 @@ const VideoHero = ({ onExperienceSelect }) => {
         }
     }, [shouldLoadVideo]);
 
-    // Videos del hero - usar Strapi o fallback a archivos locales
-    const videoDesktop = heroData?.videoDesktop || "/videos/hero-video.mp4";
-    const videoMobile = heroData?.videoMobile || "/videos/hero-video-mobile-trecime.mp4";
+    // Videos del hero - usar Strapi si está disponible, sino fallback inmediato
+    // NOTA: No esperamos a que heroData cargue - usamos fallback instantáneo
+    const videoDesktop = heroData?.videoDesktop || FALLBACK_VIDEO_DESKTOP;
+    const videoMobile = heroData?.videoMobile || FALLBACK_VIDEO_MOBILE;
     const videoSrc = isMobile ? videoMobile : videoDesktop;
 
     // Textos del hero - priorizar Strapi (multiidioma), fallback a i18n
+    // NOTA: t() retorna el texto inmediatamente sin esperar API
     const title = heroData?.title || t('hero.title');
     const titleHighlight = heroData?.titleHighlight || t('hero.titleHighlight');
 
-    // No mostrar loading state para evitar flash - renderizar directamente con fallbacks
+    // IMPORTANTE: NO hay loading state - siempre renderizamos con fallbacks
     return (
         <div ref={containerRef} className="relative min-h-[100svh] flex items-center justify-center bg-pizarra">
             {/* Fondo sólido como LCP - se muestra inmediatamente */}
