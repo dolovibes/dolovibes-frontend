@@ -19,13 +19,13 @@ const LANGUAGE_DETECTION_ENABLED = true;
 const languageDetectorOptions = {
   // Orden de prioridad para detección
   order: ['localStorage', 'navigator', 'htmlTag'],
-  
+
   // Caches donde guardar el idioma detectado
   caches: ['localStorage'],
-  
+
   // Key en localStorage
   lookupLocalStorage: 'preferredLanguage',
-  
+
   // Detectar solo estos idiomas
   checkWhitelist: true,
 };
@@ -45,38 +45,38 @@ i18nInstance.init({
   backend: {
     // Ruta a los archivos de traducción
     loadPath: '/locales/{{lng}}/{{ns}}.json',
-    
+
     // Cache de traducciones en el navegador
     requestOptions: {
       cache: 'default',
     },
   },
-  
+
   // Si la detección está deshabilitada, usar español por defecto
   lng: LANGUAGE_DETECTION_ENABLED ? undefined : 'es',
-  fallbackLng: 'en', // Idioma de respaldo
+  fallbackLng: 'en', // Fallback a inglés - previene mostrar keys crudas si falta una traducción
   supportedLngs: ['es', 'en', 'it', 'de'], // Idiomas soportados
-  
+
   // Namespaces disponibles
   ns: ['common', 'home', 'about', 'experiences', 'packageInfo', 'quoteForm', 'hikingLevel', 'legal'],
   defaultNS: 'common',
-  
-  // Precargar namespaces críticos para el primer render
-  preload: ['es', 'en'], // Precargar español e inglés (los más comunes)
-  
+
+  // No precargar idiomas - solo se carga el idioma detectado/activo
+  // Esto reduce las peticiones iniciales de 24 a 8 (solo 1 idioma × 8 namespaces)
+
   // Configuración del detector
   detection: languageDetectorOptions,
-  
+
   interpolation: {
     escapeValue: false, // React ya escapa por defecto
   },
-  
+
   // Configuración de carga
   load: 'languageOnly', // Solo cargar 'es', no 'es-MX'
-  
+
   // Configuración de desarrollo
   debug: import.meta.env.DEV && false,
-  
+
   // Comportamiento de carga
   react: {
     useSuspense: true, // Usar React Suspense para estados de carga

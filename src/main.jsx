@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import './index.css'
 import './i18n' // Inicializar i18n
 import { CurrencyProvider } from './utils/currency.jsx'
+import { SiteTextsProvider } from './contexts/SiteTextsContext.jsx'
 import App from './App.jsx'
 
 // Configurar React Query cliente
@@ -33,9 +34,12 @@ createRoot(document.getElementById('root')).render(
     <Suspense fallback={<InitialLoader />}>
       <QueryClientProvider client={queryClient}>
         <CurrencyProvider>
-          <App />
+          <SiteTextsProvider>
+            <App />
+          </SiteTextsProvider>
         </CurrencyProvider>
       </QueryClientProvider>
     </Suspense>
   </StrictMode>,
 )
+

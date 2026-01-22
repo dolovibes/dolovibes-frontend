@@ -144,24 +144,24 @@ const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
 const getSpanishDataCached = async (endpoint, params, transformFn) => {
   const cacheKey = `${endpoint}:${JSON.stringify(params)}`;
   const cached = spanishDataCache.get(cacheKey);
-  
+
   // Verificar si hay cache válido
   if (cached && Date.now() < cached.expiry) {
     return cached.data;
   }
-  
+
   // Obtener datos frescos
   const spanishParams = { ...params, locale: DEFAULT_LOCALE };
   const response = await strapiClient.get(endpoint, { params: spanishParams });
   const data = response.data.data;
   const transformedData = transformFn ? transformFn(data) : data;
-  
+
   // Guardar en cache
   spanishDataCache.set(cacheKey, {
     data: transformedData,
     expiry: Date.now() + CACHE_TTL,
   });
-  
+
   return transformedData;
 };
 
@@ -626,13 +626,68 @@ const transformSiteSettings = (data) => {
 const transformSiteTexts = (data) => {
   if (!data) return null;
 
+  // Mapea los campos de Strapi a una estructura organizada por sección
+  // Compatible con el fallback a i18n
   return {
-    loadingExperience: data.loadingExperience,
-    loadingPackage: data.loadingPackage,
-    loadingGeneric: data.loadingGeneric,
-    availablePackagesTitle: data.availablePackagesTitle,
-    availablePackagesSubtitle: data.availablePackagesSubtitle,
-    contactMethodLabel: data.contactMethodLabel,
+    // Navegación
+    navbar: {
+      experiences: data.navExperiences,
+      aboutUs: data.navAboutUs,
+      quote: data.navQuote,
+    },
+    // Temporadas
+    seasons: {
+      summer: data.seasonSummer,
+      winter: data.seasonWinter,
+    },
+    // Botones
+    buttons: {
+      next: data.btnNext,
+      back: data.btnBack,
+      submit: data.btnSubmit,
+      close: data.btnClose,
+      quoteCustomTrip: data.btnQuoteCustomTrip,
+    },
+    // Etiquetas
+    labels: {
+      perPerson: data.labelPerPerson,
+      days: data.labelDays,
+    },
+    // Estados de carga
+    loading: {
+      generic: data.loadingGeneric,
+    },
+    // Hero / Home
+    hero: {
+      title: data.heroTitle,
+      titleHighlight: data.heroTitleHighlight,
+      subtitle: data.heroSubtitle,
+    },
+    selector: {
+      whenQuestion: data.selectorQuestion,
+      selectExperience: data.selectExperience,
+      noExperiences: data.noExperiences,
+    },
+    // Footer
+    footer: {
+      description: data.footerDescription,
+      allRightsReserved: data.footerRights,
+    },
+    // About
+    about: {
+      title: data.aboutTitle,
+    },
+    // Booking / Packages
+    booking: {
+      requestQuote: data.requestQuote,
+      noCommitment: data.noCommitment,
+    },
+    packageInfo: {
+      packageNotFound: data.packageNotFound,
+      itinerary: data.itinerary,
+      includes: data.includes,
+      notIncludes: data.notIncludes,
+    },
   };
 };
 
