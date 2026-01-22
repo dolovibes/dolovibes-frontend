@@ -147,6 +147,10 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                 <img
                     src={pkg.heroImage || pkg.image}
                     alt={pkg.title}
+                    fetchpriority="high"
+                    loading="eager"
+                    width="1920"
+                    height="1080"
                     className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-pizarra via-pizarra/40 to-transparent"></div>
@@ -217,6 +221,9 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                         <img
                             src={pkg.itinerary[currentDay].image || pkg.heroImage || pkg.image}
                             alt={tPackage('day', { number: pkg.itinerary[currentDay].day })}
+                            loading="lazy"
+                            width="800"
+                            height="450"
                             className="w-full h-full object-cover transition-all duration-500"
                         />
                     </div>
@@ -531,6 +538,9 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 <img
                                     src={pkg.heroImage || pkg.image}
                                     alt={pkg.title}
+                                    loading="lazy"
+                                    width="600"
+                                    height="500"
                                     className="w-full h-[400px] md:h-[500px] object-cover"
                                 />
                                 {/* Overlay gradient */}

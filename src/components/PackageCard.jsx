@@ -1,12 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useQueryClient } from '@tanstack/react-query';
 import { MapPin, Clock, ArrowRight } from 'lucide-react';
 import { useCurrencyContext } from '../utils/currency';
+import { prefetchPackage } from '../utils/dataPrefetch';
 
 const PackageCard = ({ pkg }) => {
-    const { t } = useTranslation('common');
+    const { t, i18n } = useTranslation('common');
     const { formatPriceFromEUR } = useCurrencyContext();
+    const queryClient = useQueryClient();
+
+    // Prefetch de datos del paquete en hover para carga instantánea
+    const handleMouseEnter = () => {
+        prefetchPackage(queryClient, pkg.slug, i18n.language);
+    };
 
     // Función para obtener el color del nivel de dificultad
     const getDifficultyColor = (difficulty) => {
@@ -28,6 +36,7 @@ const PackageCard = ({ pkg }) => {
     return (
         <Link
             to={`/paquete/${pkg.slug}`}
+            onMouseEnter={handleMouseEnter}
             className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-niebla"
         >
             {/* Image */}
@@ -37,7 +46,10 @@ const PackageCard = ({ pkg }) => {
                     alt={pkg.title}
                     loading="lazy"
                     decoding="async"
+                    width="400"
+                    height="224"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    style={{ aspectRatio: '16/9' }}
                 />
                 {/* Overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-pizarra/60 via-transparent to-transparent"></div>

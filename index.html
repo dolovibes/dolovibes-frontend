@@ -7,12 +7,80 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DOLOVIBES</title>
 
-  <!-- Google Fonts: Poppins & IBM Plex Mono -->
+  <!-- DNS Prefetch and Preconnect for better performance -->
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Preload critical fonts to reduce CLS -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Poppins:wght@300;400;500;600;700;800&display=swap">
+  
+  <!-- Google Fonts with font-display swap to prevent FOIT -->
   <link
     href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Poppins:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet">
+    rel="stylesheet"
+    media="print" 
+    onload="this.media='all'">
+  <noscript>
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Poppins:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet">
+  </noscript>
+
+  <!-- Critical CSS - Inline para first paint más rápido -->
+  <style>
+    /* Variables críticas */
+    :root {
+      --color-grafito: #1C1C1C;
+      --color-pizarra: #374257;
+      --color-nieve: #EFEFE6;
+      --color-niebla: #A3B5B6;
+    }
+    
+    /* Reset básico crítico */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    /* Body crítico para evitar FOUC */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-color: var(--color-nieve);
+      color: var(--color-grafito);
+      font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+      font-weight: 400;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* Prevenir layout shifts críticos */
+    img, video {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+    
+    /* VideoHero crítico - above the fold */
+    .video-hero-container {
+      position: relative;
+      min-height: 100vh;
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--color-pizarra);
+    }
+    
+    /* Prevenir flash de contenido sin estilo */
+    #root {
+      min-height: 100vh;
+    }
+  </style>
 </head>
 
 <body>

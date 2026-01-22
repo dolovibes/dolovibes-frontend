@@ -72,11 +72,12 @@ const VideoHero = ({ onExperienceSelect }) => {
 
     return (
         <div ref={containerRef} className="relative min-h-[100svh] flex items-center justify-center">
-            {/* Video de fondo con lazy loading */}
+            {/* Video de fondo con lazy loading optimizado */}
             <div className="absolute inset-0 z-0">
                 {/* Placeholder de color mientras carga */}
                 <div 
                     className={`absolute inset-0 bg-pizarra transition-opacity duration-700 ${videoLoaded ? 'opacity-0' : 'opacity-100'}`}
+                    style={{ willChange: videoLoaded ? 'auto' : 'opacity' }}
                 />
                 
                 {isInView && (
@@ -87,12 +88,14 @@ const VideoHero = ({ onExperienceSelect }) => {
                         loop
                         muted
                         playsInline
-                        preload="metadata"
+                        preload="none"
                         poster={posterImage}
-                        onCanPlay={() => setVideoLoaded(true)}
+                        onLoadedData={() => setVideoLoaded(true)}
                         className={`w-full h-full object-cover transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+                        style={{ willChange: videoLoaded ? 'auto' : 'opacity' }}
                     >
                         <source src={videoSrc} type="video/mp4" />
+                        <source src={videoSrc.replace('.mp4', '.webm')} type="video/webm" />
                     </video>
                 )}
 
