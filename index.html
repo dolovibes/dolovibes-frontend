@@ -65,20 +65,20 @@
       display: block;
     }
     
-    /* VideoHero crítico - above the fold */
-    .video-hero-container {
-      position: relative;
+    /* Hero crítico - above the fold - LCP optimizado */
+    #root {
       min-height: 100vh;
-      min-height: 100svh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       background-color: var(--color-pizarra);
     }
     
-    /* Prevenir flash de contenido sin estilo */
-    #root {
-      min-height: 100vh;
+    /* Texto hero visible inmediatamente */
+    .bg-pizarra {
+      background-color: #374257 !important;
+    }
+    
+    /* Asegurar que el texto sea el LCP, no el video */
+    h1 {
+      color: white;
     }
   </style>
 </head>
