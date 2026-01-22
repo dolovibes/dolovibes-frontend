@@ -4,10 +4,11 @@ import { useQueryClient } from '@tanstack/react-query';
 import { ChevronDown } from 'lucide-react';
 import { useExperiences, usePackagesByExperience } from '../services/hooks';
 import { prefetchExperience } from '../utils/dataPrefetch';
+import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 
 const ExperienceSelector = ({ onExperienceSelect }) => {
-    const { t, i18n } = useTranslation('home');
-    const { tCommon } = useTranslation('common');
+    const { i18n } = useTranslation();
+    const { texts } = useSiteTextsContext();
     const queryClient = useQueryClient();
     const [step, setStep] = useState(1);
     const [selectedSeason, setSelectedSeason] = useState(null);
@@ -72,7 +73,7 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
             {/* Pregunta 1: Tu próxima aventura */}
             <div className={`transition-all duration-500 ${step >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                 <h2 className="text-white text-2xl md:text-4xl font-bold text-center mb-6 drop-shadow-lg">
-                    {t('selector.whenQuestion')}
+                    {texts.selector.whenQuestion}
                 </h2>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -83,7 +84,7 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                             : 'bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-nieve/20 hover:border-niebla/50'
                             }`}
                     >
-                        {tCommon('seasons.summer')}
+                        {texts.seasons.summer}
                     </button>
 
                     <button
@@ -93,7 +94,7 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                             : 'bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-nieve/20 hover:border-niebla/50'
                             }`}
                     >
-                        {tCommon('seasons.winter')}
+                        {texts.seasons.winter}
                     </button>
                 </div>
             </div>
@@ -101,7 +102,7 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
             {/* Pregunta 2: ¿Qué experiencia? */}
             <div className={`transition-all duration-500 delay-200 ${step >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
                 <h2 className="text-white text-2xl md:text-4xl font-bold text-center mb-6 drop-shadow-lg">
-                    {t('selector.whatQuestion')}
+                    {texts.selector.whatQuestion}
                 </h2>
 
                 <div className="relative w-full max-w-md mx-auto">
@@ -110,7 +111,7 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                         className="w-full px-6 py-4 bg-white/10 backdrop-blur-md border border-white/30 rounded-2xl text-white font-semibold text-left flex items-center justify-between hover:bg-white/20 transition-all"
                     >
                         <span>
-                            {selectedExperience ? selectedExperience.title : t('selector.selectExperience')}
+                            {selectedExperience ? selectedExperience.title : texts.selector.selectExperience}
                         </span>
                         <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${isExperienceDropdownOpen ? 'rotate-180' : ''}`} />
                     </button>
@@ -143,7 +144,7 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                                 ))
                             ) : (
                                 <div className="px-6 py-8 text-center text-niebla">
-                                    {t('selector.noExperiences')}
+                                    {texts.selector.noExperiences}
                                 </div>
                             )}
                         </div>
