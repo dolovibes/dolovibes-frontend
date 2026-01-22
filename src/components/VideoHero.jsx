@@ -3,15 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { useHeroSection } from '../services/hooks';
 import ExperienceSelector from './ExperienceSelector';
 
-// Valores estáticos de fallback - se muestran INMEDIATAMENTE sin esperar API
-const FALLBACK_VIDEO_DESKTOP = "/videos/hero-video.mp4";
-const FALLBACK_VIDEO_MOBILE = "/videos/hero-video-mobile-trecime.mp4";
-
 const VideoHero = ({ onExperienceSelect }) => {
     const { t } = useTranslation('home');
     
     // Hook de Strapi - NO bloqueamos el render si falla o tarda
-    // enabled: true pero no esperamos isLoading
     const { data: heroData } = useHeroSection();
     
     const [isMobile, setIsMobile] = useState(false);
@@ -20,7 +15,7 @@ const VideoHero = ({ onExperienceSelect }) => {
     const videoRef = useRef(null);
     const containerRef = useRef(null);
 
-    // Detectar si es móvil para usar el video correcto
+    // Detectar si es móvil
     useEffect(() => {
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768);
@@ -31,20 +26,16 @@ const VideoHero = ({ onExperienceSelect }) => {
     }, []);
 
     // Retrasar la carga del video para priorizar el LCP (contenido de texto)
-    // El video se carga después de que la página esté interactiva
     useEffect(() => {
-        // Esperar a que el contenido principal se renderice primero
         const timer = setTimeout(() => {
             setShouldLoadVideo(true);
-        }, 100); // Pequeño delay para priorizar el render del texto
-
+        }, 100);
         return () => clearTimeout(timer);
     }, []);
 
     // Cargar video cuando esté listo
     useEffect(() => {
         if (shouldLoadVideo && videoRef.current) {
-            // Usar requestIdleCallback si está disponible para no bloquear
             if ('requestIdleCallback' in window) {
                 requestIdleCallback(() => {
                     videoRef.current?.load();
@@ -55,14 +46,13 @@ const VideoHero = ({ onExperienceSelect }) => {
         }
     }, [shouldLoadVideo]);
 
-    // Videos del hero - usar Strapi si está disponible, sino fallback inmediato
-    // NOTA: No esperamos a que heroData cargue - usamos fallback instantáneo
-    const videoDesktop = heroData?.videoDesktop || FALLBACK_VIDEO_DESKTOP;
-    const videoMobile = heroData?.videoMobile || FALLBACK_VIDEO_MOBILE;
+    // Videos del hero - SOLO si están configurados en Strapi
+    const videoDesktop = heroData?.videoDesktop;
+    const videoMobile = heroData?.videoMobile;
     const videoSrc = isMobile ? videoMobile : videoDesktop;
+    const hasVideo = !!videoSrc;
 
-    // Textos del hero - priorizar Strapi (multiidioma), fallback a i18n
-    // NOTA: t() retorna el texto inmediatamente sin esperar API
+    // Textos del hero - priorizar Strapi, fallback a i18n
     const title = heroData?.title || t('hero.title');
     const titleHighlight = heroData?.titleHighlight || t('hero.titleHighlight');
 
@@ -71,8 +61,8 @@ const VideoHero = ({ onExperienceSelect }) => {
         <div ref={containerRef} className="relative min-h-[100svh] flex items-center justify-center bg-pizarra">
             {/* Fondo sólido como LCP - se muestra inmediatamente */}
             <div className="absolute inset-0 z-0 bg-pizarra">
-                {/* Video de fondo - carga después del contenido principal */}
-                {shouldLoadVideo && (
+                {/* Video de fondo - SOLO si está configurado en Strapi */}
+                {hasVideo && shouldLoadVideo && (
                     <video
                         ref={videoRef}
                         key={isMobile ? 'mobile' : 'desktop'}
