@@ -73,26 +73,15 @@ export const SiteTextsProvider = ({ children }) => {
         loading: {
             generic: getText('loading.generic', 'loading.generic'),
         },
-        // Hero / Home
-        hero: {
-            title: getText('hero.title', 'hero.title', 'home'),
-            titleHighlight: getText('hero.titleHighlight', 'hero.titleHighlight', 'home'),
-            subtitle: getText('hero.subtitle', 'hero.subtitle', 'home'),
-        },
+        // Selector de experiencias (textos reutilizables)
         selector: {
-            whenQuestion: getText('selector.whenQuestion', 'selector.whenQuestion', 'home'),
             whatQuestion: getText('selector.whatQuestion', 'selector.whatQuestion', 'home'),
             selectExperience: getText('selector.selectExperience', 'selector.selectExperience', 'home'),
             noExperiences: getText('selector.noExperiences', 'selector.noExperiences', 'home'),
         },
-        // Footer
+        // Footer (solo textos globales, no descripción)
         footer: {
-            description: getText('footer.description', 'footer.description'),
             allRightsReserved: getText('footer.allRightsReserved', 'footer.allRightsReserved'),
-        },
-        // About
-        about: {
-            title: getText('about.title', 'title', 'about'),
         },
         // Booking / Packages
         booking: {
