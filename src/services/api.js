@@ -468,7 +468,8 @@ export const getSiteTexts = async () => {
 
 const transformExperiences = (data) => {
   if (!data) return [];
-  const items = Array.isArray(data) ? data : [data];
+  const validData = data.data || data;
+  const items = Array.isArray(validData) ? validData : [validData];
 
   return items.map((item) => ({
     id: item.id,
@@ -487,7 +488,8 @@ const transformExperiences = (data) => {
 
 const transformPackages = (data) => {
   if (!data) return [];
-  const items = Array.isArray(data) ? data : [data];
+  const validData = data.data || data;
+  const items = Array.isArray(validData) ? validData : [validData];
 
   return items.map((item) => {
     // Determinar si mostrar descuento: solo si hasDiscount=true Y hay originalPriceAmount
@@ -696,11 +698,16 @@ const transformSiteTexts = (data) => {
 // ═══════════════════════════════════════════════════════════════
 
 export default {
+  // Experiences
   getExperiences,
   getExperienceBySlug,
+  getFooterExperiences,
+  // Packages
   getPackages,
   getPackageBySlug,
   getPackagesByExperience,
+  getFeaturedPackages,
+  // Content
   getHeroSection,
   getAboutPage,
   getSiteSettings,

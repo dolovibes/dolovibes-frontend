@@ -1,12 +1,14 @@
 /**
  * Cliente HTTP base para comunicación con Strapi
- * 
+ *
  * Este cliente está preparado para:
  * - Conectar con Strapi backend
  * - Manejar i18n automáticamente
  * - Soportar futuras funcionalidades de moneda
+ * - Serializar correctamente parámetros complejos (populate) para Strapi 5
  */
 import axios from 'axios';
+import qs from 'qs';
 
 // URL base del backend Strapi
 const STRAPI_URL = import.meta.env.VITE_STRAPI_URL || 'http://localhost:1337';
@@ -18,6 +20,8 @@ const strapiClient = axios.create({
     'Content-Type': 'application/json',
   },
   timeout: 10000, // 10 segundos
+  // CRÍTICO: Strapi 5 requiere serialización correcta de parámetros complejos (populate con objetos anidados)
+  paramsSerializer: params => qs.stringify(params, { encode: false }),
 });
 
 // Interceptor para logs en desarrollo

@@ -17,7 +17,25 @@ const HomePage = () => {
     const recommendationsRef = useRef(null);
 
     // 🔄 Paquetes destacados desde Strapi (solo los que tienen showInHome=true)
-    const { data: featuredPackages = [], isLoading } = useFeaturedPackages();
+    const { data: featuredPackages = [], isLoading, error } = useFeaturedPackages();
+
+    // Debug: Verificar si los paquetes se están cargando correctamente
+    useEffect(() => {
+        if (!isLoading) {
+            console.log('[DEBUG] Featured Packages loaded:', {
+                count: featuredPackages.length,
+                packages: featuredPackages,
+                error: error?.message
+            });
+
+            if (featuredPackages.length === 0 && !error) {
+                console.warn('[WARNING] No hay paquetes con showInHome=true en Strapi. Verifica:');
+                console.warn('1. Que existan paquetes en el admin de Strapi');
+                console.warn('2. Que tengan el campo showInHome marcado como true');
+                console.warn('3. Que estén publicados (botón Publish en el admin)');
+            }
+        }
+    }, [featuredPackages, isLoading, error]);
 
     // Key para forzar re-mount del VideoHero cuando navegamos al home
     const [heroKey, setHeroKey] = useState(Date.now());
@@ -59,6 +77,8 @@ const HomePage = () => {
     };
 
     // Determinar qué paquetes mostrar
+    // Usamos selectedPackages.length para asegurar que solo mostramos paquetes de experiencia si hay al menos uno
+    // Si la experiencia seleccionada no tiene paquetes, mostramos los featured como fallback
     const displayPackages = selectedPackages.length > 0 ? selectedPackages : featuredPackages;
     const displayTitle = selectedExperience?.title || t('recommendations.title');
 
