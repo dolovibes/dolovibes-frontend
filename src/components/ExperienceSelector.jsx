@@ -2,18 +2,21 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import { ChevronDown } from 'lucide-react';
-import { useExperiences, usePackagesByExperience } from '../services/hooks';
+import { useExperiences, usePackagesByExperience, useHeroSection } from '../services/hooks';
 import { prefetchExperience } from '../utils/dataPrefetch';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 
 const ExperienceSelector = ({ onExperienceSelect }) => {
-    const { i18n } = useTranslation();
+    const { i18n, t } = useTranslation('home');
     const { texts } = useSiteTextsContext();
     const queryClient = useQueryClient();
     const [step, setStep] = useState(1);
     const [selectedSeason, setSelectedSeason] = useState(null);
     const [selectedExperience, setSelectedExperience] = useState(null);
     const [isExperienceDropdownOpen, setIsExperienceDropdownOpen] = useState(false);
+
+    // Obtener datos del Hero Section
+    const { data: heroData } = useHeroSection();
 
     // Mapeo de temporadas para el filtro
     const seasonMap = { verano: ['verano', 'summer'], invierno: ['invierno', 'winter'] };
@@ -68,12 +71,15 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
         }
     };
 
+    // Texto principal - priorizar Hero Section, fallback a i18n
+    const mainQuestion = heroData?.subtitle || t('selector.whenQuestion');
+
     return (
         <div className="flex flex-col items-center gap-8">
             {/* Pregunta 1: Tu próxima aventura */}
             <div className={`transition-all duration-500 ${step >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                 <h2 className="text-white text-2xl md:text-4xl font-bold text-center mb-6 drop-shadow-lg">
-                    {texts.selector.whenQuestion}
+                    {mainQuestion}
                 </h2>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
