@@ -13,7 +13,38 @@ import HttpBackend from 'i18next-http-backend';
 //
 // ============================================
 
-const LANGUAGE_DETECTION_ENABLED = true;
+const SUPPORTED_LANGUAGES = ['es', 'en', 'it', 'de'];
+const DEFAULT_LANGUAGE = 'es';
+
+// ============================================
+// OBTENER IDIOMA INICIAL DE FORMA SÍNCRONA
+// ============================================
+// Esto es CRÍTICO para evitar race conditions con React Query
+// Si no obtenemos el idioma inmediatamente, las queries se disparan
+// con un locale undefined/cambiante y luego se cancelan
+
+const getInitialLanguage = () => {
+  // 1. Primero intentar localStorage (más rápido y confiable)
+  try {
+    const saved = localStorage.getItem('preferredLanguage');
+    if (saved && SUPPORTED_LANGUAGES.includes(saved)) {
+      return saved;
+    }
+  } catch (e) {
+    // localStorage no disponible (SSR, privacidad)
+  }
+
+  // 2. Luego intentar navigator.language
+  if (typeof navigator !== 'undefined' && navigator.language) {
+    const browserLang = navigator.language.substring(0, 2);
+    if (SUPPORTED_LANGUAGES.includes(browserLang)) {
+      return browserLang;
+    }
+  }
+
+  // 3. Fallback a español
+  return DEFAULT_LANGUAGE;
+};
 
 // Configuración del detector de idioma
 const languageDetectorOptions = {
@@ -52,8 +83,10 @@ i18nInstance.init({
     },
   },
 
-  // Si la detección está deshabilitada, usar español por defecto
-  lng: LANGUAGE_DETECTION_ENABLED ? undefined : 'es',
+  // CRÍTICO: Usar idioma inicial determinado síncronamente
+  // Esto evita race conditions con React Query donde las queries
+  // se cancelan porque el locale cambia después del mount
+  lng: getInitialLanguage(),
   fallbackLng: 'en', // Fallback a inglés - previene mostrar keys crudas si falta una traducción
   supportedLngs: ['es', 'en', 'it', 'de'], // Idiomas soportados
 
