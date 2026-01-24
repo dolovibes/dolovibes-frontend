@@ -13,13 +13,24 @@ import { useTranslation } from 'react-i18next';
 import api from './api';
 
 /**
- * Configuración por defecto para queries
+ * Configuración por defecto para queries (colecciones)
  */
 const defaultQueryOptions = {
-  staleTime: 5 * 60 * 1000, // 5 minutos
-  cacheTime: 30 * 60 * 1000, // 30 minutos
+  staleTime: 2 * 60 * 1000, // 2 minutos
+  cacheTime: 10 * 60 * 1000, // 10 minutos
   retry: 2,
   refetchOnWindowFocus: false,
+};
+
+/**
+ * Configuración para Single Types (contenido que se edita frecuentemente)
+ * Cache más corto para reflejar cambios del admin rápidamente
+ */
+const singleTypeQueryOptions = {
+  staleTime: 30 * 1000, // 30 segundos
+  cacheTime: 2 * 60 * 1000, // 2 minutos
+  retry: 0, // No reintentar - usar fallbacks
+  refetchOnWindowFocus: true, // Refrescar al volver a la pestaña
 };
 
 // ============================================
@@ -139,6 +150,7 @@ export const useFeaturedPackages = () => {
  * NOTA: Este hook NUNCA debe bloquear el render
  * - retry: 0 para fallar rápido si hay 404
  * - Los componentes deben usar fallbacks
+ * - Cache corto (30s) para reflejar cambios del admin rápidamente
  */
 export const useHeroSection = () => {
   const { i18n } = useTranslation();
@@ -147,9 +159,7 @@ export const useHeroSection = () => {
   return useQuery({
     queryKey: ['heroSection', locale],
     queryFn: () => api.getHeroSection(),
-    ...defaultQueryOptions,
-    // Override: No reintentar en hero - debe fallar rápido
-    retry: 0,
+    ...singleTypeQueryOptions,
     // No mostrar errores en consola por 404
     meta: {
       errorMessage: null
@@ -159,6 +169,7 @@ export const useHeroSection = () => {
 
 /**
  * Hook para obtener la página About
+ * Cache corto (30s) para reflejar cambios del admin rápidamente
  */
 export const useAboutPage = () => {
   const { i18n } = useTranslation();
@@ -167,27 +178,26 @@ export const useAboutPage = () => {
   return useQuery({
     queryKey: ['aboutPage', locale],
     queryFn: () => api.getAboutPage(),
-    ...defaultQueryOptions,
+    ...singleTypeQueryOptions,
   });
 };
 
 /**
  * Hook para obtener Site Settings
- * NOTA: retry: 0 para fallar rápido si no está configurado en Strapi
+ * Cache corto (30s) para reflejar cambios del admin rápidamente
  */
 export const useSiteSettings = () => {
   return useQuery({
     queryKey: ['siteSettings'],
     queryFn: () => api.getSiteSettings(),
-    ...defaultQueryOptions,
-    retry: 0, // No reintentar - usar fallbacks
+    ...singleTypeQueryOptions,
   });
 };
 
 /**
  * Hook para obtener Site Texts (textos globales)
  * Prioriza Strapi, componentes usan fallback a i18n si no hay datos
- * NOTA: retry: 0 para fallar rápido si no está configurado en Strapi
+ * Cache corto (30s) para reflejar cambios del admin rápidamente
  */
 export const useSiteTexts = () => {
   const { i18n } = useTranslation();
@@ -196,8 +206,7 @@ export const useSiteTexts = () => {
   return useQuery({
     queryKey: ['siteTexts', locale],
     queryFn: () => api.getSiteTexts(),
-    ...defaultQueryOptions,
-    retry: 0, // No reintentar - usar fallbacks i18n
+    ...singleTypeQueryOptions,
   });
 };
 
