@@ -21,7 +21,7 @@ const Footer = () => {
     const logoUrl = siteSettings?.logo || '/logo-dark.svg';
     const location = siteSettings?.location || 'Monterrey, México';
     const phone = siteSettings?.phone || '+52 81 1234 5678';
-    const email = siteSettings?.email || 'info@dolovibes.com';
+    const email = siteSettings?.email || 'info@dolo-vibes.com';
     const instagramUrl = siteSettings?.instagramUrl || 'https://instagram.com';
     const facebookUrl = siteSettings?.facebookUrl || 'https://facebook.com';
     const tiktokUrl = siteSettings?.tiktokUrl || 'https://tiktok.com';

@@ -367,7 +367,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                     )}
                                                 </button>
                                                 {item.detail && (
-                                                    <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `inc-${index}` ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
+                                                    <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `inc-${index}` ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                                         <div className="px-4 pb-4 pt-0">
                                                             <p className="text-pizarra pl-11">{item.detail}</p>
                                                         </div>
@@ -406,7 +406,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                     )}
                                                 </button>
                                                 {item.detail && (
-                                                    <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `notinc-${index}` ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
+                                                    <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `notinc-${index}` ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                                         <div className="px-4 pb-4 pt-0">
                                                             <p className="text-pizarra pl-11">{item.detail}</p>
                                                         </div>
@@ -445,7 +445,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                     )}
                                                 </button>
                                                 {item.detail && (
-                                                    <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `info-${index}` ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
+                                                    <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `info-${index}` ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                                         <div className="px-4 pb-4 pt-0">
                                                             <p className="text-pizarra pl-11">{item.detail}</p>
                                                         </div>
@@ -484,7 +484,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                     )}
                                                 </button>
                                                 {item.detail && (
-                                                    <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `svc-${index}` ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
+                                                    <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `svc-${index}` ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                                         <div className="px-4 pb-4 pt-0">
                                                             <p className="text-pizarra pl-11">{item.detail}</p>
                                                         </div>

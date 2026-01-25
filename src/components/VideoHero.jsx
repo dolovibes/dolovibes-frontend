@@ -5,10 +5,10 @@ import ExperienceSelector from './ExperienceSelector';
 
 const VideoHero = ({ onExperienceSelect }) => {
     const { t } = useTranslation('home');
-    
+
     // Hook de Strapi - NO bloqueamos el render si falla o tarda
     const { data: heroData } = useHeroSection();
-    
+
     const [isMobile, setIsMobile] = useState(false);
     const [videoLoaded, setVideoLoaded] = useState(false);
     const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
@@ -49,7 +49,7 @@ const VideoHero = ({ onExperienceSelect }) => {
     // Videos del hero - SOLO si están configurados en Strapi
     const videoDesktop = heroData?.videoDesktop;
     const videoMobile = heroData?.videoMobile;
-    const videoSrc = isMobile ? videoMobile : videoDesktop;
+    const videoSrc = (isMobile && videoMobile) ? videoMobile : videoDesktop;
     const hasVideo = !!videoSrc;
 
     // Textos del hero - priorizar Strapi, fallback a i18n
