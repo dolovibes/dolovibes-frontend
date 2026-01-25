@@ -612,7 +612,6 @@ const transformSiteSettings = (data) => {
     tiktokUrl: data.tiktokUrl,
     footerDescription: data.footerDescription,
     copyrightText: data.copyrightText,
-    defaultCurrency: data.defaultCurrency,
     legalPages: data.legalPages?.map(page => ({
       title: page.title,
       slug: page.slug,
