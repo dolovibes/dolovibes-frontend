@@ -19,7 +19,7 @@ const strapiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000, // 10 segundos
+  timeout: 30000, // 30 segundos
   // CRÍTICO: Strapi 5 requiere serialización correcta de parámetros complejos (populate con objetos anidados)
   paramsSerializer: params => qs.stringify(params, { encode: false }),
 });
