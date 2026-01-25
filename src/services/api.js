@@ -394,7 +394,6 @@ export const getFeaturedPackages = async () => {
 const HERO_POPULATE = {
   videoDesktop: true,
   videoMobile: true,
-  fallbackImage: true,
 };
 
 /**
@@ -563,12 +562,9 @@ const transformHeroSection = (data) => {
   return {
     title: data.title,
     titleHighlight: data.titleHighlight,
-    badge: data.badge,
     subtitle: data.subtitle,
-    // Pasar objeto media completo
     videoDesktop: getStrapiMediaUrl(data.videoDesktop),
     videoMobile: getStrapiMediaUrl(data.videoMobile),
-    fallbackImage: getStrapiMediaUrl(data.fallbackImage),
   };
 };
 
@@ -666,9 +662,9 @@ const transformSiteTexts = (data) => {
       subtitle: data.heroSubtitle,
     },
     selector: {
-      whenQuestion: data.selectorQuestion,
-      selectExperience: data.selectExperience,
-      noExperiences: data.noExperiences,
+      whatQuestion: data.selectorWhatQuestion,
+      selectExperience: data.selectorSelectExperience,
+      noExperiences: data.selectorNoExperiences,
     },
     // Footer
     footer: {
@@ -681,14 +677,14 @@ const transformSiteTexts = (data) => {
     },
     // Booking / Packages
     booking: {
-      requestQuote: data.requestQuote,
-      noCommitment: data.noCommitment,
+      requestQuote: data.bookingRequestQuote,
+      noCommitment: data.bookingNoCommitment,
     },
     packageInfo: {
       packageNotFound: data.packageNotFound,
-      itinerary: data.itinerary,
-      includes: data.includes,
-      notIncludes: data.notIncludes,
+      itinerary: data.packageItinerary,
+      includes: data.packageIncludes,
+      notIncludes: data.packageNotIncludes,
     },
   };
 };
