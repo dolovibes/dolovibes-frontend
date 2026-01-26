@@ -4,7 +4,9 @@ import { ArrowLeft, XCircle, RefreshCw, CreditCard, AlertTriangle, CheckCircle }
 import { useNavigate, Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 
-const CancellationPage = () => {
+import DynamicLegalPage from './DynamicLegalPage';
+
+const CancellationPageContent = () => {
     const { t } = useTranslation('legal');
     const { t: tCommon } = useTranslation('common');
     const navigate = useNavigate();
@@ -167,6 +169,18 @@ const CancellationPage = () => {
 
             <Footer />
         </div>
+    );
+};
+
+// Wrapper dinámico
+const CancellationPage = () => {
+    const { t } = useTranslation('legal');
+    return (
+        <DynamicLegalPage
+            slug="politica-de-cancelacion"
+            fallbackTitle={t('cancellation.title')}
+            fallbackContent={<CancellationPageContent />}
+        />
     );
 };
 

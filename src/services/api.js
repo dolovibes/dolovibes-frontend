@@ -458,6 +458,24 @@ export const getSiteTexts = async () => {
   return fetchFromStrapi('/site-text', {}, transformSiteTexts, true);
 };
 
+// ═══════════════════════════════════════════════════════════════
+// LEGAL PAGES (Collection Type)
+// Endpoint: /api/legal-pages
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * Obtiene una página legal por slug
+ * @param {string} slug - Slug de la página legal (ej. 'privacidad', 'terminos')
+ */
+export const getLegalPageBySlug = async (slug) => {
+  const params = {
+    'filters[slug][$eq]': slug,
+  };
+
+  const pages = await fetchFromStrapi('/legal-pages', params, transformLegalPage);
+  return pages[0] || null;
+};
+
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -688,6 +706,20 @@ const transformSiteTexts = (data) => {
   };
 };
 
+const transformLegalPage = (data) => {
+  if (!data) return [];
+  const validData = data.data || data;
+  const items = Array.isArray(validData) ? validData : [validData];
+
+  return items.map((item) => ({
+    id: item.id,
+    title: item.title,
+    slug: item.slug,
+    content: item.content, // Rico texto (Markdown)
+    updatedAt: item.updatedAt,
+  }));
+};
+
 // ═══════════════════════════════════════════════════════════════
 // EXPORTS
 // ═══════════════════════════════════════════════════════════════
@@ -706,5 +738,8 @@ export default {
   getHeroSection,
   getAboutPage,
   getSiteSettings,
+  getSiteSettings,
   getSiteTexts,
+  // Legal
+  getLegalPageBySlug,
 };

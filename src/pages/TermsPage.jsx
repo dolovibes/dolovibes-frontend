@@ -15,7 +15,9 @@ const iconMap = {
     CheckCircle
 };
 
-const TermsPage = () => {
+import DynamicLegalPage from './DynamicLegalPage';
+
+const TermsPageContent = () => {
     const { t } = useTranslation('legal');
     const navigate = useNavigate();
 
@@ -150,6 +152,18 @@ const TermsPage = () => {
 
             <Footer />
         </div>
+    );
+};
+
+// Wrapper dinámico
+const TermsPage = () => {
+    const { t } = useTranslation('legal');
+    return (
+        <DynamicLegalPage
+            slug="terminos-y-condiciones"
+            fallbackTitle={t('terms.title')}
+            fallbackContent={<TermsPageContent />}
+        />
     );
 };
 

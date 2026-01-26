@@ -15,7 +15,6 @@ const CancellationPage = lazy(() => import('./pages/CancellationPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const CookiesPage = lazy(() => import('./pages/CookiesPage'));
 
-// Componente de carga mientras se descarga la página
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-white">
     <div className="text-center">
@@ -24,6 +23,7 @@ const PageLoader = () => (
     </div>
   </div>
 );
+const DynamicLegalPage = lazy(() => import('./pages/DynamicLegalPage'));
 
 // --- App Principal ---
 const App = () => {
@@ -61,6 +61,8 @@ const App = () => {
             <Route path="/cancelaciones" element={<CancellationPage />} />
             <Route path="/privacidad" element={<PrivacyPage />} />
             <Route path="/cookies" element={<CookiesPage />} />
+            {/* Ruta dinámica para páginas legales */}
+            <Route path="/legal/:slug" element={<DynamicLegalPage />} />
           </Routes>
         </Suspense>
 

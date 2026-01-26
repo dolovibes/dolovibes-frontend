@@ -4,7 +4,9 @@ import { ArrowLeft, Shield, Database, Share2, Key, Lock, FileText, Mail } from '
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 
-const PrivacyPage = () => {
+import DynamicLegalPage from './DynamicLegalPage';
+
+const PrivacyPageContent = () => {
     const { t } = useTranslation('legal');
     const navigate = useNavigate();
 
@@ -14,6 +16,7 @@ const PrivacyPage = () => {
 
     return (
         <div className="min-h-screen bg-white">
+            {/* ... (Existing Content Structure) ... */}
             {/* Header */}
             <div className="bg-gradient-to-r from-pizarra to-pizarra pt-28 pb-16">
                 <div className="container mx-auto px-6">
@@ -202,6 +205,18 @@ const PrivacyPage = () => {
 
             <Footer />
         </div>
+    );
+};
+
+// Wrapper dinámico
+const PrivacyPage = () => {
+    const { t } = useTranslation('legal');
+    return (
+        <DynamicLegalPage
+            slug="privacidad"
+            fallbackTitle={t('privacy.title')}
+            fallbackContent={<PrivacyPageContent />}
+        />
     );
 };
 

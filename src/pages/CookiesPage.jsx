@@ -4,7 +4,9 @@ import { ArrowLeft, Cookie, Settings, BarChart3, Megaphone, RefreshCw } from 'lu
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 
-const CookiesPage = () => {
+import DynamicLegalPage from './DynamicLegalPage';
+
+const CookiesPageContent = () => {
     const { t } = useTranslation('legal');
     const navigate = useNavigate();
 
@@ -14,6 +16,7 @@ const CookiesPage = () => {
 
     return (
         <div className="min-h-screen bg-white">
+            {/* ... (Existing Content Structure moved inside here) ... */}
             {/* Header */}
             <div className="bg-gradient-to-r from-pizarra to-pizarra pt-28 pb-16">
                 <div className="container mx-auto px-6">
@@ -155,6 +158,18 @@ const CookiesPage = () => {
 
             <Footer />
         </div>
+    );
+};
+
+// Wrapper dinámico
+const CookiesPage = () => {
+    const { t } = useTranslation('legal');
+    return (
+        <DynamicLegalPage
+            slug="politica-de-cookies"
+            fallbackTitle={t('cookies.title')}
+            fallbackContent={<CookiesPageContent />}
+        />
     );
 };
 

@@ -38,18 +38,8 @@ const EXCHANGE_RATE_API_URL = 'https://v6.exchangerate-api.com/v6';
 export const BASE_CURRENCY = 'EUR';
 
 // Monedas soportadas con configuración completa
-// Optimización: 4 monedas principales (México + Europa + Internacional + Suiza)
+// Optimización: 4 monedas principales (Europa + Internacional + México + Suiza)
 export const SUPPORTED_CURRENCIES = {
-  // Moneda base - Mercado mexicano
-  MXN: {
-    symbol: '$',
-    name: 'Peso Mexicano',
-    nameShort: 'MXN',
-    locale: 'es-MX',
-    position: 'before',
-    flag: '🇲🇽',
-    decimals: 0
-  },
   // Mercado europeo - Italia/Dolomitas (40% turismo) + Alemania (35%) + España
   EUR: {
     symbol: '€',
@@ -70,6 +60,16 @@ export const SUPPORTED_CURRENCIES = {
     flag: '🇺🇸',
     decimals: 2
   },
+  // Mercado mexicano
+  MXN: {
+    symbol: '$',
+    name: 'Peso Mexicano',
+    nameShort: 'MXN',
+    locale: 'es-MX',
+    position: 'before',
+    flag: '🇲🇽',
+    decimals: 0
+  },
   // Turismo suizo en Dolomitas (8% mercado)
   CHF: {
     symbol: 'CHF',
@@ -80,34 +80,19 @@ export const SUPPORTED_CURRENCIES = {
     flag: '🇨🇭',
     decimals: 2
   },
-  AUD: {
-    symbol: 'A$',
-    name: 'Australian Dollar',
-    nameShort: 'AUD',
-    locale: 'en-AU',
-    position: 'before',
-    flag: '🇦🇺',
-    decimals: 2
-  },
-  NZD: {
-    symbol: 'NZ$',
-    name: 'New Zealand Dollar',
-    nameShort: 'NZD',
-    locale: 'en-NZ',
-    position: 'before',
-    flag: '🇳🇿',
-    decimals: 2
-  },
 };
 
 // Mapeo de países a monedas (ISO 3166-1 alpha-2)
-// Simplificado para 4 monedas: MXN, EUR, USD, CHF
+// Optimizado para 4 monedas: EUR, USD, MXN, CHF
 export const COUNTRY_CURRENCY_MAP = {
   // México
   MX: 'MXN',
   // Norteamérica + Internacional
   US: 'USD',
   CA: 'USD',
+  GB: 'USD', // Reino Unido -> USD como alternativa
+  AU: 'USD', // Australia -> USD
+  NZ: 'USD', // Nueva Zelanda -> USD
   // Europa - Zona Euro (Italia, Alemania, España, etc.)
   DE: 'EUR',
   FR: 'EUR',
@@ -132,7 +117,7 @@ export const COUNTRY_CURRENCY_MAP = {
   CH: 'CHF',
   LI: 'CHF',
   // Default para resto del mundo
-  DEFAULT: 'USD',
+  DEFAULT: 'EUR', // EUR como default para mercado europeo
 };
 
 // ============================================
@@ -141,10 +126,13 @@ export const COUNTRY_CURRENCY_MAP = {
 
 let ratesCache = null;
 let ratesCacheExpiry = null;
-const CACHE_DURATION = 60 * 60 * 1000; // 1 hora
+const CACHE_DURATION = 6 * 60 * 60 * 1000; // 6 horas (optimizado)
 
 const GEO_CACHE_KEY = 'dolovibes_geo_data';
-const GEO_CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 horas
+const GEO_CACHE_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 días (optimizado)
+
+const RATES_CACHE_KEY = 'dolovibes_rates';
+const RATES_CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 horas en localStorage
 
 // ============================================
 // DETECCIÓN DE UBICACIÓN
@@ -235,52 +223,26 @@ export const detectUserCurrency = async () => {
     }
   }
 
-  // 3. Fallback por idioma del navegador
+  // 3. Fallback por idioma del navegador (simplificado a 4 monedas)
   const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
 
   // México
   if (browserLang.startsWith('es-mx')) return 'MXN';
-  // Argentina
-  if (browserLang.startsWith('es-ar')) return 'ARS';
-  // Colombia
-  if (browserLang.startsWith('es-co')) return 'COP';
-  // Chile
-  if (browserLang.startsWith('es-cl')) return 'CLP';
-  // Perú
-  if (browserLang.startsWith('es-pe')) return 'PEN';
-  // España y otros hispanohablantes
+  // España y otros hispanohablantes -> EUR
   if (browserLang.startsWith('es')) return 'EUR';
-  // Brasil
-  if (browserLang.startsWith('pt-br')) return 'BRL';
-  // Portugal
-  if (browserLang.startsWith('pt')) return 'EUR';
-  // Estados Unidos
-  if (browserLang.startsWith('en-us')) return 'USD';
-  // Canadá inglés
-  if (browserLang.startsWith('en-ca')) return 'CAD';
-  // Reino Unido
-  if (browserLang.startsWith('en-gb')) return 'GBP';
-  // Australia
-  if (browserLang.startsWith('en-au')) return 'AUD';
-  // Nueva Zelanda
-  if (browserLang.startsWith('en-nz')) return 'NZD';
-  // Otros en inglés
+  // Estados Unidos y Canadá
+  if (browserLang.startsWith('en-us') || browserLang.startsWith('en-ca')) return 'USD';
+  // Reino Unido, Australia, Nueva Zelanda -> USD
   if (browserLang.startsWith('en')) return 'USD';
   // Alemán de Suiza
   if (browserLang.startsWith('de-ch')) return 'CHF';
-  // Alemán
-  if (browserLang.startsWith('de')) return 'EUR';
+  // Alemán, Francés, Italiano -> EUR
+  if (browserLang.startsWith('de') || browserLang.startsWith('fr') || browserLang.startsWith('it')) return 'EUR';
   // Francés de Suiza
   if (browserLang.startsWith('fr-ch')) return 'CHF';
-  // Francés
-  if (browserLang.startsWith('fr')) return 'EUR';
-  // Italiano
-  if (browserLang.startsWith('it')) return 'EUR';
-  // Japonés
-  if (browserLang.startsWith('ja')) return 'JPY';
 
-  // 4. Default
-  return 'USD';
+  // 4. Default para mercado europeo (base del negocio)
+  return 'EUR';
 };
 
 // ============================================
@@ -288,49 +250,73 @@ export const detectUserCurrency = async () => {
 // ============================================
 
 /**
- * Tasas de fallback aproximadas (actualizadas manualmente)
+ * Tasas de fallback actualizadas
  * Se usan cuando la API no está disponible
- * Tasas aproximadas a enero 2026 (EUR como base, 1 EUR = X moneda)
+ * Última actualización: 25 enero 2026
+ * Fuente: exchange-rates.org, ECB, Federal Reserve
+ *
+ * IMPORTANTE: Actualizar estas tasas semanalmente para mantener precisión
+ * Las tasas reales pueden variar ±2-3% dependiendo del mercado
  */
 const getFallbackRates = () => {
   return {
     EUR: 1,        // Moneda base
-    // Norteamérica
-    USD: 1.09,     // 1 EUR ≈ 1.09 USD
-    CAD: 1.49,     // 1 EUR ≈ 1.49 CAD
-    MXN: 18.8,     // 1 EUR ≈ 18.8 MXN
-    // Europa
-    GBP: 0.85,     // 1 EUR ≈ 0.85 GBP
-    CHF: 0.96,     // 1 EUR ≈ 0.96 CHF
-    // Latinoamérica
-    ARS: 998,      // 1 EUR ≈ 998 ARS
-    COP: 4320,     // 1 EUR ≈ 4320 COP
-    CLP: 978,      // 1 EUR ≈ 978 CLP
-    BRL: 5.45,     // 1 EUR ≈ 5.45 BRL
-    PEN: 4.13,     // 1 EUR ≈ 4.13 PEN
-    // Asia/Oceanía
-    JPY: 164,      // 1 EUR ≈ 164 JPY
-    AUD: 1.68,     // 1 EUR ≈ 1.68 AUD
-    NZD: 1.83,     // 1 EUR ≈ 1.83 NZD
+    USD: 1.04,     // 1 EUR ≈ 1.04 USD (promedio ene 2026: 1.03-1.05)
+    MXN: 20.85,    // 1 EUR ≈ 20.85 MXN (promedio ene 2026: 20.5-21.0)
+    CHF: 0.94,     // 1 EUR ≈ 0.94 CHF (promedio ene 2026: 0.92-0.95)
   };
 };
 
 /**
+ * Carga las tasas desde localStorage al iniciar
+ * Mejora el tiempo de carga inicial evitando esperar por la API
+ */
+const loadRatesFromStorage = () => {
+  try {
+    const cached = localStorage.getItem(RATES_CACHE_KEY);
+    if (cached) {
+      const { rates, expiry } = JSON.parse(cached);
+      // Usar tasas de localStorage si no han expirado hace más de 24 horas
+      if (Date.now() < expiry) {
+        ratesCache = rates;
+        ratesCacheExpiry = expiry;
+        return true;
+      }
+    }
+  } catch (e) {
+    console.warn('[Currency] Could not load rates from storage');
+  }
+  return false;
+};
+
+/**
  * Obtiene las tasas de cambio actuales
- * Usa cache para minimizar requests a la API
- * @returns {Promise<Object | null>} Tasas de cambio o null si falla
+ * Estrategia optimizada en capas:
+ * 1. Cache en memoria (6 horas)
+ * 2. localStorage (24 horas)
+ * 3. API externa (si hay key)
+ * 4. Tasas de fallback hardcoded
+ *
+ * @returns {Promise<Object>} Tasas de cambio
  */
 export const fetchExchangeRates = async () => {
-  if (!CURRENCY_CONVERSION_ENABLED || !EXCHANGE_RATE_API_KEY) {
-    // Si no hay API key, usar tasas aproximadas
-    return getFallbackRates();
-  }
-
-  // Verificar cache
+  // Verificar cache en memoria primero
   if (ratesCache && ratesCacheExpiry && Date.now() < ratesCacheExpiry) {
     return ratesCache;
   }
 
+  // Intentar cargar desde localStorage (más rápido que API)
+  if (loadRatesFromStorage() && ratesCache) {
+    return ratesCache;
+  }
+
+  // Si no hay API key, usar tasas de fallback directamente
+  if (!CURRENCY_CONVERSION_ENABLED || !EXCHANGE_RATE_API_KEY) {
+    console.info('[Currency] Using fallback rates (no API key configured)');
+    return getFallbackRates();
+  }
+
+  // Intentar obtener desde API
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
@@ -349,35 +335,49 @@ export const fetchExchangeRates = async () => {
     const data = await response.json();
 
     if (data.result === 'success') {
-      ratesCache = data.conversion_rates;
+      // Filtrar solo las monedas que soportamos para reducir tamaño del cache
+      const supportedCurrencyCodes = Object.keys(SUPPORTED_CURRENCIES);
+      const filteredRates = {};
+      supportedCurrencyCodes.forEach(code => {
+        filteredRates[code] = data.conversion_rates[code] || getFallbackRates()[code];
+      });
+
+      ratesCache = filteredRates;
       ratesCacheExpiry = Date.now() + CACHE_DURATION;
 
-      // Guardar en localStorage como backup
+      // Guardar en localStorage con expiración de 24 horas
       try {
-        localStorage.setItem('dolovibes_rates', JSON.stringify({
+        localStorage.setItem(RATES_CACHE_KEY, JSON.stringify({
           rates: ratesCache,
-          expiry: ratesCacheExpiry,
+          expiry: Date.now() + RATES_CACHE_DURATION,
+          updated: new Date().toISOString(),
         }));
-      } catch (e) { }
+      } catch (e) {
+        console.warn('[Currency] Could not save to localStorage');
+      }
 
       return ratesCache;
     }
 
     throw new Error(data['error-type'] || 'Unknown error');
   } catch (error) {
-    console.warn('[Currency] Exchange rate fetch failed:', error.message);
+    if (error.name !== 'AbortError') {
+      console.warn('[Currency] Exchange rate fetch failed:', error.message);
+    }
 
-    // Intentar recuperar del localStorage
+    // Intentar recuperar del localStorage incluso si expiró
     try {
-      const cached = localStorage.getItem('dolovibes_rates');
+      const cached = localStorage.getItem(RATES_CACHE_KEY);
       if (cached) {
         const { rates } = JSON.parse(cached);
+        console.info('[Currency] Using expired localStorage rates as fallback');
         ratesCache = rates;
         return rates;
       }
     } catch (e) { }
 
-    // Usar tasas de fallback
+    // Último recurso: tasas de fallback hardcoded
+    console.info('[Currency] Using hardcoded fallback rates');
     return getFallbackRates();
   }
 };

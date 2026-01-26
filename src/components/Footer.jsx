@@ -102,40 +102,21 @@ const Footer = () => {
                         </ul>
                     </div>
 
-                    {/* Información Legal */}
+                    {/* Información Legal dinámica desde Strapi */}
                     <div>
                         <h4 className="font-semibold text-lg mb-4">{t('footer.information')}</h4>
                         <ul className="space-y-3">
-                            <li>
-                                <Link to="/terminos" className="text-niebla hover:text-bruma transition-colors">
-                                    {t('footer.termsAndConditions')}
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/aviso-legal" className="text-niebla hover:text-bruma transition-colors">
-                                    {t('footer.legalNotice')}
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/condiciones-reserva" className="text-niebla hover:text-bruma transition-colors">
-                                    {t('footer.bookingConditions')}
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/cancelaciones" className="text-niebla hover:text-bruma transition-colors">
-                                    {t('footer.cancellationPolicy')}
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/privacidad" className="text-niebla hover:text-bruma transition-colors">
-                                    {t('footer.privacyPolicy')}
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/cookies" className="text-niebla hover:text-bruma transition-colors">
-                                    {t('footer.cookiePolicy')}
-                                </Link>
-                            </li>
+                            {Array.isArray(siteSettings?.legalPages) && siteSettings.legalPages.length > 0 ? (
+                                siteSettings.legalPages.map((page) => (
+                                    <li key={page.slug}>
+                                        <Link to={`/${page.slug}`} className="text-niebla hover:text-bruma transition-colors">
+                                            {page.title}
+                                        </Link>
+                                    </li>
+                                ))
+                            ) : (
+                                <li className="text-niebla italic">{t('footer.noLegalPages', 'No hay páginas legales configuradas')}</li>
+                            )}
                         </ul>
                     </div>
 

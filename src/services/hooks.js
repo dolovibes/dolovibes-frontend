@@ -210,6 +210,21 @@ export const useSiteTexts = () => {
   });
 };
 
+/**
+ * Hook para obtener una página legal por slug
+ */
+export const useLegalPage = (slug) => {
+  const { i18n } = useTranslation();
+  const locale = i18n.language;
+
+  return useQuery({
+    queryKey: ['legalPage', slug, locale],
+    queryFn: () => api.getLegalPageBySlug(slug),
+    enabled: !!slug,
+    ...defaultQueryOptions,
+  });
+};
+
 // ============================================
 export default {
   useExperiences,
@@ -223,5 +238,6 @@ export default {
   useAboutPage,
   useSiteSettings,
   useSiteTexts,
+  useLegalPage,
 };
 
