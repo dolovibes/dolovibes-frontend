@@ -64,7 +64,8 @@
         "cancellationPolicy": "Cancellation Policy",
         "privacyPolicy": "Privacy Policy",
         "cookiePolicy": "Cookie Policy",
-        "allRightsReserved": "All rights reserved."
+        "allRightsReserved": "All rights reserved.",
+        "noLegalPages": "No legal pages configured."
     },
     "quoteModal": {
         "title": "Request Your Quote",

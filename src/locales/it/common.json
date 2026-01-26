@@ -64,7 +64,8 @@
         "cancellationPolicy": "Politica di Cancellazione",
         "privacyPolicy": "Privacy Policy",
         "cookiePolicy": "Cookie Policy",
-        "allRightsReserved": "Tutti i diritti riservati."
+        "allRightsReserved": "Tutti i diritti riservati.",
+        "noLegalPages": "Nessuna pagina legale configurata."
     },
     "quoteModal": {
         "title": "Richiedi il Tuo Preventivo",

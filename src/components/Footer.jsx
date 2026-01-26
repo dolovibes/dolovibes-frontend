@@ -13,6 +13,8 @@ const TikTokIcon = ({ className }) => (
 
 const Footer = () => {
     const { t } = useTranslation('common');
+    // SiteTextsContext para textos globales de Strapi
+    const { texts: siteTexts } = require('../contexts/SiteTextsContext').useSiteTextsContext();
     const { data: siteSettings, isLoading } = useSiteSettings();
     // Usar useFooterExperiences para obtener solo las experiencias marcadas para el footer
     const { data: footerExperiences = [] } = useFooterExperiences();
@@ -28,6 +30,7 @@ const Footer = () => {
 
     // Textos de i18n con fallback - priorizar Strapi
     const footerDescription = siteSettings?.footerDescription || t('footer.description');
+    const noLegalPagesText = siteTexts?.footer?.noLegalPages || t('footer.noLegalPages', 'No hay páginas legales configuradas');
 
     if (isLoading) {
         return (
@@ -115,7 +118,7 @@ const Footer = () => {
                                     </li>
                                 ))
                             ) : (
-                                <li className="text-niebla italic">{t('footer.noLegalPages', 'No hay páginas legales configuradas')}</li>
+                                <li className="text-niebla italic">{noLegalPagesText}</li>
                             )}
                         </ul>
                     </div>

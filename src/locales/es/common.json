@@ -64,7 +64,8 @@
         "cancellationPolicy": "Política de Cancelación",
         "privacyPolicy": "Política de Privacidad",
         "cookiePolicy": "Política de Cookies",
-        "allRightsReserved": "Todos los derechos reservados."
+        "allRightsReserved": "Todos los derechos reservados.",
+        "noLegalPages": "No hay páginas legales configuradas."
     },
     "quoteModal": {
         "title": "Solicita tu Cotización",

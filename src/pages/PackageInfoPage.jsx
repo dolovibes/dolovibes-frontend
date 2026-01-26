@@ -248,7 +248,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                             </h3>
 
                             {/* Descripción - altura fija */}
-                            <div className="text-pizarra text-sm md:text-base leading-relaxed line-clamp-4 prose prose-sm max-w-none">
+                            <div className="text-pizarra text-sm md:text-base leading-relaxed prose prose-sm max-w-none">
                                 <ReactMarkdown>{pkg.itinerary[currentDay].description}</ReactMarkdown>
                             </div>
                         </div>

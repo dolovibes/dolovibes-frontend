@@ -79,9 +79,10 @@ export const SiteTextsProvider = ({ children }) => {
             selectExperience: getText('selector.selectExperience', 'selector.selectExperience', 'home'),
             noExperiences: getText('selector.noExperiences', 'selector.noExperiences', 'home'),
         },
-        // Footer (solo textos globales, no descripción)
+        // Footer (textos globales y mensaje de páginas legales)
         footer: {
             allRightsReserved: getText('footer.allRightsReserved', 'footer.allRightsReserved'),
+            noLegalPages: getText('footer.noLegalPages', 'footer.noLegalPages'),
         },
         // Booking / Packages
         booking: {

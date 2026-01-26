@@ -687,6 +687,7 @@ const transformSiteTexts = (data) => {
     footer: {
       description: data.footerDescription,
       allRightsReserved: data.footerRights,
+      noLegalPages: data.footerNoLegalPages,
     },
     // About
     about: {
