@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSiteSettings, useFooterExperiences } from '../services/hooks';
+import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { MapPin, Phone, Mail, Instagram, Facebook, FileText } from 'lucide-react';
 
 // TikTok icon component (not in lucide-react)
@@ -14,7 +15,7 @@ const TikTokIcon = ({ className }) => (
 const Footer = () => {
     const { t } = useTranslation('common');
     // SiteTextsContext para textos globales de Strapi
-    const { texts: siteTexts } = require('../contexts/SiteTextsContext').useSiteTextsContext();
+    const { texts: siteTexts } = useSiteTextsContext();
     const { data: siteSettings, isLoading } = useSiteSettings();
     // Usar useFooterExperiences para obtener solo las experiencias marcadas para el footer
     const { data: footerExperiences = [] } = useFooterExperiences();
