@@ -270,8 +270,8 @@ const NavbarNew = ({ onOpenQuote }) => {
 
                         {/* Language Switcher - Mobile */}
                         <div className="mt-4 pt-4 border-t border-niebla flex justify-center gap-4">
-                            <CurrencySelector isDarkMode={true} />
-                            <LanguageSwitcher isDarkMode={true} />
+                            <CurrencySelector isDarkMode={false} showLabel={true} />
+                            <LanguageSwitcher isDarkMode={false} />
                         </div>
                     </div>
                 </div>
