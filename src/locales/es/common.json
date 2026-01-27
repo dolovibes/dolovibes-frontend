@@ -49,7 +49,7 @@
     "recommendations": {
         "basedOnSelection": "Basado en tu selección",
         "title": "Nuestras Recomendaciones",
-        "subtitle": "Los mejores viajes de {{experience}} para ti",
+        "subtitle": "Los mejores viajes de {experience} para ti",
         "offer": "OFERTA",
         "viewDetails": "Ver detalles"
     },
@@ -64,7 +64,8 @@
         "cancellationPolicy": "Política de Cancelación",
         "privacyPolicy": "Política de Privacidad",
         "cookiePolicy": "Política de Cookies",
-        "allRightsReserved": "Todos los derechos reservados."
+        "allRightsReserved": "Todos los derechos reservados.",
+        "noLegalPages": "No hay páginas legales configuradas."
     },
     "quoteModal": {
         "title": "Solicita tu Cotización",
@@ -86,7 +87,7 @@
     },
     "currency": {
         "loading": "Cargando moneda...",
-        "currentLabel": "Moneda actual: {{currency}}. Haga clic para cambiar.",
+        "currentLabel": "Moneda actual: {currency}. Haga clic para cambiar.",
         "selectLabel": "Seleccionar moneda"
     }
 }

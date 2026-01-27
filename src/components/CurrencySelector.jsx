@@ -6,7 +6,7 @@
  */
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { useCurrencyContext, SUPPORTED_CURRENCIES } from '../utils/currency';
 
 const CurrencySelector = ({
@@ -15,7 +15,7 @@ const CurrencySelector = ({
   showLabel = false,
   compact = false,
 }) => {
-  const { t } = useTranslation('common');
+  const { texts: siteTexts } = useSiteTextsContext();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
@@ -143,7 +143,7 @@ const CurrencySelector = ({
       <div
         className={`${baseButtonStyles} opacity-50 cursor-wait ${isDarkMode ? 'text-white' : 'text-gray-500'}`}
         aria-busy="true"
-        aria-label={t('currency.loading')}
+        aria-label={siteTexts.currency.loading}
       >
         <span className="animate-pulse">💱</span>
         <span className={compact ? 'hidden' : 'block'}>---</span>
@@ -165,7 +165,7 @@ const CurrencySelector = ({
         className={buttonStyles}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
-        aria-label={t('currency.currentLabel', { currency: currentCurrency.name })}
+        aria-label={siteTexts.currency.currentLabel.replace(/\{\{?currency\}\}?/g, currentCurrency.name)}
       >
         {showFlag && (
           <span
@@ -207,7 +207,7 @@ const CurrencySelector = ({
             ${dropdownStyles}
           `}
           role="listbox"
-          aria-label={t('currency.selectLabel')}
+          aria-label={siteTexts.currency.selectLabel}
           tabIndex={-1}
         >
           {currencyList.map((curr) => {

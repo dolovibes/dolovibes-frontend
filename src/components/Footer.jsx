@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useSiteSettings, useFooterExperiences } from '../services/hooks';
+import { useSiteSettings, useFooterExperiences, useFooterLegalPages } from '../services/hooks';
+import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { MapPin, Phone, Mail, Instagram, Facebook, FileText } from 'lucide-react';
 
 // TikTok icon component (not in lucide-react)
@@ -13,21 +14,26 @@ const TikTokIcon = ({ className }) => (
 
 const Footer = () => {
     const { t } = useTranslation('common');
+    // SiteTextsContext para textos globales de Strapi
+    const { texts: siteTexts } = useSiteTextsContext();
     const { data: siteSettings, isLoading } = useSiteSettings();
     // Usar useFooterExperiences para obtener solo las experiencias marcadas para el footer
     const { data: footerExperiences = [] } = useFooterExperiences();
+    // Usar useFooterLegalPages para obtener las páginas legales del footer
+    const { data: legalPages = [] } = useFooterLegalPages();
 
     // Datos desde Strapi con fallbacks
     const logoUrl = siteSettings?.logo || '/logo-dark.svg';
     const location = siteSettings?.location || 'Monterrey, México';
     const phone = siteSettings?.phone || '+52 81 1234 5678';
-    const email = siteSettings?.email || 'info@dolovibes.com';
+    const email = siteSettings?.email || 'info@dolo-vibes.com';
     const instagramUrl = siteSettings?.instagramUrl || 'https://instagram.com';
     const facebookUrl = siteSettings?.facebookUrl || 'https://facebook.com';
     const tiktokUrl = siteSettings?.tiktokUrl || 'https://tiktok.com';
 
     // Textos de i18n con fallback - priorizar Strapi
     const footerDescription = siteSettings?.footerDescription || t('footer.description');
+
 
     if (isLoading) {
         return (
@@ -102,40 +108,17 @@ const Footer = () => {
                         </ul>
                     </div>
 
-                    {/* Información Legal */}
+                    {/* Información Legal dinámica desde Strapi */}
                     <div>
                         <h4 className="font-semibold text-lg mb-4">{t('footer.information')}</h4>
                         <ul className="space-y-3">
-                            <li>
-                                <Link to="/terminos" className="text-niebla hover:text-bruma transition-colors">
-                                    {t('footer.termsAndConditions')}
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/aviso-legal" className="text-niebla hover:text-bruma transition-colors">
-                                    {t('footer.legalNotice')}
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/condiciones-reserva" className="text-niebla hover:text-bruma transition-colors">
-                                    {t('footer.bookingConditions')}
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/cancelaciones" className="text-niebla hover:text-bruma transition-colors">
-                                    {t('footer.cancellationPolicy')}
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/privacidad" className="text-niebla hover:text-bruma transition-colors">
-                                    {t('footer.privacyPolicy')}
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/cookies" className="text-niebla hover:text-bruma transition-colors">
-                                    {t('footer.cookiePolicy')}
-                                </Link>
-                            </li>
+                            {legalPages.map((page) => (
+                                <li key={page.slug}>
+                                    <Link to={`/legal/${page.slug}`} className="text-niebla hover:text-bruma transition-colors">
+                                        {page.title}
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
                     </div>
 

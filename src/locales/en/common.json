@@ -49,7 +49,7 @@
     "recommendations": {
         "basedOnSelection": "Based on your selection",
         "title": "Our Recommendations",
-        "subtitle": "The best trips of {{experience}} for you",
+        "subtitle": "The best trips of {experience} for you",
         "offer": "SALE",
         "viewDetails": "View details"
     },
@@ -64,7 +64,8 @@
         "cancellationPolicy": "Cancellation Policy",
         "privacyPolicy": "Privacy Policy",
         "cookiePolicy": "Cookie Policy",
-        "allRightsReserved": "All rights reserved."
+        "allRightsReserved": "All rights reserved.",
+        "noLegalPages": "No legal pages configured."
     },
     "quoteModal": {
         "title": "Request Your Quote",
@@ -86,7 +87,7 @@
     },
     "currency": {
         "loading": "Loading currency...",
-        "currentLabel": "Current currency: {{currency}}. Click to change.",
+        "currentLabel": "Current currency: {currency}. Click to change.",
         "selectLabel": "Select currency"
     }
 }

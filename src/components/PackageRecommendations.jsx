@@ -1,9 +1,9 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import PackageCard from './PackageCard';
 
 const PackageRecommendations = ({ packages, experienceTitle, isLoading }) => {
-    const { t } = useTranslation('common');
+    const { texts: siteTexts } = useSiteTextsContext();
 
     // Debug: Mostrar información en desarrollo
     if (import.meta.env.DEV) {
@@ -56,10 +56,10 @@ const PackageRecommendations = ({ packages, experienceTitle, isLoading }) => {
                 {/* Header */}
                 <div className="text-center mb-12">
                     <h2 className="text-3xl md:text-4xl font-bold text-grafito">
-                        {t('recommendations.title')}
+                        {siteTexts.recommendations.title}
                     </h2>
                     <p className="text-niebla mt-3 max-w-lg mx-auto">
-                        {t('recommendations.subtitle', { experience: experienceTitle })}
+                        {siteTexts.recommendations.subtitle.replace(/\{\{?experience\}\}?/g, experienceTitle)}
                     </p>
                 </div>
 

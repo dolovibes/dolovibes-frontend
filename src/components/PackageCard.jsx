@@ -1,13 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { useQueryClient } from '@tanstack/react-query';
 import { MapPin, Clock, ArrowRight } from 'lucide-react';
 import { useCurrencyContext } from '../utils/currency';
 import { prefetchPackage } from '../utils/dataPrefetch';
 
 const PackageCard = ({ pkg }) => {
-    const { t, i18n } = useTranslation('common');
+    const { texts: siteTexts } = useSiteTextsContext();
+    const { i18n } = useTranslation();
     const { formatPriceFromEUR } = useCurrencyContext();
     const queryClient = useQueryClient();
 
@@ -57,7 +59,7 @@ const PackageCard = ({ pkg }) => {
                 {/* Discount badge */}
                 {pkg.hasDiscount && (
                     <div className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-                        {t('recommendations.offer')}
+                        {siteTexts.recommendations.offer}
                     </div>
                 )}
 
@@ -102,7 +104,7 @@ const PackageCard = ({ pkg }) => {
 
                 {/* CTA */}
                 <div className="flex items-center text-pizarra font-semibold text-sm group-hover:gap-3 gap-2 transition-all">
-                    {t('recommendations.viewDetails')}
+                    {siteTexts.recommendations.viewDetails}
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </div>
             </div>

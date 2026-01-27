@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { useHeroSection } from '../services/hooks';
 import ExperienceSelector from './ExperienceSelector';
 
 const VideoHero = ({ onExperienceSelect }) => {
-    const { t } = useTranslation('home');
-    
+    const { texts: siteTexts } = useSiteTextsContext();
+
     // Hook de Strapi - NO bloqueamos el render si falla o tarda
     const { data: heroData } = useHeroSection();
-    
+
     const [isMobile, setIsMobile] = useState(false);
     const [videoLoaded, setVideoLoaded] = useState(false);
     const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
@@ -33,35 +33,33 @@ const VideoHero = ({ onExperienceSelect }) => {
         return () => clearTimeout(timer);
     }, []);
 
-    // Cargar video cuando esté listo
+    // Safety timeout: asegurar que el video se muestre eventualmente
     useEffect(() => {
-        if (shouldLoadVideo && videoRef.current) {
-            if ('requestIdleCallback' in window) {
-                requestIdleCallback(() => {
-                    videoRef.current?.load();
-                });
-            } else {
-                videoRef.current.load();
-            }
+        if (shouldLoadVideo) {
+            // Intentar mostrar el video después de 2.5s si los eventos no se dispararon
+            const timer = setTimeout(() => {
+                setVideoLoaded(true);
+            }, 2500);
+            return () => clearTimeout(timer);
         }
     }, [shouldLoadVideo]);
 
     // Videos del hero - SOLO si están configurados en Strapi
     const videoDesktop = heroData?.videoDesktop;
     const videoMobile = heroData?.videoMobile;
-    const videoSrc = isMobile ? videoMobile : videoDesktop;
+    const videoSrc = (isMobile && videoMobile) ? videoMobile : videoDesktop;
     const hasVideo = !!videoSrc;
 
     // Textos del hero - priorizar Strapi, fallback a i18n
-    const title = heroData?.title || t('hero.title');
-    const titleHighlight = heroData?.titleHighlight || t('hero.titleHighlight');
+    const title = heroData?.title || siteTexts.hero.title;
+    const titleHighlight = heroData?.titleHighlight || siteTexts.hero.titleHighlight;
 
     // IMPORTANTE: NO hay loading state - siempre renderizamos con fallbacks
     return (
         <div ref={containerRef} className="relative min-h-[100svh] flex items-center justify-center bg-pizarra">
             {/* Fondo sólido como LCP - se muestra inmediatamente */}
             <div className="absolute inset-0 z-0 bg-pizarra">
-                {/* Video de fondo - SOLO si está configurado en Strapi */}
+                {/* Video de fondo - SOLO si empareja con Strapi */}
                 {hasVideo && shouldLoadVideo && (
                     <video
                         ref={videoRef}
@@ -72,6 +70,11 @@ const VideoHero = ({ onExperienceSelect }) => {
                         playsInline
                         preload="auto"
                         onCanPlayThrough={() => setVideoLoaded(true)}
+                        onLoadedData={() => setVideoLoaded(true)}
+                        onError={(e) => {
+                            console.error("Video loading error:", e);
+                            setVideoLoaded(true); // Mostrar aunque falle para que no oculte el fallback si lo hubiera
+                        }}
                         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
                     >
                         <source src={videoSrc} type="video/mp4" />

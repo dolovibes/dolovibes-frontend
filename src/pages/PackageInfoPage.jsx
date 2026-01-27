@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import ReactMarkdown from 'react-markdown';
 import {
     ArrowLeft,
     MapPin,
@@ -247,9 +248,9 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                             </h3>
 
                             {/* Descripción - altura fija */}
-                            <p className="text-pizarra text-sm md:text-base leading-relaxed line-clamp-4">
-                                {pkg.itinerary[currentDay].description}
-                            </p>
+                            <div className="text-pizarra text-sm md:text-base leading-relaxed prose prose-sm max-w-none">
+                                <ReactMarkdown>{pkg.itinerary[currentDay].description}</ReactMarkdown>
+                            </div>
                         </div>
 
                         {/* Navegación */}
@@ -343,7 +344,6 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                             {/* Incluye - Desplegables */}
                             {pkg.includes && pkg.includes.length > 0 && (
                                 <div className="mb-6">
-                                    <h3 className="text-lg font-bold text-grafito mb-3">{tPackage('whatsIncluded')}</h3>
                                     <div className="space-y-3">
                                         {pkg.includes.map((item, index) => (
                                             <div
@@ -367,9 +367,11 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                     )}
                                                 </button>
                                                 {item.detail && (
-                                                    <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `inc-${index}` ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
-                                                        <div className="px-4 pb-4 pt-0">
-                                                            <p className="text-pizarra pl-11">{item.detail}</p>
+                                                    <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `inc-${index}` ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                                                        <div className="px-4 pb-4 pt-0 pl-11">
+                                                            <div className="text-pizarra prose prose-sm max-w-none">
+                                                                <ReactMarkdown>{item.detail}</ReactMarkdown>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 )}
@@ -382,7 +384,6 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                             {/* No Incluye - Desplegables */}
                             {pkg.notIncludes && pkg.notIncludes.length > 0 && (
                                 <div className="mb-6">
-                                    <h3 className="text-lg font-bold text-grafito mb-3">{tPackage('whatsNotIncluded')}</h3>
                                     <div className="space-y-3">
                                         {pkg.notIncludes.map((item, index) => (
                                             <div
@@ -394,7 +395,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                     className="w-full flex items-center justify-between p-4 text-left hover:bg-nieve transition-colors"
                                                 >
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                                        <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center flex-shrink-0">
                                                             <X className="w-4 h-4 text-white" />
                                                         </div>
                                                         <span className="font-semibold text-grafito">
@@ -406,9 +407,11 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                     )}
                                                 </button>
                                                 {item.detail && (
-                                                    <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `notinc-${index}` ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
-                                                        <div className="px-4 pb-4 pt-0">
-                                                            <p className="text-pizarra pl-11">{item.detail}</p>
+                                                    <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `notinc-${index}` ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                                                        <div className="px-4 pb-4 pt-0 pl-11">
+                                                            <div className="text-pizarra prose prose-sm max-w-none">
+                                                                <ReactMarkdown>{item.detail}</ReactMarkdown>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 )}
@@ -421,7 +424,6 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                             {/* Información Adicional - Desplegables */}
                             {pkg.additionalInfo && pkg.additionalInfo.length > 0 && (
                                 <div className="mb-6">
-                                    <h3 className="text-lg font-bold text-grafito mb-3">{tPackage('additionalInformation')}</h3>
                                     <div className="space-y-3">
                                         {pkg.additionalInfo.map((item, index) => (
                                             <div
@@ -433,7 +435,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                     className="w-full flex items-center justify-between p-4 text-left hover:bg-nieve transition-colors"
                                                 >
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                                        <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center flex-shrink-0">
                                                             <span className="text-white text-sm">ℹ️</span>
                                                         </div>
                                                         <span className="font-semibold text-grafito">
@@ -445,9 +447,11 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                     )}
                                                 </button>
                                                 {item.detail && (
-                                                    <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `info-${index}` ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
-                                                        <div className="px-4 pb-4 pt-0">
-                                                            <p className="text-pizarra pl-11">{item.detail}</p>
+                                                    <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `info-${index}` ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                                                        <div className="px-4 pb-4 pt-0 pl-11">
+                                                            <div className="text-pizarra prose prose-sm max-w-none">
+                                                                <ReactMarkdown>{item.detail}</ReactMarkdown>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 )}
@@ -460,7 +464,6 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                             {/* Servicios a Solicitud - Desplegables */}
                             {pkg.additionalServices && pkg.additionalServices.length > 0 && (
                                 <div className="mb-6">
-                                    <h3 className="text-lg font-bold text-grafito mb-3">{tPackage('additionalServices')}</h3>
                                     <div className="space-y-3">
                                         {pkg.additionalServices.map((item, index) => (
                                             <div
@@ -472,7 +475,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                     className="w-full flex items-center justify-between p-4 text-left hover:bg-nieve transition-colors"
                                                 >
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                                        <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center flex-shrink-0">
                                                             <span className="text-white text-sm">⭐</span>
                                                         </div>
                                                         <span className="font-semibold text-grafito">
@@ -484,9 +487,11 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                     )}
                                                 </button>
                                                 {item.detail && (
-                                                    <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `svc-${index}` ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
-                                                        <div className="px-4 pb-4 pt-0">
-                                                            <p className="text-pizarra pl-11">{item.detail}</p>
+                                                    <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `svc-${index}` ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                                                        <div className="px-4 pb-4 pt-0 pl-11">
+                                                            <div className="text-pizarra prose prose-sm max-w-none">
+                                                                <ReactMarkdown>{item.detail}</ReactMarkdown>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 )}

@@ -394,7 +394,6 @@ export const getFeaturedPackages = async () => {
 const HERO_POPULATE = {
   videoDesktop: true,
   videoMobile: true,
-  fallbackImage: true,
 };
 
 /**
@@ -409,12 +408,10 @@ export const getHeroSection = async () => {
 // Endpoint: /api/about-page
 // ═══════════════════════════════════════════════════════════════
 
+// Usar objeto para populate según documentación oficial Strapi 5.x
+// Incluye todos los campos actuales del modelo About Page
 const ABOUT_POPULATE = {
   mainPhoto: true,
-  team: {
-    populate: ['photo']
-  },
-  values: true,
   origin: true,
   essence: true,
   vision: true,
@@ -437,7 +434,6 @@ const SETTINGS_POPULATE = {
   logo: true,
   logoDark: true,
   favicon: true,
-  legalPages: true,
 };
 
 /**
@@ -459,7 +455,37 @@ export const getSiteTexts = async () => {
   return fetchFromStrapi('/site-text', {}, transformSiteTexts, true);
 };
 
+// ═══════════════════════════════════════════════════════════════
+// LEGAL PAGES (Collection Type)
+// Endpoint: /api/legal-pages
+// ═══════════════════════════════════════════════════════════════
 
+/**
+ * Obtiene una página legal por slug
+ * @param {string} slug - Slug de la página legal (ej. 'privacidad', 'terminos')
+ */
+export const getLegalPageBySlug = async (slug) => {
+  const params = {
+    'filters[slug][$eq]': slug,
+  };
+
+  const pages = await fetchFromStrapi('/legal-pages', params, transformLegalPage);
+  return pages[0] || null;
+};
+
+/**
+ * Obtiene las páginas legales para mostrar en el footer
+ * Solo retorna legal pages con showInFooter=true, ordenadas por footerDisplayOrder
+ */
+export const getFooterLegalPages = async () => {
+  const params = {
+    'pagination[pageSize]': 20,
+    'sort': 'footerDisplayOrder:asc',
+    'filters[showInFooter][$eq]': true,
+  };
+
+  return fetchFromStrapi('/legal-pages', params, transformLegalPage);
+};
 
 // ═══════════════════════════════════════════════════════════════
 // TRANSFORMADORES DE DATOS
@@ -563,12 +589,9 @@ const transformHeroSection = (data) => {
   return {
     title: data.title,
     titleHighlight: data.titleHighlight,
-    badge: data.badge,
     subtitle: data.subtitle,
-    // Pasar objeto media completo
     videoDesktop: getStrapiMediaUrl(data.videoDesktop),
     videoMobile: getStrapiMediaUrl(data.videoMobile),
-    fallbackImage: getStrapiMediaUrl(data.fallbackImage),
   };
 };
 
@@ -616,12 +639,6 @@ const transformSiteSettings = (data) => {
     tiktokUrl: data.tiktokUrl,
     footerDescription: data.footerDescription,
     copyrightText: data.copyrightText,
-    defaultCurrency: data.defaultCurrency,
-    legalPages: data.legalPages?.map(page => ({
-      title: page.title,
-      slug: page.slug,
-      content: page.content,
-    })) || [],
   };
 };
 
@@ -654,6 +671,7 @@ const transformSiteTexts = (data) => {
     labels: {
       perPerson: data.labelPerPerson,
       days: data.labelDays,
+      persons: data.labelPersons,
     },
     // Estados de carga
     loading: {
@@ -666,9 +684,9 @@ const transformSiteTexts = (data) => {
       subtitle: data.heroSubtitle,
     },
     selector: {
-      whenQuestion: data.selectorQuestion,
-      selectExperience: data.selectExperience,
-      noExperiences: data.noExperiences,
+      whatQuestion: data.selectorWhatQuestion,
+      selectExperience: data.selectorSelectExperience,
+      noExperiences: data.selectorNoExperiences,
     },
     // Footer
     footer: {
@@ -681,16 +699,61 @@ const transformSiteTexts = (data) => {
     },
     // Booking / Packages
     booking: {
-      requestQuote: data.requestQuote,
-      noCommitment: data.noCommitment,
+      requestQuote: data.bookingRequestQuote,
+      noCommitment: data.bookingNoCommitment,
     },
     packageInfo: {
       packageNotFound: data.packageNotFound,
-      itinerary: data.itinerary,
-      includes: data.includes,
-      notIncludes: data.notIncludes,
+      itinerary: data.packageItinerary,
+      includes: data.packageIncludes,
+      notIncludes: data.packageNotIncludes,
+    },
+    // Nuevas secciones agregadas
+    quoteModal: {
+      title: data.quoteModalTitle,
+      step: data.quoteModalStep,
+      of: data.quoteModalOf,
+      step1Title: data.quoteModalStep1Title,
+      interestLabel: data.quoteModalInterestLabel,
+      customPlan: data.quoteModalCustomPlan,
+      dateLabel: data.quoteModalDateLabel,
+      travelersLabel: data.quoteModalTravelersLabel,
+      notesLabel: data.quoteModalNotesLabel,
+      notesPlaceholder: data.quoteModalNotesPlaceholder,
+      step2Title: data.quoteModalStep2Title,
+      namePlaceholder: data.quoteModalNamePlaceholder,
+      emailPlaceholder: data.quoteModalEmailPlaceholder,
+      phonePlaceholder: data.quoteModalPhonePlaceholder,
+      successTitle: data.quoteModalSuccessTitle,
+      successMessage: data.quoteModalSuccessMessage,
+    },
+    recommendations: {
+      title: data.recommendationsTitle,
+      subtitle: data.recommendationsSubtitle,
+      offer: data.recommendationsOffer,
+      viewDetails: data.recommendationsViewDetails,
+    },
+    contactMethod: {
+      label: data.contactMethodLabel,
+      whatsapp: data.contactMethodWhatsapp,
+      phone: data.contactMethodPhone,
+      email: data.contactMethodEmail,
     },
   };
+};
+
+const transformLegalPage = (data) => {
+  if (!data) return [];
+  const validData = data.data || data;
+  const items = Array.isArray(validData) ? validData : [validData];
+
+  return items.map((item) => ({
+    id: item.id,
+    title: item.title,
+    slug: item.slug,
+    content: item.content, // Rico texto (Markdown)
+    updatedAt: item.updatedAt,
+  }));
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -711,5 +774,9 @@ export default {
   getHeroSection,
   getAboutPage,
   getSiteSettings,
+  getSiteSettings,
   getSiteTexts,
+  // Legal
+  getLegalPageBySlug,
+  getFooterLegalPages,
 };

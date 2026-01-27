@@ -22,12 +22,6 @@ const HomePage = () => {
     // Debug: Verificar si los paquetes se están cargando correctamente
     useEffect(() => {
         if (!isLoading) {
-            console.log('[DEBUG] Featured Packages loaded:', {
-                count: featuredPackages.length,
-                packages: featuredPackages,
-                error: error?.message
-            });
-
             if (featuredPackages.length === 0 && !error) {
                 console.warn('[WARNING] No hay paquetes con showInHome=true en Strapi. Verifica:');
                 console.warn('1. Que existan paquetes en el admin de Strapi');

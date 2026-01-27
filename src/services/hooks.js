@@ -83,6 +83,21 @@ export const useFooterExperiences = () => {
   });
 };
 
+/**
+ * Hook para obtener páginas legales para el footer
+ * Solo retorna legal pages con showInFooter=true, ordenadas por footerDisplayOrder
+ */
+export const useFooterLegalPages = () => {
+  const { i18n } = useTranslation();
+  const locale = i18n.language;
+
+  return useQuery({
+    queryKey: ['footerLegalPages', locale],
+    queryFn: () => api.getFooterLegalPages(),
+    ...defaultQueryOptions,
+  });
+};
+
 // ============================================
 // HOOKS DE PAQUETES
 // ============================================
@@ -210,6 +225,21 @@ export const useSiteTexts = () => {
   });
 };
 
+/**
+ * Hook para obtener una página legal por slug
+ */
+export const useLegalPage = (slug) => {
+  const { i18n } = useTranslation();
+  const locale = i18n.language;
+
+  return useQuery({
+    queryKey: ['legalPage', slug, locale],
+    queryFn: () => api.getLegalPageBySlug(slug),
+    enabled: !!slug,
+    ...defaultQueryOptions,
+  });
+};
+
 // ============================================
 export default {
   useExperiences,
@@ -223,5 +253,7 @@ export default {
   useAboutPage,
   useSiteSettings,
   useSiteTexts,
+  useLegalPage,
+  useFooterLegalPages,
 };
 
