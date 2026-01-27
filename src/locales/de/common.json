@@ -49,7 +49,7 @@
     "recommendations": {
         "basedOnSelection": "Basierend auf Ihrer Auswahl",
         "title": "Unsere Empfehlungen",
-        "subtitle": "Die besten {{experience}} Reisen für Sie",
+        "subtitle": "Die besten {experience} Reisen für Sie",
         "offer": "ANGEBOT",
         "viewDetails": "Details ansehen"
     },
@@ -87,7 +87,7 @@
     },
     "currency": {
         "loading": "Währung wird geladen...",
-        "currentLabel": "Aktuelle Währung: {{currency}}. Klicken Sie zum Ändern.",
+        "currentLabel": "Aktuelle Währung: {currency}. Klicken Sie zum Ändern.",
         "selectLabel": "Währung auswählen"
     }
 }

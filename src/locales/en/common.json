@@ -49,7 +49,7 @@
     "recommendations": {
         "basedOnSelection": "Based on your selection",
         "title": "Our Recommendations",
-        "subtitle": "The best trips of {{experience}} for you",
+        "subtitle": "The best trips of {experience} for you",
         "offer": "SALE",
         "viewDetails": "View details"
     },
@@ -87,7 +87,7 @@
     },
     "currency": {
         "loading": "Loading currency...",
-        "currentLabel": "Current currency: {{currency}}. Click to change.",
+        "currentLabel": "Current currency: {currency}. Click to change.",
         "selectLabel": "Select currency"
     }
 }

@@ -679,6 +679,7 @@ const transformSiteTexts = (data) => {
     labels: {
       perPerson: data.labelPerPerson,
       days: data.labelDays,
+      persons: data.labelPersons,
     },
     // Estados de carga
     loading: {

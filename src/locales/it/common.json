@@ -49,7 +49,7 @@
     "recommendations": {
         "basedOnSelection": "In base alla tua selezione",
         "title": "I Nostri Consigli",
-        "subtitle": "I migliori viaggi {{experience}} per te",
+        "subtitle": "I migliori viaggi {experience} per te",
         "offer": "OFFERTA",
         "viewDetails": "Vedi dettagli"
     },
@@ -87,7 +87,7 @@
     },
     "currency": {
         "loading": "Caricamento valuta...",
-        "currentLabel": "Valuta attuale: {{currency}}. Clicca per cambiare.",
+        "currentLabel": "Valuta attuale: {currency}. Clicca per cambiare.",
         "selectLabel": "Seleziona valuta"
     }
 }
