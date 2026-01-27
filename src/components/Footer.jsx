@@ -112,15 +112,13 @@ const Footer = () => {
                     <div>
                         <h4 className="font-semibold text-lg mb-4">{t('footer.information')}</h4>
                         <ul className="space-y-3">
-                            {Array.isArray(legalPages) && legalPages.length > 0 ? (
-                                legalPages.map((page) => (
-                                    <li key={page.slug}>
-                                        <Link to={`/${page.slug}`} className="text-niebla hover:text-bruma transition-colors">
-                                            {page.title}
-                                        </Link>
-                                    </li>
-                                ))
-                            ) : null}
+                            {legalPages.map((page) => (
+                                <li key={page.slug}>
+                                    <Link to={`/${page.slug}`} className="text-niebla hover:text-bruma transition-colors">
+                                        {page.title}
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
                     </div>
 
