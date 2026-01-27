@@ -7,7 +7,9 @@ export const getLegalPagesForFooter = async () => {
     'filters[showInFooter][$eq]': true,
     'sort': 'footerDisplayOrder:asc',
   };
-  return fetchFromStrapi('/legal-pages', params, transformLegalPage);
+  const result = await fetchFromStrapi('/legal-pages', params, transformLegalPage);
+  console.log('[DEBUG] getLegalPagesForFooter result:', result);
+  return result;
 };
 /**
  * API de DoloVibes - Cliente para Strapi CMS

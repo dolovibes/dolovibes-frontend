@@ -22,6 +22,8 @@ const Footer = () => {
     // Usar useLegalPagesForFooter para obtener las páginas legales del footer
     const { data: legalPages = [] } = useLegalPagesForFooter();
 
+    console.log('[DEBUG] Footer - legalPages:', legalPages);
+
     // Datos desde Strapi con fallbacks
     const logoUrl = siteSettings?.logo || '/logo-dark.svg';
     const location = siteSettings?.location || 'Monterrey, México';
