@@ -1,4 +1,16 @@
 /**
+ * Hook para obtener todas las páginas legales para el footer
+ */
+export const useLegalPagesForFooter = () => {
+  const { i18n } = useTranslation();
+  const locale = i18n.language;
+  return useQuery({
+    queryKey: ['legalPagesForFooter', locale],
+    queryFn: () => api.getLegalPagesForFooter(),
+    ...defaultQueryOptions,
+  });
+};
+/**
  * React Query Hooks para datos de Strapi
  * 
  * ARQUITECTURA:

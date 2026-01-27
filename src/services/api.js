@@ -1,4 +1,15 @@
 /**
+ * Obtiene todas las páginas legales para el footer
+ * Solo las que tienen showInFooter=true, ordenadas por footerDisplayOrder
+ */
+export const getLegalPagesForFooter = async () => {
+  const params = {
+    'filters[showInFooter][$eq]': true,
+    'sort': 'footerDisplayOrder:asc',
+  };
+  return fetchFromStrapi('/legal-pages', params, transformLegalPage);
+};
+/**
  * API de DoloVibes - Cliente para Strapi CMS
  * 
  * ARQUITECTURA:
@@ -408,12 +419,10 @@ export const getHeroSection = async () => {
 // Endpoint: /api/about-page
 // ═══════════════════════════════════════════════════════════════
 
+// Usar objeto para populate según documentación oficial Strapi 5.x
+// Incluye todos los campos actuales del modelo About Page
 const ABOUT_POPULATE = {
   mainPhoto: true,
-  team: {
-    populate: ['photo']
-  },
-  values: true,
   origin: true,
   essence: true,
   vision: true,
