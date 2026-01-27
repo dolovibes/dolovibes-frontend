@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useSiteSettings, useFooterExperiences, useLegalPagesForFooter } from '../services/hooks';
+import { useSiteSettings, useFooterExperiences, useFooterLegalPages } from '../services/hooks';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { MapPin, Phone, Mail, Instagram, Facebook, FileText } from 'lucide-react';
 
@@ -19,10 +19,8 @@ const Footer = () => {
     const { data: siteSettings, isLoading } = useSiteSettings();
     // Usar useFooterExperiences para obtener solo las experiencias marcadas para el footer
     const { data: footerExperiences = [] } = useFooterExperiences();
-    // Usar useLegalPagesForFooter para obtener las páginas legales del footer
-    const { data: legalPages = [] } = useLegalPagesForFooter();
-
-    console.log('[DEBUG] Footer - legalPages:', legalPages);
+    // Usar useFooterLegalPages para obtener las páginas legales del footer
+    const { data: legalPages = [] } = useFooterLegalPages();
 
     // Datos desde Strapi con fallbacks
     const logoUrl = siteSettings?.logo || '/logo-dark.svg';

@@ -38,20 +38,6 @@ const singleTypeQueryOptions = {
 // ============================================
 
 /**
- * Hook para obtener todas las páginas legales para el footer
- */
-export const useLegalPagesForFooter = () => {
-  const { i18n } = useTranslation();
-  const locale = i18n.language;
-  console.log('[DEBUG] useLegalPagesForFooter - locale:', locale);
-  return useQuery({
-    queryKey: ['legalPagesForFooter', locale],
-    queryFn: () => api.getLegalPagesForFooter(),
-    ...defaultQueryOptions,
-  });
-};
-
-/**
  * Hook para obtener todas las experiencias
  * @param {string} season - Filtro por temporada
  */
@@ -93,6 +79,21 @@ export const useFooterExperiences = () => {
   return useQuery({
     queryKey: ['footerExperiences', locale],
     queryFn: () => api.getFooterExperiences(),
+    ...defaultQueryOptions,
+  });
+};
+
+/**
+ * Hook para obtener páginas legales para el footer
+ * Solo retorna legal pages con showInFooter=true, ordenadas por footerDisplayOrder
+ */
+export const useFooterLegalPages = () => {
+  const { i18n } = useTranslation();
+  const locale = i18n.language;
+
+  return useQuery({
+    queryKey: ['footerLegalPages', locale],
+    queryFn: () => api.getFooterLegalPages(),
     ...defaultQueryOptions,
   });
 };
@@ -235,21 +236,6 @@ export const useLegalPage = (slug) => {
     queryKey: ['legalPage', slug, locale],
     queryFn: () => api.getLegalPageBySlug(slug),
     enabled: !!slug,
-    ...defaultQueryOptions,
-  });
-};
-
-/**
- * Hook para obtener páginas legales para el footer
- * Solo retorna legal pages con showInFooter=true, ordenadas por footerDisplayOrder
- */
-export const useFooterLegalPages = () => {
-  const { i18n } = useTranslation();
-  const locale = i18n.language;
-
-  return useQuery({
-    queryKey: ['footerLegalPages', locale],
-    queryFn: () => api.getFooterLegalPages(),
     ...defaultQueryOptions,
   });
 };
