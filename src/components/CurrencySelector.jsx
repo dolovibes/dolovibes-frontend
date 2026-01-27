@@ -165,7 +165,7 @@ const CurrencySelector = ({
         className={buttonStyles}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
-        aria-label={siteTexts.currency.currentLabel.replace('{currency}', currentCurrency.name)}
+        aria-label={siteTexts.currency.currentLabel.replace(/\{\{?currency\}\}?/g, currentCurrency.name)}
       >
         {showFlag && (
           <span

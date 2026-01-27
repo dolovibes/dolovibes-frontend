@@ -59,7 +59,7 @@ const PackageRecommendations = ({ packages, experienceTitle, isLoading }) => {
                         {siteTexts.recommendations.title}
                     </h2>
                     <p className="text-niebla mt-3 max-w-lg mx-auto">
-                        {siteTexts.recommendations.subtitle.replace('{experience}', experienceTitle)}
+                        {siteTexts.recommendations.subtitle.replace(/\{\{?experience\}\}?/g, experienceTitle)}
                     </p>
                 </div>
 
