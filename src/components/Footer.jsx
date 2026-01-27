@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useSiteSettings, useFooterExperiences } from '../services/hooks';
+import { useSiteSettings, useFooterExperiences, useFooterLegalPages } from '../services/hooks';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { MapPin, Phone, Mail, Instagram, Facebook, FileText } from 'lucide-react';
 
@@ -19,6 +19,8 @@ const Footer = () => {
     const { data: siteSettings, isLoading } = useSiteSettings();
     // Usar useFooterExperiences para obtener solo las experiencias marcadas para el footer
     const { data: footerExperiences = [] } = useFooterExperiences();
+    // Usar useFooterLegalPages para obtener solo las páginas legales marcadas para el footer
+    const { data: footerLegalPages = [] } = useFooterLegalPages();
 
     // Datos desde Strapi con fallbacks
     const logoUrl = siteSettings?.logo || '/logo-dark.svg';
@@ -31,7 +33,7 @@ const Footer = () => {
 
     // Textos de i18n con fallback - priorizar Strapi
     const footerDescription = siteSettings?.footerDescription || t('footer.description');
-    const noLegalPagesText = siteTexts?.footer?.noLegalPages || t('footer.noLegalPages', 'No hay páginas legales configuradas');
+
 
     if (isLoading) {
         return (
@@ -110,17 +112,13 @@ const Footer = () => {
                     <div>
                         <h4 className="font-semibold text-lg mb-4">{t('footer.information')}</h4>
                         <ul className="space-y-3">
-                            {Array.isArray(siteSettings?.legalPages) && siteSettings.legalPages.length > 0 ? (
-                                siteSettings.legalPages.map((page) => (
-                                    <li key={page.slug}>
-                                        <Link to={`/${page.slug}`} className="text-niebla hover:text-bruma transition-colors">
-                                            {page.title}
-                                        </Link>
-                                    </li>
-                                ))
-                            ) : (
-                                <li className="text-niebla italic">{noLegalPagesText}</li>
-                            )}
+                            {footerLegalPages.map((page) => (
+                                <li key={page.slug}>
+                                    <Link to={`/${page.slug}`} className="text-niebla hover:text-bruma transition-colors">
+                                        {page.title}
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
                     </div>
 

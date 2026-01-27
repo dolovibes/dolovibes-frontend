@@ -476,7 +476,19 @@ export const getLegalPageBySlug = async (slug) => {
   return pages[0] || null;
 };
 
+/**
+ * Obtiene las páginas legales para mostrar en el footer
+ * Solo retorna legal pages con showInFooter=true, ordenadas por footerDisplayOrder
+ */
+export const getFooterLegalPages = async () => {
+  const params = {
+    'pagination[pageSize]': 20,
+    'sort': 'footerDisplayOrder:asc',
+    'filters[showInFooter][$eq]': true,
+  };
 
+  return fetchFromStrapi('/legal-pages', params, transformLegalPage);
+};
 
 // ═══════════════════════════════════════════════════════════════
 // TRANSFORMADORES DE DATOS
@@ -687,7 +699,6 @@ const transformSiteTexts = (data) => {
     footer: {
       description: data.footerDescription,
       allRightsReserved: data.footerRights,
-      noLegalPages: data.footerNoLegalPages,
     },
     // About
     about: {
@@ -743,4 +754,5 @@ export default {
   getSiteTexts,
   // Legal
   getLegalPageBySlug,
+  getFooterLegalPages,
 };

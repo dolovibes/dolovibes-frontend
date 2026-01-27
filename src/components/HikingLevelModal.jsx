@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { X, Mountain, ChevronRight, RotateCcw } from 'lucide-react';
 
 const HikingLevelModal = ({ isOpen, onClose }) => {
-    const { t } = useTranslation('hikingLevel');
+    const { texts: siteTexts } = useSiteTextsContext();
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answers, setAnswers] = useState({});
     const [showResult, setShowResult] = useState(false);
@@ -11,47 +11,47 @@ const HikingLevelModal = ({ isOpen, onClose }) => {
     const questions = [
         {
             id: 1,
-            question: t('questions.q1'),
+            question: siteTexts.questions.q1,
             options: [
-                { value: 'A', text: t('answers.q1a') },
-                { value: 'B', text: t('answers.q1b') },
-                { value: 'C', text: t('answers.q1c') }
+                { value: 'A', text: siteTexts.answers.q1a },
+                { value: 'B', text: siteTexts.answers.q1b },
+                { value: 'C', text: siteTexts.answers.q1c }
             ]
         },
         {
             id: 2,
-            question: t('questions.q2'),
+            question: siteTexts.questions.q2,
             options: [
-                { value: 'A', text: t('answers.q2a') },
-                { value: 'B', text: t('answers.q2b') },
-                { value: 'C', text: t('answers.q2c') }
+                { value: 'A', text: siteTexts.answers.q2a },
+                { value: 'B', text: siteTexts.answers.q2b },
+                { value: 'C', text: siteTexts.answers.q2c }
             ]
         },
         {
             id: 3,
-            question: t('questions.q3'),
+            question: siteTexts.questions.q3,
             options: [
-                { value: 'A', text: t('answers.q3a') },
-                { value: 'B', text: t('answers.q3b') },
-                { value: 'C', text: t('answers.q3c') }
+                { value: 'A', text: siteTexts.answers.q3a },
+                { value: 'B', text: siteTexts.answers.q3b },
+                { value: 'C', text: siteTexts.answers.q3c }
             ]
         },
         {
             id: 4,
-            question: t('questions.q4'),
+            question: siteTexts.questions.q4,
             options: [
-                { value: 'A', text: t('answers.q4a') },
-                { value: 'B', text: t('answers.q4b') },
-                { value: 'C', text: t('answers.q4c') }
+                { value: 'A', text: siteTexts.answers.q4a },
+                { value: 'B', text: siteTexts.answers.q4b },
+                { value: 'C', text: siteTexts.answers.q4c }
             ]
         },
         {
             id: 5,
-            question: t('questions.q5'),
+            question: siteTexts.questions.q5,
             options: [
-                { value: 'A', text: t('answers.q5a') },
-                { value: 'B', text: t('answers.q5b') },
-                { value: 'C', text: t('answers.q5c') }
+                { value: 'A', text: siteTexts.answers.q5a },
+                { value: 'B', text: siteTexts.answers.q5b },
+                { value: 'C', text: siteTexts.answers.q5c }
             ]
         }
     ];

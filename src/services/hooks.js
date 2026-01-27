@@ -225,6 +225,21 @@ export const useLegalPage = (slug) => {
   });
 };
 
+/**
+ * Hook para obtener páginas legales para el footer
+ * Solo retorna legal pages con showInFooter=true, ordenadas por footerDisplayOrder
+ */
+export const useFooterLegalPages = () => {
+  const { i18n } = useTranslation();
+  const locale = i18n.language;
+
+  return useQuery({
+    queryKey: ['footerLegalPages', locale],
+    queryFn: () => api.getFooterLegalPages(),
+    ...defaultQueryOptions,
+  });
+};
+
 // ============================================
 export default {
   useExperiences,
@@ -239,5 +254,6 @@ export default {
   useSiteSettings,
   useSiteTexts,
   useLegalPage,
+  useFooterLegalPages,
 };
 
