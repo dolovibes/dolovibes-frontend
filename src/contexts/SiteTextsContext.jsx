@@ -27,7 +27,9 @@ export const SiteTextsProvider = ({ children }) => {
             // Intentar obtener de Strapi primero
             if (strapiTexts) {
                 const value = strapiPath.split('.').reduce((obj, key) => obj?.[key], strapiTexts);
-                if (value) return value;
+                // Validar que el valor no sea solo una cadena vacía o null
+                if (value && value.trim && value.trim() !== '') return value;
+                if (value && typeof value !== 'string') return value;
             }
 
             // Fallback a i18n
