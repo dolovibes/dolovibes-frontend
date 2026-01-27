@@ -114,7 +114,7 @@ const Footer = () => {
                         <ul className="space-y-3">
                             {legalPages.map((page) => (
                                 <li key={page.slug}>
-                                    <Link to={`/${page.slug}`} className="text-niebla hover:text-bruma transition-colors">
+                                    <Link to={`/legal/${page.slug}`} className="text-niebla hover:text-bruma transition-colors">
                                         {page.title}
                                     </Link>
                                 </li>
