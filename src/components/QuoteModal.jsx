@@ -14,7 +14,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
         contacto: "whatsapp",
         date: "",
         guests: "2",
-        interest: initialInterest || siteTexts.quoteModal.customPlan,
+        interest: initialInterest || "Personalizado",
         notes: ""
     });
 
@@ -123,7 +123,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                 onClick={() => setStep(2)}
                                 className="w-full bg-pizarra text-white font-bold py-3 rounded-xl hover:bg-pizarra/90 transition-colors flex justify-center items-center gap-2 mt-4"
                             >
-                                {t('buttons.next')} <ArrowRight size={18} />
+                                {siteTexts.buttons.next} <ArrowRight size={18} />
                             </button>
                         </div>
                     )}
