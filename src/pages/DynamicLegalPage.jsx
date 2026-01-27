@@ -1,16 +1,20 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, FileText } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import Footer from '../components/Footer';
 import { useLegalPage } from '../services/hooks';
 
 // Componente para renderizar la página legal
 // Si hay contenido en Strapi (data), lo usa. Si no, usa el fallback (children).
-const DynamicLegalPage = ({ slug, fallbackTitle, fallbackContent }) => {
+const DynamicLegalPage = ({ slug: slugProp, fallbackTitle, fallbackContent }) => {
     const { t } = useTranslation('common');
     const navigate = useNavigate();
+    const { slug: slugParam } = useParams();
+
+    // Usar slug del parámetro de URL si existe, sino usar el prop
+    const slug = slugParam || slugProp;
 
     // Obtener datos desde Strapi
     const { data: pageData, isLoading } = useLegalPage(slug);
