@@ -445,7 +445,6 @@ const SETTINGS_POPULATE = {
   logo: true,
   logoDark: true,
   favicon: true,
-  legalPages: true,
 };
 
 /**
@@ -651,11 +650,6 @@ const transformSiteSettings = (data) => {
     tiktokUrl: data.tiktokUrl,
     footerDescription: data.footerDescription,
     copyrightText: data.copyrightText,
-    legalPages: data.legalPages?.map(page => ({
-      title: page.title,
-      slug: page.slug,
-      content: page.content,
-    })) || [],
   };
 };
 
