@@ -715,6 +715,37 @@ const transformSiteTexts = (data) => {
       includes: data.packageIncludes,
       notIncludes: data.packageNotIncludes,
     },
+    // Nuevas secciones agregadas
+    quoteModal: {
+      title: data.quoteModalTitle,
+      step: data.quoteModalStep,
+      of: data.quoteModalOf,
+      step1Title: data.quoteModalStep1Title,
+      interestLabel: data.quoteModalInterestLabel,
+      customPlan: data.quoteModalCustomPlan,
+      dateLabel: data.quoteModalDateLabel,
+      travelersLabel: data.quoteModalTravelersLabel,
+      notesLabel: data.quoteModalNotesLabel,
+      notesPlaceholder: data.quoteModalNotesPlaceholder,
+      step2Title: data.quoteModalStep2Title,
+      namePlaceholder: data.quoteModalNamePlaceholder,
+      emailPlaceholder: data.quoteModalEmailPlaceholder,
+      phonePlaceholder: data.quoteModalPhonePlaceholder,
+      successTitle: data.quoteModalSuccessTitle,
+      successMessage: data.quoteModalSuccessMessage,
+    },
+    recommendations: {
+      title: data.recommendationsTitle,
+      subtitle: data.recommendationsSubtitle,
+      offer: data.recommendationsOffer,
+      viewDetails: data.recommendationsViewDetails,
+    },
+    contactMethod: {
+      label: data.contactMethodLabel,
+      whatsapp: data.contactMethodWhatsapp,
+      phone: data.contactMethodPhone,
+      email: data.contactMethodEmail,
+    },
   };
 };
 

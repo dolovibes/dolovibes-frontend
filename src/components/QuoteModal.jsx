@@ -14,7 +14,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
         contacto: "whatsapp",
         date: "",
         guests: "2",
-        interest: initialInterest || "Personalizado",
+        interest: initialInterest || siteTexts.quoteModal.customPlan,
         notes: ""
     });
 

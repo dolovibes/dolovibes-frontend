@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { X, Mountain, ChevronRight, RotateCcw } from 'lucide-react';
 
 const HikingLevelModal = ({ isOpen, onClose }) => {
+    const { t } = useTranslation('hikingLevel');
     const { texts: siteTexts } = useSiteTextsContext();
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answers, setAnswers] = useState({});
