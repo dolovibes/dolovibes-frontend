@@ -9,7 +9,7 @@
  * - Moneda base: EUR (todos los precios en Strapi se almacenan en euros)
  * - Detección automática de moneda por ubicación del usuario
  * - Conversión de precios en tiempo real con cache
- * - Soporte para múltiples monedas (EUR, USD, MXN, CHF, etc.)
+ * - Soporte para múltiples monedas (EUR, USD, MXN)
  * - Persistencia de preferencias en localStorage
  * - Fallbacks para navegadores antiguos y errores de red
  */
@@ -38,7 +38,7 @@ const EXCHANGE_RATE_API_URL = 'https://v6.exchangerate-api.com/v6';
 export const BASE_CURRENCY = 'EUR';
 
 // Monedas soportadas con configuración completa
-// Optimización: 4 monedas principales (Europa + Internacional + México + Suiza)
+// Optimización: 3 monedas principales (Europa + Internacional + México)
 export const SUPPORTED_CURRENCIES = {
   // Mercado europeo - Italia/Dolomitas (40% turismo) + Alemania (35%) + España
   EUR: {
@@ -70,20 +70,10 @@ export const SUPPORTED_CURRENCIES = {
     flag: '🇲🇽',
     decimals: 0
   },
-  // Turismo suizo en Dolomitas (8% mercado)
-  CHF: {
-    symbol: 'CHF',
-    name: 'Swiss Franc',
-    nameShort: 'CHF',
-    locale: 'de-CH',
-    position: 'before',
-    flag: '🇨🇭',
-    decimals: 2
-  },
 };
 
 // Mapeo de países a monedas (ISO 3166-1 alpha-2)
-// Optimizado para 4 monedas: EUR, USD, MXN, CHF
+// Optimizado para 3 monedas: EUR, USD, MXN
 export const COUNTRY_CURRENCY_MAP = {
   // México
   MX: 'MXN',
@@ -113,9 +103,9 @@ export const COUNTRY_CURRENCY_MAP = {
   LT: 'EUR',
   MT: 'EUR',
   CY: 'EUR',
-  // Suiza y Liechtenstein
-  CH: 'CHF',
-  LI: 'CHF',
+  // Suiza y Liechtenstein -> EUR (CHF eliminado)
+  CH: 'EUR',
+  LI: 'EUR',
   // Default para resto del mundo
   DEFAULT: 'EUR', // EUR como default para mercado europeo
 };
@@ -234,12 +224,8 @@ export const detectUserCurrency = async () => {
   if (browserLang.startsWith('en-us') || browserLang.startsWith('en-ca')) return 'USD';
   // Reino Unido, Australia, Nueva Zelanda -> USD
   if (browserLang.startsWith('en')) return 'USD';
-  // Alemán de Suiza
-  if (browserLang.startsWith('de-ch')) return 'CHF';
-  // Alemán, Francés, Italiano -> EUR
+  // Alemán, Francés (incluye Suiza), Italiano -> EUR
   if (browserLang.startsWith('de') || browserLang.startsWith('fr') || browserLang.startsWith('it')) return 'EUR';
-  // Francés de Suiza
-  if (browserLang.startsWith('fr-ch')) return 'CHF';
 
   // 4. Default para mercado europeo (base del negocio)
   return 'EUR';
@@ -263,7 +249,6 @@ const getFallbackRates = () => {
     EUR: 1,        // Moneda base
     USD: 1.04,     // 1 EUR ≈ 1.04 USD (promedio ene 2026: 1.03-1.05)
     MXN: 20.85,    // 1 EUR ≈ 20.85 MXN (promedio ene 2026: 20.5-21.0)
-    CHF: 0.94,     // 1 EUR ≈ 0.94 CHF (promedio ene 2026: 0.92-0.95)
   };
 };
 
