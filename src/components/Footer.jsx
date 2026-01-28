@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSiteSettings, useFooterExperiences, useFooterLegalPages } from '../services/hooks';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
-import { MapPin, Phone, Mail, Instagram, Facebook, FileText } from 'lucide-react';
+import { MapPin, MessageCircle, Mail, Instagram, Facebook, FileText } from 'lucide-react';
 
 // TikTok icon component (not in lucide-react)
 const TikTokIcon = ({ className }) => (
@@ -25,7 +25,7 @@ const Footer = () => {
     // Datos desde Strapi con fallbacks
     const logoUrl = siteSettings?.logo || '/logo-dark.svg';
     const location = siteSettings?.location || 'Monterrey, México';
-    const phone = siteSettings?.phone || '+52 81 1234 5678';
+    const whatsappNumber = siteSettings?.whatsappNumber || '+5218112345678';
     const email = siteSettings?.email || 'info@dolo-vibes.com';
     const instagramUrl = siteSettings?.instagramUrl || 'https://instagram.com';
     const facebookUrl = siteSettings?.facebookUrl || 'https://facebook.com';
@@ -131,9 +131,14 @@ const Footer = () => {
                                 <span>{location}</span>
                             </li>
                             <li>
-                                <a href={`tel:${phone.replace(/\s/g, '')}`} className="flex items-center gap-3 text-niebla hover:text-bruma transition-colors">
-                                    <Phone className="w-5 h-5 text-bruma flex-shrink-0" />
-                                    <span>{phone}</span>
+                                <a
+                                    href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-3 text-niebla hover:text-bruma transition-colors"
+                                >
+                                    <MessageCircle className="w-5 h-5 text-bruma flex-shrink-0" />
+                                    <span>{whatsappNumber}</span>
                                 </a>
                             </li>
                             <li>
