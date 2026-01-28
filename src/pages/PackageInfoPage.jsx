@@ -142,7 +142,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
     const currentItinerary = pkg.itinerary?.[currentDay];
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-white overflow-x-hidden">
             {/* Hero - Pantalla completa */}
             <div className="relative min-h-screen flex items-end">
                 <img
@@ -157,44 +157,44 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                 <div className="absolute inset-0 bg-gradient-to-t from-pizarra via-pizarra/40 to-transparent"></div>
 
                 {/* Info superpuesta */}
-                <div className="relative z-10 p-6 md:p-12 pb-16 md:pb-24 w-full">
-                    <div className="container mx-auto">
-                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4">
+                <div className="relative z-10 p-4 sm:p-6 md:p-12 pb-16 md:pb-24 w-full">
+                    <div className="container mx-auto max-w-full px-0">
+                        <h1 className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4 break-words">
                             {pkg.title}
                         </h1>
 
-                        <p className="text-xl md:text-2xl text-white/80 max-w-5xl mb-6">
+                        <p className="text-base sm:text-xl md:text-2xl text-white/80 max-w-5xl mb-6">
                             {pkg.description}
                         </p>
 
-                        <div className="flex flex-wrap items-center gap-4 text-white/90">
-                            <span className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                                <MapPin className="w-4 h-4" />
-                                {pkg.location}
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-white/90">
+                            <span className="flex items-center gap-1.5 sm:gap-2 bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-sm sm:text-base">
+                                <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+                                <span className="truncate max-w-[120px] sm:max-w-none">{pkg.location}</span>
                             </span>
-                            <span className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                                <Clock className="w-4 h-4" />
+                            <span className="flex items-center gap-1.5 sm:gap-2 bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-sm sm:text-base">
+                                <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
                                 {pkg.duration}
                             </span>
                             {pkg.difficulty && (
-                                <span className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                                <span className="flex items-center gap-1.5 sm:gap-2 bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-sm sm:text-base">
                                     {pkg.difficulty}
                                 </span>
                             )}
                             {pkg.groupSize && (
-                                <span className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                                    <Users className="w-4 h-4" />
+                                <span className="flex items-center gap-1.5 sm:gap-2 bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-sm sm:text-base">
+                                    <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
                                     {pkg.groupSize}
                                 </span>
                             )}
                             {pkg.guideType && (
-                                <span className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                                <span className="flex items-center gap-1.5 sm:gap-2 bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-sm sm:text-base">
                                     {pkg.guideType}
                                 </span>
                             )}
                             {pkg.availableDates && (
-                                <span className="flex items-center gap-2 bg-emerald-500/20 backdrop-blur-sm px-4 py-2 rounded-full border border-emerald-400/30">
-                                    <Calendar className="w-4 h-4" />
+                                <span className="flex items-center gap-1.5 sm:gap-2 bg-emerald-500/20 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-emerald-400/30 text-sm sm:text-base">
+                                    <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
                                     <span className="font-medium">{pkg.availableDates}</span>
                                 </span>
                             )}
@@ -254,7 +254,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                         </div>
 
                         {/* Navegación */}
-                        <div className="flex items-center justify-between pt-6 border-t border-niebla">
+                        <div className="flex items-center justify-between pt-2 border-t border-niebla">
                             {/* Flechas */}
                             <div className="flex items-center gap-3">
                                 <button
@@ -302,12 +302,15 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                 </div>
             </section>
 
+            {/* Espaciador entre itinerario y detalles */}
+            <div className="h-8 sm:h-10 md:h-0"></div>
+
             {/* Sección de Detalles - Texto izquierda, Imagen derecha */}
-            <section className="py-16 md:py-24">
-                <div className="container mx-auto px-6">
-                    <div className="grid lg:grid-cols-2 gap-12 items-start">
+            <section className="py-8 sm:py-12 md:py-24 overflow-hidden">
+                <div className="container mx-auto px-4 pt-2 sm:pt-0 sm:px-6">
+                    <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start w-full">
                         {/* Columna izquierda - Detalles */}
-                        <div>
+                        <div className="w-full overflow-hidden">
                             {/* Precio destacado */}
                             <div className="mb-8">
                                 <p className="text-niebla text-sm uppercase tracking-wider mb-1">
@@ -315,18 +318,18 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 </p>
                                 <div className="flex items-baseline gap-3">
                                     {pkg.hasDiscount === true && pkg.originalPriceEUR && pkg.originalPriceEUR > pkg.priceEUR && (
-                                        <span className="text-niebla line-through text-xl">
+                                        <span className="text-niebla line-through text-lg sm:text-xl">
                                             {formatPriceFromEUR(pkg.originalPriceEUR)}
                                         </span>
                                     )}
-                                    <span className="text-4xl md:text-5xl font-bold text-pizarra">
+                                    <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-pizarra">
                                         {formatPriceFromEUR(pkg.priceEUR)}
                                     </span>
                                 </div>
                             </div>
 
                             {/* Descripción breve */}
-                            <p className="text-lg text-pizarra leading-relaxed mb-4">
+                            <p className="text-base sm:text-lg text-pizarra leading-relaxed mb-4 break-words">
                                 {pkg.description}
                             </p>
 
@@ -348,7 +351,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                         {pkg.includes.map((item, index) => (
                                             <div
                                                 key={`inc-${index}`}
-                                                className="bg-nieve rounded-xl overflow-hidden border border-niebla"
+                                                className="bg-nieve rounded-xl overflow-hidden border border-niebla w-full"
                                             >
                                                 <button
                                                     onClick={() => toggleInclude(`inc-${index}`)}
@@ -538,15 +541,15 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                         </div>
 
                         {/* Columna derecha - Imagen con Book Now */}
-                        <div className="lg:sticky lg:top-28">
-                            <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+                        <div className="mt-8 lg:mt-0 lg:sticky lg:top-28 w-full overflow-hidden">
+                            <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl">
                                 <img
                                     src={pkg.heroImage || pkg.image}
                                     alt={pkg.title}
                                     loading="lazy"
                                     width="600"
                                     height="500"
-                                    className="w-full h-[400px] md:h-[500px] object-cover"
+                                    className="w-full h-[300px] sm:h-[400px] md:h-[500px] object-cover"
                                 />
                                 {/* Overlay gradient */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-pizarra/80 via-transparent to-transparent"></div>
