@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { BlocksRenderer } from '../utils/BlocksRenderer';
+import { BlocksRenderer, extractTextFromBlocks } from '../utils/BlocksRenderer';
 import {
     ArrowLeft,
     MapPin,
@@ -164,7 +164,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                         </h1>
 
                         <p className="text-base sm:text-xl md:text-2xl text-white/80 max-w-5xl mb-6">
-                            {pkg.description}
+                            {extractTextFromBlocks(pkg.description)}
                         </p>
 
                         <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-white/90">
@@ -330,7 +330,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
 
                             {/* Descripción breve */}
                             <p className="text-base sm:text-lg text-pizarra leading-relaxed mb-4 break-words">
-                                {pkg.description}
+                                {extractTextFromBlocks(pkg.description)}
                             </p>
 
                             {/* Enlace para evaluación de nivel */}
