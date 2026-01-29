@@ -507,9 +507,9 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                             )}
 
                             {/* Botones adicionales */}
-                            <div className="space-y-3 mt-6">
-                                {/* Additional Photos - Solo mostrar si hay galería */}
-                                {pkg.gallery && pkg.gallery.length > 0 && pkg.gallery.some(g => g.url) && (
+                            {/* Additional Photos - Solo mostrar si hay galería */}
+                            {pkg.gallery && pkg.gallery.length > 0 && pkg.gallery.some(g => g.url) && (
+                                <div className="mb-6">
                                     <button
                                         onClick={() => setIsPhotosModalOpen(true)}
                                         className="w-full flex items-center justify-between p-4 bg-nieve rounded-xl border border-niebla hover:bg-nieve transition-colors text-left"
@@ -522,10 +522,12 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                         </div>
                                         <ChevronRight className="w-5 h-5 text-niebla" />
                                     </button>
-                                )}
+                                </div>
+                            )}
 
-                                {/* How to get here - Solo mostrar si hay mapImage */}
-                                {pkg.mapImage && (
+                            {/* How to get here - Solo mostrar si hay mapImage */}
+                            {pkg.mapImage && (
+                                <div className="mb-6">
                                     <button
                                         onClick={() => setIsMapModalOpen(true)}
                                         className="w-full flex items-center justify-between p-4 bg-nieve rounded-xl border border-niebla hover:bg-nieve transition-colors text-left"
@@ -538,8 +540,8 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                         </div>
                                         <ChevronRight className="w-5 h-5 text-niebla" />
                                     </button>
-                                )}
-                            </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Columna derecha - Imagen con Book Now */}
