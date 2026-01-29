@@ -26,8 +26,7 @@
         "perPerson": "pro Person",
         "days": "Tage",
         "persons": "Pers."
-    },
-    "loading": {
+    },    "optional": "(Optional)",    "loading": {
         "experience": "Erlebnis wird geladen...",
         "package": "Paket wird geladen...",
         "generic": "Wird geladen..."

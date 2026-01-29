@@ -354,7 +354,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                 {/* Servicios adicionales */}
                                 <div>
                                     <label className="block text-sm font-medium text-pizarra mb-1.5">
-                                        {siteTexts.packageQuoteModal?.additionalServices || 'Servicios adicionales'} <span className="text-niebla text-xs">{siteTexts.fieldOptional || '(Opcional)'}</span>
+                                        {siteTexts.packageQuoteModal?.additionalServices || 'Servicios adicionales'} <span className="text-niebla text-xs">{siteTexts.optional || '(Opcional)'}</span>
                                     </label>
                                     <textarea
                                         name="serviciosAdicionales"
