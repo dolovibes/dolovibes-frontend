@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import ReactMarkdown from 'react-markdown';
+import { BlocksRenderer } from '../utils/BlocksRenderer';
 import {
     ArrowLeft,
     MapPin,
@@ -249,7 +249,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
 
                             {/* Descripción - altura fija */}
                             <div className="text-pizarra text-sm md:text-base leading-relaxed prose prose-sm max-w-none">
-                                <ReactMarkdown>{pkg.itinerary[currentDay].description}</ReactMarkdown>
+                                <BlocksRenderer content={pkg.itinerary[currentDay].description} />
                             </div>
                         </div>
 
@@ -373,7 +373,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                     <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `inc-${index}` ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                                         <div className="px-4 pb-4 pt-0 pl-11">
                                                             <div className="text-pizarra prose prose-sm max-w-none">
-                                                                <ReactMarkdown>{item.detail}</ReactMarkdown>
+                                                                <BlocksRenderer content={item.detail} />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -413,7 +413,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                     <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `notinc-${index}` ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                                         <div className="px-4 pb-4 pt-0 pl-11">
                                                             <div className="text-pizarra prose prose-sm max-w-none">
-                                                                <ReactMarkdown>{item.detail}</ReactMarkdown>
+                                                                <BlocksRenderer content={item.detail} />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -453,7 +453,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                     <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `info-${index}` ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                                         <div className="px-4 pb-4 pt-0 pl-11">
                                                             <div className="text-pizarra prose prose-sm max-w-none">
-                                                                <ReactMarkdown>{item.detail}</ReactMarkdown>
+                                                                <BlocksRenderer content={item.detail} />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -493,7 +493,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                     <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `svc-${index}` ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                                         <div className="px-4 pb-4 pt-0 pl-11">
                                                             <div className="text-pizarra prose prose-sm max-w-none">
-                                                                <ReactMarkdown>{item.detail}</ReactMarkdown>
+                                                                <BlocksRenderer content={item.detail} />
                                                             </div>
                                                         </div>
                                                     </div>

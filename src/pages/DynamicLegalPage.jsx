@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, FileText } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
-import ReactMarkdown from 'react-markdown';
+import { BlocksRenderer } from '../utils/BlocksRenderer';
 import Footer from '../components/Footer';
 import { useLegalPage } from '../services/hooks';
 
@@ -69,7 +69,7 @@ const DynamicLegalPage = ({ slug: slugProp, fallbackTitle, fallbackContent }) =>
                 <div className="max-w-4xl mx-auto bg-nieve rounded-2xl p-6 md:p-8 border border-niebla">
                     {hasStrapiContent ? (
                         <div className="prose prose-lg max-w-none text-pizarra prose-headings:text-grafito prose-a:text-alpino">
-                            <ReactMarkdown>{pageData.content}</ReactMarkdown>
+                            <BlocksRenderer content={pageData.content} />
                         </div>
                     ) : (
                         <div className="text-center py-12">
