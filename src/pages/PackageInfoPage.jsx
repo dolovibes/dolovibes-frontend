@@ -249,9 +249,13 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 {pkg.itinerary[currentDay].title}
                             </h3>
 
-                            {/* Descripción - altura fija con scroll en móvil */}
-                            <div className="text-pizarra text-sm md:text-base leading-relaxed prose prose-sm max-w-none max-h-[180px] sm:max-h-[200px] md:max-h-none overflow-y-auto">
-                                <BlocksRenderer content={pkg.itinerary[currentDay].description} />
+                            {/* Descripción - altura fija con scroll en móvil y gradiente indicador */}
+                            <div className="relative">
+                                <div className="text-pizarra text-sm md:text-base leading-relaxed prose prose-sm max-w-none max-h-[180px] sm:max-h-[200px] md:max-h-none overflow-y-auto pr-1">
+                                    <BlocksRenderer content={pkg.itinerary[currentDay].description} />
+                                </div>
+                                {/* Gradiente indicador de scroll para móvil */}
+                                <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white via-white/70 to-transparent pointer-events-none md:hidden transition-opacity duration-300"></div>
                             </div>
                         </div>
 
