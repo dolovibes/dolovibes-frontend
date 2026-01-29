@@ -2,6 +2,60 @@ import React from 'react';
 import { BlocksRenderer as StrapiBlocksRenderer } from '@strapi/blocks-react-renderer';
 
 /**
+ * Extract plain text from Strapi Blocks content
+ * Useful for summaries, meta descriptions, or anywhere plain text is needed
+ *
+ * @param {Array|string|object} content - Blocks content from Strapi
+ * @returns {string} Plain text extracted from blocks
+ */
+export const extractTextFromBlocks = (content) => {
+  if (!content) return '';
+
+  // If it's already a string, return it
+  if (typeof content === 'string') {
+    return content;
+  }
+
+  // If it's a single block object, wrap in array
+  if (typeof content === 'object' && !Array.isArray(content)) {
+    if (content.type && content.children) {
+      content = [content];
+    } else {
+      return '';
+    }
+  }
+
+  // If it's an array of blocks, extract text from each
+  if (Array.isArray(content)) {
+    return content
+      .map(block => {
+        if (block.children && Array.isArray(block.children)) {
+          return block.children
+            .map(child => {
+              if (child.type === 'text' && child.text) {
+                return child.text;
+              }
+              // Handle nested children (links, etc)
+              if (child.children && Array.isArray(child.children)) {
+                return child.children
+                  .filter(c => c.type === 'text' && c.text)
+                  .map(c => c.text)
+                  .join('');
+              }
+              return '';
+            })
+            .join('');
+        }
+        return '';
+      })
+      .join(' ')
+      .trim();
+  }
+
+  return '';
+};
+
+/**
  * Wrapper component for rendering Strapi Blocks content
  * Handles both new Blocks format (array) and legacy richtext format (string)
  *

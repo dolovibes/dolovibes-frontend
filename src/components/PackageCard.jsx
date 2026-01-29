@@ -6,6 +6,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { MapPin, Clock, ArrowRight } from 'lucide-react';
 import { useCurrencyContext } from '../utils/currency';
 import { prefetchPackage } from '../utils/dataPrefetch';
+import { extractTextFromBlocks } from '../utils/BlocksRenderer';
 
 const PackageCard = ({ pkg }) => {
     const { texts: siteTexts } = useSiteTextsContext();
@@ -99,7 +100,7 @@ const PackageCard = ({ pkg }) => {
 
                 {/* Description */}
                 <p className="text-pizarra text-sm line-clamp-2 mb-4">
-                    {pkg.description}
+                    {extractTextFromBlocks(pkg.description)}
                 </p>
 
                 {/* CTA */}
