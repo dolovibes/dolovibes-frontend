@@ -507,7 +507,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                             )}
 
                             {/* Botones adicionales */}
-                            <div className="space-y-3">
+                            <div className="space-y-3 mt-6">
                                 {/* Additional Photos - Solo mostrar si hay galería */}
                                 {pkg.gallery && pkg.gallery.length > 0 && pkg.gallery.some(g => g.url) && (
                                     <button
