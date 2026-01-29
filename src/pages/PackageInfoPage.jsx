@@ -13,7 +13,9 @@ import {
     ChevronDown,
     Check,
     X,
-    Calendar
+    Calendar,
+    Info,
+    Camera
 } from 'lucide-react';
 import { usePackage, useSiteTexts } from '../services/hooks';
 import { useCurrencyContext } from '../utils/currency';
@@ -439,7 +441,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                 >
                                                     <div className="flex items-center gap-3">
                                                         <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center flex-shrink-0">
-                                                            <span className="text-white text-sm">ℹ️</span>
+                                                            <Info className="w-4 h-4 text-white" />
                                                         </div>
                                                         <span className="font-semibold text-grafito">
                                                             {item.label}
@@ -479,7 +481,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                 >
                                                     <div className="flex items-center gap-3">
                                                         <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center flex-shrink-0">
-                                                            <span className="text-white text-sm">⭐</span>
+                                                            <Star className="w-4 h-4 text-white" />
                                                         </div>
                                                         <span className="font-semibold text-grafito">
                                                             {item.label}
@@ -514,7 +516,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                     >
                                         <div className="flex items-center gap-3">
                                             <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center">
-                                                <span className="text-white text-sm">📷</span>
+                                                <Camera className="w-4 h-4 text-white" />
                                             </div>
                                             <span className="font-semibold text-grafito">{tPackage('additionalPhotos')}</span>
                                         </div>
