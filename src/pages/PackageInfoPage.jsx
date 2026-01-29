@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import ReactMarkdown from 'react-markdown';
+import { BlocksRenderer, extractTextFromBlocks } from '../utils/BlocksRenderer';
 import {
     ArrowLeft,
     MapPin,
@@ -13,7 +13,9 @@ import {
     ChevronDown,
     Check,
     X,
-    Calendar
+    Calendar,
+    Info,
+    Camera
 } from 'lucide-react';
 import { usePackage, useSiteTexts } from '../services/hooks';
 import { useCurrencyContext } from '../utils/currency';
@@ -148,7 +150,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                 <img
                     src={pkg.heroImage || pkg.image}
                     alt={pkg.title}
-                    fetchpriority="high"
+                    fetchPriority="high"
                     loading="eager"
                     width="1920"
                     height="1080"
@@ -164,7 +166,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                         </h1>
 
                         <p className="text-base sm:text-xl md:text-2xl text-white/80 max-w-5xl mb-6">
-                            {pkg.description}
+                            {extractTextFromBlocks(pkg.description)}
                         </p>
 
                         <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-white/90">
@@ -247,9 +249,13 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 {pkg.itinerary[currentDay].title}
                             </h3>
 
-                            {/* Descripción - altura fija con scroll en móvil */}
-                            <div className="text-pizarra text-sm md:text-base leading-relaxed prose prose-sm max-w-none max-h-[180px] sm:max-h-[200px] md:max-h-none overflow-y-auto">
-                                <ReactMarkdown>{pkg.itinerary[currentDay].description}</ReactMarkdown>
+                            {/* Descripción - altura fija con scroll en móvil y gradiente indicador */}
+                            <div className="relative">
+                                <div className="text-pizarra text-sm md:text-base leading-relaxed prose prose-sm max-w-none max-h-[180px] sm:max-h-[200px] md:max-h-none overflow-y-auto pr-1">
+                                    <BlocksRenderer content={pkg.itinerary[currentDay].description} />
+                                </div>
+                                {/* Gradiente indicador de scroll para móvil */}
+                                <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white via-white/70 to-transparent pointer-events-none md:hidden transition-opacity duration-300"></div>
                             </div>
                         </div>
 
@@ -330,7 +336,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
 
                             {/* Descripción breve */}
                             <p className="text-base sm:text-lg text-pizarra leading-relaxed mb-4 break-words">
-                                {pkg.description}
+                                {extractTextFromBlocks(pkg.description)}
                             </p>
 
                             {/* Enlace para evaluación de nivel */}
@@ -373,7 +379,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                     <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `inc-${index}` ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                                         <div className="px-4 pb-4 pt-0 pl-11">
                                                             <div className="text-pizarra prose prose-sm max-w-none">
-                                                                <ReactMarkdown>{item.detail}</ReactMarkdown>
+                                                                <BlocksRenderer content={item.detail} />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -413,7 +419,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                     <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `notinc-${index}` ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                                         <div className="px-4 pb-4 pt-0 pl-11">
                                                             <div className="text-pizarra prose prose-sm max-w-none">
-                                                                <ReactMarkdown>{item.detail}</ReactMarkdown>
+                                                                <BlocksRenderer content={item.detail} />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -439,7 +445,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                 >
                                                     <div className="flex items-center gap-3">
                                                         <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center flex-shrink-0">
-                                                            <span className="text-white text-sm">ℹ️</span>
+                                                            <Info className="w-4 h-4 text-white" />
                                                         </div>
                                                         <span className="font-semibold text-grafito">
                                                             {item.label}
@@ -453,7 +459,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                     <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `info-${index}` ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                                         <div className="px-4 pb-4 pt-0 pl-11">
                                                             <div className="text-pizarra prose prose-sm max-w-none">
-                                                                <ReactMarkdown>{item.detail}</ReactMarkdown>
+                                                                <BlocksRenderer content={item.detail} />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -479,7 +485,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                 >
                                                     <div className="flex items-center gap-3">
                                                         <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center flex-shrink-0">
-                                                            <span className="text-white text-sm">⭐</span>
+                                                            <Star className="w-4 h-4 text-white" />
                                                         </div>
                                                         <span className="font-semibold text-grafito">
                                                             {item.label}
@@ -493,7 +499,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                     <div className={`overflow-hidden transition-all duration-300 ${expandedInclude === `svc-${index}` ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                                         <div className="px-4 pb-4 pt-0 pl-11">
                                                             <div className="text-pizarra prose prose-sm max-w-none">
-                                                                <ReactMarkdown>{item.detail}</ReactMarkdown>
+                                                                <BlocksRenderer content={item.detail} />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -505,25 +511,27 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                             )}
 
                             {/* Botones adicionales */}
-                            <div className="space-y-3">
-                                {/* Additional Photos - Solo mostrar si hay galería */}
-                                {pkg.gallery && pkg.gallery.length > 0 && pkg.gallery.some(g => g.url) && (
+                            {/* Additional Photos - Solo mostrar si hay galería */}
+                            {pkg.gallery && pkg.gallery.length > 0 && pkg.gallery.some(g => g.url) && (
+                                <div className="mb-6">
                                     <button
                                         onClick={() => setIsPhotosModalOpen(true)}
                                         className="w-full flex items-center justify-between p-4 bg-nieve rounded-xl border border-niebla hover:bg-nieve transition-colors text-left"
                                     >
                                         <div className="flex items-center gap-3">
                                             <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center">
-                                                <span className="text-white text-sm">📷</span>
+                                                <Camera className="w-4 h-4 text-white" />
                                             </div>
                                             <span className="font-semibold text-grafito">{tPackage('additionalPhotos')}</span>
                                         </div>
                                         <ChevronRight className="w-5 h-5 text-niebla" />
                                     </button>
-                                )}
+                                </div>
+                            )}
 
-                                {/* How to get here - Solo mostrar si hay mapImage */}
-                                {pkg.mapImage && (
+                            {/* How to get here - Solo mostrar si hay mapImage */}
+                            {pkg.mapImage && (
+                                <div className="mb-6">
                                     <button
                                         onClick={() => setIsMapModalOpen(true)}
                                         className="w-full flex items-center justify-between p-4 bg-nieve rounded-xl border border-niebla hover:bg-nieve transition-colors text-left"
@@ -536,8 +544,8 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                         </div>
                                         <ChevronRight className="w-5 h-5 text-niebla" />
                                     </button>
-                                )}
-                            </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Columna derecha - Imagen con Book Now */}

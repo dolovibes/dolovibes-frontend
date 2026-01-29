@@ -15,7 +15,7 @@
         "phone": "Telefono",
         "contactMethod": "Come preferisci essere contattato?",
         "travelMonth": "Mese del viaggio",
-        "passengers": "Numero di passeggeri",
+        "travelers": "Numero di viaggiatori",
         "tripType": "Tipo di viaggio",
         "additionalServices": "Servizi aggiuntivi",
         "additionalServicesPlaceholder": "Carpool, cena speciale, trasferimento aeroporto, esigenze alimentari, ecc."

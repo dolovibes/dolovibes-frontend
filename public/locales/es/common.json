@@ -27,6 +27,7 @@
         "days": "Días",
         "persons": "Pers."
     },
+    "optional": "(Opcional)",
     "loading": {
         "experience": "Cargando experiencia...",
         "package": "Cargando paquete...",

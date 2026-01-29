@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
-import { X, User, Mail, Phone, ArrowRight, CheckCircle } from 'lucide-react';
+import { X, User, Mail, Phone, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import { useExperiences } from '../services/hooks';
 
 const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
     const { texts: siteTexts } = useSiteTextsContext();
     const { data: experiences = [], isLoading: experiencesLoading } = useExperiences();
     const [step, setStep] = useState(1);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState(null);
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -24,18 +26,54 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                 setFormData(prev => ({ ...prev, interest: initialInterest }));
             }
             setStep(1);
+            setError(null);
+            setIsSubmitting(false);
         }
     }, [isOpen, initialInterest]);
 
     if (!isOpen) return null;
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setStep(3);
-        setTimeout(() => {
-            onClose();
-            setStep(1);
-        }, 3000);
+        setIsSubmitting(true);
+        setError(null);
+
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/quote-request`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    type: 'quote',
+                    data: formData,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al enviar la solicitud');
+            }
+
+            setStep(3);
+            setTimeout(() => {
+                onClose();
+                setStep(1);
+                setFormData({
+                    name: "",
+                    email: "",
+                    phone: "",
+                    contacto: "whatsapp",
+                    date: "",
+                    guests: "2",
+                    interest: initialInterest || siteTexts.quoteModal.customPlan,
+                    notes: ""
+                });
+            }, 3000);
+        } catch (err) {
+            setError(siteTexts.quoteModal?.errorMessage || 'Ocurrió un error al enviar la solicitud. Por favor, intenta nuevamente.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -59,12 +97,15 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
 
                             {/* Experiencia de interés */}
                             <div>
-                                <label className="block text-sm font-medium text-pizarra mb-1">{siteTexts.quoteModal.interestLabel}</label>
+                                <label className="block text-sm font-medium text-pizarra mb-1">
+                                    {siteTexts.quoteModal.interestLabel} *
+                                </label>
                                 <select
                                     className="w-full border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                     value={formData.interest}
                                     onChange={(e) => setFormData({ ...formData, interest: e.target.value })}
                                     disabled={experiencesLoading}
+                                    required
                                 >
                                     <option value="Personalizado">{siteTexts.quoteModal.customPlan}</option>
                                     {experiences.map(exp => <option key={exp.id} value={exp.title}>{exp.title}</option>)}
@@ -74,19 +115,23 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                             {/* Fecha y Viajeros */}
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-pizarra mb-1">{siteTexts.quoteModal.dateLabel}</label>
+                                    <label className="block text-sm font-medium text-pizarra mb-1">
+                                        {siteTexts.quoteModal.dateLabel} <span className="text-niebla text-xs">{siteTexts.fieldOptional || '(Opcional)'}</span>
+                                    </label>
                                     <input
                                         type="month"
+                                        value={formData.date}
                                         className="w-full border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                         onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-pizarra mb-1">{siteTexts.quoteModal.travelersLabel}</label>
+                                    <label className="block text-sm font-medium text-pizarra mb-1">{siteTexts.quoteModal.travelersLabel} *</label>
                                     <select
                                         className="w-full border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                         value={formData.guests}
                                         onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
+                                        required
                                     >
                                         {[1, 2, 3, 4, 5, 6, 7, 8, "8+"].map(n => <option key={n} value={n}>{n} {siteTexts.labels.persons}</option>)}
                                     </select>
@@ -96,12 +141,13 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                             {/* ¿Cómo te gustaría ser contactado? - EN PASO 1 */}
                             <div>
                                 <label className="block text-sm font-medium text-pizarra mb-1">
-                                    {siteTexts.contactMethod.label}
+                                    {siteTexts.contactMethod.label} *
                                 </label>
                                 <select
                                     className="w-full border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                     value={formData.contacto}
                                     onChange={(e) => setFormData({ ...formData, contacto: e.target.value })}
+                                    required
                                 >
                                     <option value="whatsapp">{siteTexts.contactMethod.whatsapp}</option>
                                     <option value="telefono">{siteTexts.contactMethod.phone}</option>
@@ -111,10 +157,13 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
 
                             {/* Notas */}
                             <div>
-                                <label className="block text-sm font-medium text-pizarra mb-1">{siteTexts.quoteModal.notesLabel}</label>
+                                <label className="block text-sm font-medium text-pizarra mb-1">
+                                    {siteTexts.quoteModal.notesLabel} <span className="text-niebla text-xs">{siteTexts.fieldOptional || '(Opcional)'}</span>
+                                </label>
                                 <textarea
                                     className="w-full border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino h-24"
                                     placeholder={siteTexts.quoteModal.notesPlaceholder}
+                                    value={formData.notes}
                                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                                 ></textarea>
                             </div>
@@ -132,12 +181,21 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <h4 className="text-lg font-semibold text-grafito mb-4">{siteTexts.quoteModal.step2Title}</h4>
 
+                            {/* Error message */}
+                            {error && (
+                                <div className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3">
+                                    <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+                                    <p className="text-red-700 text-sm">{error}</p>
+                                </div>
+                            )}
+
                             {/* Nombre */}
                             <div className="relative">
                                 <User className="absolute left-3 top-3.5 text-niebla" size={18} />
                                 <input
                                     type="text"
                                     placeholder={siteTexts.quoteModal.namePlaceholder}
+                                    value={formData.name}
                                     required
                                     className="w-full pl-10 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -150,6 +208,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                 <input
                                     type="email"
                                     placeholder={siteTexts.quoteModal.emailPlaceholder}
+                                    value={formData.email}
                                     required
                                     className="w-full pl-10 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -162,6 +221,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                 <input
                                     type="tel"
                                     placeholder={siteTexts.quoteModal.phonePlaceholder}
+                                    value={formData.phone}
                                     required
                                     className="w-full pl-10 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -172,15 +232,24 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                 <button
                                     type="button"
                                     onClick={() => setStep(1)}
-                                    className="flex-1 bg-nieve text-pizarra font-bold py-3 rounded-xl hover:bg-bruma transition-colors"
+                                    disabled={isSubmitting}
+                                    className="flex-1 bg-nieve text-pizarra font-bold py-3 rounded-xl hover:bg-bruma transition-colors disabled:opacity-50"
                                 >
                                     {siteTexts.buttons.back}
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-[2] bg-pizarra text-white font-bold py-3 rounded-xl hover:bg-pizarra/90 transition-colors shadow-lg shadow-pizarra/30"
+                                    disabled={isSubmitting}
+                                    className="flex-[2] bg-pizarra text-white font-bold py-3 rounded-xl hover:bg-pizarra/90 transition-colors shadow-lg shadow-pizarra/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                 >
-                                    {siteTexts.buttons.submit}
+                                    {isSubmitting ? (
+                                        <>
+                                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                            {siteTexts.quoteModal?.sending || 'Enviando...'}
+                                        </>
+                                    ) : (
+                                        siteTexts.buttons.submit
+                                    )}
                                 </button>
                             </div>
                         </form>

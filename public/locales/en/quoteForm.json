@@ -5,6 +5,10 @@
         "title": "Request Sent!",
         "message": "We'll get in touch with you soon to plan your trip."
     },
+    "error": {
+        "title": "Error sending request",
+        "message": "An error occurred while sending the request. Please try again."
+    },
     "form": {
         "firstName": "First Name",
         "lastName": "Last Name",
@@ -15,7 +19,7 @@
         "phone": "Phone",
         "contactMethod": "How would you like to be contacted?",
         "travelMonth": "Travel Month",
-        "passengers": "Number of Passengers",
+        "travelers": "Number of Travelers",
         "tripType": "Trip Type",
         "additionalServices": "Additional Services",
         "additionalServicesPlaceholder": "Carpool, special dinner, airport pickup, dietary needs, etc."

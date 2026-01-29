@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { CheckCircle, Send, X } from 'lucide-react';
+import { useSiteTextsContext } from '../contexts/SiteTextsContext';
+import { CheckCircle, Send, X, AlertCircle } from 'lucide-react';
 
 const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
-    const { t } = useTranslation('quoteForm');
+    const { texts: siteTexts } = useSiteTextsContext();
     const [formData, setFormData] = useState({
         nombre: '',
         apellido: '',
@@ -14,13 +14,21 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
         telefono: '',
         contacto: 'whatsapp',
         mesViaje: '',
-        pasajeros: '2',
+        viajeros: '2',
         tipoViaje: 'guiado',
-        serviciosAdicionales: ''
+        serviciosAdicionales: '',
+        packageTitle: packageTitle || ''
     });
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [validationError, setValidationError] = useState(false);
+    const [error, setError] = useState(null);
+
+    React.useEffect(() => {
+        if (isOpen && packageTitle) {
+            setFormData(prev => ({ ...prev, packageTitle }));
+        }
+    }, [isOpen, packageTitle]);
 
     if (!isOpen) return null;
 
@@ -29,13 +37,28 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setValidationError(false);
+        setError(null);
         setIsSubmitting(true);
 
-        // Simular envío
-        setTimeout(() => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/quote-request`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    type: 'package',
+                    data: formData,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al enviar la solicitud');
+            }
+
             setIsSubmitting(false);
             setIsSubmitted(true);
             setTimeout(() => {
@@ -45,10 +68,14 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                 setFormData({
                     nombre: '', apellido: '', ciudad: '', estado: '', pais: '',
                     email: '', telefono: '', contacto: 'whatsapp', mesViaje: '',
-                    pasajeros: '2', tipoViaje: 'guiado', serviciosAdicionales: ''
+                    viajeros: '2', tipoViaje: 'guiado', serviciosAdicionales: '',
+                    packageTitle: packageTitle || ''
                 });
             }, 3000);
-        }, 1500);
+        } catch (err) {
+            setError(siteTexts.packageQuoteModal?.errorMessage || 'Ocurrió un error al enviar la solicitud. Por favor, intenta nuevamente.');
+            setIsSubmitting(false);
+        }
     };
 
     // Cuando el usuario intenta enviar pero el formulario es inválido (native HTML validation)
@@ -63,6 +90,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
         onClose();
         setIsSubmitted(false);
         setValidationError(false);
+        setError(null);
     };
 
     return (
@@ -89,10 +117,10 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                             <CheckCircle className="w-10 h-10 text-white" />
                         </div>
                         <h3 className="text-2xl md:text-3xl font-bold mb-4">
-                            {t('success.title')}
+                            {siteTexts.packageQuoteModal?.successTitle || '¡Solicitud enviada!'}
                         </h3>
                         <p className="text-white/80 text-lg">
-                            {t('success.message')}
+                            {siteTexts.packageQuoteModal?.successMessage || 'Te contactaremos pronto con tu cotización'}
                         </p>
                     </div>
                 ) : (
@@ -103,10 +131,10 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                 {packageTitle}
                             </h3>
                             <p className="text-white text-base font-medium mb-1">
-                                {t('subtitle')}
+                                {siteTexts.packageQuoteModal?.subtitle || 'Solicitar Cotización'}
                             </p>
                             <p className="text-white/60 text-sm">
-                                {t('completeInfo')}
+                                {siteTexts.packageQuoteModal?.completeInfo || 'Completa la información'}
                             </p>
                         </div>
 
@@ -119,16 +147,25 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                         <span className="text-red-500 font-bold">!</span>
                                     </div>
                                     <p className="text-red-700 text-sm font-medium">
-                                        {t('validation.requiredFields')}
+                                        {siteTexts.packageQuoteModal?.validationError || 'Por favor completa todos los campos obligatorios'}
                                     </p>
                                 </div>
                             )}
+
+                            {/* Mensaje de error de API */}
+                            {error && (
+                                <div className="mx-6 md:mx-8 mt-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3">
+                                    <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+                                    <p className="text-red-700 text-sm">{error}</p>
+                                </div>
+                            )}
+
                             <form onSubmit={handleSubmit} onInvalid={handleInvalid} className="p-6 md:p-8 space-y-5">
                                 {/* Nombre y Apellido */}
                                 <div className="grid md:grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-sm font-medium text-pizarra mb-1.5">
-                                            {t('form.firstName')} *
+                                            {siteTexts.packageQuoteModal?.firstName || 'Nombre'} *
                                         </label>
                                         <input
                                             type="text"
@@ -137,12 +174,12 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             value={formData.nombre}
                                             onChange={handleChange}
                                             className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
-                                            placeholder={t('placeholders.firstName')}
+                                            placeholder={siteTexts.packageQuoteModal?.placeholderFirstName || 'Tu nombre'}
                                         />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-pizarra mb-1.5">
-                                            {t('form.lastName')} *
+                                            {siteTexts.packageQuoteModal?.lastName || 'Apellido'} *
                                         </label>
                                         <input
                                             type="text"
@@ -151,7 +188,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             value={formData.apellido}
                                             onChange={handleChange}
                                             className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
-                                            placeholder={t('placeholders.lastName')}
+                                            placeholder={siteTexts.packageQuoteModal?.placeholderLastName || 'Tu apellido'}
                                         />
                                     </div>
                                 </div>
@@ -160,7 +197,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                 <div className="grid md:grid-cols-3 gap-4">
                                     <div>
                                         <label className="block text-sm font-medium text-pizarra mb-1.5">
-                                            {t('form.city')} *
+                                            {siteTexts.packageQuoteModal?.city || 'Ciudad'} *
                                         </label>
                                         <input
                                             type="text"
@@ -169,12 +206,12 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             value={formData.ciudad}
                                             onChange={handleChange}
                                             className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
-                                            placeholder={t('placeholders.city')}
+                                            placeholder={siteTexts.packageQuoteModal?.placeholderCity || 'Ciudad'}
                                         />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-pizarra mb-1.5">
-                                            {t('form.state')} *
+                                            {siteTexts.packageQuoteModal?.state || 'Estado'} *
                                         </label>
                                         <input
                                             type="text"
@@ -183,12 +220,12 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             value={formData.estado}
                                             onChange={handleChange}
                                             className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
-                                            placeholder={t('placeholders.state')}
+                                            placeholder={siteTexts.packageQuoteModal?.placeholderState || 'Estado'}
                                         />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-pizarra mb-1.5">
-                                            {t('form.country')} *
+                                            {siteTexts.packageQuoteModal?.country || 'País'} *
                                         </label>
                                         <input
                                             type="text"
@@ -197,7 +234,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             value={formData.pais}
                                             onChange={handleChange}
                                             className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
-                                            placeholder={t('placeholders.country')}
+                                            placeholder={siteTexts.packageQuoteModal?.placeholderCountry || 'País'}
                                         />
                                     </div>
                                 </div>
@@ -206,7 +243,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                 <div className="grid md:grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-sm font-medium text-pizarra mb-1.5">
-                                            {t('form.email')} *
+                                            {siteTexts.packageQuoteModal?.email || 'Email'} *
                                         </label>
                                         <input
                                             type="email"
@@ -215,12 +252,12 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             value={formData.email}
                                             onChange={handleChange}
                                             className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
-                                            placeholder={t('placeholders.email')}
+                                            placeholder={siteTexts.packageQuoteModal?.placeholderEmail || 'tu@email.com'}
                                         />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-pizarra mb-1.5">
-                                            {t('form.phone')} *
+                                            {siteTexts.packageQuoteModal?.phone || 'Teléfono'} *
                                         </label>
                                         <input
                                             type="tel"
@@ -229,7 +266,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             value={formData.telefono}
                                             onChange={handleChange}
                                             className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
-                                            placeholder={t('placeholders.phone')}
+                                            placeholder={siteTexts.packageQuoteModal?.placeholderPhone || '+52 123 456 7890'}
                                         />
                                     </div>
                                 </div>
@@ -237,7 +274,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                 {/* Cómo te gustaría ser contactado */}
                                 <div>
                                     <label className="block text-sm font-medium text-pizarra mb-1.5">
-                                        {t('form.contactMethod')} *
+                                        {siteTexts.contactMethod?.label || '¿Cómo te gustaría ser contactado?'} *
                                     </label>
                                     <select
                                         name="contacto"
@@ -245,17 +282,17 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                         onChange={handleChange}
                                         className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all bg-white text-sm"
                                     >
-                                        <option value="whatsapp">{t('contactOptions.whatsapp')}</option>
-                                        <option value="telefono">{t('contactOptions.phone')}</option>
-                                        <option value="correo">{t('contactOptions.email')}</option>
+                                        <option value="whatsapp">{siteTexts.contactMethod?.whatsapp || 'WhatsApp'}</option>
+                                        <option value="telefono">{siteTexts.contactMethod?.phone || 'Teléfono'}</option>
+                                        <option value="correo">{siteTexts.contactMethod?.email || 'Correo Electrónico'}</option>
                                     </select>
                                 </div>
 
-                                {/* Mes del viaje y Número de pasajeros */}
+                                {/* Mes del viaje y Número de viajeros */}
                                 <div className="grid md:grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-sm font-medium text-pizarra mb-1.5">
-                                            {t('form.travelMonth')} *
+                                            {siteTexts.packageQuoteModal?.travelMonth || 'Mes del viaje'} *
                                         </label>
                                         <input
                                             type="month"
@@ -268,11 +305,11 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-pizarra mb-1.5">
-                                            {t('form.passengers')} *
+                                            {siteTexts.packageQuoteModal?.travelers || 'Número de viajeros'} *
                                         </label>
                                         <select
-                                            name="pasajeros"
-                                            value={formData.pasajeros}
+                                            name="viajeros"
+                                            value={formData.viajeros}
                                             onChange={handleChange}
                                             className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all bg-white text-sm"
                                         >
@@ -286,7 +323,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                 {/* Tipo de viaje */}
                                 <div>
                                     <label className="block text-sm font-medium text-pizarra mb-1.5">
-                                        {t('form.tripType')} *
+                                        {siteTexts.packageQuoteModal?.tripType || 'Tipo de viaje'} *
                                     </label>
                                     <div className="grid grid-cols-2 gap-3">
                                         <button
@@ -297,8 +334,8 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                                 : 'border-pizarra hover:border-bruma text-pizarra'
                                                 }`}
                                         >
-                                            <span className="font-semibold block text-sm">{t('tripTypes.guided')}</span>
-                                            <span className="text-xs opacity-70">{t('tripTypes.guidedDesc')}</span>
+                                            <span className="font-semibold block text-sm">{siteTexts.packageQuoteModal?.tripTypeGuided || 'Guiado'}</span>
+                                            <span className="text-xs opacity-70">{siteTexts.packageQuoteModal?.tripTypeGuidedDesc || 'Con guía experto'}</span>
                                         </button>
                                         <button
                                             type="button"
@@ -308,8 +345,8 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                                 : 'border-pizarra hover:border-bruma text-pizarra'
                                                 }`}
                                         >
-                                            <span className="font-semibold block text-sm">{t('tripTypes.selfGuided')}</span>
-                                            <span className="text-xs opacity-70">{t('tripTypes.selfGuidedDesc')}</span>
+                                            <span className="font-semibold block text-sm">{siteTexts.packageQuoteModal?.tripTypeSelfGuided || 'Autoguiado'}</span>
+                                            <span className="text-xs opacity-70">{siteTexts.packageQuoteModal?.tripTypeSelfGuidedDesc || 'Por tu cuenta'}</span>
                                         </button>
                                     </div>
                                 </div>
@@ -317,7 +354,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                 {/* Servicios adicionales */}
                                 <div>
                                     <label className="block text-sm font-medium text-pizarra mb-1.5">
-                                        {t('form.additionalServices')}
+                                        {siteTexts.packageQuoteModal?.additionalServices || 'Servicios adicionales'} <span className="text-niebla text-xs">{siteTexts.optional || '(Opcional)'}</span>
                                     </label>
                                     <textarea
                                         name="serviciosAdicionales"
@@ -325,7 +362,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                         onChange={handleChange}
                                         rows={3}
                                         className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all resize-none text-sm"
-                                        placeholder={t('form.additionalServicesPlaceholder')}
+                                        placeholder={siteTexts.packageQuoteModal?.additionalServicesPlaceholder || 'Carpool, cena especial, pick up en aeropuerto, necesidades dietéticas, etc.'}
                                     />
                                 </div>
 
@@ -333,17 +370,17 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="w-full bg-pizarra hover:bg-pizarra/90 disabled:bg-bruma text-white py-3.5 rounded-xl font-bold text-base transition-all transform hover:scale-[1.02] shadow-lg shadow-pizarra/30 flex items-center justify-center gap-2"
+                                    className="w-full bg-pizarra hover:bg-pizarra/90 disabled:bg-bruma disabled:cursor-not-allowed text-white py-3.5 rounded-xl font-bold text-base transition-all transform hover:scale-[1.02] shadow-lg shadow-pizarra/30 flex items-center justify-center gap-2"
                                 >
                                     {isSubmitting ? (
                                         <>
                                             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                            {t('buttons.sending')}
+                                            {siteTexts.packageQuoteModal?.buttonSending || 'Enviando...'}
                                         </>
                                     ) : (
                                         <>
                                             <Send className="w-5 h-5" />
-                                            {t('buttons.submit')}
+                                            {siteTexts.packageQuoteModal?.buttonSubmit || 'Solicitar Cotización'}
                                         </>
                                     )}
                                 </button>

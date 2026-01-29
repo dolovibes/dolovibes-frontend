@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import ReactMarkdown from 'react-markdown';
+import { BlocksRenderer } from '../utils/BlocksRenderer';
 import { useExperience, usePackagesByExperience, useSiteTexts } from '../services/hooks';
 import Footer from '../components/Footer';
 import PackageCard from '../components/PackageCard';
@@ -76,7 +76,7 @@ const ExperiencePage = ({ onOpenQuote }) => {
                         </h1>
 
                         <div className="text-xl md:text-2xl text-white/80 max-w-5xl prose prose-invert prose-lg max-w-none">
-                            <ReactMarkdown>{experience.longDescription || experience.shortDescription}</ReactMarkdown>
+                            <BlocksRenderer content={experience.longDescription || experience.shortDescription} />
                         </div>
                     </div>
                 </div>

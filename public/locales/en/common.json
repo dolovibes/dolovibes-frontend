@@ -26,8 +26,7 @@
         "perPerson": "per person",
         "days": "Days",
         "persons": "Pers."
-    },
-    "loading": {
+    },    "optional": "(Optional)",    "loading": {
         "experience": "Loading experience...",
         "package": "Loading package...",
         "generic": "Loading..."
