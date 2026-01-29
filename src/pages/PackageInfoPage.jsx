@@ -247,8 +247,8 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 {pkg.itinerary[currentDay].title}
                             </h3>
 
-                            {/* Descripción - altura fija */}
-                            <div className="text-pizarra text-sm md:text-base leading-relaxed prose prose-sm max-w-none">
+                            {/* Descripción - altura fija con scroll en móvil */}
+                            <div className="text-pizarra text-sm md:text-base leading-relaxed prose prose-sm max-w-none max-h-[180px] sm:max-h-[200px] md:max-h-none overflow-y-auto">
                                 <BlocksRenderer content={pkg.itinerary[currentDay].description} />
                             </div>
                         </div>
