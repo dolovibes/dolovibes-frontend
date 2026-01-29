@@ -43,8 +43,12 @@ export const BlocksRenderer = ({ content }) => {
     return <StrapiBlocksRenderer content={content} />;
   }
 
-  // If content is an object (might be already parsed blocks), try to use it
+  // If content is an object (single block node), wrap it in an array
   if (typeof content === 'object') {
+    // Check if it's a valid block node with type and children
+    if (content.type && content.children) {
+      return <StrapiBlocksRenderer content={[content]} />;
+    }
     console.warn('BlocksRenderer received unexpected object:', content);
     return null;
   }
