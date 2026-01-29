@@ -20,6 +20,7 @@ export const SiteTextsProvider = ({ children }) => {
     const { t: tPackageInfo } = useTranslation('packageInfo');
     const { t: tExperiences } = useTranslation('experiences');
     const { t: tHikingLevel } = useTranslation('hikingLevel');
+    const { t: tQuoteForm } = useTranslation('quoteForm');
 
     // Función helper que prioriza Strapi sobre i18n
     const getText = useMemo(() => {
@@ -42,11 +43,13 @@ export const SiteTextsProvider = ({ children }) => {
                     return tExperiences(i18nKey);
                 case 'hikingLevel':
                     return tHikingLevel(i18nKey);
+                case 'quoteForm':
+                    return tQuoteForm(i18nKey);
                 default:
                     return tCommon(i18nKey);
             }
         };
-    }, [strapiTexts, tCommon, tHome, tPackageInfo, tExperiences, tHikingLevel]);
+    }, [strapiTexts, tCommon, tHome, tPackageInfo, tExperiences, tHikingLevel, tQuoteForm]);
 
     // Objeto de textos con fallback automático
     const texts = useMemo(() => ({
@@ -128,36 +131,37 @@ export const SiteTextsProvider = ({ children }) => {
         },
         // Package Quote Modal
         packageQuoteModal: {
-            subtitle: getText('packageQuoteModal.subtitle', 'packageQuoteModal.subtitle'),
-            completeInfo: getText('packageQuoteModal.completeInfo', 'packageQuoteModal.completeInfo'),
-            firstName: getText('packageQuoteModal.firstName', 'packageQuoteModal.firstName'),
-            lastName: getText('packageQuoteModal.lastName', 'packageQuoteModal.lastName'),
-            city: getText('packageQuoteModal.city', 'packageQuoteModal.city'),
-            state: getText('packageQuoteModal.state', 'packageQuoteModal.state'),
-            country: getText('packageQuoteModal.country', 'packageQuoteModal.country'),
-            email: getText('packageQuoteModal.email', 'packageQuoteModal.email'),
-            phone: getText('packageQuoteModal.phone', 'packageQuoteModal.phone'),
-            travelMonth: getText('packageQuoteModal.travelMonth', 'packageQuoteModal.travelMonth'),
-            passengers: getText('packageQuoteModal.passengers', 'packageQuoteModal.passengers'),
-            tripType: getText('packageQuoteModal.tripType', 'packageQuoteModal.tripType'),
-            tripTypeGuided: getText('packageQuoteModal.tripTypeGuided', 'packageQuoteModal.tripTypeGuided'),
-            tripTypeGuidedDesc: getText('packageQuoteModal.tripTypeGuidedDesc', 'packageQuoteModal.tripTypeGuidedDesc'),
-            tripTypeSelfGuided: getText('packageQuoteModal.tripTypeSelfGuided', 'packageQuoteModal.tripTypeSelfGuided'),
-            tripTypeSelfGuidedDesc: getText('packageQuoteModal.tripTypeSelfGuidedDesc', 'packageQuoteModal.tripTypeSelfGuidedDesc'),
-            additionalServices: getText('packageQuoteModal.additionalServices', 'packageQuoteModal.additionalServices'),
-            additionalServicesPlaceholder: getText('packageQuoteModal.additionalServicesPlaceholder', 'packageQuoteModal.additionalServicesPlaceholder'),
-            buttonSubmit: getText('packageQuoteModal.buttonSubmit', 'packageQuoteModal.buttonSubmit'),
-            buttonSending: getText('packageQuoteModal.buttonSending', 'packageQuoteModal.buttonSending'),
-            successTitle: getText('packageQuoteModal.successTitle', 'packageQuoteModal.successTitle'),
-            successMessage: getText('packageQuoteModal.successMessage', 'packageQuoteModal.successMessage'),
-            validationError: getText('packageQuoteModal.validationError', 'packageQuoteModal.validationError'),
-            placeholderFirstName: getText('packageQuoteModal.placeholderFirstName', 'packageQuoteModal.placeholderFirstName'),
-            placeholderLastName: getText('packageQuoteModal.placeholderLastName', 'packageQuoteModal.placeholderLastName'),
-            placeholderCity: getText('packageQuoteModal.placeholderCity', 'packageQuoteModal.placeholderCity'),
-            placeholderState: getText('packageQuoteModal.placeholderState', 'packageQuoteModal.placeholderState'),
-            placeholderCountry: getText('packageQuoteModal.placeholderCountry', 'packageQuoteModal.placeholderCountry'),
-            placeholderEmail: getText('packageQuoteModal.placeholderEmail', 'packageQuoteModal.placeholderEmail'),
-            placeholderPhone: getText('packageQuoteModal.placeholderPhone', 'packageQuoteModal.placeholderPhone'),
+            subtitle: getText('packageQuoteModal.subtitle', 'subtitle', 'quoteForm'),
+            completeInfo: getText('packageQuoteModal.completeInfo', 'completeInfo', 'quoteForm'),
+            firstName: getText('packageQuoteModal.firstName', 'form.firstName', 'quoteForm'),
+            lastName: getText('packageQuoteModal.lastName', 'form.lastName', 'quoteForm'),
+            city: getText('packageQuoteModal.city', 'form.city', 'quoteForm'),
+            state: getText('packageQuoteModal.state', 'form.state', 'quoteForm'),
+            country: getText('packageQuoteModal.country', 'form.country', 'quoteForm'),
+            email: getText('packageQuoteModal.email', 'form.email', 'quoteForm'),
+            phone: getText('packageQuoteModal.phone', 'form.phone', 'quoteForm'),
+            travelMonth: getText('packageQuoteModal.travelMonth', 'form.travelMonth', 'quoteForm'),
+            travelers: getText('packageQuoteModal.travelers', 'form.travelers', 'quoteForm'),
+            tripType: getText('packageQuoteModal.tripType', 'form.tripType', 'quoteForm'),
+            tripTypeGuided: getText('packageQuoteModal.tripTypeGuided', 'tripTypes.guided', 'quoteForm'),
+            tripTypeGuidedDesc: getText('packageQuoteModal.tripTypeGuidedDesc', 'tripTypes.guidedDesc', 'quoteForm'),
+            tripTypeSelfGuided: getText('packageQuoteModal.tripTypeSelfGuided', 'tripTypes.selfGuided', 'quoteForm'),
+            tripTypeSelfGuidedDesc: getText('packageQuoteModal.tripTypeSelfGuidedDesc', 'tripTypes.selfGuidedDesc', 'quoteForm'),
+            additionalServices: getText('packageQuoteModal.additionalServices', 'form.additionalServices', 'quoteForm'),
+            additionalServicesPlaceholder: getText('packageQuoteModal.additionalServicesPlaceholder', 'form.additionalServicesPlaceholder', 'quoteForm'),
+            buttonSubmit: getText('packageQuoteModal.buttonSubmit', 'buttons.submit', 'quoteForm'),
+            buttonSending: getText('packageQuoteModal.buttonSending', 'buttons.sending', 'quoteForm'),
+            successTitle: getText('packageQuoteModal.successTitle', 'success.title', 'quoteForm'),
+            successMessage: getText('packageQuoteModal.successMessage', 'success.message', 'quoteForm'),
+            validationError: getText('packageQuoteModal.validationError', 'validation.requiredFields', 'quoteForm'),
+            errorMessage: getText('packageQuoteModal.errorMessage', 'error.message', 'quoteForm'),
+            placeholderFirstName: getText('packageQuoteModal.placeholderFirstName', 'placeholders.firstName', 'quoteForm'),
+            placeholderLastName: getText('packageQuoteModal.placeholderLastName', 'placeholders.lastName', 'quoteForm'),
+            placeholderCity: getText('packageQuoteModal.placeholderCity', 'placeholders.city', 'quoteForm'),
+            placeholderState: getText('packageQuoteModal.placeholderState', 'placeholders.state', 'quoteForm'),
+            placeholderCountry: getText('packageQuoteModal.placeholderCountry', 'placeholders.country', 'quoteForm'),
+            placeholderEmail: getText('packageQuoteModal.placeholderEmail', 'placeholders.email', 'quoteForm'),
+            placeholderPhone: getText('packageQuoteModal.placeholderPhone', 'placeholders.phone', 'quoteForm'),
         },
         // Recommendations
         recommendations: {
@@ -168,10 +172,10 @@ export const SiteTextsProvider = ({ children }) => {
         },
         // Contact Method
         contactMethod: {
-            label: getText('contactMethod.label', 'contactMethod.label'),
-            whatsapp: getText('contactMethod.whatsapp', 'contactMethod.whatsapp'),
-            phone: getText('contactMethod.phone', 'contactMethod.phone'),
-            email: getText('contactMethod.email', 'contactMethod.email'),
+            label: getText('contactMethod.label', 'form.contactMethod', 'quoteForm'),
+            whatsapp: getText('contactMethod.whatsapp', 'contactOptions.whatsapp', 'quoteForm'),
+            phone: getText('contactMethod.phone', 'contactOptions.phone', 'quoteForm'),
+            email: getText('contactMethod.email', 'contactOptions.email', 'quoteForm'),
         },
         // Hero section
         hero: {

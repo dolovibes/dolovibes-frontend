@@ -5,6 +5,10 @@
         "title": "Anfrage gesendet!",
         "message": "Wir werden uns bald mit Ihnen in Verbindung setzen, um Ihre Reise zu planen."
     },
+    "error": {
+        "title": "Fehler beim Senden",
+        "message": "Beim Senden der Anfrage ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
+    },
     "form": {
         "firstName": "Vorname",
         "lastName": "Nachname",
@@ -15,7 +19,7 @@
         "phone": "Telefon",
         "contactMethod": "Wie möchten Sie kontaktiert werden?",
         "travelMonth": "Reisemonat",
-        "passengers": "Anzahl der Reisenden",
+        "travelers": "Anzahl der Reisenden",
         "tripType": "Reiseart",
         "additionalServices": "Zusätzliche Leistungen",
         "additionalServicesPlaceholder": "Fahrgemeinschaft, besonderes Abendessen, Flughafentransfer, Ernährungsbedürfnisse, usw."

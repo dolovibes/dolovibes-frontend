@@ -14,7 +14,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
         telefono: '',
         contacto: 'whatsapp',
         mesViaje: '',
-        pasajeros: '2',
+        viajeros: '2',
         tipoViaje: 'guiado',
         serviciosAdicionales: '',
         packageTitle: packageTitle || ''
@@ -68,7 +68,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                 setFormData({
                     nombre: '', apellido: '', ciudad: '', estado: '', pais: '',
                     email: '', telefono: '', contacto: 'whatsapp', mesViaje: '',
-                    pasajeros: '2', tipoViaje: 'guiado', serviciosAdicionales: '',
+                    viajeros: '2', tipoViaje: 'guiado', serviciosAdicionales: '',
                     packageTitle: packageTitle || ''
                 });
             }, 3000);
@@ -288,7 +288,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                     </select>
                                 </div>
 
-                                {/* Mes del viaje y Número de pasajeros */}
+                                {/* Mes del viaje y Número de viajeros */}
                                 <div className="grid md:grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-sm font-medium text-pizarra mb-1.5">
@@ -305,11 +305,11 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-pizarra mb-1.5">
-                                            {siteTexts.packageQuoteModal?.passengers || 'Número de pasajeros'} *
+                                            {siteTexts.packageQuoteModal?.travelers || 'Número de viajeros'} *
                                         </label>
                                         <select
-                                            name="pasajeros"
-                                            value={formData.pasajeros}
+                                            name="viajeros"
+                                            value={formData.viajeros}
                                             onChange={handleChange}
                                             className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all bg-white text-sm"
                                         >

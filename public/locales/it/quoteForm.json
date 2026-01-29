@@ -5,6 +5,10 @@
         "title": "Richiesta Inviata!",
         "message": "Ti contatteremo presto per pianificare il tuo viaggio."
     },
+    "error": {
+        "title": "Errore nell'invio",
+        "message": "Si è verificato un errore durante l'invio della richiesta. Riprova."
+    },
     "form": {
         "firstName": "Nome",
         "lastName": "Cognome",
@@ -15,7 +19,7 @@
         "phone": "Telefono",
         "contactMethod": "Come preferisci essere contattato?",
         "travelMonth": "Mese del viaggio",
-        "passengers": "Numero di passeggeri",
+        "travelers": "Numero di viaggiatori",
         "tripType": "Tipo di viaggio",
         "additionalServices": "Servizi aggiuntivi",
         "additionalServicesPlaceholder": "Carpool, cena speciale, trasferimento aeroporto, esigenze alimentari, ecc."
