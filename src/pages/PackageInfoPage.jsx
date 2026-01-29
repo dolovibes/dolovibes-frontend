@@ -148,7 +148,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                 <img
                     src={pkg.heroImage || pkg.image}
                     alt={pkg.title}
-                    fetchpriority="high"
+                    fetchPriority="high"
                     loading="eager"
                     width="1920"
                     height="1080"
