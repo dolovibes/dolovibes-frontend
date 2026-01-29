@@ -38,19 +38,29 @@ export const BlocksRenderer = ({ content }) => {
     }
   }
 
-  // If content is array (Blocks format), use Strapi renderer
-  if (Array.isArray(content)) {
-    return <StrapiBlocksRenderer content={content} />;
-  }
-
   // If content is an object (single block node), wrap it in an array
-  if (typeof content === 'object') {
+  if (typeof content === 'object' && !Array.isArray(content)) {
     // Check if it's a valid block node with type and children
     if (content.type && content.children) {
       return <StrapiBlocksRenderer content={[content]} />;
     }
     console.warn('BlocksRenderer received unexpected object:', content);
     return null;
+  }
+
+  // If content is array (Blocks format), use Strapi renderer
+  if (Array.isArray(content)) {
+    // Validate that array items are proper block objects
+    const isValidBlocks = content.every(
+      item => item && typeof item === 'object' && item.type && item.children
+    );
+
+    if (!isValidBlocks) {
+      console.warn('BlocksRenderer received invalid blocks array:', content);
+      return null;
+    }
+
+    return <StrapiBlocksRenderer content={content} />;
   }
 
   // Fallback for other types
