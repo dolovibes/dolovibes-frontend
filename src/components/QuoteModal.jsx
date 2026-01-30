@@ -121,7 +121,8 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                     <input
                                         type="month"
                                         value={formData.date}
-                                        className="w-full h-12 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
+                                        className="w-full h-12 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino appearance-none bg-white text-pizarra"
+                                        style={{ colorScheme: 'light' }}
                                         onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                                     />
                                 </div>
