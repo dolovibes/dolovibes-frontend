@@ -118,12 +118,20 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                     <label className="block text-sm font-medium text-pizarra mb-1 truncate">
                                         {siteTexts.quoteModal.dateLabel} <span className="text-niebla text-xs">{siteTexts.fieldOptional || '(Opcional)'}</span>
                                     </label>
-                                    <input
-                                        type="month"
+                                    <select
                                         value={formData.date}
                                         className="w-full h-12 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                         onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                                    />
+                                    >
+                                        <option value="">{siteTexts.quoteModal?.selectMonth || 'Selecciona un mes'}</option>
+                                        {Array.from({ length: 12 }, (_, i) => {
+                                            const date = new Date();
+                                            date.setMonth(date.getMonth() + i);
+                                            const value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                                            const label = date.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' });
+                                            return <option key={value} value={value}>{label.charAt(0).toUpperCase() + label.slice(1)}</option>;
+                                        })}
+                                    </select>
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-pizarra mb-1">{siteTexts.quoteModal.travelersLabel} *</label>
