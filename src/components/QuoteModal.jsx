@@ -1,10 +1,21 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { X, User, Mail, Phone, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import { useExperiences } from '../services/hooks';
 
+// Mapeo de códigos de idioma a locales para toLocaleDateString
+const LOCALE_MAP = {
+    es: 'es-ES',
+    en: 'en-US',
+    it: 'it-IT',
+    de: 'de-DE'
+};
+
 const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
     const { texts: siteTexts } = useSiteTextsContext();
+    const { i18n } = useTranslation();
+    const locale = LOCALE_MAP[i18n.language] || 'es-ES';
     const { data: experiences = [], isLoading: experiencesLoading } = useExperiences();
     const [step, setStep] = useState(1);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -128,7 +139,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                             const date = new Date();
                                             date.setMonth(date.getMonth() + i);
                                             const value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                                            const label = date.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' });
+                                            const label = date.toLocaleDateString(locale, { month: 'long', year: 'numeric' });
                                             return <option key={value} value={value}>{label.charAt(0).toUpperCase() + label.slice(1)}</option>;
                                         })}
                                     </select>
