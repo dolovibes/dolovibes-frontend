@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAboutPage } from '../services/hooks';
+import { BlocksRenderer } from '../utils/BlocksRenderer';
 import Footer from '../components/Footer';
 
 const AboutUsPage = ({ onOpenQuote }) => {
@@ -20,19 +21,19 @@ const AboutUsPage = ({ onOpenQuote }) => {
 
     const origin = {
         title: aboutData?.origin?.title || t('origin.title'),
-        text: aboutData?.origin?.text || t('origin.text')
+        content: aboutData?.origin?.content || t('origin.text')
     };
     const essence = {
         title: aboutData?.essence?.title || t('essence.title'),
-        text: aboutData?.essence?.text || t('essence.text')
+        content: aboutData?.essence?.content || t('essence.text')
     };
     const vision = {
         title: aboutData?.vision?.title || t('vision.title'),
-        text: aboutData?.vision?.text || t('vision.text')
+        content: aboutData?.vision?.content || t('vision.text')
     };
     const mission = {
         title: aboutData?.mission?.title || t('mission.title'),
-        text: aboutData?.mission?.text || t('mission.text')
+        content: aboutData?.mission?.content || t('mission.text')
     };
 
     if (isLoading) {
@@ -66,9 +67,9 @@ const AboutUsPage = ({ onOpenQuote }) => {
                             <h2 className="text-2xl md:text-3xl font-bold text-grafito mb-4">
                                 {origin.title}
                             </h2>
-                            <p className="text-pizarra text-lg leading-relaxed">
-                                {origin.text}
-                            </p>
+                            <div className="text-pizarra text-lg leading-relaxed prose prose-lg max-w-none">
+                                <BlocksRenderer content={origin.content} />
+                            </div>
                         </section>
 
                         {/* Nuestra esencia */}
@@ -76,9 +77,9 @@ const AboutUsPage = ({ onOpenQuote }) => {
                             <h2 className="text-2xl md:text-3xl font-bold text-grafito mb-4">
                                 {essence.title}
                             </h2>
-                            <p className="text-pizarra text-lg leading-relaxed">
-                                {essence.text}
-                            </p>
+                            <div className="text-pizarra text-lg leading-relaxed prose prose-lg max-w-none">
+                                <BlocksRenderer content={essence.content} />
+                            </div>
                         </section>
 
                         {/* Visión */}
@@ -86,9 +87,9 @@ const AboutUsPage = ({ onOpenQuote }) => {
                             <h2 className="text-2xl md:text-3xl font-bold text-grafito mb-4">
                                 {vision.title}
                             </h2>
-                            <p className="text-pizarra text-lg leading-relaxed">
-                                {vision.text}
-                            </p>
+                            <div className="text-pizarra text-lg leading-relaxed prose prose-lg max-w-none">
+                                <BlocksRenderer content={vision.content} />
+                            </div>
                         </section>
 
                         {/* Misión */}
@@ -96,9 +97,9 @@ const AboutUsPage = ({ onOpenQuote }) => {
                             <h2 className="text-2xl md:text-3xl font-bold text-grafito mb-4">
                                 {mission.title}
                             </h2>
-                            <p className="text-pizarra text-lg leading-relaxed">
-                                {mission.text}
-                            </p>
+                            <div className="text-pizarra text-lg leading-relaxed prose prose-lg max-w-none">
+                                <BlocksRenderer content={mission.content} />
+                            </div>
                         </section>
                     </div>
 

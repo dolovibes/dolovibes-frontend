@@ -412,10 +412,18 @@ export const getHeroSection = async () => {
 // Incluye todos los campos actuales del modelo About Page
 const ABOUT_POPULATE = {
   mainPhoto: true,
-  origin: true,
-  essence: true,
-  vision: true,
-  mission: true,
+  origin: {
+    populate: '*'
+  },
+  essence: {
+    populate: '*'
+  },
+  vision: {
+    populate: '*'
+  },
+  mission: {
+    populate: '*'
+  },
 };
 
 /**
@@ -605,19 +613,19 @@ const transformAboutPage = (data) => {
     photoAlt: data.photoAlt,
     origin: data.origin ? {
       title: data.origin.title,
-      text: data.origin.content,
+      content: data.origin.content,
     } : null,
     essence: data.essence ? {
       title: data.essence.title,
-      text: data.essence.content,
+      content: data.essence.content,
     } : null,
     vision: data.vision ? {
       title: data.vision.title,
-      text: data.vision.content,
+      content: data.vision.content,
     } : null,
     mission: data.mission ? {
       title: data.mission.title,
-      text: data.mission.content,
+      content: data.mission.content,
     } : null,
   };
 };

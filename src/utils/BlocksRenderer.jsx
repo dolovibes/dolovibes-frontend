@@ -2,6 +2,45 @@ import React from 'react';
 import { BlocksRenderer as StrapiBlocksRenderer } from '@strapi/blocks-react-renderer';
 
 /**
+ * Custom blocks configuration with Tailwind CSS classes
+ * Adds proper spacing for paragraphs, lists, headings, etc.
+ */
+const customBlocks = {
+  paragraph: ({ children }) => <p className="mb-4 last:mb-0">{children}</p>,
+  list: ({ children, format }) => {
+    const className = "mb-4 last:mb-0 space-y-2";
+    if (format === 'ordered') {
+      return <ol className={`${className} list-decimal list-inside`}>{children}</ol>;
+    }
+    return <ul className={`${className} list-disc list-inside`}>{children}</ul>;
+  },
+  'list-item': ({ children }) => <li className="ml-4">{children}</li>,
+  heading: ({ children, level }) => {
+    const Tag = `h${level}`;
+    const classes = {
+      1: 'text-3xl font-bold mb-4 mt-6 first:mt-0',
+      2: 'text-2xl font-bold mb-3 mt-5 first:mt-0',
+      3: 'text-xl font-bold mb-3 mt-4 first:mt-0',
+      4: 'text-lg font-bold mb-2 mt-3 first:mt-0',
+      5: 'text-base font-bold mb-2 mt-3 first:mt-0',
+      6: 'text-sm font-bold mb-2 mt-2 first:mt-0',
+    };
+    return <Tag className={classes[level]}>{children}</Tag>;
+  },
+  link: ({ children, url }) => (
+    <a href={url} className="text-blue-600 hover:text-blue-800 underline" target="_blank" rel="noopener noreferrer">
+      {children}
+    </a>
+  ),
+  code: ({ children }) => (
+    <code className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono">{children}</code>
+  ),
+  quote: ({ children }) => (
+    <blockquote className="border-l-4 border-gray-300 pl-4 italic my-4">{children}</blockquote>
+  ),
+};
+
+/**
  * Extract plain text from Strapi Blocks content
  * Useful for summaries, meta descriptions, or anywhere plain text is needed
  *
@@ -76,7 +115,7 @@ export const BlocksRenderer = ({ content }) => {
     try {
       const parsed = JSON.parse(content);
       if (Array.isArray(parsed)) {
-        return <StrapiBlocksRenderer content={parsed} />;
+        return <StrapiBlocksRenderer content={parsed} blocks={customBlocks} />;
       }
     } catch {
       // Not JSON, treat as plain text
@@ -96,7 +135,7 @@ export const BlocksRenderer = ({ content }) => {
   if (typeof content === 'object' && !Array.isArray(content)) {
     // Check if it's a valid block node with type and children
     if (content.type && content.children) {
-      return <StrapiBlocksRenderer content={[content]} />;
+      return <StrapiBlocksRenderer content={[content]} blocks={customBlocks} />;
     }
     console.warn('BlocksRenderer received unexpected object:', content);
     return null;
@@ -114,7 +153,7 @@ export const BlocksRenderer = ({ content }) => {
       return null;
     }
 
-    return <StrapiBlocksRenderer content={content} />;
+    return <StrapiBlocksRenderer content={content} blocks={customBlocks} />;
   }
 
   // Fallback for other types
