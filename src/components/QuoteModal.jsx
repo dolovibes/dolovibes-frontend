@@ -113,7 +113,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                             </div>
 
                             {/* Fecha y Viajeros */}
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-pizarra mb-1">
                                         {siteTexts.quoteModal.dateLabel} <span className="text-niebla text-xs">{siteTexts.fieldOptional || '(Opcional)'}</span>
@@ -121,14 +121,14 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                     <input
                                         type="month"
                                         value={formData.date}
-                                        className="w-full border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
+                                        className="w-full h-12 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                         onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-pizarra mb-1">{siteTexts.quoteModal.travelersLabel} *</label>
                                     <select
-                                        className="w-full border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
+                                        className="w-full h-12 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                         value={formData.guests}
                                         onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
                                         required
