@@ -185,11 +185,45 @@ const getSpanishDataCached = async (endpoint, params, transformFn) => {
 const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSingleType = false) => {
   const locale = getCurrentLocale();
 
-  // Single Types no usan locale
+  // Single Types también necesitan locale para i18n
   if (isSingleType) {
-    const response = await strapiClient.get(endpoint, { params });
-    const data = response.data.data;
-    return transformFn ? transformFn(data) : data;
+    const finalParams = { ...params, locale };
+    
+    try {
+      const response = await strapiClient.get(endpoint, { params: finalParams });
+      const data = response.data.data;
+      
+      // Transformar datos PRIMERO
+      const transformedData = transformFn ? transformFn(data) : data;
+      
+      // Si NO estamos en español, enriquecer con imágenes de español
+      if (locale !== DEFAULT_LOCALE && transformedData) {
+        try {
+          // Obtener datos españoles desde cache
+          const transformedSpanishData = await getSpanishDataCached(endpoint, params, transformFn);
+          
+          // Enriquecer con media de español
+          const enrichedData = enrichWithSpanishMedia(transformedData, transformedSpanishData);
+          return enrichedData;
+        } catch (spanishError) {
+          // Si falla obtener español, continuar con datos actuales
+          console.warn('[Strapi] Could not fetch Spanish fallback for media:', spanishError.message);
+          return transformedData;
+        }
+      }
+      
+      return transformedData;
+    } catch (error) {
+      // Si falla en idioma actual y no es español, intentar fallback completo a español
+      if (locale !== DEFAULT_LOCALE) {
+        try {
+          return getSpanishDataCached(endpoint, params, transformFn);
+        } catch {
+          throw error;
+        }
+      }
+      throw error;
+    }
   }
 
   // Collection Types: obtener datos en el locale actual
