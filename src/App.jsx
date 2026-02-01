@@ -50,7 +50,7 @@ const App = () => {
               element={<PackageInfoPage onOpenQuote={handleOpenQuote} />}
             />
             <Route
-              path="/about"
+              path="/nosotros"
               element={<AboutUsPage onOpenQuote={() => handleOpenQuote()} />}
             />
             {/* Ruta dinámica para todas las páginas legales */}

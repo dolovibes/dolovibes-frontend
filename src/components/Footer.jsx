@@ -167,7 +167,7 @@ const Footer = () => {
                             © {new Date().getFullYear()} DoloVibes. {t('footer.allRightsReserved')}
                         </p>
                         <div className="flex gap-6 text-sm">
-                            <Link to="/about" className="text-niebla hover:text-white transition-colors">
+                            <Link to="/nosotros" className="text-niebla hover:text-white transition-colors">
                                 {t('navbar.aboutUs')}
                             </Link>
                         </div>
