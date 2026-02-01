@@ -105,7 +105,7 @@ const Footer = () => {
                             {footerExperiences.map((exp) => (
                                 <li key={exp.id || exp.slug}>
                                     <Link
-                                        to={`/experiencia/${exp.slug}`}
+                                        to={`/experiencias/${exp.slug}`}
                                         className="text-niebla hover:text-bruma transition-colors"
                                     >
                                         {exp.title}
@@ -121,7 +121,7 @@ const Footer = () => {
                         <ul className="space-y-3">
                             {legalPages.map((page) => (
                                 <li key={page.slug}>
-                                    <Link to={`/legal/${page.slug}`} className="text-niebla hover:text-bruma transition-colors">
+                                    <Link to={`/legales/${page.slug}`} className="text-niebla hover:text-bruma transition-colors">
                                         {page.title}
                                     </Link>
                                 </li>

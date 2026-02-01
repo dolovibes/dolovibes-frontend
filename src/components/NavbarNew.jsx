@@ -57,7 +57,7 @@ const NavbarNew = ({ onOpenQuote }) => {
     const handleExperienceClick = (slug) => {
         setIsExperiencesOpen(false);
         setIsMenuOpen(false);
-        navigate(`/experiencia/${slug}`);
+        navigate(`/experiencias/${slug}`);
     };
 
     // Usar estilo oscuro si scrolled O si estamos en página con fondo blanco

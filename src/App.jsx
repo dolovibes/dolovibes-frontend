@@ -42,11 +42,11 @@ const App = () => {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route
-              path="/experiencia/:slug"
+              path="/experiencias/:slug"
               element={<ExperiencePage onOpenQuote={handleOpenQuote} />}
             />
             <Route
-              path="/paquete/:slug"
+              path="/paquetes/:slug"
               element={<PackageInfoPage onOpenQuote={handleOpenQuote} />}
             />
             <Route
@@ -54,7 +54,7 @@ const App = () => {
               element={<AboutUsPage onOpenQuote={() => handleOpenQuote()} />}
             />
             {/* Ruta dinámica para todas las páginas legales */}
-            <Route path="/legal/:slug" element={<DynamicLegalPage />} />
+            <Route path="/legales/:slug" element={<DynamicLegalPage />} />
           </Routes>
         </Suspense>
 

@@ -38,7 +38,7 @@ const PackageCard = ({ pkg }) => {
 
     return (
         <Link
-            to={`/paquete/${pkg.slug}`}
+            to={`/paquetes/${pkg.slug}`}
             onMouseEnter={handleMouseEnter}
             className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-niebla"
         >
