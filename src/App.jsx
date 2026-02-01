@@ -10,10 +10,7 @@ const HomePage = lazy(() => import('./pages/HomePage'));
 const ExperiencePage = lazy(() => import('./pages/ExperiencePage'));
 const PackageInfoPage = lazy(() => import('./pages/PackageInfoPage'));
 const AboutUsPage = lazy(() => import('./pages/AboutUsPage'));
-const TermsPage = lazy(() => import('./pages/TermsPage'));
-const CancellationPage = lazy(() => import('./pages/CancellationPage'));
-const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
-const CookiesPage = lazy(() => import('./pages/CookiesPage'));
+const DynamicLegalPage = lazy(() => import('./pages/DynamicLegalPage'));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-white">
@@ -23,7 +20,6 @@ const PageLoader = () => (
     </div>
   </div>
 );
-const DynamicLegalPage = lazy(() => import('./pages/DynamicLegalPage'));
 
 // --- App Principal ---
 const App = () => {
@@ -57,11 +53,7 @@ const App = () => {
               path="/about"
               element={<AboutUsPage onOpenQuote={() => handleOpenQuote()} />}
             />
-            <Route path="/terminos" element={<TermsPage />} />
-            <Route path="/cancelaciones" element={<CancellationPage />} />
-            <Route path="/privacidad" element={<PrivacyPage />} />
-            <Route path="/cookies" element={<CookiesPage />} />
-            {/* Ruta dinámica para páginas legales */}
+            {/* Ruta dinámica para todas las páginas legales */}
             <Route path="/legal/:slug" element={<DynamicLegalPage />} />
           </Routes>
         </Suspense>
