@@ -251,7 +251,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
 
                             {/* Descripción - altura fija con scroll en móvil y gradiente indicador */}
                             <div className="relative">
-                                <div className="text-pizarra text-sm md:text-base leading-relaxed prose prose-sm max-w-none max-h-[180px] sm:max-h-[200px] md:max-h-none overflow-y-auto pr-1 pb-12">
+                                <div className="text-pizarra text-sm md:text-base leading-relaxed prose prose-sm max-w-none max-h-[180px] sm:max-h-[200px] md:max-h-none overflow-y-auto pr-1 pb-10">
                                     <BlocksRenderer content={pkg.itinerary[currentDay].description} />
                                 </div>
                                 {/* Gradiente indicador de scroll para móvil */}
