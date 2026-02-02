@@ -211,15 +211,28 @@ const NavbarNew = ({ onOpenQuote }) => {
                         {/* Experiencias Accordion */}
                         <div className="border-b border-niebla pb-3 mb-3">
                             <button
-                                onClick={() => setIsExperiencesOpen(!isExperiencesOpen)}
-                                className="w-full flex items-center justify-between py-3 text-grafito font-medium"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setIsExperiencesOpen(!isExperiencesOpen);
+                                }}
+                                className="w-full flex items-center justify-between py-3 text-grafito font-medium active:bg-nieve/50 rounded-lg px-2 -mx-2 touch-manipulation"
+                                type="button"
+                                aria-expanded={isExperiencesOpen}
+                                aria-controls="mobile-experiences-menu"
                             >
                                 <span>{t('navbar.experiences')}</span>
-                                <ChevronDown className={`w-5 h-5 transition-transform ${isExperiencesOpen ? 'rotate-180' : ''}`} />
+                                <ChevronDown 
+                                    className={`w-5 h-5 transition-transform duration-300 ${isExperiencesOpen ? 'rotate-180' : ''}`}
+                                    aria-hidden="true"
+                                />
                             </button>
 
-                            <div className={`overflow-hidden transition-all duration-300 ${isExperiencesOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
-                                }`}>
+                            <div 
+                                id="mobile-experiences-menu"
+                                className={`overflow-hidden transition-all duration-300 ${isExperiencesOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+                                }`}
+                            >
                                 <div className="py-2">
                                     {/* Verano */}
                                     <div className="mb-4">
