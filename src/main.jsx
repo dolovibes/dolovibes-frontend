@@ -22,9 +22,14 @@ const queryClient = new QueryClient({
 // Invalidar cache de React Query cuando cambie el idioma
 // Esto previene inconsistencias de datos entre idiomas
 i18n.on('languageChanged', (newLang) => {
-  // Invalidar todos los queries para forzar refetch con nuevo locale
-  queryClient.invalidateQueries();
-  console.info(`[i18n] Language changed to ${newLang}, cache invalidated`);
+  // Cancelar queries en progreso para evitar race conditions
+  queryClient.cancelQueries();
+  
+  // Remover todos los queries del cache para forzar refetch con nuevo locale
+  // Usar removeQueries en lugar de invalidateQueries para evitar peticiones duplicadas
+  queryClient.removeQueries();
+  
+  console.info(`[i18n] Language changed to ${newLang}, cache cleared`);
 });
 
 // Componente de carga inicial mientras se cargan traducciones

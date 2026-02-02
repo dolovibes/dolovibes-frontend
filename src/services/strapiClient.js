@@ -45,7 +45,9 @@ strapiClient.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (import.meta.env.DEV) {
+    // En desarrollo, solo logear errores que NO son 404
+    // Los 404 son esperados cuando un Single Type no tiene localización
+    if (import.meta.env.DEV && error.response?.status !== 404) {
       console.error('[Strapi] Response error:', error.response?.data || error.message);
     }
     return Promise.reject(error);
