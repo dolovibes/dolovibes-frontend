@@ -26,6 +26,9 @@ const ExperiencePage = ({ onOpenQuote }) => {
         resourceType: 'experience',
     });
 
+    // Hreflang para SEO - URLs alternativas por idioma (DEBE estar antes de early returns)
+    const { alternateUrls } = useAlternateUrls('experience', experience?.documentId, slug);
+
     // Textos con fallback: Strapi > i18n
     const loadingText = siteTexts?.loadingExperience || tCommon('loading.experience');
     const packagesTitle = siteTexts?.availablePackagesTitle || tCommon('availablePackages.title');
@@ -49,9 +52,6 @@ const ExperiencePage = ({ onOpenQuote }) => {
 
     // Obtener locale actual
     const currentLocale = i18n.language || 'es';
-
-    // Hreflang para SEO - URLs alternativas por idioma
-    const { alternateUrls } = useAlternateUrls('experience', experience?.documentId, slug);
 
     if (!experience) {
         return (

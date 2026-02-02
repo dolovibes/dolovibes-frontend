@@ -44,6 +44,9 @@ const PackageInfoPage = ({ onOpenQuote }) => {
         resourceType: 'package',
     });
 
+    // Hreflang para SEO - URLs alternativas por idioma (DEBE estar antes de early returns)
+    const { alternateUrls } = useAlternateUrls('package', pkg?.documentId, slug);
+
     // Textos con fallback: Strapi > i18n
     const loadingText = siteTexts?.loadingPackage || tCommon('loading.package');
 
@@ -152,9 +155,6 @@ const PackageInfoPage = ({ onOpenQuote }) => {
     };
 
     const currentItinerary = pkg.itinerary?.[currentDay];
-
-    // Hreflang para SEO - URLs alternativas por idioma
-    const { alternateUrls } = useAlternateUrls('package', pkg?.documentId, slug);
 
     return (
         <div className="min-h-screen bg-white overflow-x-hidden">

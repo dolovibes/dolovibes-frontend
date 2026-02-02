@@ -29,7 +29,7 @@ const DynamicLegalPage = ({ slug: slugProp, fallbackTitle, fallbackContent }) =>
         resourceType: 'legal',
     });
 
-    // Hreflang para SEO - URLs alternativas por idioma
+    // Hreflang para SEO - URLs alternativas por idioma (DEBE estar antes de early returns)
     const { alternateUrls } = useAlternateUrls('legal', pageData?.documentId, slug);
 
     useEffect(() => {
