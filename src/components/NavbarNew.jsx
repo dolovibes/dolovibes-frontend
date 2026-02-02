@@ -3,17 +3,21 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Mountain, Menu, X, ChevronDown } from 'lucide-react';
 import { useExperiences, useSiteSettings } from '../services/hooks';
+import { generateLocalizedUrl, getLocaleFromPath } from '../utils/localizedRoutes';
 import LanguageSwitcher from './LanguageSwitcher';
 import CurrencySelector from './CurrencySelector';
 
 const NavbarNew = ({ onOpenQuote }) => {
-    const { t } = useTranslation('common');
+    const { t, i18n } = useTranslation('common');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isExperiencesOpen, setIsExperiencesOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const dropdownRef = useRef(null);
     const navigate = useNavigate();
     const location = useLocation();
+    
+    // Obtener locale actual de la URL o i18n
+    const currentLocale = getLocaleFromPath(location.pathname) || i18n.language || 'es';
 
     // 🔄 Experiencias y settings desde Strapi
     const { data: experiences = [], isLoading: loadingExperiences } = useExperiences();
@@ -57,7 +61,7 @@ const NavbarNew = ({ onOpenQuote }) => {
     const handleExperienceClick = (slug) => {
         setIsExperiencesOpen(false);
         setIsMenuOpen(false);
-        navigate(`/experiencias/${slug}`);
+        navigate(generateLocalizedUrl('experiences', slug, currentLocale));
     };
 
     // Usar estilo oscuro si scrolled O si estamos en página con fondo blanco
@@ -74,7 +78,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                     <div className="flex justify-between items-center h-full">
                         {/* Logo */}
                         <Link
-                            to="/"
+                            to={`/${currentLocale}`}
                             className="flex items-center"
                         >
                             <img
@@ -165,7 +169,7 @@ const NavbarNew = ({ onOpenQuote }) => {
 
                             {/* About Us */}
                             <Link
-                                to="/about"
+                                to={generateLocalizedUrl('about', null, currentLocale)}
                                 className={`font-medium transition-colors px-3 py-2 rounded-lg ${isDarkMode
                                     ? 'text-pizarra hover:text-alpino hover:bg-nieve'
                                     : 'text-white/90 hover:text-white hover:bg-white/10'
@@ -253,7 +257,7 @@ const NavbarNew = ({ onOpenQuote }) => {
 
                         {/* About Us */}
                         <Link
-                            to="/about"
+                            to={generateLocalizedUrl('about', null, currentLocale)}
                             onClick={() => setIsMenuOpen(false)}
                             className="block py-3 text-grafito font-medium border-b border-niebla"
                         >

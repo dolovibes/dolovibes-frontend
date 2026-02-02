@@ -5,6 +5,7 @@ import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { useQueryClient } from '@tanstack/react-query';
 import { MapPin, Clock, ArrowRight } from 'lucide-react';
 import { useCurrencyContext } from '../utils/currency';
+import { generateLocalizedUrl } from '../utils/localizedRoutes';
 import { prefetchPackage } from '../utils/dataPrefetch';
 import { extractTextFromBlocks } from '../utils/BlocksRenderer';
 import OptimizedImage from './OptimizedImage';
@@ -12,6 +13,7 @@ import OptimizedImage from './OptimizedImage';
 const PackageCard = ({ pkg }) => {
     const { texts: siteTexts } = useSiteTextsContext();
     const { i18n } = useTranslation();
+    const currentLocale = i18n.language || 'es';
     const { formatPriceFromEUR } = useCurrencyContext();
     const queryClient = useQueryClient();
 
@@ -39,7 +41,7 @@ const PackageCard = ({ pkg }) => {
 
     return (
         <Link
-            to={`/paquetes/${pkg.slug}`}
+            to={generateLocalizedUrl('packages', pkg.slug, currentLocale)}
             onMouseEnter={handleMouseEnter}
             className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-niebla"
         >

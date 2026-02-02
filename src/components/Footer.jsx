@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSiteSettings, useFooterExperiences, useFooterLegalPages } from '../services/hooks';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
+import { generateLocalizedUrl } from '../utils/localizedRoutes';
 import { MapPin, Mail, Instagram, Facebook, FileText } from 'lucide-react';
 
 // TikTok icon component (not in lucide-react)
@@ -20,7 +21,8 @@ const WhatsAppIcon = ({ className }) => (
 );
 
 const Footer = () => {
-    const { t } = useTranslation('common');
+    const { t, i18n } = useTranslation('common');
+    const currentLocale = i18n.language || 'es';
     // SiteTextsContext para textos globales de Strapi
     const { texts: siteTexts } = useSiteTextsContext();
     const { data: siteSettings, isLoading } = useSiteSettings();
@@ -105,7 +107,7 @@ const Footer = () => {
                             {footerExperiences.map((exp) => (
                                 <li key={exp.id || exp.slug}>
                                     <Link
-                                        to={`/experiencias/${exp.slug}`}
+                                        to={generateLocalizedUrl('experiences', exp.slug, currentLocale)}
                                         className="text-niebla hover:text-bruma transition-colors"
                                     >
                                         {exp.title}
@@ -121,7 +123,7 @@ const Footer = () => {
                         <ul className="space-y-3">
                             {legalPages.map((page) => (
                                 <li key={page.slug}>
-                                    <Link to={`/legales/${page.slug}`} className="text-niebla hover:text-bruma transition-colors">
+                                    <Link to={generateLocalizedUrl('legal', page.slug, currentLocale)} className="text-niebla hover:text-bruma transition-colors">
                                         {page.title}
                                     </Link>
                                 </li>
@@ -167,7 +169,7 @@ const Footer = () => {
                             © {new Date().getFullYear()} DoloVibes. {t('footer.allRightsReserved')}
                         </p>
                         <div className="flex gap-6 text-sm">
-                            <Link to="/nosotros" className="text-niebla hover:text-white transition-colors">
+                            <Link to={generateLocalizedUrl('about', null, currentLocale)} className="text-niebla hover:text-white transition-colors">
                                 {t('navbar.aboutUs')}
                             </Link>
                         </div>

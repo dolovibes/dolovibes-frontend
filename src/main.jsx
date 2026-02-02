@@ -1,8 +1,8 @@
-import { StrictMode, Suspense } from 'react'
+import { StrictMode, Suspense, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import './index.css'
-import './i18n' // Inicializar i18n
+import i18n from './i18n' // Inicializar i18n
 import { CurrencyProvider } from './utils/currency.jsx'
 import { SiteTextsProvider } from './contexts/SiteTextsContext.jsx'
 import App from './App.jsx'
@@ -17,6 +17,14 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
     },
   },
+});
+
+// Invalidar cache de React Query cuando cambie el idioma
+// Esto previene inconsistencias de datos entre idiomas
+i18n.on('languageChanged', (newLang) => {
+  // Invalidar todos los queries para forzar refetch con nuevo locale
+  queryClient.invalidateQueries();
+  console.info(`[i18n] Language changed to ${newLang}, cache invalidated`);
 });
 
 // Componente de carga inicial mientras se cargan traducciones

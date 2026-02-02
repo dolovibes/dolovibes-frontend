@@ -19,6 +19,11 @@
     "quote": "Cotizar",
     "quoteResponse": "Te responderemos en menos de 24 horas",
     "viewPackages": "Ver paquetes",
+    "gallery": {
+        "imageError": "Error al cargar la imagen",
+        "retry": "Reintentar",
+        "photoAlt": "{{title}} - Foto {{number}}"
+    },
     "difficulty": {
         "easy": "Fácil",
         "intermediate": "Intermedio",

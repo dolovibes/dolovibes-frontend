@@ -19,6 +19,11 @@
     "quote": "Richiedi preventivo",
     "quoteResponse": "Risponderemo entro 24 ore",
     "viewPackages": "Vedi pacchetti",
+    "gallery": {
+        "imageError": "Errore nel caricamento dell'immagine",
+        "retry": "Riprova",
+        "photoAlt": "{{title}} - Foto {{number}}"
+    },
     "difficulty": {
         "easy": "Facile",
         "intermediate": "Intermedio",

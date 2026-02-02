@@ -19,6 +19,11 @@
     "quote": "Get Quote",
     "quoteResponse": "We'll respond within 24 hours",
     "viewPackages": "View packages",
+    "gallery": {
+        "imageError": "Error loading image",
+        "retry": "Retry",
+        "photoAlt": "{{title}} - Photo {{number}}"
+    },
     "difficulty": {
         "easy": "Easy",
         "intermediate": "Intermediate",

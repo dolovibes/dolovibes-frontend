@@ -5,8 +5,10 @@ import { useQueryClient } from '@tanstack/react-query';
 import VideoHero from '../components/VideoHero';
 import PackageRecommendations from '../components/PackageRecommendations';
 import Footer from '../components/Footer';
+import Hreflang from '../components/Hreflang';
 import { useFeaturedPackages } from '../services/hooks';
 import { prefetchHomeData } from '../utils/dataPrefetch';
+import { useStaticAlternateUrls } from '../hooks/useAlternateUrls';
 
 const HomePage = () => {
     const { t, i18n } = useTranslation('common');
@@ -76,8 +78,12 @@ const HomePage = () => {
     const displayPackages = selectedPackages.length > 0 ? selectedPackages : featuredPackages;
     const displayTitle = selectedExperience?.title || t('recommendations.title');
 
+    // Hreflang para SEO
+    const homeAlternateUrls = useStaticAlternateUrls('home');
+
     return (
         <div className="min-h-screen">
+            <Hreflang alternateUrls={homeAlternateUrls} />
             <VideoHero key={heroKey} onExperienceSelect={handleExperienceSelect} />
 
             {/* Package Recommendations - siempre visible con paquetes destacados o seleccionados */}

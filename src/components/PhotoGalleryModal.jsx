@@ -5,11 +5,13 @@ import { useTranslation } from 'react-i18next';
 const PhotoGalleryModal = ({ isOpen, onClose, photos, packageTitle, packageSlug }) => {
     const { t } = useTranslation('packageInfo');
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [imageError, setImageError] = useState(false);
 
     // Reset to first photo when modal opens
     useEffect(() => {
         if (isOpen) {
             setCurrentIndex(0);
+            setImageError(false);
         }
     }, [isOpen]);
 
@@ -28,15 +30,21 @@ const PhotoGalleryModal = ({ isOpen, onClose, photos, packageTitle, packageSlug 
 
     if (!isOpen || !photos || photos.length === 0) return null;
 
+    // Filtrar fotos válidas (con URL)
+    const validPhotos = photos.filter(p => p?.url || (typeof p === 'string' && p));
+    if (validPhotos.length === 0) return null;
+
     const goToNext = () => {
-        setCurrentIndex((prev) => (prev + 1) % photos.length);
+        setCurrentIndex((prev) => (prev + 1) % validPhotos.length);
+        setImageError(false);
     };
 
     const goToPrevious = () => {
-        setCurrentIndex((prev) => (prev - 1 + photos.length) % photos.length);
+        setCurrentIndex((prev) => (prev - 1 + validPhotos.length) % validPhotos.length);
+        setImageError(false);
     };
 
-    const currentPhoto = photos[currentIndex];
+    const currentPhoto = validPhotos[currentIndex];
 
     // Obtener caption traducido o usar el del CMS como fallback
     const getTranslatedCaption = () => {
@@ -70,11 +78,11 @@ const PhotoGalleryModal = ({ isOpen, onClose, photos, packageTitle, packageSlug 
 
             {/* Counter */}
             <div className="absolute top-4 left-4 z-20 bg-black/50 px-4 py-2 rounded-full text-white text-sm">
-                {currentIndex + 1} / {photos.length}
+                {currentIndex + 1} / {validPhotos.length}
             </div>
 
             {/* Navigation arrows */}
-            {photos.length > 1 && (
+            {validPhotos.length > 1 && (
                 <>
                     <button
                         onClick={goToPrevious}
@@ -93,12 +101,25 @@ const PhotoGalleryModal = ({ isOpen, onClose, photos, packageTitle, packageSlug 
 
             {/* Photo container */}
             <div className="relative z-10 w-full h-full flex items-center justify-center p-4 md:p-16">
-                <img
-                    src={currentPhoto.url || currentPhoto}
-                    alt={currentPhoto.alt || `${packageTitle} - Foto ${currentIndex + 1}`}
-                    loading="eager"
-                    className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
-                />
+                {imageError ? (
+                    <div className="text-white text-center">
+                        <p className="text-lg mb-2">{t('gallery.imageError')}</p>
+                        <button 
+                            onClick={() => setImageError(false)}
+                            className="text-sm text-white/70 hover:text-white underline"
+                        >
+                            {t('gallery.retry')}
+                        </button>
+                    </div>
+                ) : (
+                    <img
+                        src={currentPhoto.url || currentPhoto}
+                        alt={currentPhoto.alt || t('gallery.photoAlt', { title: packageTitle, number: currentIndex + 1 })}
+                        loading="eager"
+                        className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                        onError={() => setImageError(true)}
+                    />
+                )}
             </div>
 
             {/* Caption (if available) */}

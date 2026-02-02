@@ -19,6 +19,11 @@
     "quote": "Angebot anfordern",
     "quoteResponse": "Wir antworten innerhalb von 24 Stunden",
     "viewPackages": "Pakete ansehen",
+    "gallery": {
+        "imageError": "Fehler beim Laden des Bildes",
+        "retry": "Erneut versuchen",
+        "photoAlt": "{{title}} - Foto {{number}}"
+    },
     "difficulty": {
         "easy": "Leicht",
         "intermediate": "Mittelschwer",

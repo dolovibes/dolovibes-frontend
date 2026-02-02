@@ -322,6 +322,32 @@ export const getExperienceBySlug = async (slug) => {
 };
 
 /**
+ * Obtiene el slug de una experiencia por documentId en un locale específico
+ * Usado para redirección inteligente al cambiar idioma
+ * @param {string} documentId - Document ID de la experiencia
+ * @param {string} targetLocale - Locale objetivo (es, en, it, de)
+ * @returns {Promise<string|null>} Slug en el locale objetivo o null si no existe
+ */
+export const getExperienceSlugByDocumentId = async (documentId, targetLocale) => {
+  try {
+    const params = {
+      'filters[documentId][$eq]': documentId,
+      locale: targetLocale,
+      fields: ['slug'],
+    };
+    const response = await strapiClient.get('/experiences', { params });
+    const data = response.data.data;
+    if (data && data.length > 0) {
+      return data[0].slug;
+    }
+    return null;
+  } catch (error) {
+    console.warn('[Strapi] Error fetching experience slug by documentId:', error.message);
+    return null;
+  }
+};
+
+/**
  * Obtiene las experiencias para mostrar en el footer
  * Solo retorna experiencias con showInFooter=true, ordenadas por footerDisplayOrder
  */
@@ -395,6 +421,32 @@ export const getPackageBySlug = async (slug) => {
 
   const packages = await fetchFromStrapi('/packages', params, transformPackages);
   return packages[0] || null;
+};
+
+/**
+ * Obtiene el slug de un paquete por documentId en un locale específico
+ * Usado para redirección inteligente al cambiar idioma
+ * @param {string} documentId - Document ID del paquete
+ * @param {string} targetLocale - Locale objetivo (es, en, it, de)
+ * @returns {Promise<string|null>} Slug en el locale objetivo o null si no existe
+ */
+export const getPackageSlugByDocumentId = async (documentId, targetLocale) => {
+  try {
+    const params = {
+      'filters[documentId][$eq]': documentId,
+      locale: targetLocale,
+      fields: ['slug'],
+    };
+    const response = await strapiClient.get('/packages', { params });
+    const data = response.data.data;
+    if (data && data.length > 0) {
+      return data[0].slug;
+    }
+    return null;
+  } catch (error) {
+    console.warn('[Strapi] Error fetching package slug by documentId:', error.message);
+    return null;
+  }
 };
 
 /**
@@ -529,6 +581,32 @@ export const getFooterLegalPages = async () => {
   return fetchFromStrapi('/legal-pages', params, transformLegalPage);
 };
 
+/**
+ * Obtiene el slug de una página legal por documentId en un locale específico
+ * Usado para redirección inteligente al cambiar idioma
+ * @param {string} documentId - Document ID de la página legal
+ * @param {string} targetLocale - Locale objetivo (es, en, it, de)
+ * @returns {Promise<string|null>} Slug en el locale objetivo o null si no existe
+ */
+export const getLegalPageSlugByDocumentId = async (documentId, targetLocale) => {
+  try {
+    const params = {
+      'filters[documentId][$eq]': documentId,
+      locale: targetLocale,
+      fields: ['slug'],
+    };
+    const response = await strapiClient.get('/legal-pages', { params });
+    const data = response.data.data;
+    if (data && data.length > 0) {
+      return data[0].slug;
+    }
+    return null;
+  } catch (error) {
+    console.warn('[Strapi] Error fetching legal page slug by documentId:', error.message);
+    return null;
+  }
+};
+
 // ═══════════════════════════════════════════════════════════════
 // TRANSFORMADORES DE DATOS
 // Convierte formato Strapi → formato Frontend
@@ -579,11 +657,14 @@ const transformPackages = (data) => {
       // Pasar objeto media completo - getStrapiMediaUrl maneja ambos formatos
       image: getStrapiMediaUrl(item.thumbnail),
       heroImage: getStrapiMediaUrl(item.heroImage),
-      gallery: item.gallery?.map(g => ({
-        url: getStrapiMediaUrl(g.image),
-        caption: g.caption || '',
-        alt: g.caption || item.title,
-      })) || [],
+      // Galería: filtrar solo items con imagen válida
+      gallery: (item.gallery || [])
+        .map(g => ({
+          url: getStrapiMediaUrl(g.image),
+          caption: g.caption || '',
+          alt: g.caption || item.title,
+        }))
+        .filter(g => g.url), // Solo incluir fotos con URL válida
       tags: item.tags?.map(t => t.name) || [],
       season: item.season === 'summer' ? 'verano' : 'invierno',
       description: item.description,
@@ -806,19 +887,21 @@ export default {
   // Experiences
   getExperiences,
   getExperienceBySlug,
+  getExperienceSlugByDocumentId,
   getFooterExperiences,
   // Packages
   getPackages,
   getPackageBySlug,
+  getPackageSlugByDocumentId,
   getPackagesByExperience,
   getFeaturedPackages,
   // Content
   getHeroSection,
   getAboutPage,
   getSiteSettings,
-  getSiteSettings,
   getSiteTexts,
   // Legal
   getLegalPageBySlug,
+  getLegalPageSlugByDocumentId,
   getFooterLegalPages,
 };

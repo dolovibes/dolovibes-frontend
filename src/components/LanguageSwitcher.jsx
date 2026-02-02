@@ -1,9 +1,13 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Globe, ChevronDown } from 'lucide-react';
+import { convertPathToLocale, SUPPORTED_LOCALES } from '../utils/localizedRoutes';
 
 const LanguageSwitcher = ({ isDarkMode = false, compact = false }) => {
     const { i18n } = useTranslation();
+    const navigate = useNavigate();
+    const location = useLocation();
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
     const buttonRef = useRef(null);
@@ -81,13 +85,21 @@ const LanguageSwitcher = ({ isDarkMode = false, compact = false }) => {
     }, [isOpen, i18n, languages]);
 
     const handleLanguageChange = (langCode) => {
+        // Cambiar idioma en i18n
         i18n.changeLanguage(langCode);
+        
         // Guardar preferencia en localStorage
         try {
             localStorage.setItem('preferredLanguage', langCode);
         } catch (e) {
             // localStorage no disponible
         }
+        
+        // Navegar a la misma página pero en el nuevo idioma
+        const currentPath = location.pathname;
+        const newPath = convertPathToLocale(currentPath, langCode);
+        navigate(newPath, { replace: true });
+        
         setIsOpen(false);
         buttonRef.current?.focus();
     };

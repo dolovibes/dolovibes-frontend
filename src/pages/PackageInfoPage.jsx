@@ -17,22 +17,32 @@ import {
     Info,
     Camera
 } from 'lucide-react';
-import { usePackage, useSiteTexts } from '../services/hooks';
+import { usePackage, useSiteTexts, useLanguageAwareNavigation } from '../services/hooks';
 import { useCurrencyContext } from '../utils/currency';
 import PackageQuoteModal from '../components/PackageQuoteModal';
 import PhotoGalleryModal from '../components/PhotoGalleryModal';
 import HikingLevelModal from '../components/HikingLevelModal';
 import Footer from '../components/Footer';
+import Hreflang from '../components/Hreflang';
+import { useAlternateUrls } from '../hooks/useAlternateUrls';
 
 const PackageInfoPage = ({ onOpenQuote }) => {
-    const { t: tCommon } = useTranslation('common');
+    const { t: tCommon, i18n } = useTranslation('common');
     const { t: tPackage } = useTranslation('packageInfo');
     const { slug } = useParams();
     const navigate = useNavigate();
+    const currentLocale = i18n.language || 'es';
 
     // Usar hook de React Query para datos dinámicos
     const { data: pkg, isLoading, error } = usePackage(slug);
     const { data: siteTexts } = useSiteTexts();
+
+    // Hook para redirección inteligente al cambiar idioma
+    useLanguageAwareNavigation({
+        documentId: pkg?.documentId,
+        currentSlug: slug,
+        resourceType: 'package',
+    });
 
     // Textos con fallback: Strapi > i18n
     const loadingText = siteTexts?.loadingPackage || tCommon('loading.package');
@@ -117,7 +127,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                 <div className="text-center">
                     <h1 className="text-2xl font-bold text-grafito mb-4">{tPackage('packageNotFound')}</h1>
                     <button
-                        onClick={() => navigate('/')}
+                        onClick={() => navigate(`/${currentLocale}`)}
                         className="bg-pizarra text-white px-6 py-3 rounded-full font-semibold hover:bg-pizarra transition-colors"
                     >
                         {tCommon('buttons.backToHome')}
@@ -143,8 +153,12 @@ const PackageInfoPage = ({ onOpenQuote }) => {
 
     const currentItinerary = pkg.itinerary?.[currentDay];
 
+    // Hreflang para SEO - URLs alternativas por idioma
+    const { alternateUrls } = useAlternateUrls('package', pkg?.documentId, slug);
+
     return (
         <div className="min-h-screen bg-white overflow-x-hidden">
+            <Hreflang alternateUrls={alternateUrls} />
             {/* Hero - Pantalla completa */}
             <div className="relative min-h-screen flex items-end">
                 <img
