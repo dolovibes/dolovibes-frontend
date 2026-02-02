@@ -15,7 +15,7 @@ const NavbarNew = ({ onOpenQuote }) => {
     const dropdownRef = useRef(null);
     const navigate = useNavigate();
     const location = useLocation();
-    
+
     // Obtener locale actual de la URL o i18n
     const currentLocale = getLocaleFromPath(location.pathname) || i18n.language || 'es';
 
@@ -47,10 +47,11 @@ const NavbarNew = ({ onOpenQuote }) => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // Cerrar dropdown al hacer click fuera
+    // Cerrar dropdown al hacer click fuera (solo desktop)
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            // Solo ejecutar en desktop
+            if (window.innerWidth >= 768 && dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setIsExperiencesOpen(false);
             }
         };
@@ -212,9 +213,8 @@ const NavbarNew = ({ onOpenQuote }) => {
                         <div className="border-b border-niebla pb-3 mb-3">
                             <button
                                 onClick={(e) => {
-                                    e.preventDefault();
                                     e.stopPropagation();
-                                    setIsExperiencesOpen(!isExperiencesOpen);
+                                    setIsExperiencesOpen(prev => !prev);
                                 }}
                                 className="w-full flex items-center justify-between py-3 text-grafito font-medium active:bg-nieve/50 rounded-lg px-2 -mx-2 touch-manipulation"
                                 type="button"
@@ -222,18 +222,18 @@ const NavbarNew = ({ onOpenQuote }) => {
                                 aria-controls="mobile-experiences-menu"
                             >
                                 <span>{t('navbar.experiences')}</span>
-                                <ChevronDown 
+                                <ChevronDown
                                     className={`w-5 h-5 transition-transform duration-300 ${isExperiencesOpen ? 'rotate-180' : ''}`}
                                     aria-hidden="true"
                                 />
                             </button>
 
-                            <div 
+                            <div
                                 id="mobile-experiences-menu"
                                 className={`overflow-hidden transition-all duration-300 ${isExperiencesOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
-                                }`}
+                                    }`}
                             >
-                                <div className="py-2">
+                                <div className={`transition-all duration-300 ${isExperiencesOpen ? 'py-2' : 'py-0'}`}>
                                     {/* Verano */}
                                     <div className="mb-4">
                                         <p className="text-xs font-bold text-niebla uppercase tracking-wider px-3 py-2">
