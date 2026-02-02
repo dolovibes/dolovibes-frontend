@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useAboutPage } from '../services/hooks';
 import { BlocksRenderer } from '../utils/BlocksRenderer';
 import Footer from '../components/Footer';
+import OptimizedImage from '../components/OptimizedImage';
 
 const AboutUsPage = ({ onOpenQuote }) => {
     const { t } = useTranslation('about');
@@ -106,14 +107,15 @@ const AboutUsPage = ({ onOpenQuote }) => {
                     {/* Columna derecha: Foto grande */}
                     <div className="lg:sticky lg:top-28">
                         <div className="relative">
-                            <img
+                            <OptimizedImage
                                 src={mainPhoto}
                                 alt={photoAlt}
-                                loading="lazy"
-                                width="700"
-                                height="700"
+                                priority={false}
+                                width={700}
+                                height={700}
                                 className="w-full h-auto rounded-2xl shadow-2xl object-cover"
-                                style={{ minHeight: '600px', maxHeight: '700px', aspectRatio: '1/1' }}
+                                objectFit="cover"
+                                aspectRatio="1/1"
                             />
                         </div>
                     </div>

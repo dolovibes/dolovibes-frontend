@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
+import { optimizeCloudinaryUrl, generateCloudinarySrcSet, isCloudinaryUrl } from '../utils/cloudinaryOptimizer';
 
 /**
  * OptimizedImage - Componente de imagen optimizada para rendimiento
- * 
+ *
  * Características:
  * - Previene CLS con dimensiones explícitas
  * - Lazy loading por defecto (excepto imágenes críticas)
  * - Placeholder mientras carga
  * - Soporte para múltiples formatos (WebP fallback)
+ * - Optimización automática de Cloudinary (responsive, WebP, DPR)
  */
 const OptimizedImage = ({
     src,
@@ -18,6 +20,7 @@ const OptimizedImage = ({
     priority = false, // true para imágenes above-the-fold
     objectFit = 'cover',
     aspectRatio,
+    cloudinaryPreset = null, // 'hero', 'card', 'thumbnail', 'gallery', 'mobile'
     ...props
 }) => {
     const [isLoaded, setIsLoaded] = useState(false);
@@ -26,6 +29,26 @@ const OptimizedImage = ({
     // Determinar si la imagen es prioritaria (LCP candidate)
     const loading = priority ? 'eager' : 'lazy';
     const fetchpriority = priority ? 'high' : 'auto';
+
+    // Optimizar URL de Cloudinary
+    const optimizedSrc = isCloudinaryUrl(src)
+        ? optimizeCloudinaryUrl(src, {
+            width: width || 'auto',
+            height: height || null,
+            quality: priority ? 'auto:best' : 'auto:good',
+            crop: objectFit === 'cover' ? 'fill' : 'scale',
+            gravity: 'auto',
+        })
+        : src;
+
+    // Generar srcset responsive para Cloudinary
+    const srcSet = isCloudinaryUrl(src)
+        ? generateCloudinarySrcSet(src, [320, 640, 768, 1024, 1280, 1536, 1920], {
+            quality: priority ? 'auto:best' : 'auto:good',
+            crop: objectFit === 'cover' ? 'fill' : 'scale',
+            gravity: 'auto',
+        })
+        : '';
 
     // Construir el style object
     const imageStyle = {
@@ -53,13 +76,15 @@ const OptimizedImage = ({
 
             {/* Imagen principal */}
             <img
-                src={src}
+                src={optimizedSrc}
+                srcSet={srcSet || undefined}
+                sizes={srcSet ? "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" : undefined}
                 alt={alt}
                 width={width}
                 height={height}
                 loading={loading}
                 decoding="async"
-                fetchpriority={fetchpriority}
+                fetchPriority={fetchpriority}
                 onLoad={() => setIsLoaded(true)}
                 onError={() => setHasError(true)}
                 className={`${className} transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}

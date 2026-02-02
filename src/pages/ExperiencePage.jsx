@@ -5,6 +5,7 @@ import { BlocksRenderer } from '../utils/BlocksRenderer';
 import { useExperience, usePackagesByExperience, useSiteTexts } from '../services/hooks';
 import Footer from '../components/Footer';
 import PackageCard from '../components/PackageCard';
+import OptimizedImage from '../components/OptimizedImage';
 
 const ExperiencePage = ({ onOpenQuote }) => {
     const { t: tCommon } = useTranslation('common');
@@ -57,14 +58,14 @@ const ExperiencePage = ({ onOpenQuote }) => {
         <div className="min-h-screen bg-white">
             {/* Hero - Pantalla completa como página de inicio */}
             <div className="relative min-h-screen flex items-end">
-                <img
+                <OptimizedImage
                     src={experience.heroImage || experience.image}
                     alt={experience.title}
-                    fetchpriority="high"
-                    loading="eager"
-                    width="1920"
-                    height="1080"
+                    priority={true}
+                    width={1920}
+                    height={1080}
                     className="absolute inset-0 w-full h-full object-cover"
+                    objectFit="cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-pizarra via-pizarra/40 to-transparent"></div>
 
