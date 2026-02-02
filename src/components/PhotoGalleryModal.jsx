@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import OptimizedImage from './OptimizedImage';
 
 const PhotoGalleryModal = ({ isOpen, onClose, photos, packageTitle, packageSlug }) => {
     const { t } = useTranslation('packageInfo');
@@ -94,12 +93,11 @@ const PhotoGalleryModal = ({ isOpen, onClose, photos, packageTitle, packageSlug 
 
             {/* Photo container */}
             <div className="relative z-10 w-full h-full flex items-center justify-center p-4 md:p-16">
-                <OptimizedImage
+                <img
                     src={currentPhoto.url || currentPhoto}
                     alt={currentPhoto.alt || `${packageTitle} - Foto ${currentIndex + 1}`}
-                    priority={true}
+                    loading="eager"
                     className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
-                    objectFit="contain"
                 />
             </div>
 

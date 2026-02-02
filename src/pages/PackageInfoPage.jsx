@@ -23,7 +23,6 @@ import PackageQuoteModal from '../components/PackageQuoteModal';
 import PhotoGalleryModal from '../components/PhotoGalleryModal';
 import HikingLevelModal from '../components/HikingLevelModal';
 import Footer from '../components/Footer';
-import OptimizedImage from '../components/OptimizedImage';
 
 const PackageInfoPage = ({ onOpenQuote }) => {
     const { t: tCommon } = useTranslation('common');
@@ -148,14 +147,14 @@ const PackageInfoPage = ({ onOpenQuote }) => {
         <div className="min-h-screen bg-white overflow-x-hidden">
             {/* Hero - Pantalla completa */}
             <div className="relative min-h-screen flex items-end">
-                <OptimizedImage
+                <img
                     src={pkg.heroImage || pkg.image}
                     alt={pkg.title}
-                    priority={true}
-                    width={1920}
-                    height={1080}
+                    fetchPriority="high"
+                    loading="eager"
+                    width="1920"
+                    height="1080"
                     className="absolute inset-0 w-full h-full object-cover"
-                    objectFit="cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-pizarra via-pizarra/40 to-transparent"></div>
 
@@ -222,14 +221,13 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                 <div className="flex flex-col md:flex-row h-auto md:h-[450px]">
                     {/* Imagen izquierda */}
                     <div className="w-full md:w-1/2 h-[250px] md:h-full relative overflow-hidden">
-                        <OptimizedImage
+                        <img
                             src={pkg.itinerary[currentDay].image || pkg.heroImage || pkg.image}
                             alt={tPackage('day', { number: pkg.itinerary[currentDay].day })}
-                            priority={false}
-                            width={800}
-                            height={450}
+                            loading="lazy"
+                            width="800"
+                            height="450"
                             className="w-full h-full object-cover transition-all duration-500"
-                            objectFit="cover"
                         />
                     </div>
 
@@ -553,14 +551,13 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                         {/* Columna derecha - Imagen con Book Now */}
                         <div className="mt-8 lg:mt-0 lg:sticky lg:top-28 w-full overflow-hidden">
                             <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl">
-                                <OptimizedImage
+                                <img
                                     src={pkg.heroImage || pkg.image}
                                     alt={pkg.title}
-                                    priority={false}
-                                    width={600}
-                                    height={500}
+                                    loading="lazy"
+                                    width="600"
+                                    height="500"
                                     className="w-full h-[300px] sm:h-[400px] md:h-[500px] object-cover"
-                                    objectFit="cover"
                                 />
                                 {/* Overlay gradient */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-pizarra/80 via-transparent to-transparent"></div>
@@ -606,12 +603,11 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                         </div>
                         <div className="p-6">
                             {pkg.mapImage ? (
-                                <OptimizedImage
+                                <img
                                     src={pkg.mapImage}
                                     alt={`Mapa de ${pkg.title}`}
-                                    priority={false}
+                                    loading="lazy"
                                     className="w-full h-auto max-h-[70vh] object-contain rounded-xl"
-                                    objectFit="contain"
                                 />
                             ) : (
                                 <div className="bg-nieve rounded-xl h-80 flex items-center justify-center">

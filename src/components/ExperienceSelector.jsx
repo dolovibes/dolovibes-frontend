@@ -5,7 +5,6 @@ import { ChevronDown } from 'lucide-react';
 import { useExperiences, usePackagesByExperience, useHeroSection } from '../services/hooks';
 import { prefetchExperience } from '../utils/dataPrefetch';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
-import OptimizedImage from './OptimizedImage';
 
 const ExperienceSelector = ({ onExperienceSelect }) => {
     const { i18n, t } = useTranslation('home');
@@ -135,14 +134,13 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                                             }`}
                                     >
                                         <div className="flex items-center gap-4">
-                                            <OptimizedImage
+                                            <img
                                                 src={experience.image}
                                                 alt={experience.title}
-                                                priority={false}
-                                                width={56}
-                                                height={40}
+                                                loading="lazy"
+                                                width="56"
+                                                height="40"
                                                 className="w-14 h-10 object-cover rounded-lg"
-                                                objectFit="cover"
                                             />
                                             <h3 className="font-bold text-grafito group-hover:text-pizarra transition-colors">
                                                 {experience.title}

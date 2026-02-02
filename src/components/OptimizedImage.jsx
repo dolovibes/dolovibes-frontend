@@ -4,10 +4,12 @@ import { useState } from 'react';
  * OptimizedImage - Componente de imagen optimizada para rendimiento
  *
  * Características:
- * - Previene CLS con dimensiones explícitas
+ * - Previene CLS con aspectRatio explícito
  * - Lazy loading por defecto (excepto imágenes críticas)
  * - Placeholder mientras carga
- * - Soporte para múltiples formatos (WebP fallback)
+ *
+ * NOTA: Solo usar para imágenes con aspectRatio definido (cards).
+ * Para hero images que usan absolute fill, usar <img> directamente.
  */
 const OptimizedImage = ({
     src,
@@ -15,7 +17,7 @@ const OptimizedImage = ({
     width,
     height,
     className = '',
-    priority = false, // true para imágenes above-the-fold
+    priority = false,
     objectFit = 'cover',
     aspectRatio,
     ...props
@@ -23,17 +25,14 @@ const OptimizedImage = ({
     const [isLoaded, setIsLoaded] = useState(false);
     const [hasError, setHasError] = useState(false);
 
-    // Determinar si la imagen es prioritaria (LCP candidate)
     const loading = priority ? 'eager' : 'lazy';
     const fetchpriority = priority ? 'high' : 'auto';
 
-    // Construir el style object
     const imageStyle = {
         objectFit,
         ...(aspectRatio && { aspectRatio }),
     };
 
-    // Placeholder mientras carga
     const placeholderStyle = {
         backgroundColor: '#A3B5B6',
         transition: 'opacity 0.3s ease-in-out',
