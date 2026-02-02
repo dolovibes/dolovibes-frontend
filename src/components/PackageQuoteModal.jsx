@@ -208,7 +208,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.nombre}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
                                             placeholder={siteTexts.packageQuoteModal?.placeholderFirstName || 'Tu nombre'}
                                         />
                                     </div>
@@ -222,7 +222,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.apellido}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
                                             placeholder={siteTexts.packageQuoteModal?.placeholderLastName || 'Tu apellido'}
                                         />
                                     </div>
@@ -240,7 +240,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.ciudad}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
                                             placeholder={siteTexts.packageQuoteModal?.placeholderCity || 'Ciudad'}
                                         />
                                     </div>
@@ -254,7 +254,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.estado}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
                                             placeholder={siteTexts.packageQuoteModal?.placeholderState || 'Estado'}
                                         />
                                     </div>
@@ -268,7 +268,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.pais}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
                                             placeholder={siteTexts.packageQuoteModal?.placeholderCountry || 'País'}
                                         />
                                     </div>
@@ -286,7 +286,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.email}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
                                             placeholder={siteTexts.packageQuoteModal?.placeholderEmail || 'tu@email.com'}
                                         />
                                     </div>
@@ -300,7 +300,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.telefono}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
                                             placeholder={siteTexts.packageQuoteModal?.placeholderPhone || '+52 123 456 7890'}
                                         />
                                     </div>
@@ -315,7 +315,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                         name="contacto"
                                         value={formData.contacto}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all bg-white text-sm"
+                                        className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all bg-white text-sm invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
                                     >
                                         <option value="whatsapp">{siteTexts.contactMethod?.whatsapp || 'WhatsApp'}</option>
                                         <option value="telefono">{siteTexts.contactMethod?.phone || 'Teléfono'}</option>
@@ -335,7 +335,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.mesViaje}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
                                         />
                                     </div>
                                     <div>
@@ -346,7 +346,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             name="viajeros"
                                             value={formData.viajeros}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all bg-white text-sm"
+                                            className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all bg-white text-sm invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
                                         >
                                             {[1, 2, 3, 4, 5, 6, 7, 8, '9+'].map(n => (
                                                 <option key={n} value={n}>{n}</option>
@@ -396,7 +396,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                         value={formData.serviciosAdicionales}
                                         onChange={handleChange}
                                         rows={3}
-                                        className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all resize-none text-sm"
+                                        className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all resize-none text-sm invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
                                         placeholder={siteTexts.packageQuoteModal?.additionalServicesPlaceholder || 'Carpool, cena especial, pick up en aeropuerto, necesidades dietéticas, etc.'}
                                     />
                                 </div>

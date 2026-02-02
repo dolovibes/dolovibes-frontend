@@ -165,7 +165,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                 <div>
                                     <label className="block text-sm font-medium text-pizarra mb-1">{siteTexts.quoteModal.travelersLabel} *</label>
                                     <select
-                                        className="w-full h-12 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
+                                        className="w-full h-12 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
                                         value={formData.guests}
                                         onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
                                         required
@@ -181,7 +181,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                     {siteTexts.contactMethod.label} *
                                 </label>
                                 <select
-                                    className="w-full border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
+                                    className="w-full border border-niebla rounded-xl p-3 bg-white focus:ring-alpino focus:border-alpino invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
                                     value={formData.contacto}
                                     onChange={(e) => setFormData({ ...formData, contacto: e.target.value })}
                                     required
@@ -234,7 +234,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                     placeholder={siteTexts.quoteModal.namePlaceholder}
                                     value={formData.name}
                                     required
-                                    className="w-full pl-10 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
+                                    className="w-full pl-10 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 />
                             </div>
@@ -247,7 +247,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                     placeholder={siteTexts.quoteModal.emailPlaceholder}
                                     value={formData.email}
                                     required
-                                    className="w-full pl-10 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
+                                    className="w-full pl-10 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 />
                             </div>
@@ -260,7 +260,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                     placeholder={siteTexts.quoteModal.phonePlaceholder}
                                     value={formData.phone}
                                     required
-                                    className="w-full pl-10 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
+                                    className="w-full pl-10 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
                                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                 />
                             </div>
