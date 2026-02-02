@@ -134,14 +134,13 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                             {/* Experiencia de interés */}
                             <div>
                                 <label className="block text-sm font-medium text-pizarra mb-1">
-                                    {siteTexts.quoteModal.interestLabel} *
+                                    {siteTexts.quoteModal.interestLabel}
                                 </label>
                                 <select
                                     className="w-full border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                     value={formData.interest}
                                     onChange={(e) => setFormData({ ...formData, interest: e.target.value })}
                                     disabled={experiencesLoading}
-                                    required
                                 >
                                     <option value="Personalizado">{siteTexts.quoteModal.customPlan}</option>
                                     {experiences.map(exp => <option key={exp.id} value={exp.title}>{exp.title}</option>)}
@@ -163,12 +162,11 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-pizarra mb-1">{siteTexts.quoteModal.travelersLabel} *</label>
+                                    <label className="block text-sm font-medium text-pizarra mb-1">{siteTexts.quoteModal.travelersLabel}</label>
                                     <select
-                                        className="w-full h-12 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
+                                        className="w-full h-12 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                         value={formData.guests}
                                         onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
-                                        required
                                     >
                                         {[1, 2, 3, 4, 5, 6, 7, 8, "8+"].map(n => <option key={n} value={n}>{n} {siteTexts.labels.persons}</option>)}
                                     </select>
@@ -178,13 +176,12 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                             {/* ¿Cómo te gustaría ser contactado? - EN PASO 1 */}
                             <div>
                                 <label className="block text-sm font-medium text-pizarra mb-1">
-                                    {siteTexts.contactMethod.label} *
+                                    {siteTexts.contactMethod.label}
                                 </label>
                                 <select
-                                    className="w-full border border-niebla rounded-xl p-3 bg-white focus:ring-alpino focus:border-alpino invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
+                                    className="w-full border border-niebla rounded-xl p-3 bg-white focus:ring-alpino focus:border-alpino"
                                     value={formData.contacto}
                                     onChange={(e) => setFormData({ ...formData, contacto: e.target.value })}
-                                    required
                                 >
                                     <option value="whatsapp">{siteTexts.contactMethod.whatsapp}</option>
                                     <option value="telefono">{siteTexts.contactMethod.phone}</option>
@@ -259,8 +256,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                     type="tel"
                                     placeholder={siteTexts.quoteModal.phonePlaceholder}
                                     value={formData.phone}
-                                    required
-                                    className="w-full pl-10 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
+                                    className="w-full pl-10 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                 />
                             </div>
