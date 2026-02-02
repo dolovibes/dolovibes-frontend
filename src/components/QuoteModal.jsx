@@ -28,8 +28,35 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
             setStep(1);
             setError(null);
             setIsSubmitting(false);
+            
+            // Bloquear scroll del body
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Restaurar scroll del body
+            document.body.style.overflow = 'unset';
         }
+        
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
     }, [isOpen, initialInterest]);
+    
+    // Cerrar con tecla ESC
+    React.useEffect(() => {
+        const handleEscape = (e) => {
+            if (e.key === 'Escape' && isOpen) {
+                onClose();
+            }
+        };
+        
+        if (isOpen) {
+            document.addEventListener('keydown', handleEscape);
+        }
+        
+        return () => {
+            document.removeEventListener('keydown', handleEscape);
+        };
+    }, [isOpen, onClose]);
 
     if (!isOpen) return null;
 
@@ -77,14 +104,23 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
     };
 
     return (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-2 sm:p-4">
-            <div className="absolute inset-0 bg-pizarra/70 backdrop-blur-sm" onClick={onClose}></div>
+        <div 
+            className="fixed inset-0 z-[60] flex items-center justify-center p-2 sm:p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="quote-modal-title"
+        >
+            <div 
+                className="absolute inset-0 bg-pizarra/70 backdrop-blur-sm" 
+                onClick={onClose}
+                aria-hidden="true"
+            ></div>
             <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] relative z-10 overflow-hidden animate-fade-in-up">
 
                 {/* Header con diseño oscuro */}
                 <div className="bg-gradient-to-r from-pizarra to-pizarra p-4 sm:p-6 text-white flex justify-between items-center">
                     <div>
-                        <h3 className="text-lg sm:text-xl font-bold">{siteTexts.quoteModal.title}</h3>
+                        <h3 id="quote-modal-title" className="text-lg sm:text-xl font-bold">{siteTexts.quoteModal.title}</h3>
                         <p className="text-nieve text-xs sm:text-sm">{siteTexts.quoteModal.step} {step < 3 ? step : 2} {siteTexts.quoteModal.of} 2</p>
                     </div>
                     <button onClick={onClose} className="hover:bg-white/10 p-2 rounded-full transition-colors"><X size={24} /></button>

@@ -28,7 +28,36 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
         if (isOpen && packageTitle) {
             setFormData(prev => ({ ...prev, packageTitle }));
         }
+        
+        if (isOpen) {
+            // Bloquear scroll del body
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Restaurar scroll del body
+            document.body.style.overflow = 'unset';
+        }
+        
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
     }, [isOpen, packageTitle]);
+    
+    // Cerrar con tecla ESC
+    React.useEffect(() => {
+        const handleEscape = (e) => {
+            if (e.key === 'Escape' && isOpen && !isSubmitting) {
+                handleClose();
+            }
+        };
+        
+        if (isOpen) {
+            document.addEventListener('keydown', handleEscape);
+        }
+        
+        return () => {
+            document.removeEventListener('keydown', handleEscape);
+        };
+    }, [isOpen, isSubmitting]);
 
     if (!isOpen) return null;
 
@@ -94,10 +123,16 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
     };
 
     return (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <div 
+            className="fixed inset-0 z-[60] flex items-center justify-center p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="package-quote-modal-title"
+        >
             {/* Backdrop */}
             <div
                 className="absolute inset-0 bg-pizarra/70 backdrop-blur-sm"
+                aria-hidden="true"
                 onClick={handleClose}
             ></div>
 
@@ -127,7 +162,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                     <>
                         {/* Header */}
                         <div className="bg-gradient-to-r from-pizarra to-pizarra p-6 md:p-8 text-center">
-                            <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
+                            <h3 id="package-quote-modal-title" className="text-xl md:text-2xl font-bold text-white mb-2">
                                 {packageTitle}
                             </h3>
                             <p className="text-white text-base font-medium mb-1">
