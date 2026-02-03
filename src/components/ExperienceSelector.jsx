@@ -22,7 +22,7 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
     const seasonMap = { verano: ['verano', 'summer'], invierno: ['invierno', 'winter'] };
 
     // Obtener experiencias de Strapi
-    const { data: allExperiences = [], isLoading } = useExperiences();
+    const { data: allExperiences = [] } = useExperiences();
 
     // Filtrar por temporada seleccionada (soporta ambos formatos)
     const filteredExperiences = useMemo(() => {

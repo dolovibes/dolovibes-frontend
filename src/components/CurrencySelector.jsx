@@ -91,16 +91,18 @@ const CurrencySelector = ({
     const currentIndex = currencyList.findIndex(c => c.code === currency);
 
     switch (event.key) {
-      case 'ArrowDown':
+      case 'ArrowDown': {
         event.preventDefault();
         const nextIndex = (currentIndex + 1) % currencyList.length;
         setCurrency(currencyList[nextIndex].code);
         break;
-      case 'ArrowUp':
+      }
+      case 'ArrowUp': {
         event.preventDefault();
         const prevIndex = (currentIndex - 1 + currencyList.length) % currencyList.length;
         setCurrency(currencyList[prevIndex].code);
         break;
+      }
       case 'Home':
         event.preventDefault();
         setCurrency(currencyList[0].code);

@@ -45,7 +45,7 @@ const LocaleSync = ({ children }) => {
         // Guardar en localStorage
         try {
           localStorage.setItem('preferredLanguage', lang);
-        } catch (e) {
+        } catch (_e) {
           // localStorage no disponible
         }
       }
@@ -76,7 +76,7 @@ const LocaleRedirect = () => {
     } else if (SUPPORTED_LOCALES.includes(i18n.language)) {
       targetLocale = i18n.language;
     }
-  } catch (e) {
+  } catch (_e) {
     // localStorage no disponible
   }
   
