@@ -237,7 +237,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                     <div className="w-full md:w-1/2 h-[250px] md:h-full relative overflow-hidden">
                         <img
                             src={pkg.itinerary[currentDay].image || pkg.heroImage || pkg.image}
-                            alt={tPackage('day', { number: pkg.itinerary[currentDay].day })}
+                            alt={`${siteTexts.packageInfo.day} ${pkg.itinerary[currentDay].day}`}
                             loading="lazy"
                             width="800"
                             height="450"
@@ -254,7 +254,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                     <span className="text-base font-bold text-white">{pkg.itinerary[currentDay].day}</span>
                                 </div>
                                 <span className="text-pizarra font-semibold text-sm">
-                                    {tPackage('dayOf', { current: pkg.itinerary[currentDay].day, total: pkg.itinerary.length })}
+                                    {pkg.itinerary[currentDay].day} {siteTexts.packageInfo.dayOf} {pkg.itinerary.length}
                                 </span>
                             </div>
 
@@ -334,7 +334,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                             {/* Precio destacado */}
                             <div className="mb-8">
                                 <p className="text-niebla text-sm uppercase tracking-wider mb-1">
-                                    {tPackage('pricePerPerson')}
+                                    {siteTexts.packageInfo.pricePerPerson}
                                 </p>
                                 <div className="flex items-baseline gap-3">
                                     {pkg.hasDiscount === true && pkg.originalPriceEUR && pkg.originalPriceEUR > pkg.priceEUR && (
@@ -359,7 +359,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 className="flex items-center gap-2 text-pizarra hover:text-pizarra/70 text-sm font-medium mb-8 group transition-colors"
                             >
                                 <span className="underline underline-offset-2 group-hover:no-underline">
-                                    {tPackage('notSureLevel')}
+                                    {siteTexts.packageInfo.notSureLevel}
                                 </span>
                                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </button>
