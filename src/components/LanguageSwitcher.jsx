@@ -122,8 +122,9 @@ const LanguageSwitcher = ({ isDarkMode = false, compact = false }) => {
             // antes de navegar a la nueva página
             await changeLanguageComplete(langCode);
             
-            // Pequeña pausa para asegurar que React Query invalida y actualiza
-            // Esto da tiempo a que el listener en main.jsx procese el cambio
+            // Breve pausa para asegurar que React Query procese la invalidación del cache
+            // El listener en main.jsx invalida queries cuando cambia el idioma, pero esto
+            // es asíncrono. Esta pausa mínima previene condiciones de carrera.
             await new Promise(resolve => setTimeout(resolve, 100));
             
             // Navegar a la misma página pero en el nuevo idioma
@@ -135,7 +136,9 @@ const LanguageSwitcher = ({ isDarkMode = false, compact = false }) => {
             buttonRef.current?.focus();
         } catch (error) {
             console.error('Error changing language:', error);
-            // En caso de error, intentar revertir el estado
+            // El estado de loading se resetea en el finally block
+            // No revertimos el idioma porque el cambio puede haber sido parcial
+            // y un reintento del usuario puede funcionar
         } finally {
             setIsChangingLanguage(false);
         }

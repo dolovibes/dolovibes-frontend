@@ -107,9 +107,9 @@ i18nInstance.init({
   // Configuración de carga
   load: 'languageOnly', // Solo cargar 'es', no 'es-MX'
 
-  // Precargar namespaces para evitar cargas parciales al cambiar idioma
-  // Esto asegura que todos los textos estén disponibles de inmediato
-  preload: false, // No precargar en el inicio (optimización de carga inicial)
+  // NO precargar todos los idiomas en el inicio - optimización de carga inicial
+  // Solo se carga el idioma activo. Otros idiomas se cargan cuando el usuario los selecciona
+  preload: false,
   
   // Configuración de desarrollo
   debug: import.meta.env.DEV && false,
