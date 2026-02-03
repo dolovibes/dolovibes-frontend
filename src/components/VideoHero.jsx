@@ -15,12 +15,19 @@ const VideoHero = ({ onExperienceSelect }) => {
     const videoRef = useRef(null);
     const containerRef = useRef(null);
 
-    // Videos del hero - SOLO si están configurados en Strapi
+    // Media del hero - SOLO si están configurados en Strapi
     // IMPORTANTE: Definir antes de los useEffects que lo usan
     const videoDesktop = heroData?.videoDesktop;
-    const videoMobile = heroData?.videoMobile;
-    const videoSrc = (isMobile && videoMobile) ? videoMobile : videoDesktop;
+    const imageMobile = heroData?.imageMobile;
+    const imageDesktop = heroData?.imageDesktop;
+
+    // En móvil: usar imagen estática (mejor rendimiento y consumo de datos)
+    // En desktop: usar video
+    const useMobileImage = isMobile && imageMobile;
+    const videoSrc = !useMobileImage ? videoDesktop : null;
+    const imageSrc = useMobileImage ? imageMobile : imageDesktop;
     const hasVideo = !!videoSrc;
+    const hasImage = !!imageSrc;
 
     // Detectar si es móvil
     useEffect(() => {
@@ -83,11 +90,24 @@ const VideoHero = ({ onExperienceSelect }) => {
         <div ref={containerRef} className="relative min-h-[100svh] flex items-center justify-center bg-pizarra">
             {/* Fondo sólido como LCP - se muestra inmediatamente */}
             <div className="absolute inset-0 z-0 bg-pizarra">
-                {/* Video de fondo - SOLO si empareja con Strapi */}
-                {hasVideo && shouldLoadVideo && (
+                {/* Imagen de fondo para móvil - mejor rendimiento y menor consumo de datos */}
+                {hasImage && useMobileImage && (
+                    <img
+                        src={imageSrc}
+                        alt=""
+                        loading="eager"
+                        fetchPriority="high"
+                        onLoad={() => setVideoLoaded(true)}
+                        onError={() => setVideoLoaded(true)}
+                        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+                    />
+                )}
+
+                {/* Video de fondo para desktop - SOLO si no estamos en móvil con imagen */}
+                {hasVideo && shouldLoadVideo && !useMobileImage && (
                     <video
                         ref={videoRef}
-                        key={isMobile ? 'mobile' : 'desktop'}
+                        key="desktop"
                         autoPlay
                         loop
                         muted
@@ -99,7 +119,7 @@ const VideoHero = ({ onExperienceSelect }) => {
                         onPlaying={() => setVideoLoaded(true)}
                         onError={(e) => {
                             console.error("[VideoHero] Video loading error:", e);
-                            setVideoLoaded(true); // Mostrar aunque falle para que no oculte el fallback si lo hubiera
+                            setVideoLoaded(true);
                         }}
                         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
                     >

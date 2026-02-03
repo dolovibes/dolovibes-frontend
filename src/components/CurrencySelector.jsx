@@ -1,6 +1,6 @@
 /**
  * Selector de Moneda
- * 
+ *
  * Componente dropdown para seleccionar la moneda de visualización.
  * Compatible con navegadores antiguos y totalmente accesible (ARIA).
  */
@@ -8,6 +8,22 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { useCurrencyContext, SUPPORTED_CURRENCIES } from '../utils/currency';
+
+/**
+ * Componente de bandera usando imágenes de flagcdn.com
+ * Funciona en todos los navegadores (Windows Chrome no soporta emojis de banderas)
+ */
+const FlagIcon = ({ countryCode, className = "" }) => (
+    <img
+        src={`https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`}
+        srcSet={`https://flagcdn.com/w80/${countryCode.toLowerCase()}.png 2x`}
+        width="20"
+        height="15"
+        alt=""
+        className={`inline-block rounded-sm ${className}`}
+        loading="eager"
+    />
+);
 
 const CurrencySelector = ({
   isDarkMode = false,
@@ -167,14 +183,11 @@ const CurrencySelector = ({
         aria-expanded={isOpen}
         aria-label={siteTexts.currency.currentLabel.replace(/\{\{?currency\}\}?/g, currentCurrency.name)}
       >
-        {showFlag && (
-          <span
-            className="text-lg leading-none"
-            role="img"
+        {showFlag && currentCurrency.countryCode && (
+          <FlagIcon
+            countryCode={currentCurrency.countryCode}
             aria-hidden="true"
-          >
-            {currentCurrency.flag}
-          </span>
+          />
         )}
 
         <span className={compact && !showLabel ? 'font-medium' : 'font-medium'}>
@@ -227,13 +240,12 @@ const CurrencySelector = ({
                   role="option"
                   aria-selected={isActive}
                 >
-                  <span
-                    className="text-xl leading-none"
-                    role="img"
-                    aria-hidden="true"
-                  >
-                    {curr.flag}
-                  </span>
+                  {curr.countryCode && (
+                    <FlagIcon
+                      countryCode={curr.countryCode}
+                      aria-hidden="true"
+                    />
+                  )}
 
                   <div className="flex flex-col">
                     <span className="font-medium">{curr.code}</span>

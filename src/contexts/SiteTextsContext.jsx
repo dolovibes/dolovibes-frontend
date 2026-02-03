@@ -56,6 +56,7 @@ export const SiteTextsProvider = ({ children }) => {
         // Navegación
         navbar: {
             experiences: getText('navbarExperiences', 'navbar.experiences'),
+            ourExperiences: getText('navbarOurExperiences', 'navbar.ourExperiences'),
             aboutUs: getText('navbarAboutUs', 'navbar.aboutUs'),
             quote: getText('navbarQuote', 'navbar.quote'),
         },
@@ -74,15 +75,15 @@ export const SiteTextsProvider = ({ children }) => {
         },
         // Etiquetas
         labels: {
-            perPerson: getText('labelsPerPerson', 'labels.perPerson'),
-            days: getText('labelsDays', 'labels.days'),
-            persons: getText('labelsPersons', 'labels.persons'),
+            perPerson: getText('labelsPerPerson', 'labels.perPerson', 'common'),
+            days: getText('labelsDays', 'labels.days', 'common'),
+            persons: getText('labelsPersons', 'labels.persons', 'common'),
         },
         // Campos genéricos
         optional: getText('fieldOptional', 'optional'),
         // Estados de carga
         loading: {
-            generic: getText('loadingGeneric', 'loading.generic'),
+            generic: getText('loadingGeneric', 'loading.generic', 'common'),
         },
         // Selector de experiencias (textos reutilizables)
         selector: {
@@ -94,6 +95,9 @@ export const SiteTextsProvider = ({ children }) => {
         footer: {
             allRightsReserved: getText('footerAllRightsReserved', 'footer.allRightsReserved'),
             noLegalPages: getText('footerNoLegalPages', 'footer.noLegalPages'),
+            experiences: getText('footerExperiences', 'footer.experiences'),
+            information: getText('footerInformation', 'footer.information'),
+            contact: getText('footerContact', 'footer.contact'),
         },
         // Booking / Packages
         booking: {
@@ -102,6 +106,16 @@ export const SiteTextsProvider = ({ children }) => {
         },
         packageInfo: {
             packageNotFound: getText('packageInfoPackageNotFound', 'packageNotFound', 'packageInfo'),
+            yourAdventure: getText('packageInfoYourAdventure', 'yourAdventure', 'packageInfo'),
+            day: getText('packageInfoDay', 'day', 'packageInfo'),
+            dayOf: getText('packageInfoDayOf', 'dayOf', 'packageInfo'),
+            pricePerPerson: getText('packageInfoPricePerPerson', 'pricePerPerson', 'packageInfo'),
+            notSureLevel: getText('packageInfoNotSureLevel', 'notSureLevel', 'packageInfo'),
+            additionalPhotos: getText('packageInfoAdditionalPhotos', 'additionalPhotos', 'packageInfo'),
+            howToGetHere: getText('packageInfoHowToGetHere', 'howToGetHere', 'packageInfo'),
+            quote: getText('packageInfoQuote', 'quote', 'packageInfo'),
+            quoteResponse: getText('packageInfoQuoteResponse', 'quoteResponse', 'packageInfo'),
+            mapComingSoon: getText('packageInfoMapComingSoon', 'mapComingSoon', 'packageInfo'),
             itinerary: getText('packageInfoItinerary', 'itinerary', 'packageInfo'),
             includes: getText('packageInfoIncludes', 'includes', 'packageInfo'),
             notIncludes: getText('packageInfoNotIncludes', 'notIncludes', 'packageInfo'),

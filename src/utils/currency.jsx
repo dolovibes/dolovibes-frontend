@@ -39,6 +39,7 @@ export const BASE_CURRENCY = 'EUR';
 
 // Monedas soportadas con configuración completa
 // Optimización: 3 monedas principales (Europa + Internacional + México)
+// NOTA: countryCode se usa para cargar banderas SVG (los emojis no funcionan en Windows Chrome)
 export const SUPPORTED_CURRENCIES = {
   // Mercado europeo - Italia/Dolomitas (40% turismo) + Alemania (35%) + España
   EUR: {
@@ -47,7 +48,7 @@ export const SUPPORTED_CURRENCIES = {
     nameShort: 'EUR',
     locale: 'es-ES',
     position: 'after',
-    flag: '🇪🇺',
+    countryCode: 'eu', // Unión Europea
     decimals: 2
   },
   // Internacional - Norteamérica + referencia global
@@ -57,7 +58,7 @@ export const SUPPORTED_CURRENCIES = {
     nameShort: 'USD',
     locale: 'en-US',
     position: 'before',
-    flag: '🇺🇸',
+    countryCode: 'us', // Estados Unidos
     decimals: 2
   },
   // Mercado mexicano
@@ -67,7 +68,7 @@ export const SUPPORTED_CURRENCIES = {
     nameShort: 'MXN',
     locale: 'es-MX',
     position: 'before',
-    flag: '🇲🇽',
+    countryCode: 'mx', // México
     decimals: 0
   },
 };

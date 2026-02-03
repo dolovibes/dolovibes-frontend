@@ -57,6 +57,61 @@ const getCurrentLocale = () => {
 const MEDIA_FIELDS = ['image', 'heroImage', 'gallery', 'itinerary'];
 
 /**
+ * Enriquece un item individual con media de español
+ * @param {Object} item - Item actual (puede tener campos vacíos)
+ * @param {Object} spanishItem - Item en español (con media completa)
+ * @returns {Object} Item enriquecido con media de español
+ */
+const enrichItemWithSpanishMedia = (item, spanishItem) => {
+  if (!item || !spanishItem) return item;
+
+  const enrichedItem = { ...item };
+
+  // Image y heroImage
+  if (!enrichedItem.image && spanishItem.image) {
+    enrichedItem.image = spanishItem.image;
+  }
+  if (!enrichedItem.heroImage && spanishItem.heroImage) {
+    enrichedItem.heroImage = spanishItem.heroImage;
+  }
+
+  // Gallery - si no hay galería o está vacía, usar la de español
+  if ((!enrichedItem.gallery || enrichedItem.gallery.length === 0) && spanishItem.gallery && spanishItem.gallery.length > 0) {
+    enrichedItem.gallery = spanishItem.gallery;
+  }
+
+  // Itinerary - manejar varios casos:
+  // 1. Si no hay itinerario actual, usar el de español completo
+  // 2. Si hay itinerario pero faltan imágenes en días específicos, copiar de español
+  if (spanishItem.itinerary && spanishItem.itinerary.length > 0) {
+    if (!enrichedItem.itinerary || enrichedItem.itinerary.length === 0) {
+      // Caso 1: No hay itinerario en el idioma actual - usar el de español
+      enrichedItem.itinerary = spanishItem.itinerary;
+    } else {
+      // Caso 2: Hay itinerario - enriquecer cada día con imágenes de español
+      enrichedItem.itinerary = enrichedItem.itinerary.map((day, idx) => {
+        const spanishDay = spanishItem.itinerary[idx];
+        if (!spanishDay) return day;
+
+        // Copiar imagen si falta
+        if (!day.image && spanishDay.image) {
+          return { ...day, image: spanishDay.image };
+        }
+        return day;
+      });
+
+      // Si el itinerario español tiene más días, agregar los que faltan
+      if (spanishItem.itinerary.length > enrichedItem.itinerary.length) {
+        const missingDays = spanishItem.itinerary.slice(enrichedItem.itinerary.length);
+        enrichedItem.itinerary = [...enrichedItem.itinerary, ...missingDays];
+      }
+    }
+  }
+
+  return enrichedItem;
+};
+
+/**
  * Enriquece los datos transformados del locale actual con imágenes del locale español
  * @param {Array|Object} currentData - Datos transformados en el locale actual
  * @param {Array|Object} spanishData - Datos transformados en español (con imágenes)
@@ -78,52 +133,13 @@ const enrichWithSpanishMedia = (currentData, spanishData) => {
     return currentData.map(item => {
       const spanishItem = spanishMap.get(item.documentId);
       if (!spanishItem) return item;
-
-      // Copiar campos de media que estén vacíos o null
-      const enrichedItem = { ...item };
-
-      // Image y heroImage
-      if (!enrichedItem.image && spanishItem.image) {
-        enrichedItem.image = spanishItem.image;
-      }
-      if (!enrichedItem.heroImage && spanishItem.heroImage) {
-        enrichedItem.heroImage = spanishItem.heroImage;
-      }
-
-      // Gallery (array de objetos con url)
-      if ((!enrichedItem.gallery || enrichedItem.gallery.length === 0) && spanishItem.gallery && spanishItem.gallery.length > 0) {
-        enrichedItem.gallery = spanishItem.gallery;
-      }
-
-      // Itinerary (array de objetos con image)
-      if (enrichedItem.itinerary && spanishItem.itinerary) {
-        enrichedItem.itinerary = enrichedItem.itinerary.map((day, idx) => {
-          if (!day.image && spanishItem.itinerary[idx]?.image) {
-            return { ...day, image: spanishItem.itinerary[idx].image };
-          }
-          return day;
-        });
-      }
-
-      return enrichedItem;
+      return enrichItemWithSpanishMedia(item, spanishItem);
     });
   }
 
   // Para objetos individuales
   if (typeof currentData === 'object') {
-    const enrichedItem = { ...currentData };
-
-    if (!enrichedItem.image && spanishData.image) {
-      enrichedItem.image = spanishData.image;
-    }
-    if (!enrichedItem.heroImage && spanishData.heroImage) {
-      enrichedItem.heroImage = spanishData.heroImage;
-    }
-    if ((!enrichedItem.gallery || enrichedItem.gallery.length === 0) && spanishData.gallery) {
-      enrichedItem.gallery = spanishData.gallery;
-    }
-
-    return enrichedItem;
+    return enrichItemWithSpanishMedia(currentData, spanishData);
   }
 
   return currentData;
@@ -137,6 +153,15 @@ const enrichWithSpanishMedia = (currentData, spanishData) => {
 
 const spanishDataCache = new Map();
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+
+/**
+ * Limpia el cache de datos españoles
+ * Se llama cuando cambia el idioma para evitar datos obsoletos
+ */
+export const clearSpanishDataCache = () => {
+  spanishDataCache.clear();
+  console.info('[Strapi] Spanish data cache cleared');
+};
 
 /**
  * Obtiene datos españoles desde cache o API
@@ -480,6 +505,8 @@ export const getFeaturedPackages = async () => {
 const HERO_POPULATE = {
   videoDesktop: true,
   videoMobile: true,
+  imageMobile: true,  // Imagen estática para móvil (mejor rendimiento)
+  imageDesktop: true, // Imagen fallback para desktop
 };
 
 /**
@@ -715,6 +742,8 @@ const transformHeroSection = (data) => {
     subtitle: data.subtitle,
     videoDesktop: getStrapiMediaUrl(data.videoDesktop),
     videoMobile: getStrapiMediaUrl(data.videoMobile),
+    imageMobile: getStrapiMediaUrl(data.imageMobile),
+    imageDesktop: getStrapiMediaUrl(data.imageDesktop),
   };
 };
 

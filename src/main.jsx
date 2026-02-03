@@ -1,10 +1,11 @@
-import { StrictMode, Suspense, useEffect } from 'react'
+import { StrictMode, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import './index.css'
 import i18n from './i18n' // Inicializar i18n
 import { CurrencyProvider } from './utils/currency.jsx'
 import { SiteTextsProvider } from './contexts/SiteTextsContext.jsx'
+import { clearSpanishDataCache } from './services/api.js'
 import App from './App.jsx'
 
 // Configurar React Query cliente
@@ -19,17 +20,30 @@ const queryClient = new QueryClient({
   },
 });
 
+// Locales soportados para filtrar queries
+const SUPPORTED_LOCALES = ['es', 'en', 'it', 'de'];
+
 // Invalidar cache de React Query cuando cambie el idioma
 // Esto previene inconsistencias de datos entre idiomas
 i18n.on('languageChanged', (newLang) => {
-  // Cancelar queries en progreso para evitar race conditions
+  // 1. Limpiar cache de datos españoles (fallback de imágenes)
+  clearSpanishDataCache();
+
+  // 2. Cancelar queries en progreso para evitar race conditions
   queryClient.cancelQueries();
-  
-  // Remover todos los queries del cache para forzar refetch con nuevo locale
-  // Usar removeQueries en lugar de invalidateQueries para evitar peticiones duplicadas
-  queryClient.removeQueries();
-  
-  console.info(`[i18n] Language changed to ${newLang}, cache cleared`);
+
+  // 3. Invalidar solo queries que dependen del locale (más eficiente que removeQueries)
+  // Esto marca los queries como stale y se refetcharán cuando se necesiten
+  queryClient.invalidateQueries({
+    predicate: (query) => {
+      // Invalidar queries cuyo último key sea un locale
+      const queryKey = query.queryKey;
+      const lastKey = queryKey[queryKey.length - 1];
+      return typeof lastKey === 'string' && SUPPORTED_LOCALES.includes(lastKey);
+    }
+  });
+
+  console.info(`[i18n] Language changed to ${newLang}, locale-specific cache invalidated`);
 });
 
 // Componente de carga inicial mientras se cargan traducciones

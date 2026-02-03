@@ -1,8 +1,24 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Globe, ChevronDown } from 'lucide-react';
-import { convertPathToLocale, SUPPORTED_LOCALES } from '../utils/localizedRoutes';
+import { ChevronDown } from 'lucide-react';
+import { convertPathToLocale } from '../utils/localizedRoutes';
+
+/**
+ * Componente de bandera usando SVG de flagcdn.com
+ * Funciona en todos los navegadores (Windows Chrome no soporta emojis de banderas)
+ */
+const FlagIcon = ({ countryCode, className = "" }) => (
+    <img
+        src={`https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`}
+        srcSet={`https://flagcdn.com/w80/${countryCode.toLowerCase()}.png 2x`}
+        width="20"
+        height="15"
+        alt=""
+        className={`inline-block rounded-sm ${className}`}
+        loading="eager"
+    />
+);
 
 const LanguageSwitcher = ({ isDarkMode = false, compact = false }) => {
     const { i18n } = useTranslation();
@@ -12,11 +28,12 @@ const LanguageSwitcher = ({ isDarkMode = false, compact = false }) => {
     const dropdownRef = useRef(null);
     const buttonRef = useRef(null);
 
+    // Usar códigos de país ISO 3166-1 alpha-2 para las banderas
     const languages = [
-        { code: 'es', label: 'Español', flag: '🇪🇸' },
-        { code: 'en', label: 'English', flag: '🇺🇸' },
-        { code: 'it', label: 'Italiano', flag: '🇮🇹' },
-        { code: 'de', label: 'Deutsch', flag: '🇩🇪' }
+        { code: 'es', label: 'Español', countryCode: 'es' },  // España
+        { code: 'en', label: 'English', countryCode: 'us' },  // USA
+        { code: 'it', label: 'Italiano', countryCode: 'it' }, // Italia
+        { code: 'de', label: 'Deutsch', countryCode: 'de' }   // Alemania
     ];
 
     const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0];
@@ -123,13 +140,10 @@ const LanguageSwitcher = ({ isDarkMode = false, compact = false }) => {
                 aria-expanded={isOpen}
                 aria-label={`Idioma actual: ${currentLanguage.label}. Haga clic para cambiar.`}
             >
-                <span 
-                    className="text-lg leading-none" 
-                    role="img" 
+                <FlagIcon
+                    countryCode={currentLanguage.countryCode}
                     aria-hidden="true"
-                >
-                    {currentLanguage.flag}
-                </span>
+                />
                 <span className={compact ? 'sr-only' : ''}>{currentLanguage.code.toUpperCase()}</span>
                 <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
             </button>
@@ -156,13 +170,10 @@ const LanguageSwitcher = ({ isDarkMode = false, compact = false }) => {
                                     role="option"
                                     aria-selected={isActive}
                                 >
-                                    <span 
-                                        className="text-xl leading-none" 
-                                        role="img" 
+                                    <FlagIcon
+                                        countryCode={lang.countryCode}
                                         aria-hidden="true"
-                                    >
-                                        {lang.flag}
-                                    </span>
+                                    />
                                     <span className="font-medium text-sm">{lang.label}</span>
                                     {isActive && (
                                         <svg 

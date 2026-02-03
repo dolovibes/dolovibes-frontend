@@ -140,7 +140,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                         {/* Header */}
                                         <div className="bg-nieve px-6 py-3">
                                             <h3 className="text-sm font-semibold text-pizarra uppercase tracking-wider">
-                                                {t('navbar.ourExperiences')}
+                                                {siteTexts.navbar.ourExperiences}
                                             </h3>
                                         </div>
 
@@ -148,7 +148,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                             {/* Verano */}
                                             <div className="p-5">
                                                 <h4 className="text-xs font-bold text-niebla uppercase tracking-wider mb-4">
-                                                    {t('seasons.summer')}
+                                                    {siteTexts.seasons.summer}
                                                 </h4>
                                                 <ul className="space-y-1">
                                                     {summerExperiences.map((exp) => (
@@ -167,7 +167,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                             {/* Invierno */}
                                             <div className="p-5">
                                                 <h4 className="text-xs font-bold text-niebla uppercase tracking-wider mb-4">
-                                                    {t('seasons.winter')}
+                                                    {siteTexts.seasons.winter}
                                                 </h4>
                                                 <ul className="space-y-1">
                                                     {winterExperiences.map((exp) => (
@@ -256,7 +256,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                     {/* Verano */}
                                     <div className="mb-4">
                                         <p className="text-xs font-bold text-niebla uppercase tracking-wider px-3 py-2">
-                                            {t('seasons.summer')}
+                                            {siteTexts.seasons.summer}
                                         </p>
                                         {summerExperiences.map((exp) => (
                                             <button
@@ -271,7 +271,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                     {/* Invierno */}
                                     <div>
                                         <p className="text-xs font-bold text-niebla uppercase tracking-wider px-3 py-2">
-                                            {t('seasons.winter')}
+                                            {siteTexts.seasons.winter}
                                         </p>
                                         {winterExperiences.map((exp) => (
                                             <button

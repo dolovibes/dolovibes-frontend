@@ -48,7 +48,7 @@ const Footer = () => {
         return (
             <footer className="bg-pizarra text-white">
                 <div className="container mx-auto px-6 py-16">
-                    <div className="text-center text-niebla">{t('loading.generic')}</div>
+                    <div className="text-center text-niebla">{siteTexts.loading.generic}</div>
                 </div>
             </footer>
         );
@@ -102,7 +102,7 @@ const Footer = () => {
 
                     {/* Experiencias - Todas ordenadas */}
                     <div>
-                        <h4 className="font-semibold text-lg mb-4">{t('footer.experiences')}</h4>
+                        <h4 className="font-semibold text-lg mb-4">{siteTexts.footer.experiences}</h4>
                         <ul className="space-y-3">
                             {footerExperiences.map((exp) => (
                                 <li key={exp.id || exp.slug}>
@@ -119,7 +119,7 @@ const Footer = () => {
 
                     {/* Información Legal dinámica desde Strapi */}
                     <div>
-                        <h4 className="font-semibold text-lg mb-4">{t('footer.information')}</h4>
+                        <h4 className="font-semibold text-lg mb-4">{siteTexts.footer.information}</h4>
                         <ul className="space-y-3">
                             {legalPages.map((page) => (
                                 <li key={page.slug}>
@@ -133,7 +133,7 @@ const Footer = () => {
 
                     {/* Contacto */}
                     <div>
-                        <h4 className="font-semibold text-lg mb-4">{t('footer.contact')}</h4>
+                        <h4 className="font-semibold text-lg mb-4">{siteTexts.footer.contact}</h4>
                         <ul className="space-y-3">
                             <li className="flex items-center gap-3 text-niebla">
                                 <MapPin className="w-5 h-5 text-bruma flex-shrink-0" />

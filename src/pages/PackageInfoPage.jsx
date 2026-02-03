@@ -29,7 +29,6 @@ import { useAlternateUrls } from '../hooks/useAlternateUrls';
 
 const PackageInfoPage = ({ onOpenQuote }) => {
     const { t: tCommon, i18n } = useTranslation('common');
-    const { t: tPackage } = useTranslation('packageInfo');
     const { slug } = useParams();
     const navigate = useNavigate();
     const currentLocale = i18n.language || 'es';
@@ -223,7 +222,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
             <div className="bg-white py-10 md:py-12">
                 <div className="container mx-auto px-6 text-center">
                     <span className="text-pizarra font-semibold tracking-wider uppercase text-sm">
-                        {tPackage('yourAdventure')}
+                        {siteTexts.packageInfo.yourAdventure}
                     </span>
                     <h2 className="text-2xl md:text-3xl font-bold text-grafito mt-2">
                         {siteTexts.packageInfo.itinerary}
@@ -537,7 +536,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                             <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center">
                                                 <Camera className="w-4 h-4 text-white" />
                                             </div>
-                                            <span className="font-semibold text-grafito">{tPackage('additionalPhotos')}</span>
+                                            <span className="font-semibold text-grafito">{siteTexts.packageInfo.additionalPhotos}</span>
                                         </div>
                                         <ChevronRight className="w-5 h-5 text-niebla" />
                                     </button>
@@ -555,7 +554,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                             <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center">
                                                 <MapPin className="w-4 h-4 text-white" />
                                             </div>
-                                            <span className="font-semibold text-grafito">{tPackage('howToGetHere')}</span>
+                                            <span className="font-semibold text-grafito">{siteTexts.packageInfo.howToGetHere}</span>
                                         </div>
                                         <ChevronRight className="w-5 h-5 text-niebla" />
                                     </button>
@@ -583,10 +582,10 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                         onClick={() => setIsQuoteModalOpen(true)}
                                         className="w-full bg-pizarra hover:bg-pizarra/90 text-white py-4 rounded-xl font-bold text-lg transition-all transform hover:scale-[1.02] shadow-lg shadow-pizarra/30"
                                     >
-                                        {tPackage('quote')}
+                                        {siteTexts.packageInfo.quote}
                                     </button>
                                     <p className="text-center text-white/70 text-sm mt-3">
-                                        {tPackage('quoteResponse')}
+                                        {siteTexts.packageInfo.quoteResponse}
                                     </p>
                                 </div>
                             </div>
@@ -611,7 +610,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                 <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={() => setIsMapModalOpen(false)}>
                     <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-between p-6 border-b border-niebla">
-                            <h3 className="text-xl font-bold text-grafito">{tPackage('howToGetHere')}</h3>
+                            <h3 className="text-xl font-bold text-grafito">{siteTexts.packageInfo.howToGetHere}</h3>
                             <button onClick={() => setIsMapModalOpen(false)} className="p-2 hover:bg-nieve rounded-full">
                                 <X className="w-5 h-5 text-pizarra" />
                             </button>
@@ -628,7 +627,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 <div className="bg-nieve rounded-xl h-80 flex items-center justify-center">
                                     <div className="text-center">
                                         <MapPin className="w-12 h-12 text-niebla mx-auto mb-4" />
-                                        <p className="text-pizarra">{tPackage('mapComingSoon')}</p>
+                                        <p className="text-pizarra">{siteTexts.packageInfo.mapComingSoon}</p>
                                         <p className="text-niebla text-sm mt-2">{pkg.location}</p>
                                     </div>
                                 </div>
