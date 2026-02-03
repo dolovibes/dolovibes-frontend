@@ -254,7 +254,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                     <span className="text-base font-bold text-white">{pkg.itinerary[currentDay].day}</span>
                                 </div>
                                 <span className="text-pizarra font-semibold text-sm">
-                                    {pkg.itinerary[currentDay].day} {siteTexts.packageInfo.dayOf} {pkg.itinerary.length}
+                                    {siteTexts.packageInfo.day} {pkg.itinerary[currentDay].day} {siteTexts.packageInfo.dayOf} {pkg.itinerary.length}
                                 </span>
                             </div>
 
