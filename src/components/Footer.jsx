@@ -166,11 +166,11 @@ const Footer = () => {
                 <div className="container mx-auto px-6 py-6">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                         <p className="text-niebla text-sm">
-                            © {new Date().getFullYear()} DoloVibes. {t('footer.allRightsReserved')}
+                            © {new Date().getFullYear()} DoloVibes. {siteTexts.footer.allRightsReserved}
                         </p>
                         <div className="flex gap-6 text-sm">
                             <Link to={generateLocalizedUrl('about', null, currentLocale)} className="text-niebla hover:text-white transition-colors">
-                                {t('navbar.aboutUs')}
+                                {siteTexts.navbar.aboutUs}
                             </Link>
                         </div>
                     </div>

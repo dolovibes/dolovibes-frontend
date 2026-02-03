@@ -63,7 +63,7 @@ const DynamicLegalPage = ({ slug: slugProp, fallbackTitle, fallbackContent }) =>
         <div className="min-h-screen bg-white">
             <Hreflang alternateUrls={alternateUrls} />
             {/* Header */}
-            <div className="bg-gradient-to-r from-pizarra to-pizarra pt-28 pb-16">
+            <div className="bg-gradient-to-r from-pizarra to-pizarra pt-16 md:pt-20 pb-16">
                 <div className="container mx-auto px-6">
                     <button
                         onClick={() => navigate(-1)}

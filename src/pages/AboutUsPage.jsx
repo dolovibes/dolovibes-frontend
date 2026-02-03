@@ -53,7 +53,7 @@ const AboutUsPage = ({ onOpenQuote }) => {
         <div className="min-h-screen bg-white">
             <Hreflang alternateUrls={aboutAlternateUrls} />
             {/* Espaciado para navbar */}
-            <div className="pt-24"></div>
+            <div className="pt-16 md:pt-20"></div>
 
             {/* Título centrado */}
             <div className="text-center py-16 md:py-20">

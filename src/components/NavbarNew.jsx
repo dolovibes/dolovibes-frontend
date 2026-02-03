@@ -4,11 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { Mountain, Menu, X, ChevronDown } from 'lucide-react';
 import { useExperiences, useSiteSettings } from '../services/hooks';
 import { generateLocalizedUrl, getLocaleFromPath } from '../utils/localizedRoutes';
+import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import CurrencySelector from './CurrencySelector';
 
 const NavbarNew = ({ onOpenQuote }) => {
-    const { t, i18n } = useTranslation('common');
+    const { i18n } = useTranslation('common');
+    const { texts: siteTexts } = useSiteTextsContext();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isExperiencesOpen, setIsExperiencesOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
@@ -35,9 +37,26 @@ const NavbarNew = ({ onOpenQuote }) => {
     );
 
     // Páginas con fondo blanco que necesitan navbar oscuro desde el inicio
-    const isWhiteBackgroundPage = location.pathname === '/about' ||
-        location.pathname.startsWith('/experiencia/') ||
-        location.pathname.startsWith('/paquete/');
+    const isWhiteBackgroundPage =
+        // About en todos los idiomas
+        location.pathname.includes('/nosotros') ||
+        location.pathname.includes('/about') ||
+        location.pathname.includes('/chi-siamo') ||
+        location.pathname.includes('/ueber-uns') ||
+        // Experiencias y paquetes
+        location.pathname.includes('/experiencia') ||
+        location.pathname.includes('/experience') ||
+        location.pathname.includes('/esperienza') ||
+        location.pathname.includes('/erlebnis') ||
+        location.pathname.includes('/paquete') ||
+        location.pathname.includes('/package') ||
+        location.pathname.includes('/pacchetti') ||
+        location.pathname.includes('/paket') ||
+        // Páginas legales en todos los idiomas
+        location.pathname.includes('/legales/') ||
+        location.pathname.includes('/legal/') ||
+        location.pathname.includes('/legale/') ||
+        location.pathname.includes('/rechtliches/');
 
     useEffect(() => {
         const handleScroll = () => {
@@ -107,7 +126,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                         : 'text-white/90 hover:text-white hover:bg-white/10'
                                         }`}
                                 >
-                                    {t('navbar.experiences')}
+                                    {siteTexts.navbar.experiences}
                                     <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isExperiencesOpen ? 'rotate-180' : ''
                                         }`} />
                                 </button>
@@ -176,7 +195,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                     : 'text-white/90 hover:text-white hover:bg-white/10'
                                     }`}
                             >
-                                {t('navbar.aboutUs')}
+                                {siteTexts.navbar.aboutUs}
                             </Link>
 
                             {/* Botón Cotizar */}
@@ -184,7 +203,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                 onClick={onOpenQuote}
                                 className="bg-pizarra hover:bg-pizarra/90 text-white px-6 py-2.5 rounded-full font-semibold transition-all transform hover:scale-105 shadow-lg shadow-pizarra/25 hover:shadow-pizarra/40"
                             >
-                                {t('navbar.quote')}
+                                {siteTexts.navbar.quote}
                             </button>
 
                             {/* Currency Selector */}
@@ -221,7 +240,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                 aria-expanded={isExperiencesOpen}
                                 aria-controls="mobile-experiences-menu"
                             >
-                                <span>{t('navbar.experiences')}</span>
+                                <span>{siteTexts.navbar.experiences}</span>
                                 <ChevronDown
                                     className={`w-5 h-5 transition-transform duration-300 ${isExperiencesOpen ? 'rotate-180' : ''}`}
                                     aria-hidden="true"
@@ -274,7 +293,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                             onClick={() => setIsMenuOpen(false)}
                             className="block py-3 text-grafito font-medium border-b border-niebla"
                         >
-                            {t('navbar.aboutUs')}
+                            {siteTexts.navbar.aboutUs}
                         </Link>
 
                         {/* Cotizar Button */}
@@ -282,7 +301,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                             onClick={() => { setIsMenuOpen(false); onOpenQuote(); }}
                             className="w-full bg-pizarra text-white py-3 rounded-xl font-bold mt-4"
                         >
-                            {t('navbar.quote')}
+                            {siteTexts.navbar.quote}
                         </button>
 
                         {/* Language Switcher - Mobile */}

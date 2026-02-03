@@ -17,7 +17,8 @@ import {
     Info,
     Camera
 } from 'lucide-react';
-import { usePackage, useSiteTexts, useLanguageAwareNavigation } from '../services/hooks';
+import { usePackage, useLanguageAwareNavigation } from '../services/hooks';
+import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { useCurrencyContext } from '../utils/currency';
 import PackageQuoteModal from '../components/PackageQuoteModal';
 import PhotoGalleryModal from '../components/PhotoGalleryModal';
@@ -35,7 +36,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
 
     // Usar hook de React Query para datos dinámicos
     const { data: pkg, isLoading, error } = usePackage(slug);
-    const { data: siteTexts } = useSiteTexts();
+    const { texts: siteTexts } = useSiteTextsContext();
 
     // Hook para redirección inteligente al cambiar idioma
     useLanguageAwareNavigation({
@@ -47,8 +48,8 @@ const PackageInfoPage = ({ onOpenQuote }) => {
     // Hreflang para SEO - URLs alternativas por idioma (DEBE estar antes de early returns)
     const { alternateUrls } = useAlternateUrls('package', pkg?.documentId, slug);
 
-    // Textos con fallback: Strapi > i18n
-    const loadingText = siteTexts?.loadingPackage || tCommon('loading.package');
+    // Textos con fallback: contexto ya tiene fallback integrado
+    const loadingText = tCommon('loading.package');
 
     // Contexto de moneda para conversión de precios
     const { formatPriceFromEUR, currency } = useCurrencyContext();
@@ -128,7 +129,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
         return (
             <div className="min-h-screen flex items-center justify-center bg-nieve">
                 <div className="text-center">
-                    <h1 className="text-2xl font-bold text-grafito mb-4">{tPackage('packageNotFound')}</h1>
+                    <h1 className="text-2xl font-bold text-grafito mb-4">{siteTexts.packageInfo.packageNotFound}</h1>
                     <button
                         onClick={() => navigate(`/${currentLocale}`)}
                         className="bg-pizarra text-white px-6 py-3 rounded-full font-semibold hover:bg-pizarra transition-colors"
@@ -225,7 +226,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                         {tPackage('yourAdventure')}
                     </span>
                     <h2 className="text-2xl md:text-3xl font-bold text-grafito mt-2">
-                        {tPackage('itinerary')}
+                        {siteTexts.packageInfo.itinerary}
                     </h2>
                 </div>
             </div>

@@ -101,10 +101,10 @@ export const SiteTextsProvider = ({ children }) => {
             noCommitment: getText('bookingNoCommitment', 'booking.noCommitment', 'experiences'),
         },
         packageInfo: {
-            packageNotFound: getText('packageInfo.packageNotFound', 'packageNotFound', 'packageInfo'),
-            itinerary: getText('packageInfo.itinerary', 'itinerary', 'packageInfo'),
-            includes: getText('packageInfo.includes', 'includes', 'packageInfo'),
-            notIncludes: getText('packageInfo.notIncludes', 'notIncludes', 'packageInfo'),
+            packageNotFound: getText('packageInfoPackageNotFound', 'packageNotFound', 'packageInfo'),
+            itinerary: getText('packageInfoItinerary', 'itinerary', 'packageInfo'),
+            includes: getText('packageInfoIncludes', 'includes', 'packageInfo'),
+            notIncludes: getText('packageInfoNotIncludes', 'notIncludes', 'packageInfo'),
         },
         // Quote Modal
         quoteModal: {
