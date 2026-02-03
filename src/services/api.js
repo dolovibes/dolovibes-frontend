@@ -503,10 +503,8 @@ export const getFeaturedPackages = async () => {
 // ═══════════════════════════════════════════════════════════════
 
 const HERO_POPULATE = {
-  videoDesktop: true,
-  videoMobile: true,
-  imageMobile: true,  // Imagen estática para móvil (mejor rendimiento)
-  imageDesktop: true, // Imagen fallback para desktop
+  videoDesktop: true,   // Video para desktop
+  imageMobile: true,    // Imagen estática para móvil (mejor rendimiento)
 };
 
 /**
@@ -741,9 +739,7 @@ const transformHeroSection = (data) => {
     titleHighlight: data.titleHighlight,
     subtitle: data.subtitle,
     videoDesktop: getStrapiMediaUrl(data.videoDesktop),
-    videoMobile: getStrapiMediaUrl(data.videoMobile),
     imageMobile: getStrapiMediaUrl(data.imageMobile),
-    imageDesktop: getStrapiMediaUrl(data.imageDesktop),
   };
 };
 

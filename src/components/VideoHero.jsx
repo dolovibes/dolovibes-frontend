@@ -19,15 +19,11 @@ const VideoHero = ({ onExperienceSelect }) => {
     // IMPORTANTE: Definir antes de los useEffects que lo usan
     const videoDesktop = heroData?.videoDesktop;
     const imageMobile = heroData?.imageMobile;
-    const imageDesktop = heroData?.imageDesktop;
 
     // En móvil: usar imagen estática (mejor rendimiento y consumo de datos)
     // En desktop: usar video
-    const useMobileImage = isMobile && imageMobile;
-    const videoSrc = !useMobileImage ? videoDesktop : null;
-    const imageSrc = useMobileImage ? imageMobile : imageDesktop;
-    const hasVideo = !!videoSrc;
-    const hasImage = !!imageSrc;
+    const showMobileImage = isMobile && imageMobile;
+    const showDesktopVideo = !isMobile && videoDesktop;
 
     // Detectar si es móvil
     useEffect(() => {
@@ -57,12 +53,12 @@ const VideoHero = ({ onExperienceSelect }) => {
         }
     }, [shouldLoadVideo]);
 
-    // Intentar reproducir el video explícitamente en mobile (iOS Safari fix)
+    // Intentar reproducir el video explícitamente (fix para algunos navegadores)
     useEffect(() => {
-        if (videoRef.current && shouldLoadVideo && hasVideo) {
+        if (videoRef.current && shouldLoadVideo && showDesktopVideo) {
             const video = videoRef.current;
 
-            // Intentar reproducir explícitamente (iOS Safari requiere esto)
+            // Intentar reproducir explícitamente
             const playPromise = video.play();
 
             if (playPromise !== undefined) {
@@ -72,14 +68,14 @@ const VideoHero = ({ onExperienceSelect }) => {
                         setVideoLoaded(true);
                     })
                     .catch((error) => {
-                        // Autoplay bloqueado - común en mobile
+                        // Autoplay bloqueado
                         console.warn('[VideoHero] Autoplay blocked:', error.message);
                         // Mostrar el video de todos modos (aunque no se reproduzca)
                         setVideoLoaded(true);
                     });
             }
         }
-    }, [shouldLoadVideo, hasVideo]);
+    }, [shouldLoadVideo, showDesktopVideo]);
 
     // Textos del hero - priorizar Strapi, fallback a i18n
     const title = heroData?.title || siteTexts.hero.title;
@@ -91,9 +87,9 @@ const VideoHero = ({ onExperienceSelect }) => {
             {/* Fondo sólido como LCP - se muestra inmediatamente */}
             <div className="absolute inset-0 z-0 bg-pizarra">
                 {/* Imagen de fondo para móvil - mejor rendimiento y menor consumo de datos */}
-                {hasImage && useMobileImage && (
+                {showMobileImage && (
                     <img
-                        src={imageSrc}
+                        src={imageMobile}
                         alt=""
                         loading="eager"
                         fetchPriority="high"
@@ -103,8 +99,8 @@ const VideoHero = ({ onExperienceSelect }) => {
                     />
                 )}
 
-                {/* Video de fondo para desktop - SOLO si no estamos en móvil con imagen */}
-                {hasVideo && shouldLoadVideo && !useMobileImage && (
+                {/* Video de fondo para desktop */}
+                {showDesktopVideo && shouldLoadVideo && (
                     <video
                         ref={videoRef}
                         key="desktop"
@@ -123,7 +119,7 @@ const VideoHero = ({ onExperienceSelect }) => {
                         }}
                         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
                     >
-                        <source src={videoSrc} type="video/mp4" />
+                        <source src={videoDesktop} type="video/mp4" />
                     </video>
                 )}
 
