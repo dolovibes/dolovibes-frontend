@@ -1,6 +1,6 @@
 {
-    "day": "Day {{number}}",
-    "dayOf": "Day {{current}} of {{total}}",
+    "day": "Day",
+    "dayOf": "of",
     "pricePerPerson": "Price per person",
     "additionalPhotos": "Additional photos",
     "howToGetHere": "How to get here",
