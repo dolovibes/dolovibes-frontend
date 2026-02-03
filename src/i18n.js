@@ -107,6 +107,10 @@ i18nInstance.init({
   // Configuración de carga
   load: 'languageOnly', // Solo cargar 'es', no 'es-MX'
 
+  // Precargar namespaces para evitar cargas parciales al cambiar idioma
+  // Esto asegura que todos los textos estén disponibles de inmediato
+  preload: false, // No precargar en el inicio (optimización de carga inicial)
+  
   // Configuración de desarrollo
   debug: import.meta.env.DEV && false,
 
@@ -134,6 +138,39 @@ export const changeLanguage = (lang) => {
   if (['es', 'en', 'it', 'de'].includes(lang)) {
     i18nInstance.changeLanguage(lang);
     localStorage.setItem('preferredLanguage', lang);
+  }
+};
+
+/**
+ * Cambia el idioma y precarga todos los namespaces necesarios
+ * Útil para asegurar que todas las traducciones estén disponibles
+ * antes de navegar a la nueva URL
+ * @param {string} lang - 'es', 'en', 'it', 'de'
+ * @returns {Promise} Promesa que se resuelve cuando todos los namespaces están cargados
+ */
+export const changeLanguageComplete = async (lang) => {
+  if (!['es', 'en', 'it', 'de'].includes(lang)) {
+    throw new Error(`Idioma no soportado: ${lang}`);
+  }
+
+  // Lista de todos los namespaces que necesitamos precargar
+  const namespaces = ['common', 'home', 'about', 'experiences', 'packageInfo', 'quoteForm', 'hikingLevel', 'legal'];
+  
+  try {
+    // Cambiar idioma - esto automáticamente intentará cargar los namespaces que ya están en uso
+    await i18nInstance.changeLanguage(lang);
+    
+    // Precargar explícitamente todos los namespaces para asegurar que estén disponibles
+    // loadNamespaces retorna una promesa que se resuelve cuando todos están cargados
+    await i18nInstance.loadNamespaces(namespaces);
+    
+    // Guardar preferencia
+    localStorage.setItem('preferredLanguage', lang);
+    
+    return true;
+  } catch (error) {
+    console.error('Error al cambiar idioma:', error);
+    throw error;
   }
 };
 

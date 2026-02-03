@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Loader2 } from 'lucide-react';
 import { convertPathToLocale } from '../utils/localizedRoutes';
+import { changeLanguageComplete } from '../i18n';
 
 /**
  * Componente de bandera usando SVG de flagcdn.com
@@ -25,6 +26,7 @@ const LanguageSwitcher = ({ isDarkMode = false, compact = false }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const [isOpen, setIsOpen] = useState(false);
+    const [isChangingLanguage, setIsChangingLanguage] = useState(false);
     const dropdownRef = useRef(null);
     const buttonRef = useRef(null);
 
@@ -101,24 +103,42 @@ const LanguageSwitcher = ({ isDarkMode = false, compact = false }) => {
         }
     }, [isOpen, i18n, languages]);
 
-    const handleLanguageChange = (langCode) => {
-        // Cambiar idioma en i18n
-        i18n.changeLanguage(langCode);
+    const handleLanguageChange = async (langCode) => {
+        // Don't allow changing if already changing
+        if (isChangingLanguage) return;
         
-        // Guardar preferencia en localStorage
-        try {
-            localStorage.setItem('preferredLanguage', langCode);
-        } catch (e) {
-            // localStorage no disponible
+        // Don't do anything if selecting the same language
+        if (i18n.language === langCode) {
+            setIsOpen(false);
+            buttonRef.current?.focus();
+            return;
         }
-        
-        // Navegar a la misma página pero en el nuevo idioma
-        const currentPath = location.pathname;
-        const newPath = convertPathToLocale(currentPath, langCode);
-        navigate(newPath, { replace: true });
-        
-        setIsOpen(false);
-        buttonRef.current?.focus();
+
+        try {
+            setIsChangingLanguage(true);
+            
+            // Cambiar idioma y precargar todos los namespaces
+            // Esto asegura que todas las traducciones estén disponibles
+            // antes de navegar a la nueva página
+            await changeLanguageComplete(langCode);
+            
+            // Pequeña pausa para asegurar que React Query invalida y actualiza
+            // Esto da tiempo a que el listener en main.jsx procese el cambio
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            // Navegar a la misma página pero en el nuevo idioma
+            const currentPath = location.pathname;
+            const newPath = convertPathToLocale(currentPath, langCode);
+            navigate(newPath, { replace: true });
+            
+            setIsOpen(false);
+            buttonRef.current?.focus();
+        } catch (error) {
+            console.error('Error changing language:', error);
+            // En caso de error, intentar revertir el estado
+        } finally {
+            setIsChangingLanguage(false);
+        }
     };
 
     return (
@@ -131,19 +151,27 @@ const LanguageSwitcher = ({ isDarkMode = false, compact = false }) => {
                 ref={buttonRef}
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
+                disabled={isChangingLanguage}
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium text-sm transition-colors
-                    focus:outline-none focus:ring-2 focus:ring-offset-1 ${isDarkMode
+                    focus:outline-none focus:ring-2 focus:ring-offset-1 ${
+                    isChangingLanguage ? 'opacity-50 cursor-wait' : ''
+                } ${isDarkMode
                     ? 'text-pizarra hover:text-alpino hover:bg-nieve focus:ring-amber-500'
                     : 'text-white/90 hover:text-white hover:bg-white/10 focus:ring-white/50'
                     }`}
                 aria-haspopup="listbox"
                 aria-expanded={isOpen}
                 aria-label={`Idioma actual: ${currentLanguage.label}. Haga clic para cambiar.`}
+                aria-busy={isChangingLanguage}
             >
-                <FlagIcon
-                    countryCode={currentLanguage.countryCode}
-                    aria-hidden="true"
-                />
+                {isChangingLanguage ? (
+                    <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
+                ) : (
+                    <FlagIcon
+                        countryCode={currentLanguage.countryCode}
+                        aria-hidden="true"
+                    />
+                )}
                 <span className={compact ? 'sr-only' : ''}>{currentLanguage.code.toUpperCase()}</span>
                 <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
             </button>
@@ -163,12 +191,14 @@ const LanguageSwitcher = ({ isDarkMode = false, compact = false }) => {
                                 <button
                                     type="button"
                                     onClick={() => handleLanguageChange(lang.code)}
+                                    disabled={isChangingLanguage}
                                     className={`w-full px-4 py-3 text-left flex items-center gap-3 
                                         hover:bg-amber-50 focus:bg-amber-50 focus:outline-none transition-colors ${
                                         isActive ? 'bg-amber-100 text-amber-700' : 'text-pizarra'
-                                    }`}
+                                    } ${isChangingLanguage ? 'opacity-50 cursor-wait' : ''}`}
                                     role="option"
                                     aria-selected={isActive}
+                                    aria-disabled={isChangingLanguage}
                                 >
                                     <FlagIcon
                                         countryCode={lang.countryCode}
