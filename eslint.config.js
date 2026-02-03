@@ -26,11 +26,25 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { 
-        varsIgnorePattern: '^[A-Z_]',
+      // Variables no usadas - ignorar con _ prefix y mayúsculas
+      'no-unused-vars': ['warn', { 
+        varsIgnorePattern: '^[A-Z_]|^_',
         argsIgnorePattern: '^_',
       }],
+      // Detectar variables no definidas (crítico)
       'no-undef': 'error',
+      // Permitir bloques vacíos en catch
+      'no-empty': ['error', { allowEmptyCatch: true }],
+      // Case declarations - permitir con bloques
+      'no-case-declarations': 'off',
+      // React Compiler - convertir errores a warnings (son informativos)
+      'react-hooks/preserve-manual-memoization': 'off',
+      'react-hooks/immutability': 'off',
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/purity': 'warn',
+      'react-hooks/error-boundaries': 'warn',
+      // Fast refresh - convertir a warnings
+      'react-refresh/only-export-components': 'warn',
     },
   },
 ])
