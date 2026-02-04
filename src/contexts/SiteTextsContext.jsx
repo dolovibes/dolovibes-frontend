@@ -24,7 +24,7 @@ export const SiteTextsProvider = ({ children }) => {
 
     // Función helper que prioriza Strapi sobre i18n
     const getText = useMemo(() => {
-        return (strapiPath, i18nKey, namespace = 'common') => {
+        return (strapiPath, i18nKey, namespace = 'common', fallback = null) => {
             // Intentar obtener de Strapi primero
             if (strapiTexts) {
                 const value = strapiPath.split('.').reduce((obj, key) => obj?.[key], strapiTexts);
@@ -34,20 +34,33 @@ export const SiteTextsProvider = ({ children }) => {
             }
 
             // Fallback a i18n
+            let i18nValue;
             switch (namespace) {
                 case 'home':
-                    return tHome(i18nKey);
+                    i18nValue = tHome(i18nKey);
+                    break;
                 case 'packageInfo':
-                    return tPackageInfo(i18nKey);
+                    i18nValue = tPackageInfo(i18nKey);
+                    break;
                 case 'experiences':
-                    return tExperiences(i18nKey);
+                    i18nValue = tExperiences(i18nKey);
+                    break;
                 case 'hikingLevel':
-                    return tHikingLevel(i18nKey);
+                    i18nValue = tHikingLevel(i18nKey);
+                    break;
                 case 'quoteForm':
-                    return tQuoteForm(i18nKey);
+                    i18nValue = tQuoteForm(i18nKey);
+                    break;
                 default:
-                    return tCommon(i18nKey);
+                    i18nValue = tCommon(i18nKey);
             }
+            
+            // Si i18n devuelve la key misma (no encontró traducción), usar fallback
+            if (i18nValue === i18nKey && fallback) {
+                return fallback;
+            }
+            
+            return i18nValue;
         };
     }, [strapiTexts, tCommon, tHome, tPackageInfo, tExperiences, tHikingLevel, tQuoteForm]);
 
@@ -137,12 +150,12 @@ export const SiteTextsProvider = ({ children }) => {
             namePlaceholder: getText('quoteModalNamePlaceholder', 'quoteModal.namePlaceholder'),
             emailPlaceholder: getText('quoteModalEmailPlaceholder', 'quoteModal.emailPlaceholder'),
             phonePlaceholder: getText('quoteModalPhonePlaceholder', 'quoteModal.phonePlaceholder'),
-            successTitle: getText('quoteModalSuccessTitle', 'quoteModal.successTitle'),
-            successMessage: getText('quoteModalSuccessMessage', 'quoteModal.successMessage'),
-            validationError: getText('quoteModalValidationError', 'quoteModal.validationError'),
-            sending: getText('quoteModalSending', 'quoteModal.sending'),
-            errorTitle: getText('quoteModalErrorTitle', 'quoteModal.errorTitle'),
-            errorMessage: getText('quoteModalErrorMessage', 'quoteModal.errorMessage'),
+            successTitle: getText('quoteModalSuccessTitle', 'quoteModal.successTitle', 'common', '¡Solicitud Recibida!'),
+            successMessage: getText('quoteModalSuccessMessage', 'quoteModal.successMessage', 'common', 'Un experto de DOLOVIBES te contactará pronto.'),
+            validationError: getText('quoteModalValidationError', 'quoteModal.validationError', 'common', 'Por favor, completa todos los campos requeridos.'),
+            sending: getText('quoteModalSending', 'quoteModal.sending', 'common', 'Enviando...'),
+            errorTitle: getText('quoteModalErrorTitle', 'quoteModal.errorTitle', 'common', 'Error al Enviar'),
+            errorMessage: getText('quoteModalErrorMessage', 'quoteModal.errorMessage', 'common', 'Ocurrió un error al enviar la solicitud. Por favor, intenta nuevamente.'),
         },
         // Package Quote Modal
         packageQuoteModal: {
