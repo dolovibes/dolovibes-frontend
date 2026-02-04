@@ -98,7 +98,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
             }, 3000);
         } catch (err) {
             // Usar SiteTexts (Strapi → i18n fallback) como el resto del sitio
-            setError(siteTexts.quoteModal.errorMessage);
+            setError(siteTexts.quoteModal?.errorMessage || 'Ocurrió un error al enviar la solicitud. Por favor, intenta nuevamente.');
         } finally {
             setIsSubmitting(false);
         }
