@@ -81,7 +81,11 @@
         "emailPlaceholder": "Email",
         "phonePlaceholder": "Telefono (WhatsApp)",
         "successTitle": "Richiesta Ricevuta!",
-        "successMessage": "Un esperto DOLOVIBES ti contatterà presto per pianificare il tuo viaggio."
+        "successMessage": "Un esperto DOLOVIBES ti contatterà presto per pianificare il tuo viaggio.",
+        "errorTitle": "Errore di Invio",
+        "errorMessage": "Si è verificato un errore durante l'invio della richiesta. Per favore riprova.",
+        "sending": "Invio in corso...",
+        "validationError": "Per favore compila tutti i campi obbligatori."
     },
     "currency": {
         "loading": "Caricamento valuta...",
