@@ -86,7 +86,8 @@
         "successMessage": "Un experto de DOLOVIBES te contactará pronto para planificar tu viaje.",
         "errorTitle": "Error al Enviar",
         "errorMessage": "Ocurrió un error al enviar la solicitud. Por favor, intenta nuevamente.",
-        "sending": "Enviando..."
+        "sending": "Enviando...",
+        "validationError": "Por favor, completa todos los campos requeridos."
     },
     "currency": {
         "loading": "Cargando moneda...",

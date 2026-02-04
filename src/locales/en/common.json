@@ -83,7 +83,11 @@
         "emailPlaceholder": "Email",
         "phonePlaceholder": "Phone (WhatsApp)",
         "successTitle": "Request Received!",
-        "successMessage": "A DOLOVIBES expert will contact you soon to plan your trip."
+        "successMessage": "A DOLOVIBES expert will contact you soon to plan your trip.",
+        "errorTitle": "Error Sending",
+        "errorMessage": "An error occurred while sending your request. Please try again.",
+        "sending": "Sending...",
+        "validationError": "Please fill in all required fields."
     },
     "currency": {
         "loading": "Loading currency...",
