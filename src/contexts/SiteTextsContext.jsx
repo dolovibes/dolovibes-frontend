@@ -90,6 +90,7 @@ export const SiteTextsProvider = ({ children }) => {
             whatQuestion: getText('selectorWhatQuestion', 'selector.whatQuestion', 'home'),
             selectExperience: getText('selectorSelectExperience', 'selector.selectExperience', 'home'),
             noExperiences: getText('selectorNoExperiences', 'selector.noExperiences', 'home'),
+            scrollToSeeTrips: getText('selectorScrollToSeeTrips', 'selector.scrollToSeeTrips'),
         },
         // Footer (textos globales y mensaje de páginas legales)
         footer: {

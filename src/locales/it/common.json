@@ -93,5 +93,8 @@
         "loading": "Caricamento valuta...",
         "currentLabel": "Valuta attuale: {currency}. Clicca per cambiare.",
         "selectLabel": "Seleziona valuta"
+    },
+    "selector": {
+        "scrollToSeeTrips": "Scorri per vedere i viaggi"
     }
 }

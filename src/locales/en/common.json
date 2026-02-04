@@ -93,5 +93,8 @@
         "loading": "Loading currency...",
         "currentLabel": "Current currency: {currency}. Click to change.",
         "selectLabel": "Select currency"
+    },
+    "selector": {
+        "scrollToSeeTrips": "Scroll to see the trips"
     }
 }
