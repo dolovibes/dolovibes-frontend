@@ -73,7 +73,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
         setIsSubmitting(true);
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/quote-request`, {
+            const response = await fetch(`${import.meta.env.VITE_STRAPI_URL}/api/quote-request`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
