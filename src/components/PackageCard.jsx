@@ -46,16 +46,13 @@ const PackageCard = ({ pkg }) => {
             className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-niebla"
         >
             {/* Image */}
-            <div className="relative h-56 overflow-hidden bg-niebla/20">
-                <OptimizedImage
+            <div className="relative aspect-video overflow-hidden bg-niebla/20">
+                <img
                     src={pkg.image}
                     alt={pkg.title}
-                    priority={false}
-                    width={400}
-                    height={224}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    objectFit="cover"
-                    aspectRatio="16/9"
                 />
                 {/* Overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-pizarra/60 via-transparent to-transparent"></div>
