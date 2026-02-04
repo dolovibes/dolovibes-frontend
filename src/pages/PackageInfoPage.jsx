@@ -17,25 +17,38 @@ import {
     Info,
     Camera
 } from 'lucide-react';
-import { usePackage, useSiteTexts } from '../services/hooks';
+import { usePackage, useLanguageAwareNavigation } from '../services/hooks';
+import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { useCurrencyContext } from '../utils/currency';
 import PackageQuoteModal from '../components/PackageQuoteModal';
 import PhotoGalleryModal from '../components/PhotoGalleryModal';
 import HikingLevelModal from '../components/HikingLevelModal';
 import Footer from '../components/Footer';
+import Hreflang from '../components/Hreflang';
+import { useAlternateUrls } from '../hooks/useAlternateUrls';
 
 const PackageInfoPage = ({ onOpenQuote }) => {
-    const { t: tCommon } = useTranslation('common');
-    const { t: tPackage } = useTranslation('packageInfo');
+    const { t: tCommon, i18n } = useTranslation('common');
     const { slug } = useParams();
     const navigate = useNavigate();
+    const currentLocale = i18n.language || 'es';
 
     // Usar hook de React Query para datos dinámicos
     const { data: pkg, isLoading, error } = usePackage(slug);
-    const { data: siteTexts } = useSiteTexts();
+    const { texts: siteTexts } = useSiteTextsContext();
 
-    // Textos con fallback: Strapi > i18n
-    const loadingText = siteTexts?.loadingPackage || tCommon('loading.package');
+    // Hook para redirección inteligente al cambiar idioma
+    useLanguageAwareNavigation({
+        documentId: pkg?.documentId,
+        currentSlug: slug,
+        resourceType: 'package',
+    });
+
+    // Hreflang para SEO - URLs alternativas por idioma (DEBE estar antes de early returns)
+    const { alternateUrls } = useAlternateUrls('package', pkg?.documentId, slug);
+
+    // Textos con fallback: contexto ya tiene fallback integrado
+    const loadingText = tCommon('loading.package');
 
     // Contexto de moneda para conversión de precios
     const { formatPriceFromEUR, currency } = useCurrencyContext();
@@ -115,9 +128,9 @@ const PackageInfoPage = ({ onOpenQuote }) => {
         return (
             <div className="min-h-screen flex items-center justify-center bg-nieve">
                 <div className="text-center">
-                    <h1 className="text-2xl font-bold text-grafito mb-4">{tPackage('packageNotFound')}</h1>
+                    <h1 className="text-2xl font-bold text-grafito mb-4">{siteTexts.packageInfo.packageNotFound}</h1>
                     <button
-                        onClick={() => navigate('/')}
+                        onClick={() => navigate(`/${currentLocale}`)}
                         className="bg-pizarra text-white px-6 py-3 rounded-full font-semibold hover:bg-pizarra transition-colors"
                     >
                         {tCommon('buttons.backToHome')}
@@ -145,6 +158,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
 
     return (
         <div className="min-h-screen bg-white overflow-x-hidden">
+            <Hreflang alternateUrls={alternateUrls} />
             {/* Hero - Pantalla completa */}
             <div className="relative min-h-screen flex items-end">
                 <img
@@ -208,10 +222,10 @@ const PackageInfoPage = ({ onOpenQuote }) => {
             <div className="bg-white py-10 md:py-12">
                 <div className="container mx-auto px-6 text-center">
                     <span className="text-pizarra font-semibold tracking-wider uppercase text-sm">
-                        {tPackage('yourAdventure')}
+                        {siteTexts.packageInfo.yourAdventure}
                     </span>
                     <h2 className="text-2xl md:text-3xl font-bold text-grafito mt-2">
-                        {tPackage('itinerary')}
+                        {siteTexts.packageInfo.itinerary}
                     </h2>
                 </div>
             </div>
@@ -223,7 +237,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                     <div className="w-full md:w-1/2 h-[250px] md:h-full relative overflow-hidden">
                         <img
                             src={pkg.itinerary[currentDay].image || pkg.heroImage || pkg.image}
-                            alt={tPackage('day', { number: pkg.itinerary[currentDay].day })}
+                            alt={`${siteTexts.packageInfo.day} ${pkg.itinerary[currentDay].day}`}
                             loading="lazy"
                             width="800"
                             height="450"
@@ -240,7 +254,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                     <span className="text-base font-bold text-white">{pkg.itinerary[currentDay].day}</span>
                                 </div>
                                 <span className="text-pizarra font-semibold text-sm">
-                                    {tPackage('dayOf', { current: pkg.itinerary[currentDay].day, total: pkg.itinerary.length })}
+                                    {siteTexts.packageInfo.day} {pkg.itinerary[currentDay].day} {siteTexts.packageInfo.dayOf} {pkg.itinerary.length}
                                 </span>
                             </div>
 
@@ -251,7 +265,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
 
                             {/* Descripción - altura fija con scroll en móvil y gradiente indicador */}
                             <div className="relative">
-                                <div className="text-pizarra text-sm md:text-base leading-relaxed prose prose-sm max-w-none max-h-[180px] sm:max-h-[200px] md:max-h-none overflow-y-auto pr-1">
+                                <div className="text-pizarra text-sm md:text-base leading-relaxed prose prose-sm max-w-none max-h-[180px] sm:max-h-[200px] md:max-h-none overflow-y-auto pr-1 pb-10 scrollbar-thin scrollbar-thumb-niebla scrollbar-track-transparent">
                                     <BlocksRenderer content={pkg.itinerary[currentDay].description} />
                                 </div>
                                 {/* Gradiente indicador de scroll para móvil */}
@@ -320,7 +334,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                             {/* Precio destacado */}
                             <div className="mb-8">
                                 <p className="text-niebla text-sm uppercase tracking-wider mb-1">
-                                    {tPackage('pricePerPerson')}
+                                    {siteTexts.packageInfo.pricePerPerson}
                                 </p>
                                 <div className="flex items-baseline gap-3">
                                     {pkg.hasDiscount === true && pkg.originalPriceEUR && pkg.originalPriceEUR > pkg.priceEUR && (
@@ -345,7 +359,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 className="flex items-center gap-2 text-pizarra hover:text-pizarra/70 text-sm font-medium mb-8 group transition-colors"
                             >
                                 <span className="underline underline-offset-2 group-hover:no-underline">
-                                    {tPackage('notSureLevel')}
+                                    {siteTexts.packageInfo.notSureLevel}
                                 </span>
                                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </button>
@@ -522,7 +536,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                             <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center">
                                                 <Camera className="w-4 h-4 text-white" />
                                             </div>
-                                            <span className="font-semibold text-grafito">{tPackage('additionalPhotos')}</span>
+                                            <span className="font-semibold text-grafito">{siteTexts.packageInfo.additionalPhotos}</span>
                                         </div>
                                         <ChevronRight className="w-5 h-5 text-niebla" />
                                     </button>
@@ -540,7 +554,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                             <div className="w-8 h-8 bg-pizarra rounded-full flex items-center justify-center">
                                                 <MapPin className="w-4 h-4 text-white" />
                                             </div>
-                                            <span className="font-semibold text-grafito">{tPackage('howToGetHere')}</span>
+                                            <span className="font-semibold text-grafito">{siteTexts.packageInfo.howToGetHere}</span>
                                         </div>
                                         <ChevronRight className="w-5 h-5 text-niebla" />
                                     </button>
@@ -568,10 +582,10 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                         onClick={() => setIsQuoteModalOpen(true)}
                                         className="w-full bg-pizarra hover:bg-pizarra/90 text-white py-4 rounded-xl font-bold text-lg transition-all transform hover:scale-[1.02] shadow-lg shadow-pizarra/30"
                                     >
-                                        {tPackage('quote')}
+                                        {siteTexts.packageInfo.quote}
                                     </button>
                                     <p className="text-center text-white/70 text-sm mt-3">
-                                        {tPackage('quoteResponse')}
+                                        {siteTexts.packageInfo.quoteResponse}
                                     </p>
                                 </div>
                             </div>
@@ -596,7 +610,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                 <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={() => setIsMapModalOpen(false)}>
                     <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-between p-6 border-b border-niebla">
-                            <h3 className="text-xl font-bold text-grafito">{tPackage('howToGetHere')}</h3>
+                            <h3 className="text-xl font-bold text-grafito">{siteTexts.packageInfo.howToGetHere}</h3>
                             <button onClick={() => setIsMapModalOpen(false)} className="p-2 hover:bg-nieve rounded-full">
                                 <X className="w-5 h-5 text-pizarra" />
                             </button>
@@ -606,13 +620,14 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 <img
                                     src={pkg.mapImage}
                                     alt={`Mapa de ${pkg.title}`}
+                                    loading="lazy"
                                     className="w-full h-auto max-h-[70vh] object-contain rounded-xl"
                                 />
                             ) : (
                                 <div className="bg-nieve rounded-xl h-80 flex items-center justify-center">
                                     <div className="text-center">
                                         <MapPin className="w-12 h-12 text-niebla mx-auto mb-4" />
-                                        <p className="text-pizarra">{tPackage('mapComingSoon')}</p>
+                                        <p className="text-pizarra">{siteTexts.packageInfo.mapComingSoon}</p>
                                         <p className="text-niebla text-sm mt-2">{pkg.location}</p>
                                     </div>
                                 </div>

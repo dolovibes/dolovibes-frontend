@@ -5,12 +5,15 @@ import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { useQueryClient } from '@tanstack/react-query';
 import { MapPin, Clock, ArrowRight } from 'lucide-react';
 import { useCurrencyContext } from '../utils/currency';
+import { generateLocalizedUrl } from '../utils/localizedRoutes';
 import { prefetchPackage } from '../utils/dataPrefetch';
 import { extractTextFromBlocks } from '../utils/BlocksRenderer';
+import OptimizedImage from './OptimizedImage';
 
 const PackageCard = ({ pkg }) => {
     const { texts: siteTexts } = useSiteTextsContext();
     const { i18n } = useTranslation();
+    const currentLocale = i18n.language || 'es';
     const { formatPriceFromEUR } = useCurrencyContext();
     const queryClient = useQueryClient();
 
@@ -38,21 +41,18 @@ const PackageCard = ({ pkg }) => {
 
     return (
         <Link
-            to={`/paquete/${pkg.slug}`}
+            to={generateLocalizedUrl('packages', pkg.slug, currentLocale)}
             onMouseEnter={handleMouseEnter}
             className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-niebla"
         >
             {/* Image */}
-            <div className="relative h-56 overflow-hidden bg-niebla/20">
+            <div className="relative aspect-video overflow-hidden bg-niebla/20">
                 <img
                     src={pkg.image}
                     alt={pkg.title}
                     loading="lazy"
                     decoding="async"
-                    width="400"
-                    height="224"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    style={{ aspectRatio: '16/9' }}
                 />
                 {/* Overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-pizarra/60 via-transparent to-transparent"></div>

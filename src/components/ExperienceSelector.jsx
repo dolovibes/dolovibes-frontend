@@ -22,7 +22,7 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
     const seasonMap = { verano: ['verano', 'summer'], invierno: ['invierno', 'winter'] };
 
     // Obtener experiencias de Strapi
-    const { data: allExperiences = [], isLoading } = useExperiences();
+    const { data: allExperiences = [] } = useExperiences();
 
     // Filtrar por temporada seleccionada (soporta ambos formatos)
     const filteredExperiences = useMemo(() => {
@@ -162,7 +162,7 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
             {selectedExperience && (
                 <div className="mt-8 animate-bounce">
                     <div className="text-white/60 text-sm text-center mb-2">
-                        Desliza para ver los viajes
+                        {texts.selector.scrollToSeeTrips}
                     </div>
                     <ChevronDown className="w-8 h-8 text-white/60 mx-auto" />
                 </div>

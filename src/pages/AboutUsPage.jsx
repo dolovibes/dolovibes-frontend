@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { useAboutPage } from '../services/hooks';
 import { BlocksRenderer } from '../utils/BlocksRenderer';
 import Footer from '../components/Footer';
+import Hreflang from '../components/Hreflang';
+import { useStaticAlternateUrls } from '../hooks/useAlternateUrls';
 
 const AboutUsPage = ({ onOpenQuote }) => {
     const { t } = useTranslation('about');
@@ -36,6 +38,9 @@ const AboutUsPage = ({ onOpenQuote }) => {
         content: aboutData?.mission?.content || t('mission.text')
     };
 
+    // Hreflang para SEO
+    const aboutAlternateUrls = useStaticAlternateUrls('about');
+
     if (isLoading) {
         return (
             <div className="min-h-screen bg-white flex items-center justify-center">
@@ -46,8 +51,9 @@ const AboutUsPage = ({ onOpenQuote }) => {
 
     return (
         <div className="min-h-screen bg-white">
+            <Hreflang alternateUrls={aboutAlternateUrls} />
             {/* Espaciado para navbar */}
-            <div className="pt-24"></div>
+            <div className="pt-16 md:pt-20"></div>
 
             {/* Título centrado */}
             <div className="text-center py-16 md:py-20">

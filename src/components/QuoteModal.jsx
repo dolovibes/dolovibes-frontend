@@ -28,8 +28,35 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
             setStep(1);
             setError(null);
             setIsSubmitting(false);
+            
+            // Bloquear scroll del body
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Restaurar scroll del body
+            document.body.style.overflow = 'unset';
         }
+        
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
     }, [isOpen, initialInterest]);
+    
+    // Cerrar con tecla ESC
+    React.useEffect(() => {
+        const handleEscape = (e) => {
+            if (e.key === 'Escape' && isOpen) {
+                onClose();
+            }
+        };
+        
+        if (isOpen) {
+            document.addEventListener('keydown', handleEscape);
+        }
+        
+        return () => {
+            document.removeEventListener('keydown', handleEscape);
+        };
+    }, [isOpen, onClose]);
 
     if (!isOpen) return null;
 
@@ -39,7 +66,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
         setError(null);
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/quote-request`, {
+            const response = await fetch(`${import.meta.env.VITE_STRAPI_URL}/api/quote-request`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -70,21 +97,31 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                 });
             }, 3000);
         } catch (err) {
-            setError(siteTexts.quoteModal?.errorMessage || 'Ocurrió un error al enviar la solicitud. Por favor, intenta nuevamente.');
+            // Usar SiteTexts (Strapi → i18n fallback) como el resto del sitio
+            setError(siteTexts.quoteModal.errorMessage);
         } finally {
             setIsSubmitting(false);
         }
     };
 
     return (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-2 sm:p-4">
-            <div className="absolute inset-0 bg-pizarra/70 backdrop-blur-sm" onClick={onClose}></div>
+        <div 
+            className="fixed inset-0 z-[60] flex items-center justify-center p-2 sm:p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="quote-modal-title"
+        >
+            <div 
+                className="absolute inset-0 bg-pizarra/70 backdrop-blur-sm" 
+                onClick={onClose}
+                aria-hidden="true"
+            ></div>
             <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] relative z-10 overflow-hidden animate-fade-in-up">
 
                 {/* Header con diseño oscuro */}
                 <div className="bg-gradient-to-r from-pizarra to-pizarra p-4 sm:p-6 text-white flex justify-between items-center">
                     <div>
-                        <h3 className="text-lg sm:text-xl font-bold">{siteTexts.quoteModal.title}</h3>
+                        <h3 id="quote-modal-title" className="text-lg sm:text-xl font-bold">{siteTexts.quoteModal.title}</h3>
                         <p className="text-nieve text-xs sm:text-sm">{siteTexts.quoteModal.step} {step < 3 ? step : 2} {siteTexts.quoteModal.of} 2</p>
                     </div>
                     <button onClick={onClose} className="hover:bg-white/10 p-2 rounded-full transition-colors"><X size={24} /></button>
@@ -98,14 +135,13 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                             {/* Experiencia de interés */}
                             <div>
                                 <label className="block text-sm font-medium text-pizarra mb-1">
-                                    {siteTexts.quoteModal.interestLabel} *
+                                    {siteTexts.quoteModal.interestLabel}
                                 </label>
                                 <select
                                     className="w-full border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                     value={formData.interest}
                                     onChange={(e) => setFormData({ ...formData, interest: e.target.value })}
                                     disabled={experiencesLoading}
-                                    required
                                 >
                                     <option value="Personalizado">{siteTexts.quoteModal.customPlan}</option>
                                     {experiences.map(exp => <option key={exp.id} value={exp.title}>{exp.title}</option>)}
@@ -115,23 +151,23 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                             {/* Fecha y Viajeros */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-pizarra mb-1">
+                                    <label className="block text-sm font-medium text-pizarra mb-1 truncate">
                                         {siteTexts.quoteModal.dateLabel} <span className="text-niebla text-xs">{siteTexts.fieldOptional || '(Opcional)'}</span>
                                     </label>
                                     <input
                                         type="month"
                                         value={formData.date}
-                                        className="w-full h-12 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
+                                        className="w-full h-12 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino appearance-none bg-white text-pizarra"
+                                        style={{ colorScheme: 'light' }}
                                         onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-pizarra mb-1">{siteTexts.quoteModal.travelersLabel} *</label>
+                                    <label className="block text-sm font-medium text-pizarra mb-1">{siteTexts.quoteModal.travelersLabel}</label>
                                     <select
                                         className="w-full h-12 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                         value={formData.guests}
                                         onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
-                                        required
                                     >
                                         {[1, 2, 3, 4, 5, 6, 7, 8, "8+"].map(n => <option key={n} value={n}>{n} {siteTexts.labels.persons}</option>)}
                                     </select>
@@ -141,13 +177,12 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                             {/* ¿Cómo te gustaría ser contactado? - EN PASO 1 */}
                             <div>
                                 <label className="block text-sm font-medium text-pizarra mb-1">
-                                    {siteTexts.contactMethod.label} *
+                                    {siteTexts.contactMethod.label}
                                 </label>
                                 <select
-                                    className="w-full border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
+                                    className="w-full border border-niebla rounded-xl p-3 bg-white focus:ring-alpino focus:border-alpino"
                                     value={formData.contacto}
                                     onChange={(e) => setFormData({ ...formData, contacto: e.target.value })}
-                                    required
                                 >
                                     <option value="whatsapp">{siteTexts.contactMethod.whatsapp}</option>
                                     <option value="telefono">{siteTexts.contactMethod.phone}</option>
@@ -197,7 +232,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                     placeholder={siteTexts.quoteModal.namePlaceholder}
                                     value={formData.name}
                                     required
-                                    className="w-full pl-10 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
+                                    className="w-full pl-10 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 />
                             </div>
@@ -210,7 +245,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                     placeholder={siteTexts.quoteModal.emailPlaceholder}
                                     value={formData.email}
                                     required
-                                    className="w-full pl-10 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
+                                    className="w-full pl-10 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 />
                             </div>
@@ -222,7 +257,6 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                     type="tel"
                                     placeholder={siteTexts.quoteModal.phonePlaceholder}
                                     value={formData.phone}
-                                    required
                                     className="w-full pl-10 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                 />

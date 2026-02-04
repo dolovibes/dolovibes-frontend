@@ -15,6 +15,16 @@ const VideoHero = ({ onExperienceSelect }) => {
     const videoRef = useRef(null);
     const containerRef = useRef(null);
 
+    // Media del hero - SOLO si están configurados en Strapi
+    // IMPORTANTE: Definir antes de los useEffects que lo usan
+    const videoDesktop = heroData?.videoDesktop;
+    const imageMobile = heroData?.imageMobile;
+
+    // En móvil: usar imagen estática (mejor rendimiento y consumo de datos)
+    // En desktop: usar video
+    const showMobileImage = isMobile && imageMobile;
+    const showDesktopVideo = !isMobile && videoDesktop;
+
     // Detectar si es móvil
     useEffect(() => {
         const checkMobile = () => {
@@ -25,30 +35,47 @@ const VideoHero = ({ onExperienceSelect }) => {
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
-    // Retrasar la carga del video para priorizar el LCP (contenido de texto)
+    // Cargar el video inmediatamente (sin delay artificial)
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setShouldLoadVideo(true);
-        }, 100);
-        return () => clearTimeout(timer);
+        // Cargar inmediatamente para evitar parpadeo
+        setShouldLoadVideo(true);
     }, []);
 
     // Safety timeout: asegurar que el video se muestre eventualmente
     useEffect(() => {
         if (shouldLoadVideo) {
-            // Intentar mostrar el video después de 2.5s si los eventos no se dispararon
+            // Mostrar el video después de 3.5s si los eventos no se dispararon
+            // Timeout más largo para conexiones lentas en mobile
             const timer = setTimeout(() => {
                 setVideoLoaded(true);
-            }, 2500);
+            }, 3500);
             return () => clearTimeout(timer);
         }
     }, [shouldLoadVideo]);
 
-    // Videos del hero - SOLO si están configurados en Strapi
-    const videoDesktop = heroData?.videoDesktop;
-    const videoMobile = heroData?.videoMobile;
-    const videoSrc = (isMobile && videoMobile) ? videoMobile : videoDesktop;
-    const hasVideo = !!videoSrc;
+    // Intentar reproducir el video explícitamente (fix para algunos navegadores)
+    useEffect(() => {
+        if (videoRef.current && shouldLoadVideo && showDesktopVideo) {
+            const video = videoRef.current;
+
+            // Intentar reproducir explícitamente
+            const playPromise = video.play();
+
+            if (playPromise !== undefined) {
+                playPromise
+                    .then(() => {
+                        // Video se está reproduciendo correctamente
+                        setVideoLoaded(true);
+                    })
+                    .catch((error) => {
+                        // Autoplay bloqueado
+                        console.warn('[VideoHero] Autoplay blocked:', error.message);
+                        // Mostrar el video de todos modos (aunque no se reproduzca)
+                        setVideoLoaded(true);
+                    });
+            }
+        }
+    }, [shouldLoadVideo, showDesktopVideo]);
 
     // Textos del hero - priorizar Strapi, fallback a i18n
     const title = heroData?.title || siteTexts.hero.title;
@@ -59,25 +86,40 @@ const VideoHero = ({ onExperienceSelect }) => {
         <div ref={containerRef} className="relative min-h-[100svh] flex items-center justify-center bg-pizarra">
             {/* Fondo sólido como LCP - se muestra inmediatamente */}
             <div className="absolute inset-0 z-0 bg-pizarra">
-                {/* Video de fondo - SOLO si empareja con Strapi */}
-                {hasVideo && shouldLoadVideo && (
+                {/* Imagen de fondo para móvil - mejor rendimiento y menor consumo de datos */}
+                {showMobileImage && (
+                    <img
+                        src={imageMobile}
+                        alt=""
+                        loading="eager"
+                        fetchPriority="high"
+                        onLoad={() => setVideoLoaded(true)}
+                        onError={() => setVideoLoaded(true)}
+                        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+                    />
+                )}
+
+                {/* Video de fondo para desktop */}
+                {showDesktopVideo && shouldLoadVideo && (
                     <video
                         ref={videoRef}
-                        key={isMobile ? 'mobile' : 'desktop'}
+                        key="desktop"
                         autoPlay
                         loop
                         muted
                         playsInline
                         preload="auto"
+                        onCanPlay={() => setVideoLoaded(true)}
                         onCanPlayThrough={() => setVideoLoaded(true)}
                         onLoadedData={() => setVideoLoaded(true)}
+                        onPlaying={() => setVideoLoaded(true)}
                         onError={(e) => {
-                            console.error("Video loading error:", e);
-                            setVideoLoaded(true); // Mostrar aunque falle para que no oculte el fallback si lo hubiera
+                            console.error("[VideoHero] Video loading error:", e);
+                            setVideoLoaded(true);
                         }}
-                        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+                        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
                     >
-                        <source src={videoSrc} type="video/mp4" />
+                        <source src={videoDesktop} type="video/mp4" />
                     </video>
                 )}
 

@@ -202,8 +202,11 @@ export const useAboutPage = () => {
  * Cache corto (30s) para reflejar cambios del admin rápidamente
  */
 export const useSiteSettings = () => {
+  const { i18n } = useTranslation();
+  const locale = i18n.language;
+
   return useQuery({
-    queryKey: ['siteSettings'],
+    queryKey: ['siteSettings', locale],
     queryFn: () => api.getSiteSettings(),
     ...singleTypeQueryOptions,
   });
@@ -241,6 +244,107 @@ export const useLegalPage = (slug) => {
 };
 
 // ============================================
+// HOOK DE REDIRECCIÓN INTELIGENTE POR IDIOMA
+// ============================================
+
+import { useEffect, useRef, useCallback } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { generateLocalizedUrl } from '../utils/localizedRoutes';
+
+/**
+ * Hook para manejar redirección inteligente al cambiar idioma en páginas de detalle
+ * 
+ * PROBLEMA: Los slugs en Strapi son diferentes por idioma:
+ * - ES: /es/experiencias/senderismo
+ * - EN: /en/experiences/hiking-experiences
+ * 
+ * SOLUCIÓN: Cuando el idioma cambia (vía URL), usa documentId para obtener el slug correcto
+ * en el nuevo idioma y redirige automáticamente.
+ * 
+ * FALLBACK: Si no existe contenido en el idioma destino, usa el slug en español.
+ * 
+ * NOTA: Con la nueva arquitectura de rutas localizadas, este hook se activa cuando
+ * el usuario cambia idioma via LanguageSwitcher, que ya redirige a la nueva URL.
+ * El hook ahora solo necesita verificar si el slug existe en el nuevo idioma.
+ * 
+ * @param {object} options
+ * @param {string} options.documentId - Document ID del recurso actual
+ * @param {string} options.currentSlug - Slug actual en la URL
+ * @param {string} options.resourceType - 'experience' | 'package'
+ */
+export const useLanguageAwareNavigation = ({ documentId, currentSlug, resourceType }) => {
+  const { i18n } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const previousLocale = useRef(i18n.language);
+  const isRedirecting = useRef(false);
+
+  const handleLanguageChange = useCallback(async (newLocale) => {
+    // Evitar redirecciones recursivas
+    if (isRedirecting.current || !documentId) return;
+    
+    isRedirecting.current = true;
+    
+    try {
+      let newSlug = null;
+      const DEFAULT_LOCALE = 'es';
+      
+      // Intentar obtener el slug en el nuevo idioma
+      if (resourceType === 'experience') {
+        newSlug = await api.getExperienceSlugByDocumentId(documentId, newLocale);
+        
+        // Fallback a español si no existe en el idioma destino
+        if (!newSlug && newLocale !== DEFAULT_LOCALE) {
+          console.info(`[useLanguageAwareNavigation] No existe experiencia en ${newLocale}, usando fallback a español`);
+          newSlug = await api.getExperienceSlugByDocumentId(documentId, DEFAULT_LOCALE);
+        }
+      } else if (resourceType === 'package') {
+        newSlug = await api.getPackageSlugByDocumentId(documentId, newLocale);
+        
+        // Fallback a español si no existe en el idioma destino
+        if (!newSlug && newLocale !== DEFAULT_LOCALE) {
+          console.info(`[useLanguageAwareNavigation] No existe paquete en ${newLocale}, usando fallback a español`);
+          newSlug = await api.getPackageSlugByDocumentId(documentId, DEFAULT_LOCALE);
+        }
+      } else if (resourceType === 'legal') {
+        newSlug = await api.getLegalPageSlugByDocumentId(documentId, newLocale);
+        
+        // Fallback a español si no existe en el idioma destino
+        if (!newSlug && newLocale !== DEFAULT_LOCALE) {
+          console.info(`[useLanguageAwareNavigation] No existe página legal en ${newLocale}, usando fallback a español`);
+          newSlug = await api.getLegalPageSlugByDocumentId(documentId, DEFAULT_LOCALE);
+        }
+      }
+      
+      // Solo redirigir si el slug cambió
+      if (newSlug && newSlug !== currentSlug) {
+        const routeKey = resourceType === 'experience' ? 'experiences' : 
+                         resourceType === 'package' ? 'packages' : 'legal';
+        const newPath = generateLocalizedUrl(routeKey, newSlug, newLocale);
+        navigate(newPath, { replace: true });
+      }
+    } catch (error) {
+      console.warn('[useLanguageAwareNavigation] Error redirecting:', error);
+    } finally {
+      isRedirecting.current = false;
+    }
+  }, [documentId, currentSlug, resourceType, navigate]);
+
+  useEffect(() => {
+    const currentLocale = i18n.language;
+    
+    // Solo redirigir si el idioma cambió (no en carga inicial)
+    if (previousLocale.current !== currentLocale && documentId) {
+      handleLanguageChange(currentLocale);
+    }
+    
+    previousLocale.current = currentLocale;
+  }, [i18n.language, documentId, handleLanguageChange]);
+
+  return { isRedirecting: isRedirecting.current };
+};
+
+// ============================================
 export default {
   useExperiences,
   useExperience,
@@ -255,5 +359,6 @@ export default {
   useSiteTexts,
   useLegalPage,
   useFooterLegalPages,
+  useLanguageAwareNavigation,
 };
 

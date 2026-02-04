@@ -57,6 +57,61 @@ const getCurrentLocale = () => {
 const MEDIA_FIELDS = ['image', 'heroImage', 'gallery', 'itinerary'];
 
 /**
+ * Enriquece un item individual con media de español
+ * @param {Object} item - Item actual (puede tener campos vacíos)
+ * @param {Object} spanishItem - Item en español (con media completa)
+ * @returns {Object} Item enriquecido con media de español
+ */
+const enrichItemWithSpanishMedia = (item, spanishItem) => {
+  if (!item || !spanishItem) return item;
+
+  const enrichedItem = { ...item };
+
+  // Image y heroImage
+  if (!enrichedItem.image && spanishItem.image) {
+    enrichedItem.image = spanishItem.image;
+  }
+  if (!enrichedItem.heroImage && spanishItem.heroImage) {
+    enrichedItem.heroImage = spanishItem.heroImage;
+  }
+
+  // Gallery - si no hay galería o está vacía, usar la de español
+  if ((!enrichedItem.gallery || enrichedItem.gallery.length === 0) && spanishItem.gallery && spanishItem.gallery.length > 0) {
+    enrichedItem.gallery = spanishItem.gallery;
+  }
+
+  // Itinerary - manejar varios casos:
+  // 1. Si no hay itinerario actual, usar el de español completo
+  // 2. Si hay itinerario pero faltan imágenes en días específicos, copiar de español
+  if (spanishItem.itinerary && spanishItem.itinerary.length > 0) {
+    if (!enrichedItem.itinerary || enrichedItem.itinerary.length === 0) {
+      // Caso 1: No hay itinerario en el idioma actual - usar el de español
+      enrichedItem.itinerary = spanishItem.itinerary;
+    } else {
+      // Caso 2: Hay itinerario - enriquecer cada día con imágenes de español
+      enrichedItem.itinerary = enrichedItem.itinerary.map((day, idx) => {
+        const spanishDay = spanishItem.itinerary[idx];
+        if (!spanishDay) return day;
+
+        // Copiar imagen si falta
+        if (!day.image && spanishDay.image) {
+          return { ...day, image: spanishDay.image };
+        }
+        return day;
+      });
+
+      // Si el itinerario español tiene más días, agregar los que faltan
+      if (spanishItem.itinerary.length > enrichedItem.itinerary.length) {
+        const missingDays = spanishItem.itinerary.slice(enrichedItem.itinerary.length);
+        enrichedItem.itinerary = [...enrichedItem.itinerary, ...missingDays];
+      }
+    }
+  }
+
+  return enrichedItem;
+};
+
+/**
  * Enriquece los datos transformados del locale actual con imágenes del locale español
  * @param {Array|Object} currentData - Datos transformados en el locale actual
  * @param {Array|Object} spanishData - Datos transformados en español (con imágenes)
@@ -78,52 +133,13 @@ const enrichWithSpanishMedia = (currentData, spanishData) => {
     return currentData.map(item => {
       const spanishItem = spanishMap.get(item.documentId);
       if (!spanishItem) return item;
-
-      // Copiar campos de media que estén vacíos o null
-      const enrichedItem = { ...item };
-
-      // Image y heroImage
-      if (!enrichedItem.image && spanishItem.image) {
-        enrichedItem.image = spanishItem.image;
-      }
-      if (!enrichedItem.heroImage && spanishItem.heroImage) {
-        enrichedItem.heroImage = spanishItem.heroImage;
-      }
-
-      // Gallery (array de objetos con url)
-      if ((!enrichedItem.gallery || enrichedItem.gallery.length === 0) && spanishItem.gallery && spanishItem.gallery.length > 0) {
-        enrichedItem.gallery = spanishItem.gallery;
-      }
-
-      // Itinerary (array de objetos con image)
-      if (enrichedItem.itinerary && spanishItem.itinerary) {
-        enrichedItem.itinerary = enrichedItem.itinerary.map((day, idx) => {
-          if (!day.image && spanishItem.itinerary[idx]?.image) {
-            return { ...day, image: spanishItem.itinerary[idx].image };
-          }
-          return day;
-        });
-      }
-
-      return enrichedItem;
+      return enrichItemWithSpanishMedia(item, spanishItem);
     });
   }
 
   // Para objetos individuales
   if (typeof currentData === 'object') {
-    const enrichedItem = { ...currentData };
-
-    if (!enrichedItem.image && spanishData.image) {
-      enrichedItem.image = spanishData.image;
-    }
-    if (!enrichedItem.heroImage && spanishData.heroImage) {
-      enrichedItem.heroImage = spanishData.heroImage;
-    }
-    if ((!enrichedItem.gallery || enrichedItem.gallery.length === 0) && spanishData.gallery) {
-      enrichedItem.gallery = spanishData.gallery;
-    }
-
-    return enrichedItem;
+    return enrichItemWithSpanishMedia(currentData, spanishData);
   }
 
   return currentData;
@@ -137,6 +153,15 @@ const enrichWithSpanishMedia = (currentData, spanishData) => {
 
 const spanishDataCache = new Map();
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+
+/**
+ * Limpia el cache de datos españoles
+ * Se llama cuando cambia el idioma para evitar datos obsoletos
+ */
+export const clearSpanishDataCache = () => {
+  spanishDataCache.clear();
+  console.info('[Strapi] Spanish data cache cleared');
+};
 
 /**
  * Obtiene datos españoles desde cache o API
@@ -185,11 +210,45 @@ const getSpanishDataCached = async (endpoint, params, transformFn) => {
 const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSingleType = false) => {
   const locale = getCurrentLocale();
 
-  // Single Types no usan locale
+  // Single Types también necesitan locale para i18n
   if (isSingleType) {
-    const response = await strapiClient.get(endpoint, { params });
-    const data = response.data.data;
-    return transformFn ? transformFn(data) : data;
+    const finalParams = { ...params, locale };
+    
+    try {
+      const response = await strapiClient.get(endpoint, { params: finalParams });
+      const data = response.data.data;
+      
+      // Transformar datos PRIMERO
+      const transformedData = transformFn ? transformFn(data) : data;
+      
+      // Si NO estamos en español, enriquecer con imágenes de español
+      if (locale !== DEFAULT_LOCALE && transformedData) {
+        try {
+          // Obtener datos españoles desde cache
+          const transformedSpanishData = await getSpanishDataCached(endpoint, params, transformFn);
+          
+          // Enriquecer con media de español
+          const enrichedData = enrichWithSpanishMedia(transformedData, transformedSpanishData);
+          return enrichedData;
+        } catch (spanishError) {
+          // Si falla obtener español, continuar con datos actuales
+          console.warn('[Strapi] Could not fetch Spanish fallback for media:', spanishError.message);
+          return transformedData;
+        }
+      }
+      
+      return transformedData;
+    } catch (error) {
+      // Si falla en idioma actual y no es español, intentar fallback completo a español
+      if (locale !== DEFAULT_LOCALE) {
+        try {
+          return getSpanishDataCached(endpoint, params, transformFn);
+        } catch {
+          throw error;
+        }
+      }
+      throw error;
+    }
   }
 
   // Collection Types: obtener datos en el locale actual
@@ -288,6 +347,32 @@ export const getExperienceBySlug = async (slug) => {
 };
 
 /**
+ * Obtiene el slug de una experiencia por documentId en un locale específico
+ * Usado para redirección inteligente al cambiar idioma
+ * @param {string} documentId - Document ID de la experiencia
+ * @param {string} targetLocale - Locale objetivo (es, en, it, de)
+ * @returns {Promise<string|null>} Slug en el locale objetivo o null si no existe
+ */
+export const getExperienceSlugByDocumentId = async (documentId, targetLocale) => {
+  try {
+    const params = {
+      'filters[documentId][$eq]': documentId,
+      locale: targetLocale,
+      fields: ['slug'],
+    };
+    const response = await strapiClient.get('/experiences', { params });
+    const data = response.data.data;
+    if (data && data.length > 0) {
+      return data[0].slug;
+    }
+    return null;
+  } catch (error) {
+    console.warn('[Strapi] Error fetching experience slug by documentId:', error.message);
+    return null;
+  }
+};
+
+/**
  * Obtiene las experiencias para mostrar en el footer
  * Solo retorna experiencias con showInFooter=true, ordenadas por footerDisplayOrder
  */
@@ -364,6 +449,32 @@ export const getPackageBySlug = async (slug) => {
 };
 
 /**
+ * Obtiene el slug de un paquete por documentId en un locale específico
+ * Usado para redirección inteligente al cambiar idioma
+ * @param {string} documentId - Document ID del paquete
+ * @param {string} targetLocale - Locale objetivo (es, en, it, de)
+ * @returns {Promise<string|null>} Slug en el locale objetivo o null si no existe
+ */
+export const getPackageSlugByDocumentId = async (documentId, targetLocale) => {
+  try {
+    const params = {
+      'filters[documentId][$eq]': documentId,
+      locale: targetLocale,
+      fields: ['slug'],
+    };
+    const response = await strapiClient.get('/packages', { params });
+    const data = response.data.data;
+    if (data && data.length > 0) {
+      return data[0].slug;
+    }
+    return null;
+  } catch (error) {
+    console.warn('[Strapi] Error fetching package slug by documentId:', error.message);
+    return null;
+  }
+};
+
+/**
  * Obtiene paquetes de una experiencia específica
  * @param {string} experienceSlug - Slug de la experiencia
  */
@@ -392,8 +503,8 @@ export const getFeaturedPackages = async () => {
 // ═══════════════════════════════════════════════════════════════
 
 const HERO_POPULATE = {
-  videoDesktop: true,
-  videoMobile: true,
+  videoDesktop: true,   // Video para desktop
+  imageMobile: true,    // Imagen estática para móvil (mejor rendimiento)
 };
 
 /**
@@ -495,6 +606,32 @@ export const getFooterLegalPages = async () => {
   return fetchFromStrapi('/legal-pages', params, transformLegalPage);
 };
 
+/**
+ * Obtiene el slug de una página legal por documentId en un locale específico
+ * Usado para redirección inteligente al cambiar idioma
+ * @param {string} documentId - Document ID de la página legal
+ * @param {string} targetLocale - Locale objetivo (es, en, it, de)
+ * @returns {Promise<string|null>} Slug en el locale objetivo o null si no existe
+ */
+export const getLegalPageSlugByDocumentId = async (documentId, targetLocale) => {
+  try {
+    const params = {
+      'filters[documentId][$eq]': documentId,
+      locale: targetLocale,
+      fields: ['slug'],
+    };
+    const response = await strapiClient.get('/legal-pages', { params });
+    const data = response.data.data;
+    if (data && data.length > 0) {
+      return data[0].slug;
+    }
+    return null;
+  } catch (error) {
+    console.warn('[Strapi] Error fetching legal page slug by documentId:', error.message);
+    return null;
+  }
+};
+
 // ═══════════════════════════════════════════════════════════════
 // TRANSFORMADORES DE DATOS
 // Convierte formato Strapi → formato Frontend
@@ -545,11 +682,14 @@ const transformPackages = (data) => {
       // Pasar objeto media completo - getStrapiMediaUrl maneja ambos formatos
       image: getStrapiMediaUrl(item.thumbnail),
       heroImage: getStrapiMediaUrl(item.heroImage),
-      gallery: item.gallery?.map(g => ({
-        url: getStrapiMediaUrl(g.image),
-        caption: g.caption || '',
-        alt: g.caption || item.title,
-      })) || [],
+      // Galería: filtrar solo items con imagen válida
+      gallery: (item.gallery || [])
+        .map(g => ({
+          url: getStrapiMediaUrl(g.image),
+          caption: g.caption || '',
+          alt: g.caption || item.title,
+        }))
+        .filter(g => g.url), // Solo incluir fotos con URL válida
       tags: item.tags?.map(t => t.name) || [],
       season: item.season === 'summer' ? 'verano' : 'invierno',
       description: item.description,
@@ -599,7 +739,7 @@ const transformHeroSection = (data) => {
     titleHighlight: data.titleHighlight,
     subtitle: data.subtitle,
     videoDesktop: getStrapiMediaUrl(data.videoDesktop),
-    videoMobile: getStrapiMediaUrl(data.videoMobile),
+    imageMobile: getStrapiMediaUrl(data.imageMobile),
   };
 };
 
@@ -772,19 +912,21 @@ export default {
   // Experiences
   getExperiences,
   getExperienceBySlug,
+  getExperienceSlugByDocumentId,
   getFooterExperiences,
   // Packages
   getPackages,
   getPackageBySlug,
+  getPackageSlugByDocumentId,
   getPackagesByExperience,
   getFeaturedPackages,
   // Content
   getHeroSection,
   getAboutPage,
   getSiteSettings,
-  getSiteSettings,
   getSiteTexts,
   // Legal
   getLegalPageBySlug,
+  getLegalPageSlugByDocumentId,
   getFooterLegalPages,
 };

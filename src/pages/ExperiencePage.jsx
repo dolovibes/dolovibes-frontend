@@ -1,13 +1,16 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { getLocaleFromPath } from '../utils/localizedRoutes';
 import { BlocksRenderer } from '../utils/BlocksRenderer';
-import { useExperience, usePackagesByExperience, useSiteTexts } from '../services/hooks';
+import { useExperience, usePackagesByExperience, useSiteTexts, useLanguageAwareNavigation } from '../services/hooks';
 import Footer from '../components/Footer';
 import PackageCard from '../components/PackageCard';
+import Hreflang from '../components/Hreflang';
+import { useAlternateUrls } from '../hooks/useAlternateUrls';
 
 const ExperiencePage = ({ onOpenQuote }) => {
-    const { t: tCommon } = useTranslation('common');
+    const { t: tCommon, i18n } = useTranslation('common');
     const { slug } = useParams();
     const navigate = useNavigate();
 
@@ -15,6 +18,16 @@ const ExperiencePage = ({ onOpenQuote }) => {
     const { data: experience, isLoading: loadingExperience } = useExperience(slug);
     const { data: relatedPackages = [], isLoading: loadingPackages } = usePackagesByExperience(slug);
     const { data: siteTexts } = useSiteTexts();
+
+    // Hook para redirección inteligente al cambiar idioma
+    useLanguageAwareNavigation({
+        documentId: experience?.documentId,
+        currentSlug: slug,
+        resourceType: 'experience',
+    });
+
+    // Hreflang para SEO - URLs alternativas por idioma (DEBE estar antes de early returns)
+    const { alternateUrls } = useAlternateUrls('experience', experience?.documentId, slug);
 
     // Textos con fallback: Strapi > i18n
     const loadingText = siteTexts?.loadingExperience || tCommon('loading.experience');
@@ -37,13 +50,16 @@ const ExperiencePage = ({ onOpenQuote }) => {
         );
     }
 
+    // Obtener locale actual
+    const currentLocale = i18n.language || 'es';
+
     if (!experience) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-nieve">
                 <div className="text-center">
                     <h1 className="text-2xl font-bold text-grafito mb-4">{tCommon('experiences.notFound')}</h1>
                     <button
-                        onClick={() => navigate('/')}
+                        onClick={() => navigate(`/${currentLocale}`)}
                         className="bg-alpino text-white px-6 py-3 rounded-full font-semibold hover:bg-alpino transition-colors"
                     >
                         {tCommon('buttons.backToHome')}
@@ -55,12 +71,13 @@ const ExperiencePage = ({ onOpenQuote }) => {
 
     return (
         <div className="min-h-screen bg-white">
+            <Hreflang alternateUrls={alternateUrls} />
             {/* Hero - Pantalla completa como página de inicio */}
             <div className="relative min-h-screen flex items-end">
                 <img
                     src={experience.heroImage || experience.image}
                     alt={experience.title}
-                    fetchpriority="high"
+                    fetchPriority="high"
                     loading="eager"
                     width="1920"
                     height="1080"
@@ -104,7 +121,11 @@ const ExperiencePage = ({ onOpenQuote }) => {
                         <div className="text-center py-12">
                             <p className="text-niebla mb-4">{tCommon('experiences.noPackages')}</p>
                             <button
-                                onClick={() => onOpenQuote(experience.title)}
+                                onClick={() => {
+                                    if (onOpenQuote) {
+                                        onOpenQuote(experience?.title || tCommon('experiences.customTrip'));
+                                    }
+                                }}
                                 className="bg-alpino hover:bg-alpino text-white px-6 py-3 rounded-full font-semibold transition-colors"
                             >
                                 {tCommon('buttons.quoteCustomTrip')}

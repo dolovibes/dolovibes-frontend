@@ -83,11 +83,18 @@
         "emailPlaceholder": "Correo Electrónico",
         "phonePlaceholder": "Teléfono (WhatsApp)",
         "successTitle": "¡Solicitud Recibida!",
-        "successMessage": "Un experto de DOLOVIBES te contactará pronto para planificar tu viaje."
+        "successMessage": "Un experto de DOLOVIBES te contactará pronto para planificar tu viaje.",
+        "errorTitle": "Error al Enviar",
+        "errorMessage": "Ocurrió un error al enviar la solicitud. Por favor, intenta nuevamente.",
+        "sending": "Enviando...",
+        "validationError": "Por favor, completa todos los campos requeridos."
     },
     "currency": {
         "loading": "Cargando moneda...",
         "currentLabel": "Moneda actual: {currency}. Haga clic para cambiar.",
         "selectLabel": "Seleccionar moneda"
+    },
+    "selector": {
+        "scrollToSeeTrips": "Desliza para ver los viajes"
     }
 }

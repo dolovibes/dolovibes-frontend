@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSiteSettings, useFooterExperiences, useFooterLegalPages } from '../services/hooks';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
+import { generateLocalizedUrl } from '../utils/localizedRoutes';
 import { MapPin, Mail, Instagram, Facebook, FileText } from 'lucide-react';
 
 // TikTok icon component (not in lucide-react)
@@ -20,7 +21,8 @@ const WhatsAppIcon = ({ className }) => (
 );
 
 const Footer = () => {
-    const { t } = useTranslation('common');
+    const { t, i18n } = useTranslation('common');
+    const currentLocale = i18n.language || 'es';
     // SiteTextsContext para textos globales de Strapi
     const { texts: siteTexts } = useSiteTextsContext();
     const { data: siteSettings, isLoading } = useSiteSettings();
@@ -46,7 +48,7 @@ const Footer = () => {
         return (
             <footer className="bg-pizarra text-white">
                 <div className="container mx-auto px-6 py-16">
-                    <div className="text-center text-niebla">{t('loading.generic')}</div>
+                    <div className="text-center text-niebla">{siteTexts.loading.generic}</div>
                 </div>
             </footer>
         );
@@ -100,12 +102,12 @@ const Footer = () => {
 
                     {/* Experiencias - Todas ordenadas */}
                     <div>
-                        <h4 className="font-semibold text-lg mb-4">{t('footer.experiences')}</h4>
+                        <h4 className="font-semibold text-lg mb-4">{siteTexts.footer.experiences}</h4>
                         <ul className="space-y-3">
                             {footerExperiences.map((exp) => (
                                 <li key={exp.id || exp.slug}>
                                     <Link
-                                        to={`/experiencia/${exp.slug}`}
+                                        to={generateLocalizedUrl('experiences', exp.slug, currentLocale)}
                                         className="text-niebla hover:text-bruma transition-colors"
                                     >
                                         {exp.title}
@@ -117,11 +119,11 @@ const Footer = () => {
 
                     {/* Información Legal dinámica desde Strapi */}
                     <div>
-                        <h4 className="font-semibold text-lg mb-4">{t('footer.information')}</h4>
+                        <h4 className="font-semibold text-lg mb-4">{siteTexts.footer.information}</h4>
                         <ul className="space-y-3">
                             {legalPages.map((page) => (
                                 <li key={page.slug}>
-                                    <Link to={`/legal/${page.slug}`} className="text-niebla hover:text-bruma transition-colors">
+                                    <Link to={generateLocalizedUrl('legal', page.slug, currentLocale)} className="text-niebla hover:text-bruma transition-colors">
                                         {page.title}
                                     </Link>
                                 </li>
@@ -131,7 +133,7 @@ const Footer = () => {
 
                     {/* Contacto */}
                     <div>
-                        <h4 className="font-semibold text-lg mb-4">{t('footer.contact')}</h4>
+                        <h4 className="font-semibold text-lg mb-4">{siteTexts.footer.contact}</h4>
                         <ul className="space-y-3">
                             <li className="flex items-center gap-3 text-niebla">
                                 <MapPin className="w-5 h-5 text-bruma flex-shrink-0" />
@@ -164,11 +166,11 @@ const Footer = () => {
                 <div className="container mx-auto px-6 py-6">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                         <p className="text-niebla text-sm">
-                            © {new Date().getFullYear()} DoloVibes. {t('footer.allRightsReserved')}
+                            © {new Date().getFullYear()} DoloVibes. {siteTexts.footer.allRightsReserved}
                         </p>
                         <div className="flex gap-6 text-sm">
-                            <Link to="/about" className="text-niebla hover:text-white transition-colors">
-                                {t('navbar.aboutUs')}
+                            <Link to={generateLocalizedUrl('about', null, currentLocale)} className="text-niebla hover:text-white transition-colors">
+                                {siteTexts.navbar.aboutUs}
                             </Link>
                         </div>
                     </div>

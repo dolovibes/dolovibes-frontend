@@ -3,17 +3,23 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Mountain, Menu, X, ChevronDown } from 'lucide-react';
 import { useExperiences, useSiteSettings } from '../services/hooks';
+import { generateLocalizedUrl, getLocaleFromPath } from '../utils/localizedRoutes';
+import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import CurrencySelector from './CurrencySelector';
 
 const NavbarNew = ({ onOpenQuote }) => {
-    const { t } = useTranslation('common');
+    const { i18n } = useTranslation('common');
+    const { texts: siteTexts } = useSiteTextsContext();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isExperiencesOpen, setIsExperiencesOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const dropdownRef = useRef(null);
     const navigate = useNavigate();
     const location = useLocation();
+
+    // Obtener locale actual de la URL o i18n
+    const currentLocale = getLocaleFromPath(location.pathname) || i18n.language || 'es';
 
     // 🔄 Experiencias y settings desde Strapi
     const { data: experiences = [], isLoading: loadingExperiences } = useExperiences();
@@ -31,9 +37,26 @@ const NavbarNew = ({ onOpenQuote }) => {
     );
 
     // Páginas con fondo blanco que necesitan navbar oscuro desde el inicio
-    const isWhiteBackgroundPage = location.pathname === '/about' ||
-        location.pathname.startsWith('/experiencia/') ||
-        location.pathname.startsWith('/paquete/');
+    const isWhiteBackgroundPage =
+        // About en todos los idiomas
+        location.pathname.includes('/nosotros') ||
+        location.pathname.includes('/about') ||
+        location.pathname.includes('/chi-siamo') ||
+        location.pathname.includes('/ueber-uns') ||
+        // Experiencias y paquetes
+        location.pathname.includes('/experiencia') ||
+        location.pathname.includes('/experience') ||
+        location.pathname.includes('/esperienza') ||
+        location.pathname.includes('/erlebnis') ||
+        location.pathname.includes('/paquete') ||
+        location.pathname.includes('/package') ||
+        location.pathname.includes('/pacchetti') ||
+        location.pathname.includes('/paket') ||
+        // Páginas legales en todos los idiomas
+        location.pathname.includes('/legales/') ||
+        location.pathname.includes('/legal/') ||
+        location.pathname.includes('/legale/') ||
+        location.pathname.includes('/rechtliches/');
 
     useEffect(() => {
         const handleScroll = () => {
@@ -43,10 +66,11 @@ const NavbarNew = ({ onOpenQuote }) => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // Cerrar dropdown al hacer click fuera
+    // Cerrar dropdown al hacer click fuera (solo desktop)
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            // Solo ejecutar en desktop
+            if (window.innerWidth >= 768 && dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setIsExperiencesOpen(false);
             }
         };
@@ -57,7 +81,7 @@ const NavbarNew = ({ onOpenQuote }) => {
     const handleExperienceClick = (slug) => {
         setIsExperiencesOpen(false);
         setIsMenuOpen(false);
-        navigate(`/experiencia/${slug}`);
+        navigate(generateLocalizedUrl('experiences', slug, currentLocale));
     };
 
     // Usar estilo oscuro si scrolled O si estamos en página con fondo blanco
@@ -74,7 +98,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                     <div className="flex justify-between items-center h-full">
                         {/* Logo */}
                         <Link
-                            to="/"
+                            to={`/${currentLocale}`}
                             className="flex items-center"
                         >
                             <img
@@ -102,7 +126,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                         : 'text-white/90 hover:text-white hover:bg-white/10'
                                         }`}
                                 >
-                                    {t('navbar.experiences')}
+                                    {siteTexts.navbar.experiences}
                                     <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isExperiencesOpen ? 'rotate-180' : ''
                                         }`} />
                                 </button>
@@ -116,7 +140,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                         {/* Header */}
                                         <div className="bg-nieve px-6 py-3">
                                             <h3 className="text-sm font-semibold text-pizarra uppercase tracking-wider">
-                                                {t('navbar.ourExperiences')}
+                                                {siteTexts.navbar.ourExperiences}
                                             </h3>
                                         </div>
 
@@ -124,7 +148,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                             {/* Verano */}
                                             <div className="p-5">
                                                 <h4 className="text-xs font-bold text-niebla uppercase tracking-wider mb-4">
-                                                    {t('seasons.summer')}
+                                                    {siteTexts.seasons.summer}
                                                 </h4>
                                                 <ul className="space-y-1">
                                                     {summerExperiences.map((exp) => (
@@ -143,7 +167,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                             {/* Invierno */}
                                             <div className="p-5">
                                                 <h4 className="text-xs font-bold text-niebla uppercase tracking-wider mb-4">
-                                                    {t('seasons.winter')}
+                                                    {siteTexts.seasons.winter}
                                                 </h4>
                                                 <ul className="space-y-1">
                                                     {winterExperiences.map((exp) => (
@@ -165,13 +189,13 @@ const NavbarNew = ({ onOpenQuote }) => {
 
                             {/* About Us */}
                             <Link
-                                to="/about"
+                                to={generateLocalizedUrl('about', null, currentLocale)}
                                 className={`font-medium transition-colors px-3 py-2 rounded-lg ${isDarkMode
                                     ? 'text-pizarra hover:text-alpino hover:bg-nieve'
                                     : 'text-white/90 hover:text-white hover:bg-white/10'
                                     }`}
                             >
-                                {t('navbar.aboutUs')}
+                                {siteTexts.navbar.aboutUs}
                             </Link>
 
                             {/* Botón Cotizar */}
@@ -179,7 +203,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                 onClick={onOpenQuote}
                                 className="bg-pizarra hover:bg-pizarra/90 text-white px-6 py-2.5 rounded-full font-semibold transition-all transform hover:scale-105 shadow-lg shadow-pizarra/25 hover:shadow-pizarra/40"
                             >
-                                {t('navbar.quote')}
+                                {siteTexts.navbar.quote}
                             </button>
 
                             {/* Currency Selector */}
@@ -207,20 +231,32 @@ const NavbarNew = ({ onOpenQuote }) => {
                         {/* Experiencias Accordion */}
                         <div className="border-b border-niebla pb-3 mb-3">
                             <button
-                                onClick={() => setIsExperiencesOpen(!isExperiencesOpen)}
-                                className="w-full flex items-center justify-between py-3 text-grafito font-medium"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setIsExperiencesOpen(prev => !prev);
+                                }}
+                                className="w-full flex items-center justify-between py-3 text-grafito font-medium active:bg-nieve/50 rounded-lg px-2 -mx-2 touch-manipulation"
+                                type="button"
+                                aria-expanded={isExperiencesOpen}
+                                aria-controls="mobile-experiences-menu"
                             >
-                                <span>{t('navbar.experiences')}</span>
-                                <ChevronDown className={`w-5 h-5 transition-transform ${isExperiencesOpen ? 'rotate-180' : ''}`} />
+                                <span>{siteTexts.navbar.experiences}</span>
+                                <ChevronDown
+                                    className={`w-5 h-5 transition-transform duration-300 ${isExperiencesOpen ? 'rotate-180' : ''}`}
+                                    aria-hidden="true"
+                                />
                             </button>
 
-                            <div className={`overflow-hidden transition-all duration-300 ${isExperiencesOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
-                                }`}>
-                                <div className="py-2">
+                            <div
+                                id="mobile-experiences-menu"
+                                className={`overflow-hidden transition-all duration-300 ${isExperiencesOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+                                    }`}
+                            >
+                                <div className={`transition-all duration-300 ${isExperiencesOpen ? 'py-2' : 'py-0'}`}>
                                     {/* Verano */}
                                     <div className="mb-4">
                                         <p className="text-xs font-bold text-niebla uppercase tracking-wider px-3 py-2">
-                                            {t('seasons.summer')}
+                                            {siteTexts.seasons.summer}
                                         </p>
                                         {summerExperiences.map((exp) => (
                                             <button
@@ -235,7 +271,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                     {/* Invierno */}
                                     <div>
                                         <p className="text-xs font-bold text-niebla uppercase tracking-wider px-3 py-2">
-                                            {t('seasons.winter')}
+                                            {siteTexts.seasons.winter}
                                         </p>
                                         {winterExperiences.map((exp) => (
                                             <button
@@ -253,11 +289,11 @@ const NavbarNew = ({ onOpenQuote }) => {
 
                         {/* About Us */}
                         <Link
-                            to="/about"
+                            to={generateLocalizedUrl('about', null, currentLocale)}
                             onClick={() => setIsMenuOpen(false)}
                             className="block py-3 text-grafito font-medium border-b border-niebla"
                         >
-                            {t('navbar.aboutUs')}
+                            {siteTexts.navbar.aboutUs}
                         </Link>
 
                         {/* Cotizar Button */}
@@ -265,7 +301,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                             onClick={() => { setIsMenuOpen(false); onOpenQuote(); }}
                             className="w-full bg-pizarra text-white py-3 rounded-xl font-bold mt-4"
                         >
-                            {t('navbar.quote')}
+                            {siteTexts.navbar.quote}
                         </button>
 
                         {/* Language Switcher - Mobile */}
