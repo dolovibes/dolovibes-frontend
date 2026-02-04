@@ -34,20 +34,34 @@ export const SiteTextsProvider = ({ children }) => {
             }
 
             // Fallback a i18n
+            let result;
             switch (namespace) {
                 case 'home':
-                    return tHome(i18nKey);
+                    result = tHome(i18nKey);
+                    break;
                 case 'packageInfo':
-                    return tPackageInfo(i18nKey);
+                    result = tPackageInfo(i18nKey);
+                    break;
                 case 'experiences':
-                    return tExperiences(i18nKey);
+                    result = tExperiences(i18nKey);
+                    break;
                 case 'hikingLevel':
-                    return tHikingLevel(i18nKey);
+                    result = tHikingLevel(i18nKey);
+                    break;
                 case 'quoteForm':
-                    return tQuoteForm(i18nKey);
+                    result = tQuoteForm(i18nKey);
+                    break;
                 default:
-                    return tCommon(i18nKey);
+                    result = tCommon(i18nKey);
             }
+            
+            // Si i18n devuelve la misma clave, significa que no encontró traducción
+            // Devolver undefined para que el fallback del componente funcione
+            if (result === i18nKey) {
+                return undefined;
+            }
+            
+            return result;
         };
     }, [strapiTexts, tCommon, tHome, tPackageInfo, tExperiences, tHikingLevel, tQuoteForm]);
 
