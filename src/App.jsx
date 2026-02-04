@@ -2,6 +2,7 @@ import React, { useState, lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LOCALES, DEFAULT_LOCALE, ROUTE_PATHS } from './utils/localizedRoutes';
+import { LanguageTransitionProvider, useLanguageTransition } from './contexts/LanguageTransitionContext';
 
 // Componentes (cargan siempre - necesarios en todas las páginas)
 import NavbarNew from './components/NavbarNew';
@@ -21,6 +22,25 @@ const PageLoader = () => {
       <div className="text-center">
         <div className="w-12 h-12 border-4 border-pizarra border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
         <p className="text-niebla">{t('loading.generic')}</p>
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Overlay que se muestra durante la transición de idioma
+ * Previene que el usuario vea textos mezclados entre idiomas
+ */
+const LanguageTransitionOverlay = () => {
+  const { isTransitioning } = useLanguageTransition();
+
+  if (!isTransitioning) return null;
+
+  return (
+    <div className="fixed inset-0 bg-white/90 backdrop-blur-sm z-[9999] flex items-center justify-center transition-opacity duration-200">
+      <div className="text-center">
+        <div className="w-10 h-10 border-3 border-pizarra border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+        <p className="text-niebla text-sm">Cambiando idioma...</p>
       </div>
     </div>
   );
@@ -94,19 +114,22 @@ const LegacyRedirect = ({ routeType }) => {
   return <Navigate to={`/${DEFAULT_LOCALE}/${routePath}/${slug}`} replace />;
 };
 
-// --- App Principal ---
-const App = () => {
-  const [isQuoteOpen, setIsQuoteOpen] = useState(false);
-  const [initialInterest, setInitialInterest] = useState("");
-
+/**
+ * Contenido interno de la app que usa el LanguageTransitionProvider
+ * Debe estar dentro del Router porque usa hooks de react-router
+ */
+const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialInterest }) => {
   const handleOpenQuote = (interest = "") => {
     setInitialInterest(interest);
     setIsQuoteOpen(true);
   };
 
   return (
-    <Router>
+    <LanguageTransitionProvider>
       <div className="min-h-screen font-sans text-grafito bg-white">
+        {/* Overlay de transición de idioma */}
+        <LanguageTransitionOverlay />
+
         {/* Navbar global */}
         <NavbarNew onOpenQuote={() => handleOpenQuote()} />
 
@@ -161,6 +184,23 @@ const App = () => {
           initialInterest={initialInterest}
         />
       </div>
+    </LanguageTransitionProvider>
+  );
+};
+
+// --- App Principal ---
+const App = () => {
+  const [isQuoteOpen, setIsQuoteOpen] = useState(false);
+  const [initialInterest, setInitialInterest] = useState("");
+
+  return (
+    <Router>
+      <AppContent
+        isQuoteOpen={isQuoteOpen}
+        setIsQuoteOpen={setIsQuoteOpen}
+        initialInterest={initialInterest}
+        setInitialInterest={setInitialInterest}
+      />
     </Router>
   );
 };
