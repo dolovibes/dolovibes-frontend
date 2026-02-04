@@ -37,8 +37,8 @@ const LanguageTransitionOverlay = () => {
   if (!isTransitioning) return null;
 
   return (
-    <div className="fixed inset-0 bg-white/90 backdrop-blur-sm z-[9999] flex items-center justify-center transition-opacity duration-200">
-      <div className="w-10 h-10 border-3 border-pizarra border-t-transparent rounded-full animate-spin"></div>
+    <div className="fixed inset-0 bg-pizarra/20 backdrop-blur-sm z-[9999] flex items-center justify-center">
+      <div className="w-12 h-12 border-4 border-pizarra border-t-transparent rounded-full animate-spin"></div>
     </div>
   );
 };
