@@ -38,10 +38,7 @@ const LanguageTransitionOverlay = () => {
 
   return (
     <div className="fixed inset-0 bg-white/90 backdrop-blur-sm z-[9999] flex items-center justify-center transition-opacity duration-200">
-      <div className="text-center">
-        <div className="w-10 h-10 border-3 border-pizarra border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-        <p className="text-niebla text-sm">Cambiando idioma...</p>
-      </div>
+      <div className="w-10 h-10 border-3 border-pizarra border-t-transparent rounded-full animate-spin"></div>
     </div>
   );
 };
