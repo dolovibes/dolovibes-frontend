@@ -271,7 +271,7 @@ npm run build
 
 ### Variables de Entorno en Producción
 ```env
-VITE_STRAPI_URL=https://api.dolovibes.com
+VITE_STRAPI_URL=https://api.dolo-vibes.com
 VITE_STRAPI_API_TOKEN=<produccion-token>
 ```
 
