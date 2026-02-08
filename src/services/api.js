@@ -581,6 +581,7 @@ export const getSiteTexts = async () => {
 
 /**
  * Obtiene una página legal por slug
+ * Si no existe en el idioma actual, intenta obtenerla en español (fallback)
  * @param {string} slug - Slug de la página legal (ej. 'privacidad', 'terminos')
  */
 export const getLegalPageBySlug = async (slug) => {
@@ -588,7 +589,24 @@ export const getLegalPageBySlug = async (slug) => {
     'filters[slug][$eq]': slug,
   };
 
-  const pages = await fetchFromStrapi('/legal-pages', params, transformLegalPage);
+  // Intentar obtener en el idioma actual
+  let pages = await fetchFromStrapi('/legal-pages', params, transformLegalPage);
+  
+  // Si no encontró nada y no estamos en español, intentar en español como fallback
+  if ((!pages || pages.length === 0) && getCurrentLocale() !== 'es') {
+    console.log('[Strapi] Legal page not found in current locale, trying Spanish fallback...');
+    const response = await strapiClient.get('/legal-pages', {
+      params: {
+        'filters[slug][$eq]': slug,
+        locale: 'es',
+      }
+    });
+    
+    if (response.data.data && response.data.data.length > 0) {
+      pages = transformLegalPage(response.data);
+    }
+  }
+  
   return pages[0] || null;
 };
 
