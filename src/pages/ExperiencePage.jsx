@@ -31,7 +31,7 @@ const ExperiencePage = ({ onOpenQuote }) => {
     const { alternateUrls } = useAlternateUrls('experience', experience?.documentId, slug);
 
     // SEO meta tags (fix #8) - extraer texto de los bloques de descripción
-    const descriptionText = experience?.description ? extractTextFromBlocks(experience.description) : '';
+    const descriptionText = experience?.longDescription ? extractTextFromBlocks(experience.longDescription) : '';
     usePageMeta(experience?.title, descriptionText);
 
     // Textos con fallback: Strapi > i18n
