@@ -14,7 +14,7 @@ const usePageMeta = (title, description) => {
     }, [title]);
 
     useEffect(() => {
-        if (description) {
+        if (description && typeof description === 'string') {
             const trimmed = description.substring(0, 160);
             let metaDesc = document.querySelector('meta[name="description"]');
             if (!metaDesc) {

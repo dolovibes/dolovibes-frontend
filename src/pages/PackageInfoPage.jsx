@@ -48,8 +48,9 @@ const PackageInfoPage = ({ onOpenQuote }) => {
     // Hreflang para SEO - URLs alternativas por idioma (DEBE estar antes de early returns)
     const { alternateUrls } = useAlternateUrls('package', pkg?.documentId, slug);
 
-    // SEO meta tags (fix #8)
-    usePageMeta(pkg?.title, pkg?.description);
+    // SEO meta tags (fix #8) - extraer texto de los bloques de descripción
+    const descriptionText = pkg?.description ? extractTextFromBlocks(pkg.description) : '';
+    usePageMeta(pkg?.title, descriptionText);
 
     // Textos con fallback: contexto ya tiene fallback integrado
     const loadingText = tCommon('loading.package');
