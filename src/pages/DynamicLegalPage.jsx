@@ -44,7 +44,8 @@ const DynamicLegalPage = ({ slug: slugProp, fallbackTitle, fallbackContent }) =>
     }, [slug]);
 
     // Contenido: Strapi (Markdown) > Fallback (Componente existente)
-    const hasStrapiContent = pageData && pageData.content;
+    const hasStrapiContent = pageData && pageData.content && (Array.isArray(pageData.content) ? pageData.content.length > 0 : true);
+
 
     if (isLoading) {
         return (

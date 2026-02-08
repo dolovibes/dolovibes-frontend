@@ -587,6 +587,7 @@ export const getSiteTexts = async () => {
 export const getLegalPageBySlug = async (slug) => {
   const params = {
     'filters[slug][$eq]': slug,
+    populate: { content: true },
   };
 
   // Intentar obtener en el idioma actual
@@ -622,6 +623,7 @@ export const getFooterLegalPages = async () => {
     'pagination[pageSize]': 20,
     'sort': 'footerDisplayOrder:asc',
     'filters[showInFooter][$eq]': true,
+    populate: { content: true },
   };
 
   return fetchFromStrapi('/legal-pages', params, transformLegalPage);
