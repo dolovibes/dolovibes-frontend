@@ -95,16 +95,16 @@ const OptimizedImage = ({
             {/* Error fallback con botón de reintentar */}
             {hasError && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-niebla/20 text-pizarra text-sm gap-3">
-                    <span className="text-center px-2">Error al cargar imagen</span>
+                    <span className="text-center px-2">Image load error</span>
                     {showRetry && (
                         <button
                             onClick={handleRetry}
                             disabled={isRetrying}
                             className="flex items-center gap-2 px-4 py-2 bg-white/90 hover:bg-white rounded-lg shadow-sm transition-all text-xs font-medium text-pizarra hover:shadow-md disabled:opacity-50"
-                            aria-label="Reintentar carga de imagen"
+                            aria-label="Retry image load"
                         >
                             <RefreshCw className={`w-3.5 h-3.5 ${isRetrying ? 'animate-spin' : ''}`} />
-                            Reintentar
+                            Retry
                         </button>
                     )}
                 </div>

@@ -8,6 +8,7 @@ import Footer from '../components/Footer';
 import PackageCard from '../components/PackageCard';
 import Hreflang from '../components/Hreflang';
 import { useAlternateUrls } from '../hooks/useAlternateUrls';
+import usePageMeta from '../hooks/usePageMeta';
 
 const ExperiencePage = ({ onOpenQuote }) => {
     const { t: tCommon, i18n } = useTranslation('common');
@@ -28,6 +29,9 @@ const ExperiencePage = ({ onOpenQuote }) => {
 
     // Hreflang para SEO - URLs alternativas por idioma (DEBE estar antes de early returns)
     const { alternateUrls } = useAlternateUrls('experience', experience?.documentId, slug);
+
+    // SEO meta tags (fix #8)
+    usePageMeta(experience?.title, experience?.description);
 
     // Textos con fallback: Strapi > i18n
     const loadingText = siteTexts?.loadingExperience || tCommon('loading.experience');

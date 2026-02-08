@@ -20,7 +20,7 @@ const PackageRecommendations = ({ packages, experienceTitle, isLoading }) => {
         return (
             <section className="py-16 md:py-24 bg-white">
                 <div className="container mx-auto px-6 text-center">
-                    <p className="text-niebla">Cargando paquetes...</p>
+                    <p className="text-niebla">{siteTexts?.loading?.generic || 'Loading...'}</p>
                 </div>
             </section>
         );

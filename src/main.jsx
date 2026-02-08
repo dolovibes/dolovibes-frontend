@@ -6,6 +6,7 @@ import './i18n' // Inicializar i18n (solo side effects)
 import { CurrencyProvider } from './utils/currency.jsx'
 import { SiteTextsProvider } from './contexts/SiteTextsContext.jsx'
 import App from './App.jsx'
+import ErrorBoundary from './components/ErrorBoundary.jsx'
 
 // Configurar React Query cliente
 const queryClient = new QueryClient({
@@ -36,15 +37,17 @@ const InitialLoader = () => (
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Suspense fallback={<InitialLoader />}>
-      <QueryClientProvider client={queryClient}>
-        <CurrencyProvider>
-          <SiteTextsProvider>
-            <App />
-          </SiteTextsProvider>
-        </CurrencyProvider>
-      </QueryClientProvider>
-    </Suspense>
+    <ErrorBoundary>
+      <Suspense fallback={<InitialLoader />}>
+        <QueryClientProvider client={queryClient}>
+          <CurrencyProvider>
+            <SiteTextsProvider>
+              <App />
+            </SiteTextsProvider>
+          </CurrencyProvider>
+        </QueryClientProvider>
+      </Suspense>
+    </ErrorBoundary>
   </StrictMode>,
 )
 

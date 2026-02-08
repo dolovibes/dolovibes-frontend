@@ -180,12 +180,20 @@ export const LanguageTransitionProvider = ({ children }) => {
             navigate(newPath, { replace: true });
 
             // ═══════════════════════════════════════════════════════════════
-            // PASO 7: Esperar queries críticas
+            // PASO 7: Esperar queries críticas (fix #6: agregar queryFn)
             // ═══════════════════════════════════════════════════════════════
+            const criticalQueryFns = {
+                siteTexts: () => api.getSiteTexts(),
+                heroSection: () => api.getHeroSection(),
+                siteSettings: () => api.getSiteSettings(),
+            };
+
             const criticalPromises = CRITICAL_QUERY_KEYS.map(key =>
                 queryClient.fetchQuery({
                     queryKey: [key, newLocale],
+                    queryFn: criticalQueryFns[key],
                     staleTime: 0,
+                    signal: abortControllerRef.current?.signal, // fix #20: connect abort signal
                 }).catch(() => null)
             );
 

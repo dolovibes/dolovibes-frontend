@@ -5,11 +5,15 @@ import { BlocksRenderer } from '../utils/BlocksRenderer';
 import Footer from '../components/Footer';
 import Hreflang from '../components/Hreflang';
 import { useStaticAlternateUrls } from '../hooks/useAlternateUrls';
+import usePageMeta from '../hooks/usePageMeta';
 
 const AboutUsPage = ({ onOpenQuote }) => {
     const { t } = useTranslation('about');
     const { t: tCommon } = useTranslation('common');
     const { data: aboutData, isLoading } = useAboutPage();
+
+    // SEO meta tags (fix #8)
+    usePageMeta(aboutData?.pageTitle || t('title'), t('metaDescription', { defaultValue: 'Learn about DoloVibes and our passion for the Dolomites' }));
 
     // Scroll al inicio cuando carga la página
     useEffect(() => {

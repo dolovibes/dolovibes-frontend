@@ -643,8 +643,9 @@ export const useCurrencyContext = () => {
 // ============================================
 
 /**
- * Extrae el valor numérico de un precio en formato string
- * Ej: "€25,000" -> 25000, "$15,000 USD" -> 15000
+ * Extrae el valor numérico de un precio en formato string (fix #5)
+ * Ej: "€25,000" -> 25000, "$15,000 USD" -> 15000, "$25.99" -> 25.99
+ * Maneja formatos europeos (1.234,56) y americanos (1,234.56)
  * @param {string|number} priceString - Precio como string o número
  * @returns {number} Valor numérico del precio
  */
@@ -657,10 +658,45 @@ export const parsePrice = (priceString) => {
   }
   // Eliminar todo excepto números, puntos y comas
   const cleaned = priceString.replace(/[^0-9.,]/g, '');
-  // Manejar formatos con coma como separador de miles
-  // "25,000" -> 25000, "25.000" -> 25000
-  const normalized = cleaned.replace(/[.,]/g, '');
-  return parseInt(normalized, 10) || 0;
+  if (!cleaned) return 0;
+
+  const lastDot = cleaned.lastIndexOf('.');
+  const lastComma = cleaned.lastIndexOf(',');
+
+  let normalized;
+
+  if (lastDot > lastComma) {
+    // Dot appears after comma → dot is decimal separator (e.g., "1,234.56" or "25.99")
+    normalized = cleaned.replace(/,/g, '');
+  } else if (lastComma > lastDot) {
+    // Comma appears after dot → comma is decimal separator (e.g., "1.234,56" or "25,99")
+    normalized = cleaned.replace(/\./g, '').replace(',', '.');
+  } else {
+    // Only one type of separator or none
+    if (lastDot >= 0) {
+      const afterDot = cleaned.substring(lastDot + 1);
+      if (afterDot.length === 3 && cleaned.indexOf('.') === lastDot) {
+        // Single dot with 3 digits after → thousands separator (e.g., "25.000")
+        normalized = cleaned.replace(/\./g, '');
+      } else {
+        // Decimal separator (e.g., "25.99")
+        normalized = cleaned;
+      }
+    } else if (lastComma >= 0) {
+      const afterComma = cleaned.substring(lastComma + 1);
+      if (afterComma.length === 3 && cleaned.indexOf(',') === lastComma) {
+        // Single comma with 3 digits after → thousands separator (e.g., "25,000")
+        normalized = cleaned.replace(/,/g, '');
+      } else {
+        // Decimal separator (e.g., "25,99")
+        normalized = cleaned.replace(',', '.');
+      }
+    } else {
+      normalized = cleaned;
+    }
+  }
+
+  return parseFloat(normalized) || 0;
 };
 
 export default {

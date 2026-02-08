@@ -7,6 +7,7 @@ import { LanguageTransitionProvider, useLanguageTransition } from './contexts/La
 // Componentes (cargan siempre - necesarios en todas las páginas)
 import NavbarNew from './components/NavbarNew';
 import QuoteModal from './components/QuoteModal';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Páginas con Lazy Loading - solo se cargan cuando se navega a ellas
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -191,14 +192,16 @@ const App = () => {
   const [initialInterest, setInitialInterest] = useState("");
 
   return (
-    <Router>
-      <AppContent
-        isQuoteOpen={isQuoteOpen}
-        setIsQuoteOpen={setIsQuoteOpen}
-        initialInterest={initialInterest}
-        setInitialInterest={setInitialInterest}
-      />
-    </Router>
+    <ErrorBoundary>
+      <Router>
+        <AppContent
+          isQuoteOpen={isQuoteOpen}
+          setIsQuoteOpen={setIsQuoteOpen}
+          initialInterest={initialInterest}
+          setInitialInterest={setInitialInterest}
+        />
+      </Router>
+    </ErrorBoundary>
   );
 };
 

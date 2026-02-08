@@ -897,6 +897,7 @@ const transformLegalPage = (data) => {
 
   return items.map((item) => ({
     id: item.id,
+    documentId: item.documentId, // fix #19: Necesario para resolución de slugs al cambiar idioma
     title: item.title,
     slug: item.slug,
     content: item.content, // Rico texto (Markdown)
