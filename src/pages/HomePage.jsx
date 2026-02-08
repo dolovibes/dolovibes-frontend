@@ -9,9 +9,13 @@ import Hreflang from '../components/Hreflang';
 import { useFeaturedPackages } from '../services/hooks';
 import { prefetchHomeData } from '../utils/dataPrefetch';
 import { useStaticAlternateUrls } from '../hooks/useAlternateUrls';
+import usePageMeta from '../hooks/usePageMeta';
 
 const HomePage = () => {
     const { t, i18n } = useTranslation('common');
+
+    // SEO meta tags (fix #8)
+    usePageMeta('DoloVibes', t('meta.homeDescription', { defaultValue: 'Discover unique outdoor experiences in the Dolomites' }));
     const location = useLocation();
     const queryClient = useQueryClient();
     const [selectedExperience, setSelectedExperience] = useState(null);

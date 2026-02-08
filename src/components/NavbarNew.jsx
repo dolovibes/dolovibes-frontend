@@ -78,6 +78,16 @@ const NavbarNew = ({ onOpenQuote }) => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    // fix #30: Scroll lock cuando el menú mobile está abierto
+    useEffect(() => {
+        if (isMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => { document.body.style.overflow = 'unset'; };
+    }, [isMenuOpen]);
+
     const handleExperienceClick = (slug) => {
         setIsExperiencesOpen(false);
         setIsMenuOpen(false);
@@ -88,10 +98,13 @@ const NavbarNew = ({ onOpenQuote }) => {
     const isDarkMode = scrolled || isWhiteBackgroundPage;
 
     return (
-        <nav className={`fixed w-full z-50 transition-all duration-300 ${isDarkMode
-            ? 'bg-white/95 backdrop-blur-md shadow-lg'
-            : 'bg-transparent'
-            }`}>
+        <nav
+            className={`fixed w-full z-50 transition-all duration-300 ${isDarkMode
+                ? 'bg-white/95 backdrop-blur-md shadow-lg'
+                : 'bg-transparent'
+                }`}
+            aria-label="Main navigation"
+        >
             {/* Altura fija del navbar */}
             <div className="h-16 md:h-20">
                 <div className="container mx-auto px-6 h-full">
@@ -125,6 +138,17 @@ const NavbarNew = ({ onOpenQuote }) => {
                                         ? 'text-pizarra hover:text-alpino hover:bg-nieve'
                                         : 'text-white/90 hover:text-white hover:bg-white/10'
                                         }`}
+                                    aria-expanded={isExperiencesOpen}
+                                    aria-haspopup="true"
+                                    onClick={() => setIsExperiencesOpen(prev => !prev)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            setIsExperiencesOpen(prev => !prev);
+                                        } else if (e.key === 'Escape') {
+                                            setIsExperiencesOpen(false);
+                                        }
+                                    }}
                                 >
                                     {siteTexts.navbar.experiences}
                                     <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isExperiencesOpen ? 'rotate-180' : ''
@@ -218,6 +242,8 @@ const NavbarNew = ({ onOpenQuote }) => {
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
                             className={`md:hidden p-2 rounded-lg transition-colors ${isDarkMode ? 'text-grafito hover:bg-nieve' : 'text-white hover:bg-white/10'
                                 }`}
+                            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+                            aria-expanded={isMenuOpen}
                         >
                             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                         </button>

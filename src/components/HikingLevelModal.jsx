@@ -1,59 +1,65 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { X, Mountain, ChevronRight, RotateCcw } from 'lucide-react';
+import useFocusTrap from '../hooks/useFocusTrap';
 
 const HikingLevelModal = ({ isOpen, onClose }) => {
     const { t } = useTranslation('hikingLevel');
     const { texts: siteTexts } = useSiteTextsContext();
+    // fix #12 + #27: Focus trap, Escape handler, ARIA
+    const focusTrapRef = useFocusTrap(isOpen, onClose);
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answers, setAnswers] = useState({});
     const [showResult, setShowResult] = useState(false);
+    // fix #26: useRef to store timeout IDs for cleanup
+    const timeoutRef = useRef(null);
 
+    // fix #11: optional chaining para evitar crash si siteTexts no tiene la estructura esperada
     const questions = [
         {
             id: 1,
-            question: siteTexts.questions.q1,
+            question: siteTexts?.questions?.q1,
             options: [
-                { value: 'A', text: siteTexts.answers.q1a },
-                { value: 'B', text: siteTexts.answers.q1b },
-                { value: 'C', text: siteTexts.answers.q1c }
+                { value: 'A', text: siteTexts?.answers?.q1a },
+                { value: 'B', text: siteTexts?.answers?.q1b },
+                { value: 'C', text: siteTexts?.answers?.q1c }
             ]
         },
         {
             id: 2,
-            question: siteTexts.questions.q2,
+            question: siteTexts?.questions?.q2,
             options: [
-                { value: 'A', text: siteTexts.answers.q2a },
-                { value: 'B', text: siteTexts.answers.q2b },
-                { value: 'C', text: siteTexts.answers.q2c }
+                { value: 'A', text: siteTexts?.answers?.q2a },
+                { value: 'B', text: siteTexts?.answers?.q2b },
+                { value: 'C', text: siteTexts?.answers?.q2c }
             ]
         },
         {
             id: 3,
-            question: siteTexts.questions.q3,
+            question: siteTexts?.questions?.q3,
             options: [
-                { value: 'A', text: siteTexts.answers.q3a },
-                { value: 'B', text: siteTexts.answers.q3b },
-                { value: 'C', text: siteTexts.answers.q3c }
+                { value: 'A', text: siteTexts?.answers?.q3a },
+                { value: 'B', text: siteTexts?.answers?.q3b },
+                { value: 'C', text: siteTexts?.answers?.q3c }
             ]
         },
         {
             id: 4,
-            question: siteTexts.questions.q4,
+            question: siteTexts?.questions?.q4,
             options: [
-                { value: 'A', text: siteTexts.answers.q4a },
-                { value: 'B', text: siteTexts.answers.q4b },
-                { value: 'C', text: siteTexts.answers.q4c }
+                { value: 'A', text: siteTexts?.answers?.q4a },
+                { value: 'B', text: siteTexts?.answers?.q4b },
+                { value: 'C', text: siteTexts?.answers?.q4c }
             ]
         },
         {
             id: 5,
-            question: siteTexts.questions.q5,
+            question: siteTexts?.questions?.q5,
             options: [
-                { value: 'A', text: siteTexts.answers.q5a },
-                { value: 'B', text: siteTexts.answers.q5b },
-                { value: 'C', text: siteTexts.answers.q5c }
+                { value: 'A', text: siteTexts?.answers?.q5a },
+                { value: 'B', text: siteTexts?.answers?.q5b },
+                { value: 'C', text: siteTexts?.answers?.q5c }
             ]
         }
     ];
@@ -82,17 +88,38 @@ const HikingLevelModal = ({ isOpen, onClose }) => {
         }
     };
 
+    // fix #26: cleanup timeout on unmount
+    React.useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+                timeoutRef.current = null;
+            }
+        };
+    }, []);
+
     if (!isOpen) return null;
 
     const handleAnswer = (questionId, answer) => {
         const newAnswers = { ...answers, [questionId]: answer };
         setAnswers(newAnswers);
 
+        // fix #26: Clear any existing timeout and store new one
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+
         if (currentQuestion < questions.length - 1) {
             // Timeout más largo para evitar problemas en mobile con scroll táctil
-            setTimeout(() => setCurrentQuestion(currentQuestion + 1), 500);
+            timeoutRef.current = setTimeout(() => {
+                setCurrentQuestion(currentQuestion + 1);
+                timeoutRef.current = null;
+            }, 500);
         } else {
-            setTimeout(() => setShowResult(true), 500);
+            timeoutRef.current = setTimeout(() => {
+                setShowResult(true);
+                timeoutRef.current = null;
+            }, 500);
         }
     };
 
@@ -122,9 +149,9 @@ const HikingLevelModal = ({ isOpen, onClose }) => {
     const progress = ((currentQuestion + 1) / questions.length) * 100;
 
     return (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
+        <div ref={focusTrapRef} className="fixed inset-0 z-[70] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="hiking-level-title">
             {/* Backdrop */}
-            <div className="absolute inset-0 bg-pizarra/80 backdrop-blur-sm" onClick={handleClose}></div>
+            <div className="absolute inset-0 bg-pizarra/80 backdrop-blur-sm" onClick={handleClose} aria-hidden="true"></div>
 
             {/* Modal */}
             <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden animate-fade-in-up">

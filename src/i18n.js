@@ -24,7 +24,17 @@ const DEFAULT_LANGUAGE = 'es';
 // con un locale undefined/cambiante y luego se cancelan
 
 const getInitialLanguage = () => {
-  // 1. Primero intentar localStorage (más rápido y confiable)
+  // fix #21: Priorizar URL sobre localStorage para evitar flash de idioma incorrecto
+  // 1. Primero intentar detectar desde la URL
+  if (typeof window !== 'undefined') {
+    const urlPath = window.location.pathname;
+    const urlLangMatch = urlPath.match(/^\/(es|en|it|de)(?:\/|$)/);
+    if (urlLangMatch && SUPPORTED_LANGUAGES.includes(urlLangMatch[1])) {
+      return urlLangMatch[1];
+    }
+  }
+
+  // 2. Luego intentar localStorage
   try {
     const saved = localStorage.getItem('preferredLanguage');
     if (saved && SUPPORTED_LANGUAGES.includes(saved)) {
@@ -34,7 +44,7 @@ const getInitialLanguage = () => {
     // localStorage no disponible (SSR, privacidad)
   }
 
-  // 2. Luego intentar navigator.language
+  // 3. Luego intentar navigator.language
   if (typeof navigator !== 'undefined' && navigator.language) {
     const browserLang = navigator.language.substring(0, 2);
     if (SUPPORTED_LANGUAGES.includes(browserLang)) {
@@ -42,7 +52,7 @@ const getInitialLanguage = () => {
     }
   }
 
-  // 3. Fallback a español
+  // 4. Fallback a español
   return DEFAULT_LANGUAGE;
 };
 

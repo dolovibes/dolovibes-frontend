@@ -26,6 +26,7 @@ import HikingLevelModal from '../components/HikingLevelModal';
 import Footer from '../components/Footer';
 import Hreflang from '../components/Hreflang';
 import { useAlternateUrls } from '../hooks/useAlternateUrls';
+import usePageMeta from '../hooks/usePageMeta';
 
 const PackageInfoPage = ({ onOpenQuote }) => {
     const { t: tCommon, i18n } = useTranslation('common');
@@ -46,6 +47,10 @@ const PackageInfoPage = ({ onOpenQuote }) => {
 
     // Hreflang para SEO - URLs alternativas por idioma (DEBE estar antes de early returns)
     const { alternateUrls } = useAlternateUrls('package', pkg?.documentId, slug);
+
+    // SEO meta tags (fix #8) - extraer texto de los bloques de descripción
+    const descriptionText = pkg?.description ? extractTextFromBlocks(pkg.description) : '';
+    usePageMeta(pkg?.title, descriptionText);
 
     // Textos con fallback: contexto ya tiene fallback integrado
     const loadingText = tCommon('loading.package');
@@ -230,14 +235,15 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                 </div>
             </div>
 
-            {/* Sección de Itinerario - Layout lado a lado */}
+            {/* Sección de Itinerario - Layout lado a lado (fix #9: null check) */}
+            {pkg.itinerary?.length > 0 && pkg.itinerary[currentDay] && (
             <section ref={itineraryRef} className="bg-nieve">
                 <div className="flex flex-col md:flex-row h-auto md:h-[450px]">
                     {/* Imagen izquierda */}
                     <div className="w-full md:w-1/2 h-[250px] md:h-full relative overflow-hidden">
                         <img
-                            src={pkg.itinerary[currentDay].image || pkg.heroImage || pkg.image}
-                            alt={`${siteTexts.packageInfo.day} ${pkg.itinerary[currentDay].day}`}
+                            src={pkg.itinerary[currentDay]?.image || pkg.heroImage || pkg.image}
+                            alt={`${siteTexts.packageInfo.day} ${pkg.itinerary[currentDay]?.day}`}
                             loading="lazy"
                             width="800"
                             height="450"
@@ -321,6 +327,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                     </div>
                 </div>
             </section>
+            )}
 
             {/* Espaciador entre itinerario y detalles */}
             <div className="h-8 sm:h-10 md:h-0"></div>
@@ -605,13 +612,23 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                 packageSlug={pkg.slug}
             />
 
-            {/* Modal de Mapa */}
+            {/* Modal de Mapa (fix #29: ARIA semantics) */}
             {isMapModalOpen && (
-                <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={() => setIsMapModalOpen(false)}>
+                <div
+                    className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+                    onClick={() => setIsMapModalOpen(false)}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label={siteTexts.packageInfo?.howToGetHere || 'Map'}
+                >
                     <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-between p-6 border-b border-niebla">
                             <h3 className="text-xl font-bold text-grafito">{siteTexts.packageInfo.howToGetHere}</h3>
-                            <button onClick={() => setIsMapModalOpen(false)} className="p-2 hover:bg-nieve rounded-full">
+                            <button
+                                onClick={() => setIsMapModalOpen(false)}
+                                className="p-2 hover:bg-nieve rounded-full"
+                                aria-label="Close map"
+                            >
                                 <X className="w-5 h-5 text-pizarra" />
                             </button>
                         </div>

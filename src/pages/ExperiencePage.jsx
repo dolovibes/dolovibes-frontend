@@ -2,12 +2,13 @@ import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getLocaleFromPath } from '../utils/localizedRoutes';
-import { BlocksRenderer } from '../utils/BlocksRenderer';
+import { BlocksRenderer, extractTextFromBlocks } from '../utils/BlocksRenderer';
 import { useExperience, usePackagesByExperience, useSiteTexts, useLanguageAwareNavigation } from '../services/hooks';
 import Footer from '../components/Footer';
 import PackageCard from '../components/PackageCard';
 import Hreflang from '../components/Hreflang';
 import { useAlternateUrls } from '../hooks/useAlternateUrls';
+import usePageMeta from '../hooks/usePageMeta';
 
 const ExperiencePage = ({ onOpenQuote }) => {
     const { t: tCommon, i18n } = useTranslation('common');
@@ -28,6 +29,10 @@ const ExperiencePage = ({ onOpenQuote }) => {
 
     // Hreflang para SEO - URLs alternativas por idioma (DEBE estar antes de early returns)
     const { alternateUrls } = useAlternateUrls('experience', experience?.documentId, slug);
+
+    // SEO meta tags (fix #8) - extraer texto de los bloques de descripción
+    const descriptionText = experience?.longDescription ? extractTextFromBlocks(experience.longDescription) : '';
+    usePageMeta(experience?.title, descriptionText);
 
     // Textos con fallback: Strapi > i18n
     const loadingText = siteTexts?.loadingExperience || tCommon('loading.experience');

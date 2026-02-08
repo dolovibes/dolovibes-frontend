@@ -1,27 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import useFocusTrap from '../hooks/useFocusTrap';
 
 const PhotoGalleryModal = ({ isOpen, onClose, photos, packageTitle, packageSlug }) => {
     const { t } = useTranslation('packageInfo');
     const [currentIndex, setCurrentIndex] = useState(0);
     const [imageError, setImageError] = useState(false);
+    // fix #12 + #28: Focus trap, Escape handler, ARIA
+    const focusTrapRef = useFocusTrap(isOpen, onClose);
 
-    // Reset to first photo when modal opens
+    // Reset to first photo when modal opens + scroll lock
     useEffect(() => {
         if (isOpen) {
             setCurrentIndex(0);
             setImageError(false);
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
         }
+        return () => { document.body.style.overflow = 'unset'; };
     }, [isOpen]);
 
-    // Keyboard navigation
+    // Keyboard navigation (Escape handled by useFocusTrap)
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (!isOpen) return;
             if (e.key === 'ArrowLeft') goToPrevious();
             if (e.key === 'ArrowRight') goToNext();
-            if (e.key === 'Escape') onClose();
         };
 
         window.addEventListener('keydown', handleKeyDown);
@@ -61,17 +67,25 @@ const PhotoGalleryModal = ({ isOpen, onClose, photos, packageTitle, packageSlug 
     const caption = getTranslatedCaption();
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center">
+        <div
+            ref={focusTrapRef}
+            className="fixed inset-0 z-[100] flex items-center justify-center"
+            role="dialog"
+            aria-modal="true"
+            aria-label={t('gallery.title', { title: packageTitle })}
+        >
             {/* Backdrop */}
             <div
                 className="absolute inset-0 bg-black/90"
                 onClick={onClose}
+                aria-hidden="true"
             ></div>
 
             {/* Close button */}
             <button
                 onClick={onClose}
                 className="absolute top-4 right-4 z-20 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors"
+                aria-label={t('gallery.close')}
             >
                 <X className="w-6 h-6" />
             </button>
@@ -87,12 +101,14 @@ const PhotoGalleryModal = ({ isOpen, onClose, photos, packageTitle, packageSlug 
                     <button
                         onClick={goToPrevious}
                         className="absolute left-4 md:left-8 z-20 w-14 h-14 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors"
+                        aria-label={t('gallery.previous')}
                     >
                         <ChevronLeft className="w-8 h-8" />
                     </button>
                     <button
                         onClick={goToNext}
                         className="absolute right-4 md:right-8 z-20 w-14 h-14 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors"
+                        aria-label={t('gallery.next')}
                     >
                         <ChevronRight className="w-8 h-8" />
                     </button>

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useId, useRef } from 'react';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { X, User, Mail, Phone, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import { useExperiences } from '../services/hooks';
+import useFocusTrap from '../hooks/useFocusTrap';
 
 const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
     const { texts: siteTexts } = useSiteTextsContext();
@@ -9,6 +10,18 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
     const [step, setStep] = useState(1);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
+    // fix #26: useRef to store timeout ID for cleanup
+    const timeoutRef = useRef(null);
+    // fix #25: Generate unique IDs for form fields
+    const idPrefix = useId();
+    const interestId = `${idPrefix}-interest`;
+    const dateId = `${idPrefix}-date`;
+    const guestsId = `${idPrefix}-guests`;
+    const contactoId = `${idPrefix}-contacto`;
+    const notesId = `${idPrefix}-notes`;
+    const nameId = `${idPrefix}-name`;
+    const emailId = `${idPrefix}-email`;
+    const phoneId = `${idPrefix}-phone`;
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -16,7 +29,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
         contacto: "whatsapp",
         date: "",
         guests: "2",
-        interest: initialInterest || siteTexts.quoteModal.customPlan,
+        interest: initialInterest || siteTexts?.quoteModal?.customPlan || "",
         notes: ""
     });
 
@@ -36,27 +49,18 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
             document.body.style.overflow = 'unset';
         }
         
+        // fix #26: cleanup timeout on unmount or when modal closes
         return () => {
             document.body.style.overflow = 'unset';
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+                timeoutRef.current = null;
+            }
         };
     }, [isOpen, initialInterest]);
     
-    // Cerrar con tecla ESC
-    React.useEffect(() => {
-        const handleEscape = (e) => {
-            if (e.key === 'Escape' && isOpen) {
-                onClose();
-            }
-        };
-        
-        if (isOpen) {
-            document.addEventListener('keydown', handleEscape);
-        }
-        
-        return () => {
-            document.removeEventListener('keydown', handleEscape);
-        };
-    }, [isOpen, onClose]);
+    // fix #12: Focus trap (incluye Escape handler y restauración de focus)
+    const focusTrapRef = useFocusTrap(isOpen, onClose);
 
     if (!isOpen) return null;
 
@@ -82,7 +86,8 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
             }
 
             setStep(3);
-            setTimeout(() => {
+            // fix #26: store timeout ID for cleanup
+            timeoutRef.current = setTimeout(() => {
                 onClose();
                 setStep(1);
                 setFormData({
@@ -92,20 +97,22 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                     contacto: "whatsapp",
                     date: "",
                     guests: "2",
-                    interest: initialInterest || siteTexts.quoteModal.customPlan,
+                    interest: initialInterest || siteTexts?.quoteModal?.customPlan || "",
                     notes: ""
                 });
+                timeoutRef.current = null;
             }, 3000);
         } catch (err) {
             // Usar SiteTexts (Strapi → i18n fallback) como el resto del sitio
-            setError(siteTexts.quoteModal.errorMessage);
+            setError(siteTexts.quoteModal?.errorMessage || 'Ocurrió un error al enviar la solicitud. Por favor, intenta nuevamente.');
         } finally {
             setIsSubmitting(false);
         }
     };
 
     return (
-        <div 
+        <div
+            ref={focusTrapRef}
             className="fixed inset-0 z-[60] flex items-center justify-center p-2 sm:p-4"
             role="dialog"
             aria-modal="true"
@@ -134,10 +141,11 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
 
                             {/* Experiencia de interés */}
                             <div>
-                                <label className="block text-sm font-medium text-pizarra mb-1">
+                                <label htmlFor={interestId} className="block text-sm font-medium text-pizarra mb-1">
                                     {siteTexts.quoteModal.interestLabel}
                                 </label>
                                 <select
+                                    id={interestId}
                                     className="w-full border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                     value={formData.interest}
                                     onChange={(e) => setFormData({ ...formData, interest: e.target.value })}
@@ -151,10 +159,11 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                             {/* Fecha y Viajeros */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-pizarra mb-1 truncate">
+                                    <label htmlFor={dateId} className="block text-sm font-medium text-pizarra mb-1 truncate">
                                         {siteTexts.quoteModal.dateLabel} <span className="text-niebla text-xs">{siteTexts.fieldOptional || '(Opcional)'}</span>
                                     </label>
                                     <input
+                                        id={dateId}
                                         type="month"
                                         value={formData.date}
                                         className="w-full h-12 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino appearance-none bg-white text-pizarra"
@@ -163,8 +172,9 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-pizarra mb-1">{siteTexts.quoteModal.travelersLabel}</label>
+                                    <label htmlFor={guestsId} className="block text-sm font-medium text-pizarra mb-1">{siteTexts.quoteModal.travelersLabel}</label>
                                     <select
+                                        id={guestsId}
                                         className="w-full h-12 border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino"
                                         value={formData.guests}
                                         onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
@@ -176,10 +186,11 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
 
                             {/* ¿Cómo te gustaría ser contactado? - EN PASO 1 */}
                             <div>
-                                <label className="block text-sm font-medium text-pizarra mb-1">
+                                <label htmlFor={contactoId} className="block text-sm font-medium text-pizarra mb-1">
                                     {siteTexts.contactMethod.label}
                                 </label>
                                 <select
+                                    id={contactoId}
                                     className="w-full border border-niebla rounded-xl p-3 bg-white focus:ring-alpino focus:border-alpino"
                                     value={formData.contacto}
                                     onChange={(e) => setFormData({ ...formData, contacto: e.target.value })}
@@ -192,10 +203,11 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
 
                             {/* Notas */}
                             <div>
-                                <label className="block text-sm font-medium text-pizarra mb-1">
+                                <label htmlFor={notesId} className="block text-sm font-medium text-pizarra mb-1">
                                     {siteTexts.quoteModal.notesLabel} <span className="text-niebla text-xs">{siteTexts.fieldOptional || '(Opcional)'}</span>
                                 </label>
                                 <textarea
+                                    id={notesId}
                                     className="w-full border border-niebla rounded-xl p-3 focus:ring-alpino focus:border-alpino h-24"
                                     placeholder={siteTexts.quoteModal.notesPlaceholder}
                                     value={formData.notes}
@@ -204,7 +216,13 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                             </div>
 
                             <button
-                                onClick={() => setStep(2)}
+                                onClick={() => {
+                                    // fix #31: Validate required fields before advancing to step 2
+                                    if (!formData.interest || !formData.guests) {
+                                        return; // Don't advance if required fields are empty
+                                    }
+                                    setStep(2);
+                                }}
                                 className="w-full bg-pizarra text-white font-bold py-3 rounded-xl hover:bg-pizarra/90 transition-colors flex justify-center items-center gap-2 mt-4"
                             >
                                 {siteTexts.buttons.next} <ArrowRight size={18} />
@@ -227,7 +245,9 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                             {/* Nombre */}
                             <div className="relative">
                                 <User className="absolute left-3 top-3.5 text-niebla" size={18} />
+                                <label htmlFor={nameId} className="sr-only">{siteTexts.quoteModal.namePlaceholder}</label>
                                 <input
+                                    id={nameId}
                                     type="text"
                                     placeholder={siteTexts.quoteModal.namePlaceholder}
                                     value={formData.name}
@@ -240,7 +260,9 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                             {/* Email */}
                             <div className="relative">
                                 <Mail className="absolute left-3 top-3.5 text-niebla" size={18} />
+                                <label htmlFor={emailId} className="sr-only">{siteTexts.quoteModal.emailPlaceholder}</label>
                                 <input
+                                    id={emailId}
                                     type="email"
                                     placeholder={siteTexts.quoteModal.emailPlaceholder}
                                     value={formData.email}
@@ -253,7 +275,9 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                             {/* Teléfono */}
                             <div className="relative">
                                 <Phone className="absolute left-3 top-3.5 text-niebla" size={18} />
+                                <label htmlFor={phoneId} className="sr-only">{siteTexts.quoteModal.phonePlaceholder}</label>
                                 <input
+                                    id={phoneId}
                                     type="tel"
                                     placeholder={siteTexts.quoteModal.phonePlaceholder}
                                     value={formData.phone}

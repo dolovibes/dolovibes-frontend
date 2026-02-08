@@ -1,9 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useId } from 'react';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { CheckCircle, Send, X, AlertCircle } from 'lucide-react';
+import useFocusTrap from '../hooks/useFocusTrap';
 
 const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
     const { texts: siteTexts } = useSiteTextsContext();
+    // fix #12: Focus trap
+    const focusTrapRef = useFocusTrap(isOpen, onClose);
+    // fix #25: Generate unique IDs for form fields
+    const idPrefix = useId();
+    const nombreId = `${idPrefix}-nombre`;
+    const apellidoId = `${idPrefix}-apellido`;
+    const ciudadId = `${idPrefix}-ciudad`;
+    const estadoId = `${idPrefix}-estado`;
+    const paisId = `${idPrefix}-pais`;
+    const emailId = `${idPrefix}-email`;
+    const telefonoId = `${idPrefix}-telefono`;
+    const contactoId = `${idPrefix}-contacto`;
+    const mesViajeId = `${idPrefix}-mesViaje`;
+    const viajerosId = `${idPrefix}-viajeros`;
+    const serviciosAdicionalesId = `${idPrefix}-serviciosAdicionales`;
     const [formData, setFormData] = useState({
         nombre: '',
         apellido: '',
@@ -90,7 +106,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
 
             setIsSubmitting(false);
             setIsSubmitted(true);
-            setTimeout(() => {
+            const timeoutId = setTimeout(() => {
                 onClose();
                 setIsSubmitted(false);
                 setValidationError(false);
@@ -101,6 +117,8 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                     packageTitle: packageTitle || ''
                 });
             }, 3000);
+            // fix #26: cleanup timeout on unmount
+            return () => clearTimeout(timeoutId);
         } catch (err) {
             setError(siteTexts.packageQuoteModal?.errorMessage || 'Ocurrió un error al enviar la solicitud. Por favor, intenta nuevamente.');
             setIsSubmitting(false);
@@ -124,6 +142,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
 
     return (
         <div 
+            ref={focusTrapRef}
             className="fixed inset-0 z-[60] flex items-center justify-center p-4"
             role="dialog"
             aria-modal="true"
@@ -213,10 +232,11 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-pizarra mb-1.5">
+                                        <label htmlFor={apellidoId} className="block text-sm font-medium text-pizarra mb-1.5">
                                             {siteTexts.packageQuoteModal?.lastName || 'Apellido'}
                                         </label>
                                         <input
+                                            id={apellidoId}
                                             type="text"
                                             name="apellido"
                                             value={formData.apellido}
@@ -230,10 +250,11 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                 {/* Ciudad, Estado, País */}
                                 <div className="grid md:grid-cols-3 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-pizarra mb-1.5">
+                                        <label htmlFor={ciudadId} className="block text-sm font-medium text-pizarra mb-1.5">
                                             {siteTexts.packageQuoteModal?.city || 'Ciudad'}
                                         </label>
                                         <input
+                                            id={ciudadId}
                                             type="text"
                                             name="ciudad"
                                             value={formData.ciudad}
@@ -243,10 +264,11 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-pizarra mb-1.5">
+                                        <label htmlFor={estadoId} className="block text-sm font-medium text-pizarra mb-1.5">
                                             {siteTexts.packageQuoteModal?.state || 'Estado'}
                                         </label>
                                         <input
+                                            id={estadoId}
                                             type="text"
                                             name="estado"
                                             value={formData.estado}
@@ -256,10 +278,11 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-pizarra mb-1.5">
+                                        <label htmlFor={paisId} className="block text-sm font-medium text-pizarra mb-1.5">
                                             {siteTexts.packageQuoteModal?.country || 'País'}
                                         </label>
                                         <input
+                                            id={paisId}
                                             type="text"
                                             name="pais"
                                             value={formData.pais}
@@ -273,10 +296,11 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                 {/* Email y Teléfono */}
                                 <div className="grid md:grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-pizarra mb-1.5">
+                                        <label htmlFor={emailId} className="block text-sm font-medium text-pizarra mb-1.5">
                                             {siteTexts.packageQuoteModal?.email || 'Email'} *
                                         </label>
                                         <input
+                                            id={emailId}
                                             type="email"
                                             name="email"
                                             required
@@ -287,10 +311,11 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-pizarra mb-1.5">
+                                        <label htmlFor={telefonoId} className="block text-sm font-medium text-pizarra mb-1.5">
                                             {siteTexts.packageQuoteModal?.phone || 'Teléfono'}
                                         </label>
                                         <input
+                                            id={telefonoId}
                                             type="tel"
                                             name="telefono"
                                             value={formData.telefono}
@@ -303,10 +328,11 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
 
                                 {/* Cómo te gustaría ser contactado */}
                                 <div>
-                                    <label className="block text-sm font-medium text-pizarra mb-1.5">
+                                    <label htmlFor={contactoId} className="block text-sm font-medium text-pizarra mb-1.5">
                                         {siteTexts.contactMethod?.label || '¿Cómo te gustaría ser contactado?'}
                                     </label>
                                     <select
+                                        id={contactoId}
                                         name="contacto"
                                         value={formData.contacto}
                                         onChange={handleChange}
@@ -321,10 +347,11 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                 {/* Mes del viaje y Número de viajeros */}
                                 <div className="grid md:grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-pizarra mb-1.5">
+                                        <label htmlFor={mesViajeId} className="block text-sm font-medium text-pizarra mb-1.5">
                                             {siteTexts.packageQuoteModal?.travelMonth || 'Mes del viaje'}
                                         </label>
                                         <input
+                                            id={mesViajeId}
                                             type="month"
                                             name="mesViaje"
                                             value={formData.mesViaje}
@@ -333,10 +360,11 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-pizarra mb-1.5">
+                                        <label htmlFor={viajerosId} className="block text-sm font-medium text-pizarra mb-1.5">
                                             {siteTexts.packageQuoteModal?.travelers || 'Número de viajeros'}
                                         </label>
                                         <select
+                                            id={viajerosId}
                                             name="viajeros"
                                             value={formData.viajeros}
                                             onChange={handleChange}
@@ -382,10 +410,11 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
 
                                 {/* Servicios adicionales */}
                                 <div>
-                                    <label className="block text-sm font-medium text-pizarra mb-1.5">
+                                    <label htmlFor={serviciosAdicionalesId} className="block text-sm font-medium text-pizarra mb-1.5">
                                         {siteTexts.packageQuoteModal?.additionalServices || 'Servicios adicionales'} <span className="text-niebla text-xs">{siteTexts.optional || '(Opcional)'}</span>
                                     </label>
                                     <textarea
+                                        id={serviciosAdicionalesId}
                                         name="serviciosAdicionales"
                                         value={formData.serviciosAdicionales}
                                         onChange={handleChange}

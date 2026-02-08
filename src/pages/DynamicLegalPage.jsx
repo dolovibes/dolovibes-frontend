@@ -7,6 +7,7 @@ import Footer from '../components/Footer';
 import Hreflang from '../components/Hreflang';
 import { useLegalPage, useLanguageAwareNavigation } from '../services/hooks';
 import { useAlternateUrls } from '../hooks/useAlternateUrls';
+import usePageMeta from '../hooks/usePageMeta';
 
 // Componente para renderizar la página legal
 // Si hay contenido en Strapi (data), lo usa. Si no, usa el fallback (children).
@@ -32,22 +33,26 @@ const DynamicLegalPage = ({ slug: slugProp, fallbackTitle, fallbackContent }) =>
     // Hreflang para SEO - URLs alternativas por idioma (DEBE estar antes de early returns)
     const { alternateUrls } = useAlternateUrls('legal', pageData?.documentId, slug);
 
+    // Título: Strapi > Prop > i18n fallback (DEBE estar antes de usePageMeta)
+    const title = pageData?.title || fallbackTitle;
+
+    // SEO meta tags (fix #8)
+    usePageMeta(title);
+
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [slug]);
 
-    // Título: Strapi > Prop > i18n fallback
-    const title = pageData?.title || fallbackTitle;
-
     // Contenido: Strapi (Markdown) > Fallback (Componente existente)
-    const hasStrapiContent = pageData && pageData.content;
+    const hasStrapiContent = pageData && pageData.content && (Array.isArray(pageData.content) ? pageData.content.length > 0 : true);
+
 
     if (isLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-white">
                 <div className="text-center">
                     <div className="w-12 h-12 border-4 border-pizarra border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-niebla">Cargando...</p>
+                    <p className="text-niebla">{t('loading.generic')}</p>
                 </div>
             </div>
         );
@@ -88,8 +93,8 @@ const DynamicLegalPage = ({ slug: slugProp, fallbackTitle, fallbackContent }) =>
                     ) : (
                         <div className="text-center py-12">
                             <FileText className="w-16 h-16 text-niebla mx-auto mb-4" />
-                            <h2 className="text-2xl font-bold text-grafito mb-2">Contenido no disponible</h2>
-                            <p className="text-pizarra">Estamos actualizando esta sección legal.</p>
+                            <h2 className="text-2xl font-bold text-grafito mb-2">{t('legal.contentUnavailable', 'Content unavailable')}</h2>
+                            <p className="text-pizarra">{t('legal.updatingSection', 'We are updating this legal section.')}</p>
                         </div>
                     )}
                 </div>
