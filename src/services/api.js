@@ -153,6 +153,8 @@ const enrichWithSpanishMedia = (currentData, spanishData) => {
 
 const spanishDataCache = new Map();
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+// fix #41: Deduplicate concurrent in-flight requests to prevent race conditions
+const pendingSpanishRequests = new Map();
 
 /**
  * Limpia el cache de datos españoles
@@ -160,11 +162,11 @@ const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
  */
 export const clearSpanishDataCache = () => {
   spanishDataCache.clear();
-  console.info('[Strapi] Spanish data cache cleared');
 };
 
 /**
  * Obtiene datos españoles desde cache o API
+ * fix #41: Deduplicates concurrent requests for the same endpoint
  */
 const getSpanishDataCached = async (endpoint, params, transformFn) => {
   const cacheKey = `${endpoint}:${JSON.stringify(params)}`;
@@ -175,19 +177,32 @@ const getSpanishDataCached = async (endpoint, params, transformFn) => {
     return cached.data;
   }
 
-  // Obtener datos frescos
-  const spanishParams = { ...params, locale: DEFAULT_LOCALE };
-  const response = await strapiClient.get(endpoint, { params: spanishParams });
-  const data = response.data.data;
-  const transformedData = transformFn ? transformFn(data) : data;
+  // Deduplicate: reuse in-flight request for the same cache key
+  if (pendingSpanishRequests.has(cacheKey)) {
+    return pendingSpanishRequests.get(cacheKey);
+  }
 
-  // Guardar en cache
-  spanishDataCache.set(cacheKey, {
-    data: transformedData,
-    expiry: Date.now() + CACHE_TTL,
-  });
+  const promise = (async () => {
+    try {
+      const spanishParams = { ...params, locale: DEFAULT_LOCALE };
+      const response = await strapiClient.get(endpoint, { params: spanishParams });
+      const data = response.data.data;
+      const transformedData = transformFn ? transformFn(data) : data;
 
-  return transformedData;
+      // Guardar en cache
+      spanishDataCache.set(cacheKey, {
+        data: transformedData,
+        expiry: Date.now() + CACHE_TTL,
+      });
+
+      return transformedData;
+    } finally {
+      pendingSpanishRequests.delete(cacheKey);
+    }
+  })();
+
+  pendingSpanishRequests.set(cacheKey, promise);
+  return promise;
 };
 
 /**
@@ -668,7 +683,7 @@ const transformExperiences = (data) => {
     documentId: item.documentId, // Necesario para enrichWithSpanishMedia
     title: item.title,
     slug: item.slug,
-    season: item.season === 'summer' ? 'verano' : 'invierno',
+    season: item.season, // fix #42: keep raw Strapi value (summer/winter) - frontend seasonMap handles both formats
     image: getStrapiMediaUrl(item.thumbnail),
     heroImage: getStrapiMediaUrl(item.heroImage),
     longDescription: item.longDescription,
@@ -712,7 +727,7 @@ const transformPackages = (data) => {
         }))
         .filter(g => g.url), // Solo incluir fotos con URL válida
       tags: item.tags?.map(t => t.name) || [],
-      season: item.season === 'summer' ? 'verano' : 'invierno',
+      season: item.season, // fix #42: keep raw Strapi value (summer/winter)
       description: item.description,
       itinerary: item.itinerary?.map(day => ({
         day: day.day,

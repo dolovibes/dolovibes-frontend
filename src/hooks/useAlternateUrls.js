@@ -42,24 +42,25 @@ export const useAlternateUrls = (contentType, documentId, currentSlug) => {
     }))
   });
   
-  // Extract data for stable dependency
-  const slugData = slugQueries.map(q => q.data);
+  // fix #50: Extract individual values for stable memo dependencies
   const isLoading = slugQueries.some(q => q.isLoading);
-  
-  // Build alternate URLs object with stable dependencies
+
+  // Build alternate URLs with stable dependencies using JSON.stringify
+  const slugDataKey = JSON.stringify(slugQueries.map(q => q.data));
   const alternateUrls = useMemo(() => {
     const urls = {};
-    
+    const slugData = JSON.parse(slugDataKey);
+
     SUPPORTED_LOCALES.forEach((locale, index) => {
       const slug = slugData[index] || currentSlug;
-      
+
       if (slug && routeKey) {
         urls[locale] = generateLocalizedUrl(routeKey, slug, locale);
       }
     });
-    
+
     return urls;
-  }, [slugData, currentSlug, routeKey]);
+  }, [slugDataKey, currentSlug, routeKey]);
   
   return { alternateUrls, isLoading };
 };
