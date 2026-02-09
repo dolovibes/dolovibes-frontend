@@ -69,7 +69,7 @@ const LocaleSync = ({ children }) => {
       }
     } else if (lang && !SUPPORTED_LOCALES.includes(lang)) {
       // Idioma no soportado, redirigir al default
-      const newPath = location.pathname.replace(`/${lang}`, `/${DEFAULT_LOCALE}`);
+      const newPath = location.pathname.replace(new RegExp(`^/${lang}(/|$)`), `/${DEFAULT_LOCALE}$1`);
       navigate(newPath, { replace: true });
     }
   }, [lang, i18n, location.pathname, navigate]);

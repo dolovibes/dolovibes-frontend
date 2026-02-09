@@ -88,13 +88,15 @@ export const prefetchPackage = async (queryClient, slug, locale) => {
  */
 export const smartPrefetch = (queryClient, currentPath, locale) => {
   // En el home, prefetch de datos comunes
-  if (currentPath === '/') {
+  // fix #49: Match home with or without locale prefix
+  if (currentPath === '/' || /^\/[a-z]{2}\/?$/.test(currentPath)) {
     prefetchHomeData(queryClient, locale);
   }
   
-  // En una página de experiencia, prefetch de paquetes relacionados
-  if (currentPath.startsWith('/experiencia/')) {
-    const slug = currentPath.split('/')[2];
+  // fix #49: Match localized experience routes (/:lang/experiencias|experiences|esperienze|erlebnisse/:slug)
+  const expMatch = currentPath.match(/^\/[a-z]{2}\/(experiencias|experiences|esperienze|erlebnisse)\/([^/]+)/);
+  if (expMatch) {
+    const slug = expMatch[2];
     if (slug) {
       queryClient.prefetchQuery({
         queryKey: ['packages', { experienceSlug: slug }, locale],

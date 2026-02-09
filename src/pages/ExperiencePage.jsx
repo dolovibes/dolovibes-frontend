@@ -131,7 +131,7 @@ const ExperiencePage = ({ onOpenQuote }) => {
                                         onOpenQuote(experience?.title || tCommon('experiences.customTrip'));
                                     }
                                 }}
-                                className="bg-alpino hover:bg-alpino text-white px-6 py-3 rounded-full font-semibold transition-colors"
+                                className="bg-alpino hover:bg-alpino/90 text-white px-6 py-3 rounded-full font-semibold transition-colors"
                             >
                                 {tCommon('buttons.quoteCustomTrip')}
                             </button>

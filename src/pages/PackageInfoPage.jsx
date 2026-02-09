@@ -136,7 +136,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                     <h1 className="text-2xl font-bold text-grafito mb-4">{siteTexts.packageInfo.packageNotFound}</h1>
                     <button
                         onClick={() => navigate(`/${currentLocale}`)}
-                        className="bg-pizarra text-white px-6 py-3 rounded-full font-semibold hover:bg-pizarra transition-colors"
+                        className="bg-pizarra text-white px-6 py-3 rounded-full font-semibold hover:bg-pizarra/90 transition-colors"
                     >
                         {tCommon('buttons.backToHome')}
                     </button>
@@ -285,6 +285,8 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                             <div className="flex items-center gap-3">
                                 <button
                                     onClick={(e) => { e.preventDefault(); handlePrevDay(); }}
+                                    disabled={currentDay === 0}
+                                    aria-label="Previous day"
                                     className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${currentDay === 0
                                         ? 'bg-nieve text-niebla cursor-not-allowed'
                                         : 'bg-nieve text-pizarra hover:bg-pizarra hover:text-white'
@@ -294,6 +296,8 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 </button>
                                 <button
                                     onClick={(e) => { e.preventDefault(); handleNextDay(); }}
+                                    disabled={currentDay === pkg.itinerary.length - 1}
+                                    aria-label="Next day"
                                     className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${currentDay === pkg.itinerary.length - 1
                                         ? 'bg-nieve text-niebla cursor-not-allowed'
                                         : 'bg-nieve text-pizarra hover:bg-pizarra hover:text-white'
@@ -309,6 +313,8 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                     <button
                                         key={index}
                                         onClick={() => setCurrentDay(index)}
+                                        aria-label={`Day ${index + 1}`}
+                                        aria-current={index === currentDay ? 'step' : undefined}
                                         className={`h-2 rounded-full transition-all duration-300 ${index === currentDay
                                             ? 'w-8 bg-pizarra'
                                             : 'w-2 bg-niebla hover:bg-niebla'

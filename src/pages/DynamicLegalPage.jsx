@@ -71,7 +71,7 @@ const DynamicLegalPage = ({ slug: slugProp, fallbackTitle, fallbackContent }) =>
             <div className="bg-gradient-to-r from-pizarra to-pizarra pt-16 md:pt-20 pb-16">
                 <div className="container mx-auto px-6">
                     <button
-                        onClick={() => navigate(-1)}
+                        onClick={() => window.history.length > 1 ? navigate(-1) : navigate(`/${currentLocale}`)}
                         className="flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors"
                     >
                         <ArrowLeft className="w-5 h-5" />

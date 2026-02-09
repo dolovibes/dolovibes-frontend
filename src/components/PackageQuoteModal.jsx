@@ -152,7 +152,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
             <div
                 className="absolute inset-0 bg-pizarra/70 backdrop-blur-sm"
                 aria-hidden="true"
-                onClick={handleClose}
+                onClick={isSubmitting ? undefined : handleClose}
             ></div>
 
             {/* Modal */}

@@ -17,7 +17,7 @@ import api from './api';
  */
 const defaultQueryOptions = {
   staleTime: 2 * 60 * 1000, // 2 minutos
-  cacheTime: 10 * 60 * 1000, // 10 minutos
+  gcTime: 10 * 60 * 1000, // 10 minutos (fix #53: renamed from cacheTime)
   retry: 2,
   refetchOnWindowFocus: false,
 };
@@ -28,7 +28,7 @@ const defaultQueryOptions = {
  */
 const singleTypeQueryOptions = {
   staleTime: 30 * 1000, // 30 segundos
-  cacheTime: 2 * 60 * 1000, // 2 minutos
+  gcTime: 2 * 60 * 1000, // 2 minutos (fix #53: renamed from cacheTime)
   retry: 0, // No reintentar - usar fallbacks
   refetchOnWindowFocus: true, // Refrescar al volver a la pestaña
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import { ChevronDown } from 'lucide-react';
@@ -14,9 +14,26 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
     const [selectedSeason, setSelectedSeason] = useState(null);
     const [selectedExperience, setSelectedExperience] = useState(null);
     const [isExperienceDropdownOpen, setIsExperienceDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
 
     // Obtener datos del Hero Section
     const { data: heroData } = useHeroSection();
+
+    // fix #59: Close dropdown when clicking outside
+    useEffect(() => {
+        if (!isExperienceDropdownOpen) return;
+        const handleClickOutside = (e) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+                setIsExperienceDropdownOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('touchstart', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('touchstart', handleClickOutside);
+        };
+    }, [isExperienceDropdownOpen]);
 
     // Mapeo de temporadas para el filtro
     const seasonMap = { verano: ['verano', 'summer'], invierno: ['invierno', 'winter'] };
@@ -85,6 +102,7 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <button
                         onClick={() => handleSeasonSelect('verano')}
+                        aria-pressed={selectedSeason === 'verano'}
                         className={`group relative px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 ${selectedSeason === 'verano'
                             ? 'bg-pizarra text-white scale-105 shadow-xl shadow-pizarra/30'
                             : 'bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-nieve/20 hover:border-niebla/50'
@@ -95,6 +113,7 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
 
                     <button
                         onClick={() => handleSeasonSelect('invierno')}
+                        aria-pressed={selectedSeason === 'invierno'}
                         className={`group relative px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 ${selectedSeason === 'invierno'
                             ? 'bg-pizarra text-white scale-105 shadow-xl shadow-pizarra/30'
                             : 'bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-nieve/20 hover:border-niebla/50'
@@ -111,9 +130,11 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                     {texts.selector.whatQuestion}
                 </h2>
 
-                <div className="relative w-full max-w-md mx-auto">
+                <div ref={dropdownRef} className="relative w-full max-w-md mx-auto">
                     <button
                         onClick={() => setIsExperienceDropdownOpen(!isExperienceDropdownOpen)}
+                        aria-haspopup="listbox"
+                        aria-expanded={isExperienceDropdownOpen}
                         className="w-full px-6 py-4 bg-white/10 backdrop-blur-md border border-white/30 rounded-2xl text-white font-semibold text-left flex items-center justify-between hover:bg-white/20 transition-all"
                     >
                         <span>
@@ -123,7 +144,7 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                     </button>
 
                     {isExperienceDropdownOpen && (
-                        <div className="absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl z-50 animate-fade-in-up">
+                        <div role="listbox" className="absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl z-50 animate-fade-in-up">
                             {filteredExperiences.length > 0 ? (
                                 filteredExperiences.map((experience) => (
                                     <button
