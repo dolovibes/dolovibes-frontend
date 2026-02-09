@@ -54,7 +54,9 @@ const VideoHero = ({ onExperienceSelect }) => {
     }, [shouldLoadVideo]);
 
     // Intentar reproducir el video explícitamente (fix para algunos navegadores)
+    // fix #63: Track play promise to handle abort on unmount
     useEffect(() => {
+        let cancelled = false;
         if (videoRef.current && shouldLoadVideo && showDesktopVideo) {
             const video = videoRef.current;
 
@@ -64,17 +66,18 @@ const VideoHero = ({ onExperienceSelect }) => {
             if (playPromise !== undefined) {
                 playPromise
                     .then(() => {
-                        // Video se está reproduciendo correctamente
-                        setVideoLoaded(true);
+                        if (!cancelled) setVideoLoaded(true);
                     })
                     .catch((error) => {
-                        // Autoplay bloqueado
-                        console.warn('[VideoHero] Autoplay blocked:', error.message);
-                        // Mostrar el video de todos modos (aunque no se reproduzca)
+                        if (cancelled) return;
+                        if (import.meta.env.DEV && error.name !== 'AbortError') {
+                            console.warn('[VideoHero] Autoplay blocked:', error.message);
+                        }
                         setVideoLoaded(true);
                     });
             }
         }
+        return () => { cancelled = true; };
     }, [shouldLoadVideo, showDesktopVideo]);
 
     // Textos del hero - priorizar Strapi, fallback a i18n
@@ -114,7 +117,9 @@ const VideoHero = ({ onExperienceSelect }) => {
                         onLoadedData={() => setVideoLoaded(true)}
                         onPlaying={() => setVideoLoaded(true)}
                         onError={(e) => {
-                            console.error("[VideoHero] Video loading error:", e);
+                            if (import.meta.env.DEV) {
+                                console.error('[VideoHero] Video loading error:', e);
+                            }
                             setVideoLoaded(true);
                         }}
                         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}

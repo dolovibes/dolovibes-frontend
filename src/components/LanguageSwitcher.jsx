@@ -143,7 +143,7 @@ const LanguageSwitcher = ({ isDarkMode = false, compact = false }) => {
                 }`}
                 aria-haspopup="listbox"
                 aria-expanded={isOpen}
-                aria-label={`Idioma actual: ${currentLanguage.label}. Haga clic para cambiar.`}
+                aria-label={`${currentLanguage.label} - Change language`}
                 aria-busy={isTransitioning}
             >
                 {isTransitioning ? (
@@ -163,7 +163,7 @@ const LanguageSwitcher = ({ isDarkMode = false, compact = false }) => {
                 <ul 
                     className="absolute top-full right-0 mt-2 bg-white rounded-xl shadow-xl border border-niebla overflow-hidden min-w-[160px] z-50"
                     role="listbox"
-                    aria-label="Seleccionar idioma"
+                    aria-label="Select language"
                     tabIndex={-1}
                 >
                     {languages.map((lang) => {

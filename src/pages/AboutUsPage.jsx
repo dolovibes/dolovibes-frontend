@@ -119,7 +119,7 @@ const AboutUsPage = ({ onOpenQuote }) => {
                             <img
                                 src={mainPhoto}
                                 alt={photoAlt}
-                                loading="lazy"
+                                loading="eager"
                                 width="700"
                                 height="700"
                                 className="w-full h-auto rounded-2xl shadow-2xl object-cover"
