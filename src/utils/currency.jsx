@@ -46,10 +46,10 @@ export const SUPPORTED_CURRENCIES = {
     symbol: '€',
     name: 'Euro',
     nameShort: 'EUR',
-    locale: 'es-ES',
+    locale: 'de-DE', // Cambiado a de-DE para correcta separación de miles en EUR
     position: 'after',
     countryCode: 'eu', // Unión Europea
-    decimals: 2
+    decimals: 0 // Sin decimales, solo números enteros
   },
   // Internacional - Norteamérica + referencia global
   USD: {
@@ -59,7 +59,7 @@ export const SUPPORTED_CURRENCIES = {
     locale: 'en-US',
     position: 'before',
     countryCode: 'us', // Estados Unidos
-    decimals: 2
+    decimals: 0 // Sin decimales, solo números enteros
   },
   // Mercado mexicano
   MXN: {
@@ -69,7 +69,7 @@ export const SUPPORTED_CURRENCIES = {
     locale: 'es-MX',
     position: 'before',
     countryCode: 'mx', // México
-    decimals: 0
+    decimals: 0 // Sin decimales, solo números enteros
   },
 };
 
@@ -382,7 +382,7 @@ export const fetchExchangeRates = async () => {
 export const convertPrice = (amount, targetCurrency, rates = null) => {
   if (!amount || isNaN(amount)) return 0;
 
-  // Si la moneda es la base, no convertir
+  // Si la moneda es la base, no convertir (mantener valor original)
   if (targetCurrency === BASE_CURRENCY) {
     return amount;
   }
@@ -395,7 +395,8 @@ export const convertPrice = (amount, targetCurrency, rates = null) => {
     return amount;
   }
 
-  return amount * rate;
+  // Redondear hacia arriba solo después de la conversión
+  return Math.ceil(amount * rate);
 };
 
 /**
