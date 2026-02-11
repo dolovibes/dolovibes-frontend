@@ -140,7 +140,7 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                         <span>
                             {selectedExperience ? selectedExperience.title : texts.selector.selectExperience}
                         </span>
-                        <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${isExperienceDropdownOpen ? 'rotate-180' : ''}`} />
+                        <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${isExperienceDropdownOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
                     </button>
 
                     {isExperienceDropdownOpen && (
@@ -185,7 +185,7 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
                     <div className="text-white/60 text-sm text-center mb-2">
                         {texts.selector.scrollToSeeTrips}
                     </div>
-                    <ChevronDown className="w-8 h-8 text-white/60 mx-auto" />
+                    <ChevronDown className="w-8 h-8 text-white/60 mx-auto" aria-hidden="true" />
                 </div>
             )}
         </div>

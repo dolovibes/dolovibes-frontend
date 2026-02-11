@@ -168,7 +168,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                 {isSubmitted ? (
                     <div className="bg-gradient-to-br from-pizarra to-pizarra p-12 text-center text-white min-h-[400px] flex flex-col items-center justify-center">
                         <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <CheckCircle className="w-10 h-10 text-white" />
+                            <CheckCircle className="w-10 h-10 text-white" aria-hidden="true" />
                         </div>
                         <h3 className="text-2xl md:text-3xl font-bold mb-4">
                             {siteTexts.packageQuoteModal?.successTitle || '¡Solicitud enviada!'}
@@ -196,7 +196,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                         <div className="overflow-y-auto max-h-[calc(90vh-180px)]">
                             {/* Mensaje de error de validación */}
                             {validationError && (
-                                <div className="mx-6 md:mx-8 mt-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 animate-pulse">
+                                <div className="mx-6 md:mx-8 mt-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3">
                                     <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
                                         <span className="text-red-500 font-bold">!</span>
                                     </div>
@@ -209,7 +209,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                             {/* Mensaje de error de API */}
                             {error && (
                                 <div className="mx-6 md:mx-8 mt-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3">
-                                    <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+                                    <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" aria-hidden="true" />
                                     <p className="text-red-700 text-sm">{error}</p>
                                 </div>
                             )}

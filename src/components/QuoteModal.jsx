@@ -225,7 +225,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                 }}
                                 className="w-full bg-pizarra text-white font-bold py-3 rounded-xl hover:bg-pizarra/90 transition-colors flex justify-center items-center gap-2 mt-4"
                             >
-                                {siteTexts.buttons.next} <ArrowRight size={18} />
+                                {siteTexts.buttons.next} <ArrowRight size={18} aria-hidden="true" />
                             </button>
                         </div>
                     )}
@@ -237,14 +237,14 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                             {/* Error message */}
                             {error && (
                                 <div className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3">
-                                    <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+                                    <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" aria-hidden="true" />
                                     <p className="text-red-700 text-sm">{error}</p>
                                 </div>
                             )}
 
                             {/* Nombre */}
                             <div className="relative">
-                                <User className="absolute left-3 top-3.5 text-niebla" size={18} />
+                                <User className="absolute left-3 top-3.5 text-niebla" size={18} aria-hidden="true" />
                                 <label htmlFor={nameId} className="sr-only">{siteTexts.quoteModal.namePlaceholder}</label>
                                 <input
                                     id={nameId}
@@ -259,7 +259,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
 
                             {/* Email */}
                             <div className="relative">
-                                <Mail className="absolute left-3 top-3.5 text-niebla" size={18} />
+                                <Mail className="absolute left-3 top-3.5 text-niebla" size={18} aria-hidden="true" />
                                 <label htmlFor={emailId} className="sr-only">{siteTexts.quoteModal.emailPlaceholder}</label>
                                 <input
                                     id={emailId}
@@ -274,7 +274,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
 
                             {/* Teléfono */}
                             <div className="relative">
-                                <Phone className="absolute left-3 top-3.5 text-niebla" size={18} />
+                                <Phone className="absolute left-3 top-3.5 text-niebla" size={18} aria-hidden="true" />
                                 <label htmlFor={phoneId} className="sr-only">{siteTexts.quoteModal.phonePlaceholder}</label>
                                 <input
                                     id={phoneId}
@@ -316,7 +316,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                     {step === 3 && (
                         <div className="text-center py-8 animate-fade-in">
                             <div className="w-16 h-16 bg-bruma rounded-full flex items-center justify-center mx-auto mb-4">
-                                <CheckCircle className="w-8 h-8 text-alpino" />
+                                <CheckCircle className="w-8 h-8 text-alpino" aria-hidden="true" />
                             </div>
                             <h3 className="text-2xl font-bold text-grafito mb-2">{siteTexts.quoteModal.successTitle}</h3>
                             <p className="text-pizarra">{siteTexts.quoteModal.successMessage}</p>

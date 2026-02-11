@@ -52,6 +52,8 @@ const PackageCard = ({ pkg }) => {
                     alt={pkg.title}
                     loading="lazy"
                     decoding="async"
+                    width="640"
+                    height="360"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 {/* Overlay gradient */}
@@ -84,11 +86,11 @@ const PackageCard = ({ pkg }) => {
                 {/* Meta info */}
                 <div className="flex flex-wrap gap-4 text-sm text-niebla mb-4">
                     <span className="flex items-center gap-1">
-                        <MapPin className="w-4 h-4" />
+                        <MapPin className="w-4 h-4" aria-hidden="true" />
                         {pkg.location}
                     </span>
                     <span className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
+                        <Clock className="w-4 h-4" aria-hidden="true" />
                         {pkg.duration}
                     </span>
                     {pkg.difficulty && (
@@ -106,7 +108,7 @@ const PackageCard = ({ pkg }) => {
                 {/* CTA */}
                 <div className="flex items-center text-pizarra font-semibold text-sm group-hover:gap-3 gap-2 transition-all">
                     {siteTexts.recommendations.viewDetails}
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
                 </div>
             </div>
         </Link>

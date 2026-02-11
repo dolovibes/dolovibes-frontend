@@ -143,7 +143,11 @@ export const getCurrentLanguage = () => i18nInstance.language;
 export const changeLanguage = (lang) => {
   if (['es', 'en', 'it', 'de'].includes(lang)) {
     i18nInstance.changeLanguage(lang);
-    localStorage.setItem('preferredLanguage', lang);
+    try {
+      localStorage.setItem('preferredLanguage', lang);
+    } catch {
+      // localStorage not available (Safari private browsing, storage full)
+    }
   }
 };
 
@@ -152,7 +156,11 @@ export const changeLanguage = (lang) => {
  * @returns {string|null}
  */
 export const getSavedLanguage = () => {
-  return localStorage.getItem('preferredLanguage');
+  try {
+    return localStorage.getItem('preferredLanguage');
+  } catch {
+    return null;
+  }
 };
 
 /**

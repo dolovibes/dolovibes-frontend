@@ -136,7 +136,7 @@ const Footer = () => {
                         <h4 className="font-semibold text-lg mb-4">{siteTexts.footer.contact}</h4>
                         <ul className="space-y-3">
                             <li className="flex items-center gap-3 text-niebla">
-                                <MapPin className="w-5 h-5 text-bruma flex-shrink-0" />
+                                <MapPin className="w-5 h-5 text-bruma flex-shrink-0" aria-hidden="true" />
                                 <span>{location}</span>
                             </li>
                             <li>
@@ -146,7 +146,7 @@ const Footer = () => {
                                     rel="noopener noreferrer"
                                     className="flex items-center gap-3 text-niebla hover:text-bruma transition-colors"
                                 >
-                                    <WhatsAppIcon className="w-5 h-5 text-bruma flex-shrink-0" />
+                                    <WhatsAppIcon className="w-5 h-5 text-bruma flex-shrink-0" aria-hidden="true" />
                                     <span>{whatsappNumber}</span>
                                 </a>
                             </li>

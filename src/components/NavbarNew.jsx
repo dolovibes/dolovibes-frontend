@@ -152,7 +152,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                 >
                                     {siteTexts.navbar.experiences}
                                     <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isExperiencesOpen ? 'rotate-180' : ''
-                                        }`} />
+                                        }`} aria-hidden="true" />
                                 </button>
 
                                 {/* Mega Dropdown Menu */}
