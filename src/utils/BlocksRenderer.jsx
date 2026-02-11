@@ -156,8 +156,8 @@ export const BlocksRenderer = ({ content }) => {
     return <StrapiBlocksRenderer content={content} blocks={customBlocks} />;
   }
 
-  // Fallback for other types
-  return <div>{String(content)}</div>;
+  // Fallback: avoid rendering [object Object] (fix #91)
+  return null;
 };
 
 export default BlocksRenderer;
