@@ -3,7 +3,7 @@ import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { useHeroSection } from '../services/hooks';
 import ExperienceSelector from './ExperienceSelector';
 
-const VideoHero = ({ onExperienceSelect }) => {
+const VideoHero = ({ onExperienceSelect, onSeasonSelect, initialSeason, initialExperienceSlug }) => {
     const { texts: siteTexts } = useSiteTextsContext();
 
     // Hook de Strapi - NO bloqueamos el render si falla o tarda
@@ -146,7 +146,12 @@ const VideoHero = ({ onExperienceSelect }) => {
                 </div>
 
                 {/* Selector de experiencias */}
-                <ExperienceSelector onExperienceSelect={onExperienceSelect} />
+                <ExperienceSelector
+                    onExperienceSelect={onExperienceSelect}
+                    onSeasonSelect={onSeasonSelect}
+                    initialSeason={initialSeason}
+                    initialExperienceSlug={initialExperienceSlug}
+                />
             </div>
         </div>
     );
