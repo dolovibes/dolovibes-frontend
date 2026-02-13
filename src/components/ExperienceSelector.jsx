@@ -91,7 +91,10 @@ const ExperienceSelector = ({ onExperienceSelect, onSeasonSelect, initialSeason,
     const handleExperienceSelect = (experience) => {
         setSelectedExperience(experience);
         setIsExperienceDropdownOpen(false);
-        // Los paquetes se cargarán automáticamente via usePackagesByExperience
+        // Notify parent immediately for URL update (packages will follow via effect)
+        if (onExperienceSelect) {
+            onExperienceSelect(experience, []);
+        }
     };
 
     const handleReset = () => {
