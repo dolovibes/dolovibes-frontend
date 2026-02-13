@@ -6,15 +6,16 @@ import { useExperiences, usePackagesByExperience, useHeroSection } from '../serv
 import { prefetchExperience } from '../utils/dataPrefetch';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 
-const ExperienceSelector = ({ onExperienceSelect }) => {
+const ExperienceSelector = ({ onExperienceSelect, onSeasonSelect, initialSeason, initialExperienceSlug }) => {
     const { i18n, t } = useTranslation('home');
     const { texts } = useSiteTextsContext();
     const queryClient = useQueryClient();
-    const [step, setStep] = useState(1);
-    const [selectedSeason, setSelectedSeason] = useState(null);
+    const [step, setStep] = useState(initialSeason ? 2 : 1);
+    const [selectedSeason, setSelectedSeason] = useState(initialSeason || null);
     const [selectedExperience, setSelectedExperience] = useState(null);
     const [isExperienceDropdownOpen, setIsExperienceDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
+    const hasInitializedRef = useRef(false);
 
     // Obtener datos del Hero Section
     const { data: heroData } = useHeroSection();
@@ -48,6 +49,17 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
         return allExperiences.filter(exp => validSeasons.includes(exp.season));
     }, [allExperiences, selectedSeason]);
 
+    // Resolve initialExperienceSlug to experience object from cached data (back button restoration)
+    useEffect(() => {
+        if (initialExperienceSlug && !hasInitializedRef.current && filteredExperiences.length > 0) {
+            const match = filteredExperiences.find(exp => exp.slug === initialExperienceSlug);
+            if (match) {
+                setSelectedExperience(match);
+                hasInitializedRef.current = true;
+            }
+        }
+    }, [initialExperienceSlug, filteredExperiences]);
+
     // Obtener paquetes de la experiencia seleccionada
     const { data: relatedPackages = [] } = usePackagesByExperience(
         selectedExperience?.slug
@@ -65,7 +77,12 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
         setStep(2);
         setSelectedExperience(null);
         setIsExperienceDropdownOpen(false);
-        // Reset parent state
+        hasInitializedRef.current = false;
+        // Notify parent to update search params
+        if (onSeasonSelect) {
+            onSeasonSelect(season);
+        }
+        // Reset parent packages
         if (onExperienceSelect) {
             onExperienceSelect(null, null);
         }
@@ -82,7 +99,11 @@ const ExperienceSelector = ({ onExperienceSelect }) => {
         setSelectedSeason(null);
         setSelectedExperience(null);
         setIsExperienceDropdownOpen(false);
-        // Reset parent state
+        hasInitializedRef.current = false;
+        // Notify parent to clear search params
+        if (onSeasonSelect) {
+            onSeasonSelect(null);
+        }
         if (onExperienceSelect) {
             onExperienceSelect(null, null);
         }
