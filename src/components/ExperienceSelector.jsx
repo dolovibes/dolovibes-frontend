@@ -16,6 +16,32 @@ const ExperienceSelector = ({ onExperienceSelect, onSeasonSelect, initialSeason,
     const [isExperienceDropdownOpen, setIsExperienceDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
     const hasInitializedRef = useRef(false);
+    const prevInitialSeasonRef = useRef(initialSeason);
+
+    // Sync internal state with URL params (logo click clears params, season change, etc.)
+    useEffect(() => {
+        const prevSeason = prevInitialSeasonRef.current;
+        prevInitialSeasonRef.current = initialSeason;
+
+        // URL params cleared (e.g., logo click) → reset to step 1
+        if (!initialSeason && prevSeason) {
+            setStep(1);
+            setSelectedSeason(null);
+            setSelectedExperience(null);
+            setIsExperienceDropdownOpen(false);
+            hasInitializedRef.current = false;
+            return;
+        }
+
+        // Season changed externally (e.g., browser back with different season)
+        if (initialSeason && initialSeason !== prevSeason) {
+            setSelectedSeason(initialSeason);
+            setStep(2);
+            setSelectedExperience(null);
+            setIsExperienceDropdownOpen(false);
+            hasInitializedRef.current = false;
+        }
+    }, [initialSeason]);
 
     // Obtener datos del Hero Section
     const { data: heroData } = useHeroSection();
