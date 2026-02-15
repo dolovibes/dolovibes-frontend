@@ -16,6 +16,32 @@ const ExperienceSelector = ({ onExperienceSelect, onSeasonSelect, initialSeason,
     const [isExperienceDropdownOpen, setIsExperienceDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
     const hasInitializedRef = useRef(false);
+    const prevInitialSeasonRef = useRef(initialSeason);
+
+    // Sync internal state with URL params (logo click clears params, season change, etc.)
+    useEffect(() => {
+        const prevSeason = prevInitialSeasonRef.current;
+        prevInitialSeasonRef.current = initialSeason;
+
+        // URL params cleared (e.g., logo click) → reset to step 1
+        if (!initialSeason && prevSeason) {
+            setStep(1);
+            setSelectedSeason(null);
+            setSelectedExperience(null);
+            setIsExperienceDropdownOpen(false);
+            hasInitializedRef.current = false;
+            return;
+        }
+
+        // Season changed externally (e.g., browser back with different season)
+        if (initialSeason && initialSeason !== prevSeason) {
+            setSelectedSeason(initialSeason);
+            setStep(2);
+            setSelectedExperience(null);
+            setIsExperienceDropdownOpen(false);
+            hasInitializedRef.current = false;
+        }
+    }, [initialSeason]);
 
     // Obtener datos del Hero Section
     const { data: heroData } = useHeroSection();
@@ -156,7 +182,16 @@ const ExperienceSelector = ({ onExperienceSelect, onSeasonSelect, initialSeason,
 
                 <div ref={dropdownRef} className="relative w-full max-w-md mx-auto">
                     <button
-                        onClick={() => setIsExperienceDropdownOpen(!isExperienceDropdownOpen)}
+                        onClick={() => {
+                            const opening = !isExperienceDropdownOpen;
+                            setIsExperienceDropdownOpen(opening);
+                            // Auto-scroll to show dropdown options on mobile
+                            if (opening) {
+                                setTimeout(() => {
+                                    dropdownRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }, 150);
+                            }
+                        }}
                         aria-haspopup="listbox"
                         aria-expanded={isExperienceDropdownOpen}
                         className="w-full px-6 py-4 bg-white/10 backdrop-blur-md border border-white/30 rounded-2xl text-white font-semibold text-left flex items-center justify-between hover:bg-white/20 transition-all"
