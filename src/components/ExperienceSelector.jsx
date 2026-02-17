@@ -142,10 +142,10 @@ const ExperienceSelector = ({ onExperienceSelect, onSeasonSelect, initialSeason,
     const mainQuestion = heroData?.subtitle || t('selector.whenQuestion');
 
     return (
-        <div className="flex flex-col items-center gap-8">
+        <div className="flex flex-col items-center gap-4 md:gap-8">
             {/* Pregunta 1: Tu próxima aventura */}
             <div className={`transition-all duration-500 ${step >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                <h2 className="text-white text-2xl md:text-4xl font-bold text-center mb-6 drop-shadow-lg">
+                <h2 className="text-white text-2xl md:text-4xl font-bold text-center mb-3 md:mb-6 drop-shadow-lg">
                     {mainQuestion}
                 </h2>
 
@@ -176,7 +176,7 @@ const ExperienceSelector = ({ onExperienceSelect, onSeasonSelect, initialSeason,
 
             {/* Pregunta 2: ¿Qué experiencia? */}
             <div className={`transition-all duration-500 delay-200 ${step >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
-                <h2 className="text-white text-2xl md:text-4xl font-bold text-center mb-6 drop-shadow-lg">
+                <h2 className="text-white text-2xl md:text-4xl font-bold text-center mb-3 md:mb-6 drop-shadow-lg">
                     {texts.selector.whatQuestion}
                 </h2>
 
@@ -240,7 +240,7 @@ const ExperienceSelector = ({ onExperienceSelect, onSeasonSelect, initialSeason,
 
             {/* Indicador de scroll cuando hay experiencia seleccionada */}
             {selectedExperience && (
-                <div className="mt-8 animate-bounce">
+                <div className="mt-4 md:mt-8 animate-bounce">
                     <div className="text-white/60 text-sm text-center mb-2">
                         {texts.selector.scrollToSeeTrips}
                     </div>
