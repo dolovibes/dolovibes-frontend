@@ -133,8 +133,8 @@ const VideoHero = ({ onExperienceSelect, onSeasonSelect, initialSeason, initialE
             </div>
 
             {/* Contenido central - Este es el LCP real */}
-            <div className="container mx-auto px-4 sm:px-6 relative z-20 py-16 md:py-20">
-                <div className="text-center mb-8 md:mb-12 mt-10">
+            <div className="container mx-auto px-4 sm:px-6 relative z-20 py-8 md:py-20">
+                <div className="text-center mb-4 md:mb-12 mt-6 md:mt-10">
                     <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight mb-3 md:mb-4 drop-shadow-lg">
                         {title}
                         <br className="hidden sm:block" />
