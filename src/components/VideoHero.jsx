@@ -87,8 +87,8 @@ const VideoHero = ({ onExperienceSelect, onSeasonSelect, initialSeason, initialE
     // IMPORTANTE: NO hay loading state - siempre renderizamos con fallbacks
     return (
         <div ref={containerRef} className="relative min-h-[100svh] flex items-center justify-center bg-pizarra">
-            {/* Fondo sólido como LCP - se muestra inmediatamente */}
-            <div className="absolute inset-0 z-0 bg-pizarra">
+            {/* Fondo sólido como LCP - altura fija para evitar shift de imagen al crecer el contenido */}
+            <div className="absolute inset-x-0 top-0 h-[100svh] z-0 bg-pizarra overflow-hidden">
                 {/* Imagen de fondo para móvil - mejor rendimiento y menor consumo de datos */}
                 {showMobileImage && (
                     <img
