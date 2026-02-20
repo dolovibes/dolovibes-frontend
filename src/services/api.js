@@ -823,6 +823,13 @@ const transformSiteSettings = (data) => {
     tiktokUrl: data.tiktokUrl,
     footerDescription: data.footerDescription,
     copyrightText: data.copyrightText,
+    // Language toggles (es is always enabled — no field needed)
+    enableLanguageEn: data.enableLanguageEn ?? true,
+    enableLanguageIt: data.enableLanguageIt ?? true,
+    enableLanguageDe: data.enableLanguageDe ?? true,
+    // Currency toggles (EUR is always enabled — no field needed)
+    enableCurrencyUsd: data.enableCurrencyUsd ?? true,
+    enableCurrencyMxn: data.enableCurrencyMxn ?? true,
   };
 };
 

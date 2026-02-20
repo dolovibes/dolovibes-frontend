@@ -8,6 +8,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { useCurrencyContext, SUPPORTED_CURRENCIES } from '../utils/currency';
+import { useSiteSettings } from '../services/hooks';
 
 /**
  * Componente de bandera usando imágenes de flagcdn.com
@@ -37,14 +38,28 @@ const CurrencySelector = ({
   const buttonRef = useRef(null);
 
   const { currency, setCurrency, loading } = useCurrencyContext();
+  const { data: siteSettings } = useSiteSettings();
 
   const currentCurrency = SUPPORTED_CURRENCIES[currency] || SUPPORTED_CURRENCIES.EUR;
 
-  // Convertir objeto a array para iterar
-  const currencyList = Object.entries(SUPPORTED_CURRENCIES).map(([code, config]) => ({
-    code,
-    ...config,
-  }));
+  // Convertir objeto a array y filtrar según toggles de Strapi
+  // EUR siempre habilitado (no tiene campo de toggle). Otros usan !== false para que
+  // todos se muestren si Strapi no está disponible (safe default).
+  const currencyList = Object.entries(SUPPORTED_CURRENCIES)
+    .map(([code, config]) => ({ code, ...config }))
+    .filter(curr => {
+      if (curr.code === 'EUR') return true;
+      if (curr.code === 'USD') return siteSettings?.enableCurrencyUsd !== false;
+      if (curr.code === 'MXN') return siteSettings?.enableCurrencyMxn !== false;
+      return true;
+    });
+
+  // Si la moneda activa fue deshabilitada en Strapi, volver a EUR automáticamente
+  useEffect(() => {
+    if (siteSettings && !currencyList.find(c => c.code === currency)) {
+      setCurrency('EUR');
+    }
+  }, [siteSettings, currency, currencyList, setCurrency]);
 
   // Cerrar al hacer clic fuera
   useEffect(() => {

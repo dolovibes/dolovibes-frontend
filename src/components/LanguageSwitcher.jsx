@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronDown, Loader2 } from 'lucide-react';
 import { useLanguageTransition } from '../contexts/LanguageTransitionContext';
+import { useSiteSettings } from '../services/hooks';
 
 /**
  * Componente de bandera usando SVG de flagcdn.com
@@ -25,14 +26,23 @@ const LanguageSwitcher = ({ isDarkMode = false, compact = false }) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
     const buttonRef = useRef(null);
+    const { data: siteSettings } = useSiteSettings();
 
-    // Usar códigos de país ISO 3166-1 alpha-2 para las banderas
-    const languages = [
-        { code: 'es', label: 'Español', countryCode: 'es' },  // España
+    // All available languages — filtered by Strapi toggles
+    // es is always enabled (no toggle field). Others use !== false so all show when Strapi is unreachable.
+    const allLanguages = [
+        { code: 'es', label: 'Español', countryCode: 'es' },  // España — always on
         { code: 'en', label: 'English', countryCode: 'us' },  // USA
         { code: 'it', label: 'Italiano', countryCode: 'it' }, // Italia
-        { code: 'de', label: 'Deutsch', countryCode: 'de' }   // Alemania
+        { code: 'de', label: 'Deutsch', countryCode: 'de' },  // Alemania
     ];
+    const languages = allLanguages.filter(lang => {
+        if (lang.code === 'es') return true;
+        if (lang.code === 'en') return siteSettings?.enableLanguageEn !== false;
+        if (lang.code === 'it') return siteSettings?.enableLanguageIt !== false;
+        if (lang.code === 'de') return siteSettings?.enableLanguageDe !== false;
+        return true;
+    });
 
     const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0];
 
