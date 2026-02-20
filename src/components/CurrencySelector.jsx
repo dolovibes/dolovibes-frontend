@@ -5,7 +5,7 @@
  * Compatible con navegadores antiguos y totalmente accesible (ARIA).
  */
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { useCurrencyContext, SUPPORTED_CURRENCIES } from '../utils/currency';
 import { useSiteSettings } from '../services/hooks';
@@ -45,14 +45,18 @@ const CurrencySelector = ({
   // Convertir objeto a array y filtrar según toggles de Strapi
   // EUR siempre habilitado (no tiene campo de toggle). Otros usan !== false para que
   // todos se muestren si Strapi no está disponible (safe default).
-  const currencyList = Object.entries(SUPPORTED_CURRENCIES)
-    .map(([code, config]) => ({ code, ...config }))
-    .filter(curr => {
-      if (curr.code === 'EUR') return true;
-      if (curr.code === 'USD') return siteSettings?.enableCurrencyUsd !== false;
-      if (curr.code === 'MXN') return siteSettings?.enableCurrencyMxn !== false;
-      return true;
-    });
+  // useMemo evita crear una nueva referencia en cada render (ej. al abrir/cerrar el dropdown)
+  const currencyList = useMemo(() =>
+    Object.entries(SUPPORTED_CURRENCIES)
+      .map(([code, config]) => ({ code, ...config }))
+      .filter(curr => {
+        if (curr.code === 'EUR') return true;
+        if (curr.code === 'USD') return siteSettings?.enableCurrencyUsd !== false;
+        if (curr.code === 'MXN') return siteSettings?.enableCurrencyMxn !== false;
+        return true;
+      }),
+    [siteSettings]
+  );
 
   // Si la moneda activa fue deshabilitada en Strapi, volver a EUR automáticamente
   useEffect(() => {

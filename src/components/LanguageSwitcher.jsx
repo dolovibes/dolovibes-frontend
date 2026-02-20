@@ -46,6 +46,13 @@ const LanguageSwitcher = ({ isDarkMode = false, compact = false }) => {
 
     const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0];
 
+    // BUG-001: Si el idioma activo fue deshabilitado en Strapi, volver a español automáticamente
+    useEffect(() => {
+        if (siteSettings && !languages.find(l => l.code === i18n.language)) {
+            changeLanguage('es');
+        }
+    }, [siteSettings, i18n.language, languages, changeLanguage]);
+
     // Cerrar dropdown al hacer click fuera
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -177,7 +184,7 @@ const LanguageSwitcher = ({ isDarkMode = false, compact = false }) => {
                     tabIndex={-1}
                 >
                     {languages.map((lang) => {
-                        const isActive = currentLanguage.code === lang.code;
+                        const isActive = i18n.language === lang.code;
                         return (
                             <li key={lang.code}>
                                 <button
