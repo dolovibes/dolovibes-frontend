@@ -222,26 +222,27 @@ const getSpanishDataCached = async (endpoint, params, transformFn) => {
  * @param {boolean} isSingleType - true = no agregar locale
  * @returns {Promise<any>} Datos transformados
  */
-const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSingleType = false) => {
+const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSingleType = false, { skipMediaFallback = false, skipContentFallback = false } = {}) => {
   const locale = getCurrentLocale();
 
   // Single Types también necesitan locale para i18n
   if (isSingleType) {
     const finalParams = { ...params, locale };
-    
+
     try {
       const response = await strapiClient.get(endpoint, { params: finalParams });
       const data = response.data.data;
-      
+
       // Transformar datos PRIMERO
       const transformedData = transformFn ? transformFn(data) : data;
-      
+
       // Si NO estamos en español, enriquecer con imágenes de español
-      if (locale !== DEFAULT_LOCALE && transformedData) {
+      // (skip para content types sin media, como site-text)
+      if (!skipMediaFallback && locale !== DEFAULT_LOCALE && transformedData) {
         try {
           // Obtener datos españoles desde cache
           const transformedSpanishData = await getSpanishDataCached(endpoint, params, transformFn);
-          
+
           // Enriquecer con media de español
           const enrichedData = enrichWithSpanishMedia(transformedData, transformedSpanishData);
           return enrichedData;
@@ -251,11 +252,12 @@ const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSing
           return transformedData;
         }
       }
-      
+
       return transformedData;
     } catch (error) {
       // Si falla en idioma actual y no es español, intentar fallback completo a español
-      if (locale !== DEFAULT_LOCALE) {
+      // (skip para content types con fallback i18n en el frontend, como site-text)
+      if (!skipContentFallback && locale !== DEFAULT_LOCALE) {
         try {
           return getSpanishDataCached(endpoint, params, transformFn);
         } catch {
@@ -274,8 +276,9 @@ const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSing
     let data = response.data.data;
 
     // Si no hay datos, intentar con español como fallback completo
+    // (skip para content types con fallback i18n en el frontend)
     if (!data || (Array.isArray(data) && data.length === 0)) {
-      if (locale !== DEFAULT_LOCALE) {
+      if (!skipContentFallback && locale !== DEFAULT_LOCALE) {
         // Usar cache para datos españoles
         return getSpanishDataCached(endpoint, params, transformFn);
       }
@@ -286,7 +289,8 @@ const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSing
     const transformedData = transformFn ? transformFn(data) : data;
 
     // Si tenemos datos pero NO estamos en español, enriquecer con imágenes de español
-    if (locale !== DEFAULT_LOCALE) {
+    // (skip para content types sin media localizado)
+    if (!skipMediaFallback && locale !== DEFAULT_LOCALE) {
       try {
         // Usar cache para evitar requests duplicados
         const transformedSpanishData = await getSpanishDataCached(endpoint, params, transformFn);
@@ -305,7 +309,8 @@ const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSing
     return transformedData;
   } catch (error) {
     // Error principal: intentar fallback completo a español
-    if (locale !== DEFAULT_LOCALE) {
+    // (skip para content types con fallback i18n en el frontend)
+    if (!skipContentFallback && locale !== DEFAULT_LOCALE) {
       try {
         return getSpanishDataCached(endpoint, params, transformFn);
       } catch {
@@ -344,7 +349,7 @@ export const getExperiences = async (season = null) => {
     params['filters[season][$eq]'] = season;
   }
 
-  return fetchFromStrapi('/experiences', params, transformExperiences);
+  return fetchFromStrapi('/experiences', params, transformExperiences, false, { skipMediaFallback: true });
 };
 
 /**
@@ -357,7 +362,7 @@ export const getExperienceBySlug = async (slug) => {
     populate: EXPERIENCE_POPULATE,
   };
 
-  const experiences = await fetchFromStrapi('/experiences', params, transformExperiences);
+  const experiences = await fetchFromStrapi('/experiences', params, transformExperiences, false, { skipMediaFallback: true });
   return experiences[0] || null;
 };
 
@@ -399,7 +404,7 @@ export const getFooterExperiences = async () => {
     'filters[showInFooter][$eq]': true,
   };
 
-  return fetchFromStrapi('/experiences', params, transformExperiences);
+  return fetchFromStrapi('/experiences', params, transformExperiences, false, { skipMediaFallback: true });
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -526,7 +531,7 @@ const HERO_POPULATE = {
  * Obtiene el contenido del Hero Section
  */
 export const getHeroSection = async () => {
-  return fetchFromStrapi('/hero-section', { populate: HERO_POPULATE }, transformHeroSection, true);
+  return fetchFromStrapi('/hero-section', { populate: HERO_POPULATE }, transformHeroSection, true, { skipMediaFallback: true });
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -556,7 +561,7 @@ const ABOUT_POPULATE = {
  * Obtiene el contenido de la página About
  */
 export const getAboutPage = async () => {
-  return fetchFromStrapi('/about-page', { populate: ABOUT_POPULATE }, transformAboutPage, true);
+  return fetchFromStrapi('/about-page', { populate: ABOUT_POPULATE }, transformAboutPage, true, { skipMediaFallback: true });
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -574,7 +579,7 @@ const SETTINGS_POPULATE = {
  * Obtiene la configuración del sitio
  */
 export const getSiteSettings = async () => {
-  return fetchFromStrapi('/site-setting', { populate: SETTINGS_POPULATE }, transformSiteSettings, true);
+  return fetchFromStrapi('/site-setting', { populate: SETTINGS_POPULATE }, transformSiteSettings, true, { skipMediaFallback: true });
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -584,9 +589,15 @@ export const getSiteSettings = async () => {
 
 /**
  * Obtiene los textos globales del sitio
+ * Devuelve null si no existe en el locale actual — el frontend usa i18n como fallback
  */
 export const getSiteTexts = async () => {
-  return fetchFromStrapi('/site-text', {}, transformSiteTexts, true);
+  try {
+    return await fetchFromStrapi('/site-text', {}, transformSiteTexts, true, { skipMediaFallback: true, skipContentFallback: true });
+  } catch {
+    // Si no existe en este locale, devolver null para que SiteTextsContext use i18n
+    return null;
+  }
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -605,7 +616,7 @@ export const getLegalPageBySlug = async (slug) => {
   };
 
   // Intentar obtener en el idioma actual
-  let pages = await fetchFromStrapi('/legal-pages', params, transformLegalPage);
+  let pages = await fetchFromStrapi('/legal-pages', params, transformLegalPage, false, { skipMediaFallback: true });
   
   // Si no encontró nada y no estamos en español, intentar en español como fallback
   if ((!pages || !Array.isArray(pages) || pages.length === 0) && getCurrentLocale() !== 'es') {
@@ -639,7 +650,7 @@ export const getFooterLegalPages = async () => {
     'filters[showInFooter][$eq]': true,
   };
 
-  return fetchFromStrapi('/legal-pages', params, transformLegalPage);
+  return fetchFromStrapi('/legal-pages', params, transformLegalPage, false, { skipMediaFallback: true });
 };
 
 /**
