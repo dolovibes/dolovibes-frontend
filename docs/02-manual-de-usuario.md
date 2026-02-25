@@ -1,410 +1,439 @@
-# Manual de Usuario — Dolo Vibes
+# 📗 Manual de Usuario — Dolo Vibes
 
-> **Versión:** 1.0
-> **Fecha:** Febrero 2026
-> **Para:** Administrador del sitio Dolo Vibes
-> **Nivel técnico requerido:** Ninguno
+> **Versión:** 1.0 &nbsp;|&nbsp; **Fecha:** Febrero 2026 &nbsp;|&nbsp; **Nivel técnico requerido:** Ninguno
+
+| | |
+|---|---|
+| **Sitio público** | [www.dolo-vibes.com](https://www.dolo-vibes.com) |
+| **Panel de administración** | [api.dolo-vibes.com/admin](https://api.dolo-vibes.com/admin) |
+| **Email de acceso** | info@dolo-vibes.com |
 
 ---
 
-## Bienvenido/a
+## 👋 Bienvenido/a
 
-Este manual te explica paso a paso cómo administrar el contenido de tu sitio web **www.dolo-vibes.com**. No necesitas saber de programación ni de tecnología para usarlo.
+Este manual te explica paso a paso cómo administrar el contenido de tu sitio web. No necesitas saber de programación ni de tecnología para usarlo.
 
 Tu sitio web tiene dos partes:
-- **El sitio público** (lo que ven tus clientes): [www.dolo-vibes.com](https://www.dolo-vibes.com)
-- **El panel de administración** (donde tú editas el contenido): [api.dolo-vibes.com/admin](https://api.dolo-vibes.com/admin)
 
-Piensa en el panel de administración como el "detrás de escena" de tu sitio. Todo lo que cambies ahí se reflejará en el sitio público.
+| Parte | Dirección | Para qué sirve |
+|---|---|---|
+| **Sitio público** | www.dolo-vibes.com | Lo que ven tus clientes |
+| **Panel de administración** | api.dolo-vibes.com/admin | Donde tú editas el contenido |
 
----
-
-## Tabla de Contenidos
-
-1. [Cómo acceder al panel de administración](#1-cómo-acceder-al-panel-de-administración)
-2. [Conociendo el panel: las secciones principales](#2-conociendo-el-panel-las-secciones-principales)
-3. [Administrar Experiencias](#3-administrar-experiencias)
-4. [Administrar Paquetes](#4-administrar-paquetes)
-5. [Editar la página de inicio (Hero)](#5-editar-la-página-de-inicio-hero)
-6. [Editar la página "Nosotros"](#6-editar-la-página-nosotros)
-7. [Editar textos del sitio](#7-editar-textos-del-sitio)
-8. [Configuración general del sitio](#8-configuración-general-del-sitio)
-9. [Páginas legales](#9-páginas-legales)
-10. [Subir y gestionar imágenes](#10-subir-y-gestionar-imágenes)
-11. [Traducir contenido automáticamente](#11-traducir-contenido-automáticamente)
-12. [Publicar y despublicar contenido](#12-publicar-y-despublicar-contenido)
-13. [Qué NO tocar](#13-qué-no-tocar)
-14. [Solución de problemas comunes](#14-solución-de-problemas-comunes)
-15. [Glosario](#15-glosario)
+> 💡 **TIP:** Piensa en el panel de administración como el "detrás de escena" de tu sitio. Todo lo que cambies ahí se reflejará en el sitio público.
 
 ---
 
-## 1. Cómo acceder al panel de administración
+## 📑 Tabla de Contenidos
+
+| # | Sección |
+|---|---------|
+| 1 | [Cómo acceder al panel de administración](#1--cómo-acceder-al-panel-de-administración) |
+| 2 | [Conociendo el panel: las secciones principales](#2--conociendo-el-panel-las-secciones-principales) |
+| 3 | [Administrar Experiencias](#3--administrar-experiencias) |
+| 4 | [Administrar Paquetes](#4--administrar-paquetes) |
+| 5 | [Editar la página de inicio (Hero)](#5--editar-la-página-de-inicio-hero) |
+| 6 | [Editar la página "Nosotros"](#6--editar-la-página-nosotros) |
+| 7 | [Editar textos del sitio](#7--editar-textos-del-sitio) |
+| 8 | [Configuración general del sitio](#8--configuración-general-del-sitio) |
+| 9 | [Páginas legales](#9--páginas-legales) |
+| 10 | [Subir y gestionar imágenes](#10--subir-y-gestionar-imágenes) |
+| 11 | [Traducir contenido automáticamente](#11--traducir-contenido-automáticamente) |
+| 12 | [Publicar y despublicar contenido](#12--publicar-y-despublicar-contenido) |
+| 13 | [Qué NO tocar](#13--qué-no-tocar) |
+| 14 | [Solución de problemas comunes](#14--solución-de-problemas-comunes) |
+| 15 | [Glosario](#15--glosario) |
+
+---
+
+## 1. 🔑 Cómo acceder al panel de administración
 
 ### Pasos para entrar
 
-1. Abre tu navegador (Chrome, Safari, Firefox, etc.)
-2. Escribe en la barra de direcciones: **api.dolo-vibes.com/admin**
-3. Verás una pantalla de inicio de sesión
-4. Ingresa tu email: **info@dolo-vibes.com**
-5. Ingresa tu contraseña
-6. Haz clic en **"Login"** (Iniciar sesión)
-
-> [Insertar captura: pantalla de login del panel admin de Strapi]
+| Paso | Acción |
+|:---:|---|
+| 1 | Abre tu navegador (Chrome, Safari, Firefox, etc.) |
+| 2 | Escribe en la barra de direcciones: **api.dolo-vibes.com/admin** |
+| 3 | Verás una pantalla de inicio de sesión |
+| 4 | Ingresa tu email: **info@dolo-vibes.com** |
+| 5 | Ingresa tu contraseña |
+| 6 | Haz clic en **"Login"** (Iniciar sesión) |
 
 ### Si olvidaste tu contraseña
 
-1. En la pantalla de login, haz clic en **"Forgot your password?"** (¿Olvidaste tu contraseña?)
-2. Ingresa tu email: **info@dolo-vibes.com**
-3. Revisa tu bandeja de entrada (y la carpeta de spam) — recibirás un enlace para restablecer tu contraseña
-4. Haz clic en el enlace y crea una nueva contraseña
+| Paso | Acción |
+|:---:|---|
+| 1 | En la pantalla de login, haz clic en **"Forgot your password?"** |
+| 2 | Ingresa tu email: **info@dolo-vibes.com** |
+| 3 | Revisa tu bandeja de entrada (y la carpeta de spam) |
+| 4 | Haz clic en el enlace del email y crea una nueva contraseña |
 
-**Importante:** Si no recibes el email, contacta a tu desarrollador. Es posible que el servicio de email (Resend) necesite revisión.
+> ⚠️ **IMPORTANTE:** Si no recibes el email para restablecer la contraseña, contacta a tu equipo de desarrollo. Es posible que el servicio de email necesite revisión.
 
 ---
 
-## 2. Conociendo el panel: las secciones principales
+## 2. 🧭 Conociendo el panel: las secciones principales
 
-Al entrar al panel, verás un menú en el lado izquierdo. Estas son las secciones que usarás:
+Al entrar al panel, verás un menú en el lado izquierdo con estas secciones:
 
-### Gestor de Contenido (Content Manager)
+### 📁 Gestor de Contenido (Content Manager)
 
-Es la sección principal. Aquí encuentras todo el contenido de tu sitio organizado en dos categorías:
+Es la sección principal. Aquí encuentras todo el contenido organizado en dos categorías:
 
-**Colecciones** (pueden tener muchas entradas):
+**Colecciones** — pueden tener muchas entradas:
+
 | Nombre en el panel | Qué es | Ejemplo |
 |---|---|---|
-| Experience | Las experiencias/actividades que ofreces | Senderismo, Alpinismo, Escalada |
-| Package | Los paquetes turísticos con detalles y precios | "Volcán Nevado de Colima 3 días" |
-| Legal Page | Páginas de texto legal | Política de privacidad, Términos y condiciones |
+| 🏔️ Experience | Las experiencias/actividades que ofreces | Senderismo, Alpinismo, Escalada |
+| 📦 Package | Los paquetes turísticos con detalles y precios | "Volcán Nevado de Colima 3 días" |
+| ⚖️ Legal Page | Páginas de texto legal | Política de privacidad, Términos |
 
-**Tipos Únicos** (solo existe uno de cada):
+**Tipos Únicos** — solo existe uno de cada:
+
 | Nombre en el panel | Qué es |
 |---|---|
-| Hero Section | Lo primero que se ve al entrar al sitio (el video/foto grande con título) |
-| About Page | El contenido de la página "Nosotros" |
-| Site Setting | Configuración general: teléfono, email, redes sociales, logo |
-| Site Text | Todos los textos pequeños del sitio: botones, etiquetas, mensajes |
+| 🎬 Hero Section | Lo primero que se ve al entrar al sitio (video/foto grande con título) |
+| 📖 About Page | El contenido de la página "Nosotros" |
+| ⚙️ Site Setting | Configuración general: teléfono, email, redes sociales, logo |
+| 📝 Site Text | Todos los textos pequeños del sitio: botones, etiquetas, mensajes |
 
-### Biblioteca de Medios (Media Library)
+### 🖼️ Biblioteca de Medios (Media Library)
 
 Aquí se guardan todas las fotos y videos que has subido. Es como una carpeta de archivos en la nube.
 
-> [Insertar captura: vista del menú lateral del panel admin mostrando Content Manager y Media Library]
-
 ---
 
-## 3. Administrar Experiencias
+## 3. 🏔️ Administrar Experiencias
 
-Las **experiencias** son las categorías principales de actividades que ofreces (por ejemplo: Senderismo, Alpinismo, etc.). Cada experiencia puede tener varios paquetes asociados.
+Las **experiencias** son las categorías principales de actividades que ofreces (por ejemplo: Senderismo, Alpinismo). Cada experiencia puede tener varios paquetes asociados.
 
 ### Ver las experiencias existentes
 
-1. En el menú izquierdo, haz clic en **Content Manager**
-2. Selecciona **Experience** en la lista
-3. Verás una tabla con todas tus experiencias
-
-> [Insertar captura: lista de experiencias en el Content Manager]
+| Paso | Acción |
+|:---:|---|
+| 1 | En el menú izquierdo, haz clic en **Content Manager** |
+| 2 | Selecciona **Experience** en la lista |
+| 3 | Verás una tabla con todas tus experiencias |
 
 ### Crear una nueva experiencia
 
-1. Haz clic en el botón **"Create new entry"** (Crear nueva entrada) en la esquina superior derecha
-2. Llena los campos:
+Haz clic en el botón **"Create new entry"** (esquina superior derecha) y llena:
 
-| Campo | Qué poner | Ejemplo | Obligatorio |
-|---|---|---|---|
-| title | Nombre de la experiencia | "Senderismo" | Sí |
-| slug | Se genera solo a partir del título | "senderismo" | Sí (automático) |
-| season | Temporada: verano (summer) o invierno (winter) | "summer" | Sí |
-| thumbnail | Foto para la tarjeta/miniatura | Una foto representativa | Sí |
-| heroImage | Foto grande de fondo (encabezado) | Una foto panorámica | No |
-| longDescription | Descripción detallada de la experiencia | Texto con formato | Sí |
-| displayOrder | Número que controla el orden (menor = primero) | 1, 2, 3... | No |
-| showInFooter | ¿Mostrar en el pie de página del sitio? | Sí/No | No |
+| Campo | Qué poner | Ejemplo | ¿Obligatorio? |
+|---|---|---|:---:|
+| `title` | Nombre de la experiencia | "Senderismo" | ✅ |
+| `slug` | Se genera solo a partir del título | "senderismo" | ✅ (auto) |
+| `season` | Temporada: verano o invierno | "summer" | ✅ |
+| `thumbnail` | Foto para la tarjeta/miniatura | Una foto representativa | ✅ |
+| `heroImage` | Foto grande de fondo (encabezado) | Una foto panorámica | — |
+| `longDescription` | Descripción detallada de la experiencia | Texto con formato | ✅ |
+| `displayOrder` | Número que controla el orden (menor = primero) | 1, 2, 3... | — |
+| `showInFooter` | ¿Mostrar en el pie de página del sitio? | Sí/No | — |
 
-3. Haz clic en **"Save"** (Guardar) para crear un borrador
-4. Haz clic en **"Publish"** (Publicar) para que aparezca en el sitio público
+Luego:
+1. Haz clic en **"Save"** (Guardar) → se crea como borrador
+2. Haz clic en **"Publish"** (Publicar) → aparecerá en el sitio público
 
 ### Editar una experiencia
 
-1. Haz clic sobre la experiencia que quieras modificar en la lista
-2. Cambia los campos que necesites
-3. Haz clic en **"Save"** para guardar los cambios
-4. Si la experiencia ya estaba publicada, los cambios se verán en el sitio en unos minutos
+| Paso | Acción |
+|:---:|---|
+| 1 | Haz clic sobre la experiencia que quieras modificar |
+| 2 | Cambia los campos que necesites |
+| 3 | Haz clic en **"Save"** |
 
 ### Ordenar experiencias
 
-Para cambiar el orden en que aparecen en el sitio:
-- Modifica el campo **displayOrder** de cada experiencia
-- El número más bajo aparece primero
-- Ejemplo: si quieres que "Senderismo" aparezca primero, ponle `1`; si "Alpinismo" va segundo, ponle `2`
+> 💡 **TIP:** Para cambiar el orden en que aparecen en el sitio, modifica el campo **displayOrder** de cada experiencia. El número más bajo aparece primero.
 
 ---
 
-## 4. Administrar Paquetes
+## 4. 📦 Administrar Paquetes
 
-Los **paquetes** son los productos/servicios específicos que vendes (por ejemplo: "Volcán Nevado de Colima - 3 días"). Son la parte más completa del sitio.
-
-### Ver paquetes existentes
-
-1. En **Content Manager**, selecciona **Package**
-2. Verás la lista de todos tus paquetes
+Los **paquetes** son los productos/servicios específicos que vendes. Son la parte más completa del sitio.
 
 ### Crear un nuevo paquete
 
-1. Haz clic en **"Create new entry"**
-2. Llena los campos paso a paso:
+Haz clic en **"Create new entry"** y llena los campos por secciones:
 
-**Información básica:**
+---
 
-| Campo | Qué poner | Ejemplo |
-|---|---|---|
-| title | Nombre del paquete | "Volcán Nevado de Colima" |
-| slug | Se genera automáticamente | "volcan-nevado-de-colima" |
-| experience | Selecciona la experiencia a la que pertenece | "Senderismo" |
-| season | Temporada: summer o winter | "summer" |
-| thumbnail | Foto para la tarjeta del paquete | Foto representativa |
-| heroImage | Foto grande de encabezado | Foto panorámica |
-| description | Descripción detallada con formato | Texto enriquecido |
-
-**Detalles del paquete:**
+#### Sección 1: Información básica
 
 | Campo | Qué poner | Ejemplo |
 |---|---|---|
-| location | Ubicación del paquete | "Jalisco, México" |
-| duration | Duración | "3 días / 2 noches" |
-| difficulty | Nivel de dificultad | "Moderado" |
-| groupSize | Tamaño del grupo | "4-12 personas" |
-| guideType | Tipo de guía | "Guía certificado" |
-| availableDates | Fechas disponibles | "Todo el año" |
+| `title` | Nombre del paquete | "Volcán Nevado de Colima" |
+| `slug` | Se genera automáticamente | "volcan-nevado-de-colima" |
+| `experience` | Selecciona la experiencia a la que pertenece | "Senderismo" |
+| `season` | Temporada | "summer" |
+| `thumbnail` | Foto para la tarjeta | Foto representativa |
+| `heroImage` | Foto grande de encabezado | Foto panorámica |
+| `description` | Descripción detallada con formato | Texto enriquecido |
 
-**Precios:**
+---
+
+#### Sección 2: Detalles del paquete
 
 | Campo | Qué poner | Ejemplo |
 |---|---|---|
-| priceAmount | Precio en euros (solo números) | 350 |
-| originalPriceAmount | Precio original (si hay descuento) | 450 |
-| hasDiscount | ¿Tiene descuento activo? | Sí/No |
-| rating | Calificación (0 a 5) | 4.8 |
+| `location` | Ubicación | "Jalisco, México" |
+| `duration` | Duración | "3 días / 2 noches" |
+| `difficulty` | Nivel de dificultad | "Moderado" |
+| `groupSize` | Tamaño del grupo | "4-12 personas" |
+| `guideType` | Tipo de guía | "Guía certificado" |
+| `availableDates` | Fechas disponibles | "Todo el año" |
 
-> **Nota sobre precios:** Los precios siempre se ponen en **euros (EUR)**. El sitio automáticamente los convierte a dólares (USD) y pesos mexicanos (MXN) para los visitantes.
+---
 
-**Itinerario (día por día):**
+#### Sección 3: Precios
+
+| Campo | Qué poner | Ejemplo |
+|---|---|---|
+| `priceAmount` | Precio en euros (solo números) | 350 |
+| `originalPriceAmount` | Precio original (si hay descuento) | 450 |
+| `hasDiscount` | ¿Tiene descuento activo? | Sí/No |
+| `rating` | Calificación (0 a 5) | 4.8 |
+
+> ℹ️ **NOTA:** Los precios siempre se ponen en **euros (EUR)**. El sitio automáticamente los convierte a dólares (USD) y pesos mexicanos (MXN) para los visitantes.
+
+---
+
+#### Sección 4: Itinerario (día por día)
 
 Para agregar los días del itinerario:
-1. Busca la sección **itinerary**
-2. Haz clic en **"Add an entry"** (Agregar entrada) para cada día
-3. Para cada día, llena:
-   - **day**: Número del día (1, 2, 3...)
-   - **title**: Título del día ("Llegada y aclimatación")
-   - **description**: Descripción detallada de las actividades
-   - **image**: Foto del día (opcional)
 
-**Qué incluye / Qué no incluye:**
+| Paso | Acción |
+|:---:|---|
+| 1 | Busca la sección **itinerary** |
+| 2 | Haz clic en **"Add an entry"** para cada día |
+| 3 | Para cada día, llena los campos de abajo |
 
-1. Busca la sección **includes** (qué incluye)
-2. Haz clic en **"Add an entry"** para cada elemento
-3. Llena el **label** (nombre) y opcionalmente un **detail** (detalle)
-4. Repite lo mismo para **notIncludes** (qué no incluye)
-
-Ejemplo de "Qué incluye":
-- Label: "Transporte" / Detail: "Desde el hotel hasta el punto de inicio"
-- Label: "Alimentos" / Detail: "Desayuno y comida durante la excursión"
-
-**Galería de fotos:**
-
-1. Busca la sección **gallery**
-2. Haz clic en **"Add an entry"** para cada foto
-3. Sube la **image** y opcionalmente agrega un **caption** (pie de foto)
-
-**Fechas de salida:**
-
-1. Busca la sección **startDates**
-2. Agrega cada fecha con:
-   - **date**: La fecha de salida
-   - **displayText**: Texto que se mostrará (opcional, ej: "Semana Santa")
-   - **available**: ¿Está disponible? Sí/No
-
-**Visibilidad en el Home:**
-
-| Campo | Qué poner |
-|---|---|
-| showInHome | ¿Mostrar este paquete en la página de inicio? |
-| homeDisplayOrder | Orden en el que aparece en el home (menor = primero) |
-| displayOrder | Orden general en la lista de paquetes |
-
-**SEO (opcional pero recomendado):**
-
-1. Busca la sección **seo**
-2. Llena:
-   - **metaTitle**: Título que aparece en Google (máximo 60 caracteres)
-   - **metaDescription**: Descripción para Google (máximo 160 caracteres)
-   - **keywords**: Palabras clave separadas por comas
-   - **shareImage**: Imagen que aparece al compartir en redes sociales
-
-3. **Guarda** y **Publica** cuando todo esté listo
-
----
-
-## 5. Editar la página de inicio (Hero)
-
-La sección "Hero" es lo primero que ven los visitantes al entrar al sitio — el video/foto grande con el título principal.
-
-1. En **Content Manager**, selecciona **Hero Section** (en la sección de "Single Types")
-2. Edita los campos:
-
-| Campo | Qué es | Ejemplo |
+| Campo | Qué poner | Ejemplo |
 |---|---|---|
-| title | Título principal | "Descubre la aventura" |
-| titleHighlight | Parte del título que se resalta | "aventura" |
-| subtitle | Texto debajo del título | "Experiencias únicas en la montaña" |
-| videoDesktop | Video que se reproduce de fondo (solo en computadoras) | Archivo MP4 |
-| imageMobile | Imagen que se muestra en celulares (en lugar del video) | Foto JPG/PNG |
-
-3. Guarda y publica
-
-> **Tip:** El video de fondo solo se reproduce en computadoras de escritorio. En celulares se muestra la imagen estática para que la página cargue rápido.
+| `day` | Número del día | 1 |
+| `title` | Título del día | "Llegada y aclimatación" |
+| `description` | Actividades detalladas | Texto con formato |
+| `image` | Foto del día (opcional) | Foto de la actividad |
 
 ---
 
-## 6. Editar la página "Nosotros"
+#### Sección 5: Qué incluye / Qué no incluye
 
-1. En **Content Manager**, selecciona **About Page**
-2. Edita los campos:
+| Paso | Acción |
+|:---:|---|
+| 1 | Busca la sección **includes** (o **notIncludes**) |
+| 2 | Haz clic en **"Add an entry"** para cada elemento |
+| 3 | Llena `label` (nombre) y opcionalmente `detail` |
 
-| Campo | Qué es |
+**Ejemplos de "Qué incluye":**
+
+| Label | Detail |
 |---|---|
-| pageTitle | Título de la página |
-| mainPhoto | Foto principal de la sección |
-| photoAlt | Descripción de la foto (para accesibilidad) |
-| origin | Sección "Origen": título + contenido |
-| essence | Sección "Esencia": título + contenido |
-| vision | Sección "Visión": título + contenido |
-| mission | Sección "Misión": título + contenido |
-
-Cada sección (origin, essence, vision, mission) tiene dos partes:
-- **title**: El título de la sección (ej: "Nuestra Historia")
-- **content**: El texto con formato de esa sección
-
-3. Guarda y publica
+| Transporte | Desde el hotel hasta el punto de inicio |
+| Alimentos | Desayuno y comida durante la excursión |
+| Equipo | Casco, cuerdas y arnés incluidos |
 
 ---
 
-## 7. Editar textos del sitio
+#### Sección 6: Galería de fotos
 
-La sección **Site Text** contiene **todos los textos pequeños** que aparecen en el sitio: botones, etiquetas, mensajes, preguntas del cuestionario, etc.
-
-1. En **Content Manager**, selecciona **Site Text**
-2. Verás una lista larga de campos de texto
-3. Busca el texto que quieras cambiar y modifícalo
-4. Guarda y publica
-
-**Algunos ejemplos de textos que puedes cambiar:**
-
-| Campo en el panel | Dónde aparece en el sitio |
-|---|---|
-| `navExperiences` | Texto del menú de navegación para "Experiencias" |
-| `navAbout` | Texto del menú para "Nosotros" |
-| `heroCtaButton` | Texto del botón principal del hero |
-| `footerContact` | Título de la sección de contacto en el footer |
-| `quoteModalTitle` | Título del formulario de cotización |
-| `packageBookButton` | Texto del botón "Reservar" en los paquetes |
-
-> **Tip:** Si no estás seguro de qué campo controla qué texto, cambia uno, guarda, y revisa el sitio para ver dónde apareció el cambio. Siempre puedes revertirlo.
+| Paso | Acción |
+|:---:|---|
+| 1 | Busca la sección **gallery** |
+| 2 | Haz clic en **"Add an entry"** para cada foto |
+| 3 | Sube la **image** y opcionalmente agrega un **caption** |
 
 ---
 
-## 8. Configuración general del sitio
+#### Sección 7: Fechas de salida
 
-La sección **Site Setting** controla información general que aparece en todo el sitio.
-
-1. En **Content Manager**, selecciona **Site Setting**
-2. Edita los campos:
-
-**Información de la empresa:**
-
-| Campo | Qué es | Ejemplo |
+| Campo | Qué poner | Ejemplo |
 |---|---|---|
-| siteName | Nombre del sitio | "Dolovibes" |
-| location | Ubicación de la empresa | "Guadalajara, Jalisco, México" |
-| phone | Teléfono de contacto | "+52 33 1234 5678" |
-| email | Email de contacto | "info@dolo-vibes.com" |
-| whatsappNumber | Número de WhatsApp | "+523312345678" |
+| `date` | La fecha de salida | 2026-04-15 |
+| `displayText` | Texto que se mostrará (opcional) | "Semana Santa" |
+| `available` | ¿Está disponible? | Sí/No |
 
-**Redes sociales:**
+---
 
-| Campo | Qué poner |
-|---|---|
-| instagramUrl | Link completo a tu perfil de Instagram |
-| facebookUrl | Link completo a tu página de Facebook |
-| tiktokUrl | Link completo a tu perfil de TikTok |
-
-**Imágenes de marca:**
-
-| Campo | Qué es |
-|---|---|
-| logo | Logo principal (fondo claro) |
-| logoDark | Logo para fondos oscuros |
-| favicon | Icono pequeño que aparece en la pestaña del navegador |
-
-**Activar/desactivar idiomas y divisas:**
-
-Puedes controlar qué idiomas y divisas están disponibles para los visitantes:
+#### Sección 8: Visibilidad y orden
 
 | Campo | Qué controla |
 |---|---|
-| enableLanguageEn | ¿Mostrar inglés como opción? |
-| enableLanguageIt | ¿Mostrar italiano como opción? |
-| enableLanguageDe | ¿Mostrar alemán como opción? |
-| enableCurrencyUsd | ¿Mostrar precios en dólares (USD)? |
-| enableCurrencyMxn | ¿Mostrar precios en pesos mexicanos (MXN)? |
-
-> **Nota:** El español (ES) y el euro (EUR) siempre están activos y no se pueden desactivar, ya que son los idiomas y divisas base del sitio.
-
-3. Guarda y publica
+| `showInHome` | ¿Mostrar este paquete en la página de inicio? |
+| `homeDisplayOrder` | Orden en el que aparece en el home (menor = primero) |
+| `displayOrder` | Orden general en la lista de paquetes |
 
 ---
 
-## 9. Páginas legales
+#### Sección 9: SEO (opcional pero recomendado)
 
-Las páginas legales (como política de privacidad, términos y condiciones, etc.) se administran como cualquier otro contenido.
+| Campo | Qué poner | Límite |
+|---|---|---|
+| `metaTitle` | Título que aparece en Google | Máx. 60 caracteres |
+| `metaDescription` | Descripción para Google | Máx. 160 caracteres |
+| `keywords` | Palabras clave separadas por comas | — |
+| `shareImage` | Imagen al compartir en redes sociales | — |
+
+> 💡 **TIP:** El SEO ayuda a que tu paquete aparezca en los resultados de Google. Vale la pena llenarlo para los paquetes más importantes.
+
+---
+
+## 5. 🎬 Editar la página de inicio (Hero)
+
+La sección "Hero" es lo primero que ven los visitantes — el video/foto grande con el título principal.
+
+| Paso | Acción |
+|:---:|---|
+| 1 | En **Content Manager**, selecciona **Hero Section** (Single Types) |
+| 2 | Edita los campos |
+| 3 | Guarda y publica |
+
+| Campo | Qué es | Ejemplo |
+|---|---|---|
+| `title` | Título principal | "Descubre la aventura" |
+| `titleHighlight` | Parte del título que se resalta | "aventura" |
+| `subtitle` | Texto debajo del título | "Experiencias únicas en la montaña" |
+| `videoDesktop` | Video de fondo (solo computadoras) | Archivo MP4 |
+| `imageMobile` | Imagen para celulares (en lugar del video) | Foto JPG/PNG |
+
+> 💡 **TIP:** El video de fondo solo se reproduce en computadoras. En celulares se muestra la imagen estática para que cargue rápido.
+
+---
+
+## 6. 📖 Editar la página "Nosotros"
+
+| Paso | Acción |
+|:---:|---|
+| 1 | En **Content Manager**, selecciona **About Page** |
+| 2 | Edita los campos |
+| 3 | Guarda y publica |
+
+| Campo | Qué es |
+|---|---|
+| `pageTitle` | Título de la página |
+| `mainPhoto` | Foto principal de la sección |
+| `photoAlt` | Descripción de la foto (para accesibilidad) |
+
+Cada sección de contenido tiene dos partes:
+
+| Sección | `title` (título) | `content` (texto) |
+|---|---|---|
+| **Origin** | Ej: "Nuestro Origen" | Historia de la empresa |
+| **Essence** | Ej: "Nuestra Esencia" | Qué los hace únicos |
+| **Vision** | Ej: "Nuestra Visión" | Hacia dónde van |
+| **Mission** | Ej: "Nuestra Misión" | Qué hacen y para quién |
+
+---
+
+## 7. 📝 Editar textos del sitio
+
+La sección **Site Text** contiene **todos los textos pequeños** que aparecen en el sitio.
+
+| Paso | Acción |
+|:---:|---|
+| 1 | En **Content Manager**, selecciona **Site Text** |
+| 2 | Busca el texto que quieras cambiar |
+| 3 | Modifícalo, guarda y publica |
+
+**Ejemplos de textos que puedes cambiar:**
+
+| Campo en el panel | Dónde aparece en el sitio |
+|---|---|
+| `navExperiences` | Menú de navegación → "Experiencias" |
+| `navAbout` | Menú de navegación → "Nosotros" |
+| `heroCtaButton` | Botón principal del hero |
+| `footerContact` | Título de contacto en el footer |
+| `quoteModalTitle` | Título del formulario de cotización |
+| `packageBookButton` | Botón "Reservar" en los paquetes |
+
+> 💡 **TIP:** Si no estás seguro de qué campo controla qué texto, cambia uno, guarda, y revisa el sitio. Siempre puedes revertirlo.
+
+---
+
+## 8. ⚙️ Configuración general del sitio
+
+La sección **Site Setting** controla información que aparece en todo el sitio.
+
+### Información de la empresa
+
+| Campo | Qué es | Ejemplo |
+|---|---|---|
+| `siteName` | Nombre del sitio | "Dolovibes" |
+| `location` | Ubicación de la empresa | "Guadalajara, Jalisco" |
+| `phone` | Teléfono de contacto | "+52 33 1234 5678" |
+| `email` | Email de contacto | "info@dolo-vibes.com" |
+| `whatsappNumber` | Número de WhatsApp | "+523312345678" |
+
+### Redes sociales
+
+| Campo | Qué poner |
+|---|---|
+| `instagramUrl` | Link completo a tu perfil de Instagram |
+| `facebookUrl` | Link completo a tu página de Facebook |
+| `tiktokUrl` | Link completo a tu perfil de TikTok |
+
+### Imágenes de marca
+
+| Campo | Qué es |
+|---|---|
+| `logo` | Logo principal (fondo claro) |
+| `logoDark` | Logo para fondos oscuros |
+| `favicon` | Icono pequeño en la pestaña del navegador |
+
+### Activar/desactivar idiomas y divisas
+
+| Campo | Qué controla |
+|---|---|
+| `enableLanguageEn` | ¿Mostrar inglés? |
+| `enableLanguageIt` | ¿Mostrar italiano? |
+| `enableLanguageDe` | ¿Mostrar alemán? |
+| `enableCurrencyUsd` | ¿Mostrar precios en dólares (USD)? |
+| `enableCurrencyMxn` | ¿Mostrar precios en pesos (MXN)? |
+
+> ℹ️ **NOTA:** El español y el euro siempre están activos — son la base del sitio y no se pueden desactivar.
+
+---
+
+## 9. ⚖️ Páginas legales
 
 ### Crear una página legal
 
-1. En **Content Manager**, selecciona **Legal Page**
-2. Haz clic en **"Create new entry"**
-3. Llena:
-   - **title**: Título de la página (ej: "Política de Privacidad")
-   - **slug**: Se genera automáticamente
-   - **content**: El contenido legal con formato
-   - **showInFooter**: ¿Mostrar el enlace en el pie de página?
-   - **footerDisplayOrder**: Orden en el footer
+| Paso | Acción |
+|:---:|---|
+| 1 | En **Content Manager**, selecciona **Legal Page** |
+| 2 | Haz clic en **"Create new entry"** |
+| 3 | Llena los campos (ver abajo) |
+| 4 | Guarda y publica |
 
-4. Guarda y publica
+| Campo | Qué poner | Ejemplo |
+|---|---|---|
+| `title` | Título de la página | "Política de Privacidad" |
+| `slug` | Se genera automáticamente | "politica-de-privacidad" |
+| `content` | El contenido legal con formato | Texto legal |
+| `showInFooter` | ¿Mostrar enlace en el pie de página? | Sí/No |
+| `footerDisplayOrder` | Orden en el footer | 1, 2, 3... |
 
 ---
 
-## 10. Subir y gestionar imágenes
+## 10. 🖼️ Subir y gestionar imágenes
 
 ### Subir una imagen al editar contenido
 
-Cuando un campo requiere una imagen (como `thumbnail` o `heroImage`):
+Cuando un campo requiere una imagen:
 
-1. Haz clic en el campo de imagen
-2. Puedes:
-   - **Subir una nueva**: Arrastra y suelta la imagen, o haz clic para seleccionar desde tu computadora
-   - **Seleccionar una existente**: Busca entre las imágenes que ya has subido anteriormente
-
-> [Insertar captura: diálogo de selección/subida de imagen en Strapi]
+| Paso | Acción |
+|:---:|---|
+| 1 | Haz clic en el campo de imagen |
+| 2a | **Subir nueva:** Arrastra y suelta, o haz clic para seleccionar desde tu computadora |
+| 2b | **Usar existente:** Busca entre las imágenes ya subidas |
 
 ### Gestionar la biblioteca de medios
 
-1. En el menú izquierdo, haz clic en **Media Library** (Biblioteca de medios)
-2. Aquí puedes:
-   - Ver todas las imágenes y videos subidos
-   - Buscar archivos por nombre
-   - Crear carpetas para organizar tus archivos
-   - Eliminar archivos que ya no uses
+| Paso | Acción |
+|:---:|---|
+| 1 | En el menú izquierdo, haz clic en **Media Library** |
+| 2 | Puedes ver, buscar, organizar en carpetas y eliminar archivos |
 
 ### Recomendaciones para imágenes
 
@@ -416,192 +445,213 @@ Cuando un campo requiere una imagen (como `thumbnail` o `heroImage`):
 | Logo | 300 x 100 px | PNG (fondo transparente) |
 | Favicon | 32 x 32 px | PNG o ICO |
 
-> **Tip:** Las fotos se redimensionan automáticamente para diferentes dispositivos (celular, tablet, computadora), pero entre más grande y buena calidad sea la foto original, mejor se verá.
+> 💡 **TIP:** Las fotos se redimensionan automáticamente para celulares, tablets y computadoras. Entre más grande y buena calidad sea la foto original, mejor se verá.
 
-> **Límite de archivo:** Puedes subir archivos de hasta 250 MB (útil para videos).
-
----
-
-## 11. Traducir contenido automáticamente
-
-Tu sitio soporta 4 idiomas: **Español, Inglés, Italiano y Alemán**. No necesitas traducir manualmente cada texto — el sistema puede hacerlo automáticamente.
-
-### Cómo funciona
-
-1. Tú creas o editas el contenido **en español** (es el idioma principal)
-2. Guardas y publicas el contenido en español
-3. Haces clic en el botón **"Traducir"** que aparece en el panel lateral derecho
-4. El sistema traduce automáticamente el contenido a todos los demás idiomas disponibles
-5. Espera unos segundos — la página se recargará automáticamente cuando termine
-
-> [Insertar captura: botón "Traducir" en el panel lateral derecho del editor]
-
-### Paso a paso
-
-1. Abre cualquier experiencia, paquete, página legal, etc.
-2. Asegúrate de estar en el idioma **Español (ES)** — puedes verlo en el selector de idioma del panel
-3. Edita el contenido como necesites
-4. **Guarda** y **Publica** el contenido en español
-5. En el panel derecho, busca el botón **"Traducir"**
-6. Aparecerá un mensaje de confirmación — haz clic en **"Confirmar"**
-7. Espera a que termine (la página se recargará)
-8. Verás una notificación verde indicando que las traducciones fueron exitosas
-
-### Cosas importantes sobre las traducciones
-
-- **Solo funciona desde español:** El botón "Traducir" solo aparece cuando estás viendo el contenido en español
-- **Las imágenes no se traducen:** Las fotos y videos se mantienen iguales en todos los idiomas
-- **Puedes revisar las traducciones:** Cambia el idioma en el selector del panel para ver cómo quedó cada traducción
-- **Puedes editar traducciones manualmente:** Si una traducción automática no te convence, puedes cambiar a ese idioma y editarla directamente
-- **Traduce todo automáticamente:** Traduce títulos, descripciones, itinerarios, textos de "qué incluye", etc.
+> ℹ️ **NOTA:** Puedes subir archivos de hasta **250 MB** (útil para videos).
 
 ---
 
-## 12. Publicar y despublicar contenido
+## 11. 🌍 Traducir contenido automáticamente
 
-En Strapi, el contenido puede estar en dos estados:
+Tu sitio soporta **4 idiomas**: Español, Inglés, Italiano y Alemán. No necesitas traducir manualmente — el sistema lo hace automáticamente.
 
-| Estado | Significado | Icono |
+### Cómo funciona (resumen)
+
+| # | Paso |
+|:---:|---|
+| 1 | Creas o editas contenido **en español** (idioma principal) |
+| 2 | Guardas y publicas el contenido en español |
+| 3 | Haces clic en el botón **"Traducir"** (panel lateral derecho) |
+| 4 | El sistema traduce a todos los demás idiomas |
+| 5 | La página se recarga automáticamente al terminar |
+
+### Paso a paso detallado
+
+| # | Acción |
+|:---:|---|
+| 1 | Abre cualquier experiencia, paquete, página legal, etc. |
+| 2 | Asegúrate de estar en **Español (ES)** en el selector de idioma |
+| 3 | Edita el contenido como necesites |
+| 4 | **Guarda** y **Publica** |
+| 5 | En el panel derecho, busca el botón **"Traducir"** |
+| 6 | Aparecerá una confirmación → haz clic en **"Confirmar"** |
+| 7 | Espera a que termine (la página se recargará) |
+| 8 | Verás una notificación verde de éxito |
+
+### Cosas importantes
+
+| Regla | Detalle |
+|---|---|
+| 🔤 **Solo desde español** | El botón "Traducir" solo aparece cuando ves el contenido en español |
+| 🖼️ **Imágenes intactas** | Las fotos y videos se mantienen iguales en todos los idiomas |
+| ✏️ **Puedes editar** | Si una traducción no te convence, cámbiala manualmente en ese idioma |
+| 📋 **Traduce todo** | Títulos, descripciones, itinerarios, "qué incluye", etc. |
+
+---
+
+## 12. 📤 Publicar y despublicar contenido
+
+El contenido puede estar en dos estados:
+
+| Estado | Significado | Indicador |
 |---|---|---|
-| **Borrador** (Draft) | Solo visible en el panel admin. Los visitantes NO lo ven. | Punto azul |
-| **Publicado** (Published) | Visible en el sitio público. Los visitantes SÍ lo ven. | Punto verde |
+| 📝 **Borrador** (Draft) | Solo visible en el panel admin. Los visitantes **NO** lo ven. | Punto azul |
+| ✅ **Publicado** (Published) | Visible en el sitio público. Los visitantes **SÍ** lo ven. | Punto verde |
 
-### Publicar contenido
+### Acciones
 
-1. Abre el contenido que quieras publicar
-2. Haz clic en el botón **"Publish"** (Publicar) en la esquina superior derecha
-3. El contenido será visible en el sitio público en unos minutos
+| Acción | Cómo |
+|---|---|
+| **Publicar** | Abre el contenido → clic en **"Publish"** (esquina superior derecha) |
+| **Despublicar** | Abre el contenido publicado → clic en **"Unpublish"** |
+| **Eliminar** | En la lista, selecciona la casilla → clic en **"Delete"** → confirmar |
 
-### Despublicar contenido
-
-Si quieres **ocultar** temporalmente algo del sitio sin borrarlo:
-
-1. Abre el contenido publicado
-2. Haz clic en **"Unpublish"** (Despublicar)
-3. El contenido volverá a ser un borrador y desaparecerá del sitio público
-4. Puedes volver a publicarlo cuando quieras
-
-### Eliminar contenido
-
-1. En la lista de contenido, selecciona la casilla del elemento que quieras eliminar
-2. Haz clic en **"Delete"** (Eliminar)
-3. Confirma la eliminación
-
-> **Precaución:** Eliminar contenido es **permanente**. Si no estás seguro, mejor despublícalo en lugar de eliminarlo.
+> 🔴 **ADVERTENCIA:** Eliminar contenido es **permanente**. Si no estás seguro, mejor despublícalo en lugar de eliminarlo.
 
 ---
 
-## 13. Qué NO tocar
+## 13. 🚫 Qué NO tocar
 
-Para evitar que el sitio deje de funcionar correctamente, **evita hacer** lo siguiente:
+Para evitar que el sitio deje de funcionar, **evita** lo siguiente:
 
 ### En el panel de administración
 
-- **No elimines los Single Types** (Hero Section, About Page, Site Setting, Site Text). Si los borras, partes del sitio dejarán de funcionar.
-- **No cambies los nombres de los campos** ni la estructura del contenido. La programación del sitio depende de esos nombres exactos.
-- **No modifiques la sección "Settings"** del panel (engranaje en el menú lateral) a menos que tu desarrollador te lo indique. Esta sección controla permisos y configuraciones técnicas.
-- **No crees nuevos tipos de contenido**. Agregar nuevas colecciones o single types requiere cambios en la programación del sitio.
-- **No elimines ni renombres campos de los tipos de contenido existentes** desde Settings > Content-Types Builder.
+| ❌ No hagas esto | Por qué |
+|---|---|
+| Eliminar los Single Types (Hero, About, Settings, Texts) | Partes del sitio dejarán de funcionar |
+| Cambiar nombres de campos o estructura | La programación depende de esos nombres exactos |
+| Modificar la sección "Settings" (engranaje) | Controla permisos y configuraciones técnicas |
+| Crear nuevos tipos de contenido | Requiere cambios en la programación |
+| Eliminar/renombrar campos desde Content-Types Builder | Romperá la conexión con el sitio |
 
 ### Sobre las imágenes
 
-- **No elimines imágenes de la biblioteca de medios** que estén siendo usadas en algún contenido. Esto causará que se vean espacios vacíos en el sitio.
-- Si necesitas cambiar una imagen, **sube la nueva primero** y luego reemplaza la referencia en el contenido.
+| ❌ No hagas esto | Por qué |
+|---|---|
+| Eliminar imágenes de la biblioteca que estén en uso | Aparecerán espacios vacíos en el sitio |
+| Subir imágenes sin antes verificar que no exista duplicado | Se acumula espacio innecesario |
 
 ### Sobre los idiomas
 
-- **Siempre edita primero en español** antes de usar el botón de traducir.
-- **No cambies el idioma predeterminado** del sistema.
+| ❌ No hagas esto | Por qué |
+|---|---|
+| Editar en otro idioma antes que en español | Las traducciones automáticas parten del español |
+| Cambiar el idioma predeterminado del sistema | Romperá el flujo de traducción |
 
 ---
 
-## 14. Solución de problemas comunes
+## 14. 🔧 Solución de problemas comunes
 
 ### "El sitio no carga" o "se ve una página en blanco"
 
-1. Verifica tu conexión a internet
-2. Intenta abrir el sitio desde otro navegador o dispositivo
-3. Espera 5 minutos y vuelve a intentar — puede ser un problema temporal del servidor
-4. Si el problema persiste, contacta a tu desarrollador
+| # | Qué hacer |
+|:---:|---|
+| 1 | Verifica tu conexión a internet |
+| 2 | Intenta desde otro navegador o dispositivo |
+| 3 | Espera 5 minutos y vuelve a intentar |
+| 4 | Si persiste → contacta al equipo de desarrollo |
+
+---
 
 ### "No puedo entrar al panel de administración"
 
-1. Verifica que estés escribiendo correctamente: **api.dolo-vibes.com/admin**
-2. Intenta restablecer tu contraseña (ver sección 1)
-3. Limpia la caché de tu navegador:
-   - Chrome: Ctrl+Shift+Delete → Selecciona "Imágenes y archivos en caché" → Borrar datos
-   - Safari: Preferencias → Privacidad → Administrar datos del sitio web → Eliminar todo
-4. Si no funciona, contacta a tu desarrollador
+| # | Qué hacer |
+|:---:|---|
+| 1 | Verifica que la URL sea exactamente **api.dolo-vibes.com/admin** |
+| 2 | Intenta restablecer tu contraseña (ver sección 1) |
+| 3 | Limpia la caché: Chrome → `Ctrl+Shift+Delete` → "Imágenes y archivos en caché" → Borrar |
+| 4 | Si no funciona → contacta al equipo de desarrollo |
+
+---
 
 ### "Hice un cambio pero no se ve en el sitio"
 
-1. **¿Publicaste el contenido?** Revisa que no esté en estado "borrador" (Draft)
-2. **Limpia la caché de tu navegador** (Ctrl+Shift+Delete o Cmd+Shift+Delete)
-3. **Espera unos minutos.** Los cambios pueden tardar de 1 a 5 minutos en reflejarse
-4. **Prueba en una ventana de incógnito** (Ctrl+Shift+N) para ver el sitio sin caché
+| # | Qué hacer |
+|:---:|---|
+| 1 | ¿Publicaste el contenido? Revisa que no esté en "borrador" |
+| 2 | Limpia la caché del navegador (`Ctrl+Shift+Delete`) |
+| 3 | Espera 2-5 minutos |
+| 4 | Prueba en ventana de incógnito (`Ctrl+Shift+N`) |
+
+---
 
 ### "Las imágenes no se ven en el sitio"
 
-1. Verifica que las imágenes estén correctamente asignadas en el panel admin
-2. No elimines imágenes de la biblioteca de medios si están en uso
-3. Si subiste una imagen nueva y no se ve, intenta con otro formato (JPG en lugar de PNG, por ejemplo)
-4. Si el problema persiste, contacta a tu desarrollador — puede ser un problema con Cloudinary
+| # | Qué hacer |
+|:---:|---|
+| 1 | Verifica que las imágenes estén asignadas en el panel admin |
+| 2 | No elimines imágenes de la biblioteca si están en uso |
+| 3 | Prueba subir en otro formato (JPG en lugar de PNG) |
+| 4 | Si persiste → contacta al equipo de desarrollo |
+
+---
 
 ### "El botón Traducir no aparece"
 
-1. Asegúrate de estar viendo el contenido en **español (ES)** — el botón solo aparece en español
-2. Asegúrate de que el contenido esté **guardado y publicado** antes de traducir
-3. Verifica que estés editando un tipo de contenido que soporte traducción (experiencias, paquetes, páginas legales, textos del sitio, etc.)
+| # | Qué verificar |
+|:---:|---|
+| 1 | Que estés viendo el contenido en **Español (ES)** |
+| 2 | Que el contenido esté **guardado y publicado** |
+| 3 | Que sea un tipo de contenido que soporte traducción |
+
+---
 
 ### "La traducción salió mal"
 
-1. Cambia al idioma donde la traducción salió mal usando el selector de idioma
-2. Edita manualmente el texto que necesites corregir
-3. Guarda y publica
+| # | Qué hacer |
+|:---:|---|
+| 1 | Cambia al idioma donde salió mal (usando el selector) |
+| 2 | Edita manualmente el texto |
+| 3 | Guarda y publica |
+
+---
 
 ### "El sitio está muy lento"
 
-1. Esto puede suceder si el servidor (Railway) está en el plan gratuito y tiene mucho tráfico
-2. Si pasa frecuentemente, contacta a tu desarrollador para evaluar un upgrade del servidor
-3. También puede ser temporal — espera unos minutos y prueba de nuevo
+| # | Qué hacer |
+|:---:|---|
+| 1 | Puede ser el plan gratuito de Railway bajo mucho tráfico |
+| 2 | Espera unos minutos y prueba de nuevo |
+| 3 | Si pasa frecuentemente → contacta al equipo de desarrollo para evaluar un upgrade |
+
+---
 
 ### "Me llegó un email de un proveedor que no entiendo"
 
-- **No ignores los emails** de GoDaddy, Vercel, Railway, Cloudinary, Resend o DeepL
-- Si es sobre **renovación** o **vencimiento**, contacta a tu desarrollador inmediatamente
-- Guarda los emails en una carpeta aparte para referencia
+> 🔴 **IMPORTANTE:** No ignores emails de GoDaddy, Vercel, Railway, Cloudinary, Resend o DeepL. Si es sobre renovación o vencimiento, contacta al equipo de desarrollo inmediatamente. Guarda los emails en una carpeta aparte.
 
 ---
 
-## 15. Glosario
+## 15. 📚 Glosario
 
-Términos que encontrarás en el panel de administración y qué significan:
-
-| Término | Significado simple |
+| Término | Significado |
 |---|---|
-| **Publicar (Publish)** | Hacer visible un contenido en el sitio público |
-| **Borrador (Draft)** | Contenido guardado pero que aún no se ve en el sitio |
-| **Despublicar (Unpublish)** | Ocultar contenido del sitio sin eliminarlo |
-| **Entrada (Entry)** | Un elemento individual de contenido (una experiencia, un paquete, etc.) |
-| **Colección (Collection)** | Un grupo de entradas del mismo tipo (todas las experiencias, todos los paquetes) |
-| **Tipo Único (Single Type)** | Contenido que solo existe una vez (la configuración del sitio, la sección hero) |
-| **Slug** | La parte de la dirección web que identifica al contenido. Ejemplo: en `dolo-vibes.com/es/paquetes/volcan-nevado`, el slug es "volcan-nevado" |
+| **Publicar** (Publish) | Hacer visible un contenido en el sitio público |
+| **Borrador** (Draft) | Contenido guardado pero que aún no se ve en el sitio |
+| **Despublicar** (Unpublish) | Ocultar contenido del sitio sin eliminarlo |
+| **Entrada** (Entry) | Un elemento individual: una experiencia, un paquete, etc. |
+| **Colección** (Collection) | Un grupo de entradas del mismo tipo |
+| **Tipo Único** (Single Type) | Contenido que solo existe una vez (ej: la configuración) |
+| **Slug** | La parte de la dirección web que identifica al contenido. En `dolo-vibes.com/es/paquetes/volcan-nevado`, el slug es "volcan-nevado" |
 | **Media** | Cualquier archivo multimedia: fotos, videos, documentos |
 | **Locale / Idioma** | La versión en un idioma específico del contenido |
-| **Bloque (Block)** | Editor de texto con formato: negritas, listas, encabezados, etc. |
-| **Componente** | Un grupo de campos que se repite dentro de una entrada (ej: cada día del itinerario) |
-| **Repetible** | Un componente que puede tener muchas instancias (ej: puedes agregar 1, 2, 5 o 10 días al itinerario) |
-| **SEO** | "Search Engine Optimization" — información que ayuda a que tu sitio aparezca en Google |
+| **Bloque** (Block) | Editor de texto con formato: negritas, listas, encabezados |
+| **Componente** | Un grupo de campos que se repite (ej: cada día del itinerario) |
+| **Repetible** | Un componente que puede tener muchas instancias |
+| **SEO** | Información que ayuda a que tu sitio aparezca en Google |
 | **metaTitle** | El título que aparece en los resultados de Google |
-| **metaDescription** | La descripción corta que aparece debajo del título en Google |
-| **CTA (Call to Action)** | Un botón que invita al usuario a hacer algo ("Reservar", "Cotizar") |
+| **metaDescription** | La descripción corta debajo del título en Google |
+| **CTA** (Call to Action) | Botón que invita al usuario a hacer algo ("Reservar", "Cotizar") |
 | **Hero** | La sección grande y visual al inicio de una página |
-| **Footer** | El pie de página del sitio (la parte de abajo con links y datos de contacto) |
-| **Thumbnail** | Imagen pequeña/miniatura que representa el contenido en listas y tarjetas |
-| **Caché** | Información que tu navegador guarda temporalmente para cargar más rápido. A veces necesitas borrarla para ver cambios recientes. |
+| **Footer** | El pie de página del sitio (links y datos de contacto) |
+| **Thumbnail** | Imagen pequeña/miniatura en listas y tarjetas |
+| **Caché** | Información que tu navegador guarda temporalmente. A veces hay que borrarla para ver cambios. |
 
 ---
 
-*Si tienes dudas que no se resuelvan con este manual, contacta a tu desarrollador.*
+> 📗 **Documento generado el 24 de febrero de 2026.**
 
-*Documento generado el 22 de febrero de 2026.*
+| Equipo de desarrollo | Email |
+|---|---|
+| **Jesús Garza** | jesus.garza.gro@gmail.com |
+| **Armando Ochoa** | armaochoa99@gmail.com |
