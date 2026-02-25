@@ -23,7 +23,7 @@
 
 | Servicio | Qué se renueva | Frecuencia | Criticidad | Fecha de vencimiento |
 |---|---|---|---|---|
-| **GoDaddy** | Dominio dolo-vibes.com | **Anual** | **ALTA** — Si vence, todo el sitio deja de funcionar | [COMPLETAR: fecha] |
+| **GoDaddy** | Dominio dolo-vibes.com | **Anual** | **ALTA** — Si vence, todo el sitio deja de funcionar | Consultar con el administrador de la cuenta GoDaddy |
 | **Railway** | Revisión de consumo y límites del plan | **Mensual** | MEDIA — Puede causar lentitud o caídas | Revisar cada mes |
 
 ### Servicios con API Keys que pueden vencer o desactivarse
@@ -40,7 +40,7 @@
 ```
           Ene   Feb   Mar   Abr   May   Jun   Jul   Ago   Sep   Oct   Nov   Dic
           ───── ───── ───── ───── ───── ───── ───── ───── ───── ───── ───── ─────
-Dominio    │                          ★ [COMPLETAR: mes de vencimiento]         │
+Dominio    │                          ★ Ver fecha en cuenta GoDaddy               │
 GoDaddy    │     Renovación anual — CRÍTICO si vence                            │
            │                                                                     │
 Railway    ✓     ✓     ✓     ✓     ✓     ✓     ✓     ✓     ✓     ✓     ✓     ✓
@@ -56,7 +56,7 @@ API Keys         ✓                                   ✓
            │     Revisión cada 6 meses con tu desarrollador                      │
           ───── ───── ───── ───── ───── ───── ───── ───── ───── ───── ───── ─────
 
-★ = Fecha de vencimiento del dominio (COMPLETAR)
+★ = Fecha de vencimiento del dominio (revisar en cuenta GoDaddy)
 ✓ = Revisión programada
 ```
 
@@ -316,14 +316,12 @@ Antes de llamar a tu desarrollador, intenta estos pasos básicos. Te ayudarán a
 
 ---
 
-### Datos de contacto del desarrollador
+### Datos de contacto del equipo de desarrollo
 
-| Campo | Información |
-|---|---|
-| Nombre | [COMPLETAR: nombre del desarrollador] |
-| Email | [COMPLETAR: email del desarrollador] |
-| Teléfono / WhatsApp | [COMPLETAR: teléfono del desarrollador] |
-| Horario de atención | [COMPLETAR: horario de atención] |
+| Nombre | Email | Rol |
+|---|---|---|
+| Jesús Garza | jesus.garza.gro@gmail.com | Desarrollador |
+| Armando Ochoa | armaochoa99@gmail.com | Desarrollador |
 
 > **Tip:** Cuando contactes a tu desarrollador por un problema, incluye:
 > 1. Qué estabas intentando hacer

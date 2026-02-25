@@ -50,8 +50,6 @@ Piensa en el panel de administración como el "detrás de escena" de tu sitio. T
 5. Ingresa tu contraseña
 6. Haz clic en **"Login"** (Iniciar sesión)
 
-> [Insertar captura: pantalla de login del panel admin de Strapi]
-
 ### Si olvidaste tu contraseña
 
 1. En la pantalla de login, haz clic en **"Forgot your password?"** (¿Olvidaste tu contraseña?)
@@ -90,8 +88,6 @@ Es la sección principal. Aquí encuentras todo el contenido de tu sitio organiz
 
 Aquí se guardan todas las fotos y videos que has subido. Es como una carpeta de archivos en la nube.
 
-> [Insertar captura: vista del menú lateral del panel admin mostrando Content Manager y Media Library]
-
 ---
 
 ## 3. Administrar Experiencias
@@ -103,8 +99,6 @@ Las **experiencias** son las categorías principales de actividades que ofreces 
 1. En el menú izquierdo, haz clic en **Content Manager**
 2. Selecciona **Experience** en la lista
 3. Verás una tabla con todas tus experiencias
-
-> [Insertar captura: lista de experiencias en el Content Manager]
 
 ### Crear una nueva experiencia
 
@@ -395,8 +389,6 @@ Cuando un campo requiere una imagen (como `thumbnail` o `heroImage`):
    - **Subir una nueva**: Arrastra y suelta la imagen, o haz clic para seleccionar desde tu computadora
    - **Seleccionar una existente**: Busca entre las imágenes que ya has subido anteriormente
 
-> [Insertar captura: diálogo de selección/subida de imagen en Strapi]
-
 ### Gestionar la biblioteca de medios
 
 1. En el menú izquierdo, haz clic en **Media Library** (Biblioteca de medios)
@@ -433,8 +425,6 @@ Tu sitio soporta 4 idiomas: **Español, Inglés, Italiano y Alemán**. No necesi
 3. Haces clic en el botón **"Traducir"** que aparece en el panel lateral derecho
 4. El sistema traduce automáticamente el contenido a todos los demás idiomas disponibles
 5. Espera unos segundos — la página se recargará automáticamente cuando termine
-
-> [Insertar captura: botón "Traducir" en el panel lateral derecho del editor]
 
 ### Paso a paso
 
@@ -602,6 +592,11 @@ Términos que encontrarás en el panel de administración y qué significan:
 
 ---
 
-*Si tienes dudas que no se resuelvan con este manual, contacta a tu desarrollador.*
+*Si tienes dudas que no se resuelvan con este manual, contacta al equipo de desarrollo:*
+
+| Nombre | Email |
+|---|---|
+| Jesús Garza | jesus.garza.gro@gmail.com |
+| Armando Ochoa | armaochoa99@gmail.com |
 
 *Documento generado el 22 de febrero de 2026.*

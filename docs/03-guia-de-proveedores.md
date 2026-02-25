@@ -358,6 +358,11 @@ Tu sitio utiliza varias "llaves digitales" (API Keys) para conectarse con los se
 
 ---
 
-*Si tienes dudas sobre algún proveedor o necesitas acceder a alguna de estas cuentas, contacta a tu desarrollador.*
+*Si tienes dudas sobre algún proveedor o necesitas acceder a alguna de estas cuentas, contacta al equipo de desarrollo:*
+
+| Nombre | Email |
+|---|---|
+| Jesús Garza | jesus.garza.gro@gmail.com |
+| Armando Ochoa | armaochoa99@gmail.com |
 
 *Documento generado el 22 de febrero de 2026.*
