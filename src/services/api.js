@@ -839,30 +839,33 @@ const transformSiteTexts = (data) => {
   // Mapea los campos de Strapi a una estructura organizada por sección
   // Compatible con el fallback a i18n
   return {
+    // Campo top-level
+    fieldOptional: data.fieldOptional,
     // Navegación
     navbar: {
-      experiences: data.navExperiences,
-      aboutUs: data.navAboutUs,
-      quote: data.navQuote,
+      experiences: data.navbarExperiences,
+      ourExperiences: data.navbarOurExperiences,
+      aboutUs: data.navbarAboutUs,
+      quote: data.navbarQuote,
     },
     // Temporadas
     seasons: {
-      summer: data.seasonSummer,
-      winter: data.seasonWinter,
+      summer: data.seasonsSummer,
+      winter: data.seasonsWinter,
     },
     // Botones
     buttons: {
-      next: data.btnNext,
-      back: data.btnBack,
-      submit: data.btnSubmit,
-      close: data.btnClose,
-      quoteCustomTrip: data.btnQuoteCustomTrip,
+      next: data.buttonsNext,
+      back: data.buttonsBack,
+      submit: data.buttonsSubmit,
+      close: data.buttonsClose,
+      quoteCustomTrip: data.buttonsQuoteCustomTrip,
     },
     // Etiquetas
     labels: {
-      perPerson: data.labelPerPerson,
-      days: data.labelDays,
-      persons: data.labelPersons,
+      perPerson: data.labelsPerPerson,
+      days: data.labelsDays,
+      persons: data.labelsPersons,
     },
     // Estados de carga
     loading: {
@@ -872,27 +875,28 @@ const transformSiteTexts = (data) => {
     hero: {
       title: data.heroTitle,
       titleHighlight: data.heroTitleHighlight,
-      subtitle: data.heroSubtitle,
     },
+    // Selector de experiencias
     selector: {
       whatQuestion: data.selectorWhatQuestion,
       selectExperience: data.selectorSelectExperience,
       noExperiences: data.selectorNoExperiences,
+      scrollToSeeTrips: data.selectorScrollToSeeTrips,
     },
     // Footer
     footer: {
-      description: data.footerDescription,
-      allRightsReserved: data.footerRights,
-    },
-    // About
-    about: {
-      title: data.aboutTitle,
+      allRightsReserved: data.footerAllRightsReserved,
+      noLegalPages: data.footerNoLegalPages,
+      experiences: data.footerExperiences,
+      information: data.footerInformation,
+      contact: data.footerContact,
     },
     // Booking / Packages
     booking: {
       requestQuote: data.bookingRequestQuote,
       noCommitment: data.bookingNoCommitment,
     },
+    // Información de paquete
     packageInfo: {
       packageNotFound: data.packageInfoPackageNotFound,
       yourAdventure: data.packageInfoYourAdventure,
@@ -909,7 +913,13 @@ const transformSiteTexts = (data) => {
       includes: data.packageInfoIncludes,
       notIncludes: data.packageInfoNotIncludes,
     },
-    // Nuevas secciones agregadas
+    // Selector de moneda
+    currency: {
+      loading: data.currencyLoading,
+      currentLabel: data.currencyCurrentLabel,
+      selectLabel: data.currencySelectLabel,
+    },
+    // Modal de cotización general
     quoteModal: {
       title: data.quoteModalTitle,
       step: data.quoteModalStep,
@@ -939,6 +949,31 @@ const transformSiteTexts = (data) => {
       whatsapp: data.contactMethodWhatsapp,
       phone: data.contactMethodPhone,
       email: data.contactMethodEmail,
+    },
+    // Preguntas y respuestas de nivel de senderismo
+    questions: {
+      q1: data.questionsQ1,
+      q2: data.questionsQ2,
+      q3: data.questionsQ3,
+      q4: data.questionsQ4,
+      q5: data.questionsQ5,
+    },
+    answers: {
+      q1a: data.answersQ1a,
+      q1b: data.answersQ1b,
+      q1c: data.answersQ1c,
+      q2a: data.answersQ2a,
+      q2b: data.answersQ2b,
+      q2c: data.answersQ2c,
+      q3a: data.answersQ3a,
+      q3b: data.answersQ3b,
+      q3c: data.answersQ3c,
+      q4a: data.answersQ4a,
+      q4b: data.answersQ4b,
+      q4c: data.answersQ4c,
+      q5a: data.answersQ5a,
+      q5b: data.answersQ5b,
+      q5c: data.answersQ5c,
     },
   };
 };
