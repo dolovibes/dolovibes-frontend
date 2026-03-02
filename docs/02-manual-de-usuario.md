@@ -81,6 +81,8 @@ Al entrar al panel, verás un menú en el lado izquierdo con estas secciones:
 
 Es la sección principal. Aquí encuentras todo el contenido organizado en dos categorías:
 
+> ℹ️ **NOTA:** En las tablas de este manual, la columna **"Campo"** muestra el nombre técnico del campo y la columna **"Label en el panel"** muestra el texto que realmente ves en el panel de administración. Estos labels están definidos en los archivos de traducción del backend (`src/admin/translations/es.json` y `en.json`) y se muestran según el idioma configurado en tu panel.
+
 **Colecciones** — pueden tener muchas entradas:
 
 | Nombre en el panel | Qué es | Ejemplo |
@@ -120,16 +122,16 @@ Las **experiencias** son las categorías principales de actividades que ofreces 
 
 Haz clic en el botón **"Create new entry"** (esquina superior derecha) y llena:
 
-| Campo | Qué poner | Ejemplo | ¿Obligatorio? |
-|---|---|---|:---:|
-| `title` | Nombre de la experiencia | "Senderismo" | ✅ |
-| `slug` | Se genera solo a partir del título | "senderismo" | ✅ (auto) |
-| `season` | Temporada: verano o invierno | "summer" | ✅ |
-| `thumbnail` | Foto para la tarjeta/miniatura | Una foto representativa | ✅ |
-| `heroImage` | Foto grande de fondo (encabezado) | Una foto panorámica | — |
-| `longDescription` | Descripción detallada de la experiencia | Texto con formato | ✅ |
-| `displayOrder` | Número que controla el orden (menor = primero) | 1, 2, 3... | — |
-| `showInFooter` | ¿Mostrar en el pie de página del sitio? | Sí/No | — |
+| Campo | Label en el panel | Qué poner | Ejemplo | ¿Obligatorio? |
+|---|---|---|---|:---:|
+| `title` | _Título de la experiencia_ | Nombre de la experiencia | "Senderismo" | ✅ |
+| `slug` | _URL amigable_ | Se genera solo a partir del título | "senderismo" | ✅ (auto) |
+| `season` | _Temporada_ | Temporada: verano o invierno | "summer" | ✅ |
+| `thumbnail` | _Imagen miniatura_ | Foto para la tarjeta/miniatura | Una foto representativa | ✅ |
+| `heroImage` | _Imagen hero_ | Foto grande de fondo (encabezado) | Una foto panorámica | — |
+| `longDescription` | _Descripción completa_ | Descripción detallada de la experiencia | Texto con formato | ✅ |
+| `displayOrder` | _Orden de lista (General)_ | Número que controla el orden (menor = primero) | 1, 2, 3... | — |
+| `showInFooter` | _Mostrar en Footer_ | ¿Mostrar en el pie de página del sitio? | Sí/No | — |
 
 Luego:
 1. Haz clic en **"Save"** (Guardar) → se crea como borrador
@@ -161,39 +163,39 @@ Haz clic en **"Create new entry"** y llena los campos por secciones:
 
 #### Sección 1: Información básica
 
-| Campo | Qué poner | Ejemplo |
-|---|---|---|
-| `title` | Nombre del paquete | "Volcán Nevado de Colima" |
-| `slug` | Se genera automáticamente | "volcan-nevado-de-colima" |
-| `experience` | Selecciona la experiencia a la que pertenece | "Senderismo" |
-| `season` | Temporada | "summer" |
-| `thumbnail` | Foto para la tarjeta | Foto representativa |
-| `heroImage` | Foto grande de encabezado | Foto panorámica |
-| `description` | Descripción detallada con formato | Texto enriquecido |
+| Campo | Label en el panel | Qué poner | Ejemplo |
+|---|---|---|---|
+| `title` | _Título del paquete_ | Nombre del paquete | "Volcán Nevado de Colima" |
+| `slug` | _URL amigable (slug)_ | Se genera automáticamente | "volcan-nevado-de-colima" |
+| `experience` | _Experiencia relacionada_ | Selecciona la experiencia a la que pertenece | "Senderismo" |
+| `season` | _Temporada_ | Temporada | "summer" |
+| `thumbnail` | _Imagen miniatura_ | Foto para la tarjeta | Foto representativa |
+| `heroImage` | _Imagen hero (grande)_ | Foto grande de encabezado | Foto panorámica |
+| `description` | _Descripción del paquete_ | Descripción detallada con formato | Texto enriquecido |
 
 ---
 
 #### Sección 2: Detalles del paquete
 
-| Campo | Qué poner | Ejemplo |
-|---|---|---|
-| `location` | Ubicación | "Jalisco, México" |
-| `duration` | Duración | "3 días / 2 noches" |
-| `difficulty` | Nivel de dificultad | "Moderado" |
-| `groupSize` | Tamaño del grupo | "4-12 personas" |
-| `guideType` | Tipo de guía | "Guía certificado" |
-| `availableDates` | Fechas disponibles | "Todo el año" |
+| Campo | Label en el panel | Qué poner | Ejemplo |
+|---|---|---|---|
+| `location` | _Ubicación_ | Ubicación | "Jalisco, México" |
+| `duration` | _Duración del viaje_ | Duración | "3 días / 2 noches" |
+| `difficulty` | _Nivel de dificultad_ | Nivel de dificultad | "Moderado" |
+| `groupSize` | _Tamaño del grupo_ | Tamaño del grupo | "4-12 personas" |
+| `guideType` | _Tipo de guía_ | Tipo de guía | "Guía certificado" |
+| `availableDates` | _Fechas disponibles_ | Fechas disponibles | "Todo el año" |
 
 ---
 
 #### Sección 3: Precios
 
-| Campo | Qué poner | Ejemplo |
-|---|---|---|
-| `priceAmount` | Precio en euros (solo números) | 350 |
-| `originalPriceAmount` | Precio original (si hay descuento) | 450 |
-| `hasDiscount` | ¿Tiene descuento activo? | Sí/No |
-| `rating` | Calificación (0 a 5) | 4.8 |
+| Campo | Label en el panel | Qué poner | Ejemplo |
+|---|---|---|---|
+| `priceAmount` | _Precio actual (EUR)_ | Precio en euros (solo números) | 350 |
+| `originalPriceAmount` | _Precio original (EUR - Antes del descuento)_ | Precio original (si hay descuento) | 450 |
+| `hasDiscount` | _¿Tiene descuento?_ | ¿Tiene descuento activo? | Sí/No |
+| `rating` | _Calificación (0-5)_ | Calificación (0 a 5) | 4.8 |
 
 > ℹ️ **NOTA:** Los precios siempre se ponen en **euros (EUR)**. El sitio automáticamente los convierte a dólares (USD) y pesos mexicanos (MXN) para los visitantes.
 
@@ -209,12 +211,12 @@ Para agregar los días del itinerario:
 | 2 | Haz clic en **"Add an entry"** para cada día |
 | 3 | Para cada día, llena los campos de abajo |
 
-| Campo | Qué poner | Ejemplo |
-|---|---|---|
-| `day` | Número del día | 1 |
-| `title` | Título del día | "Llegada y aclimatación" |
-| `description` | Actividades detalladas | Texto con formato |
-| `image` | Foto del día (opcional) | Foto de la actividad |
+| Campo | Label en el panel | Qué poner | Ejemplo |
+|---|---|---|---|
+| `day` | _Número de día_ | Número del día | 1 |
+| `title` | _Título del día_ | Título del día | "Llegada y aclimatación" |
+| `description` | _Descripción de actividades_ | Actividades detalladas | Texto con formato |
+| `image` | _Imagen del día_ | Foto del día (opcional) | Foto de la actividad |
 
 ---
 
@@ -222,9 +224,9 @@ Para agregar los días del itinerario:
 
 | Paso | Acción |
 |:---:|---|
-| 1 | Busca la sección **includes** (o **notIncludes**) |
+| 1 | Busca la sección **includes** (_¿Qué incluye?_) o **notIncludes** (_¿Qué NO incluye?_) |
 | 2 | Haz clic en **"Add an entry"** para cada elemento |
-| 3 | Llena `label` (nombre) y opcionalmente `detail` |
+| 3 | Llena `label` (_Nombre del servicio incluido_) y opcionalmente `detail` (_Detalle o descripción_) |
 
 **Ejemplos de "Qué incluye":**
 
@@ -240,40 +242,40 @@ Para agregar los días del itinerario:
 
 | Paso | Acción |
 |:---:|---|
-| 1 | Busca la sección **gallery** |
+| 1 | Busca la sección **gallery** (_Galería de fotos_) |
 | 2 | Haz clic en **"Add an entry"** para cada foto |
-| 3 | Sube la **image** y opcionalmente agrega un **caption** |
+| 3 | Sube la **image** (_Imagen de galería_) y opcionalmente agrega un **caption** (_Pie de foto_) |
 
 ---
 
 #### Sección 7: Fechas de salida
 
-| Campo | Qué poner | Ejemplo |
-|---|---|---|
-| `date` | La fecha de salida | 2026-04-15 |
-| `displayText` | Texto que se mostrará (opcional) | "Semana Santa" |
-| `available` | ¿Está disponible? | Sí/No |
+| Campo | Label en el panel | Qué poner | Ejemplo |
+|---|---|---|---|
+| `date` | _Fecha de salida_ | La fecha de salida | 2026-04-15 |
+| `spots` | _Lugares disponibles_ | Número de lugares disponibles | 12 |
+| `available` | _¿Disponible?_ | ¿Está disponible? | Sí/No |
 
 ---
 
 #### Sección 8: Visibilidad y orden
 
-| Campo | Qué controla |
-|---|---|
-| `showInHome` | ¿Mostrar este paquete en la página de inicio? |
-| `homeDisplayOrder` | Orden en el que aparece en el home (menor = primero) |
-| `displayOrder` | Orden general en la lista de paquetes |
+| Campo | Label en el panel | Qué controla |
+|---|---|---|
+| `showInHome` | _Mostrar en Recomendaciones del Home_ | ¿Mostrar este paquete en la página de inicio? |
+| `homeDisplayOrder` | _Orden en Home_ | Orden en el que aparece en el home (menor = primero) |
+| `displayOrder` | _Orden de lista (General)_ | Orden general en la lista de paquetes |
 
 ---
 
 #### Sección 9: SEO (opcional pero recomendado)
 
-| Campo | Qué poner | Límite |
-|---|---|---|
-| `metaTitle` | Título que aparece en Google | Máx. 60 caracteres |
-| `metaDescription` | Descripción para Google | Máx. 160 caracteres |
-| `keywords` | Palabras clave separadas por comas | — |
-| `shareImage` | Imagen al compartir en redes sociales | — |
+| Campo | Label en el panel | Qué poner | Límite |
+|---|---|---|---|
+| `metaTitle` | _Título SEO (máx. 60 caracteres)_ | Título que aparece en Google | Máx. 60 caracteres |
+| `metaDescription` | _Descripción SEO (máx. 160 caracteres)_ | Descripción para Google | Máx. 160 caracteres |
+| `keywords` | _Palabras clave (separadas por coma)_ | Palabras clave separadas por comas | — |
+| `shareImage` | _Imagen para compartir en redes_ | Imagen al compartir en redes sociales | — |
 
 > 💡 **TIP:** El SEO ayuda a que tu paquete aparezca en los resultados de Google. Vale la pena llenarlo para los paquetes más importantes.
 
@@ -289,13 +291,15 @@ La sección "Hero" es lo primero que ven los visitantes — el video/foto grande
 | 2 | Edita los campos |
 | 3 | Guarda y publica |
 
-| Campo | Qué es | Ejemplo |
-|---|---|---|
-| `title` | Título principal | "Descubre la aventura" |
-| `titleHighlight` | Parte del título que se resalta | "aventura" |
-| `subtitle` | Texto debajo del título | "Experiencias únicas en la montaña" |
-| `videoDesktop` | Video de fondo (solo computadoras) | Archivo MP4 |
-| `imageMobile` | Imagen para celulares (en lugar del video) | Foto JPG/PNG |
+| Campo | Label en el panel | Qué es | Ejemplo |
+|---|---|---|---|
+| `title` | _Título principal_ | Título principal | "Descubre la aventura" |
+| `titleHighlight` | _Título destacado_ | Parte del título que se resalta | "aventura" |
+| `subtitle` | _Subtítulo_ | Texto debajo del título | "Experiencias únicas en la montaña" |
+| `videoDesktop` | _Video (escritorio)_ | Video de fondo (solo computadoras) | Archivo MP4 |
+| `videoMobile` | _Video (móvil)_ | Video para celulares | Archivo MP4 |
+| `fallbackImage` | _Imagen alternativa_ | Imagen estática si no carga el video | Foto JPG/PNG |
+| `badge` | _Etiqueta/Distintivo_ | Etiqueta visible sobre el hero | "Nuevo" |
 
 > 💡 **TIP:** El video de fondo solo se reproduce en computadoras. En celulares se muestra la imagen estática para que cargue rápido.
 
@@ -309,20 +313,22 @@ La sección "Hero" es lo primero que ven los visitantes — el video/foto grande
 | 2 | Edita los campos |
 | 3 | Guarda y publica |
 
-| Campo | Qué es |
-|---|---|
-| `pageTitle` | Título de la página |
-| `mainPhoto` | Foto principal de la sección |
-| `photoAlt` | Descripción de la foto (para accesibilidad) |
+| Campo | Label en el panel | Qué es |
+|---|---|---|
+| `pageTitle` | _Título de la página_ | Título de la página |
+| `mainPhoto` | _Foto principal_ | Foto principal de la sección |
+| `photoAlt` | _Texto alternativo (foto)_ | Descripción de la foto (para accesibilidad) |
 
 Cada sección de contenido tiene dos partes:
 
-| Sección | `title` (título) | `content` (texto) |
-|---|---|---|
-| **Origin** | Ej: "Nuestro Origen" | Historia de la empresa |
-| **Essence** | Ej: "Nuestra Esencia" | Qué los hace únicos |
-| **Vision** | Ej: "Nuestra Visión" | Hacia dónde van |
-| **Mission** | Ej: "Nuestra Misión" | Qué hacen y para quién |
+| Sección | Label en el panel | `title` (título) | `content` (texto) |
+|---|---|---|---|
+| **Origin** | _Nuestro origen_ | Ej: "Nuestro Origen" | Historia de la empresa |
+| **Essence** | _Nuestra esencia_ | Ej: "Nuestra Esencia" | Qué los hace únicos |
+| **Vision** | _Visión_ | Ej: "Nuestra Visión" | Hacia dónde van |
+| **Mission** | _Misión_ | Ej: "Nuestra Misión" | Qué hacen y para quién |
+| **Team** | _Equipo_ | Ej: "Nuestro Equipo" | Información del equipo |
+| **Values** | _Valores_ | Ej: "Nuestros Valores" | Lo que los guía |
 
 ---
 
@@ -338,14 +344,16 @@ La sección **Site Text** contiene **todos los textos pequeños** que aparecen e
 
 **Ejemplos de textos que puedes cambiar:**
 
-| Campo en el panel | Dónde aparece en el sitio |
-|---|---|
-| `navExperiences` | Menú de navegación → "Experiencias" |
-| `navAbout` | Menú de navegación → "Nosotros" |
-| `heroCtaButton` | Botón principal del hero |
-| `footerContact` | Título de contacto en el footer |
-| `quoteModalTitle` | Título del formulario de cotización |
-| `packageBookButton` | Botón "Reservar" en los paquetes |
+| Campo | Label en el panel | Dónde aparece en el sitio |
+|---|---|---|
+| `navbarExperiences` | _Texto nav: Experiencias_ | Menú de navegación → "Experiencias" |
+| `navbarAboutUs` | _Texto nav: Nosotros_ | Menú de navegación → "Nosotros" |
+| `navbarQuote` | _Texto nav: Cotizar_ | Menú de navegación → "Cotizar" |
+| `footerContact` | _Footer: Título sección Contacto_ | Título de contacto en el footer |
+| `footerExperiences` | _Footer: Título sección Experiencias_ | Título de experiencias en el footer |
+| `quoteModalTitle` | _Modal cotización: Título principal_ | Título del formulario de cotización |
+| `buttonsSubmit` | _Botón: Enviar_ | Botón "Enviar" en formularios |
+| `packageInfoQuote` | _Paquete: Solicitar cotización (botón)_ | Botón "Cotizar" en los paquetes |
 
 > 💡 **TIP:** Si no estás seguro de qué campo controla qué texto, cambia uno, guarda, y revisa el sitio. Siempre puedes revertirlo.
 
@@ -357,39 +365,39 @@ La sección **Site Setting** controla información que aparece en todo el sitio.
 
 ### Información de la empresa
 
-| Campo | Qué es | Ejemplo |
-|---|---|---|
-| `siteName` | Nombre del sitio | "Dolovibes" |
-| `location` | Ubicación de la empresa | "Guadalajara, Jalisco" |
-| `phone` | Teléfono de contacto | "+52 33 1234 5678" |
-| `email` | Email de contacto | "info@dolo-vibes.com" |
-| `whatsappNumber` | Número de WhatsApp | "+523312345678" |
+| Campo | Label en el panel | Qué es | Ejemplo |
+|---|---|---|---|
+| `siteName` | _Nombre del sitio_ | Nombre del sitio | "Dolovibes" |
+| `location` | _Ubicación_ | Ubicación de la empresa | "Guadalajara, Jalisco" |
+| `phone` | _Teléfono_ | Teléfono de contacto | "+52 33 1234 5678" |
+| `email` | _Correo electrónico_ | Email de contacto | "info@dolo-vibes.com" |
+| `whatsappNumber` | _WhatsApp_ | Número de WhatsApp | "+523312345678" |
 
 ### Redes sociales
 
-| Campo | Qué poner |
-|---|---|
-| `instagramUrl` | Link completo a tu perfil de Instagram |
-| `facebookUrl` | Link completo a tu página de Facebook |
-| `tiktokUrl` | Link completo a tu perfil de TikTok |
+| Campo | Label en el panel | Qué poner |
+|---|---|---|
+| `instagramUrl` | _Instagram_ | Link completo a tu perfil de Instagram |
+| `facebookUrl` | _Facebook_ | Link completo a tu página de Facebook |
+| `tiktokUrl` | _TikTok_ | Link completo a tu perfil de TikTok |
 
 ### Imágenes de marca
 
-| Campo | Qué es |
-|---|---|
-| `logo` | Logo principal (fondo claro) |
-| `logoDark` | Logo para fondos oscuros |
-| `favicon` | Icono pequeño en la pestaña del navegador |
+| Campo | Label en el panel | Qué es |
+|---|---|---|
+| `logo` | _Logo principal_ | Logo principal (fondo claro) |
+| `logoDark` | _Logo oscuro_ | Logo para fondos oscuros |
+| `favicon` | _Favicon_ | Icono pequeño en la pestaña del navegador |
 
 ### Activar/desactivar idiomas y divisas
 
-| Campo | Qué controla |
-|---|---|
-| `enableLanguageEn` | ¿Mostrar inglés? |
-| `enableLanguageIt` | ¿Mostrar italiano? |
-| `enableLanguageDe` | ¿Mostrar alemán? |
-| `enableCurrencyUsd` | ¿Mostrar precios en dólares (USD)? |
-| `enableCurrencyMxn` | ¿Mostrar precios en pesos (MXN)? |
+| Campo | Label en el panel | Qué controla |
+|---|---|---|
+| `enableLanguageEn` | _Habilitar idioma: Inglés (EN)_ | ¿Mostrar inglés? |
+| `enableLanguageIt` | _Habilitar idioma: Italiano (IT)_ | ¿Mostrar italiano? |
+| `enableLanguageDe` | _Habilitar idioma: Alemán (DE)_ | ¿Mostrar alemán? |
+| `enableCurrencyUsd` | _Habilitar moneda: USD (Dólar americano)_ | ¿Mostrar precios en dólares (USD)? |
+| `enableCurrencyMxn` | _Habilitar moneda: MXN (Peso mexicano)_ | ¿Mostrar precios en pesos (MXN)? |
 
 > ℹ️ **NOTA:** El español y el euro siempre están activos — son la base del sitio y no se pueden desactivar.
 
@@ -406,13 +414,13 @@ La sección **Site Setting** controla información que aparece en todo el sitio.
 | 3 | Llena los campos (ver abajo) |
 | 4 | Guarda y publica |
 
-| Campo | Qué poner | Ejemplo |
-|---|---|---|
-| `title` | Título de la página | "Política de Privacidad" |
-| `slug` | Se genera automáticamente | "politica-de-privacidad" |
-| `content` | El contenido legal con formato | Texto legal |
-| `showInFooter` | ¿Mostrar enlace en el pie de página? | Sí/No |
-| `footerDisplayOrder` | Orden en el footer | 1, 2, 3... |
+| Campo | Label en el panel | Qué poner | Ejemplo |
+|---|---|---|---|
+| `title` | _Título de la página_ | Título de la página | "Política de Privacidad" |
+| `slug` | _URL amigable (slug)_ | Se genera automáticamente | "politica-de-privacidad" |
+| `content` | _Contenido de la página_ | El contenido legal con formato | Texto legal |
+| `showInFooter` | _Mostrar en Footer_ | ¿Mostrar enlace en el pie de página? | Sí/No |
+| `footerDisplayOrder` | _Orden en Footer_ | Orden en el footer | 1, 2, 3... |
 
 ---
 
