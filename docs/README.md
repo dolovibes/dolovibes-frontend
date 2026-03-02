@@ -1,12 +1,6 @@
 # 🏔️ Dolovibes Frontend - React + Vite
 
-Frontend del sitio web de Dolovibes, agencia de viajes especializada en experiencias en los Dolomitas. Construido con React 18, Vite 7, React Router y i18next.
-
----
-
-## 🚀 ¿Primera vez configurando el proyecto completo?
-
-**👉 Lee la [Guía de Setup Completa](./SETUP.md)** - Incluye configuración de Frontend + Backend paso a paso.
+Frontend del sitio web de Dolovibes, agencia de viajes especializada en experiencias en los Dolomitas. Construido con React 19, Vite 7, React Router y i18next.
 
 ---
 
@@ -72,14 +66,12 @@ npm run lint        # Ejecutar ESLint
 - 🇬🇧 Inglés (en)
 - 🇮🇹 Italiano (it)
 - 🇩🇪 Alemán (de)
-- 🇫🇷 Francés (fr)
-- 🇵🇹 Portugués (pt)
 
 ### Agregar un Nuevo Idioma
 
-1. **Crear archivos de traducción** en `src/locales/<idioma>/`:
+1. **Crear archivos de traducción** en `public/locales/<idioma>/`:
    ```
-   src/locales/ja/
+   public/locales/ja/
    ├── common.json
    ├── home.json
    ├── experiences.json
@@ -92,33 +84,19 @@ npm run lint        # Ejecutar ESLint
 
 2. **Copiar contenido** de un idioma existente (ej: `en/`) y traducir
 
-3. **Registrar en i18n** (`src/i18n.js`):
-   ```js
-   import jaCommon from './locales/ja/common.json';
-   import jaHome from './locales/ja/home.json';
-   // ... otros imports
-   
-   const resources = {
-     // ... otros idiomas
-     ja: {
-       common: jaCommon,
-       home: jaHome,
-       // ...
-     }
-   };
-   ```
+3. **No se necesita registrar manualmente en `i18n.js`**: El proyecto usa `i18next-http-backend`, que carga los archivos automáticamente desde `public/locales/{idioma}/{namespace}.json`
 
 4. **Agregar a LanguageSwitcher** (`src/components/LanguageSwitcher.jsx`):
    ```jsx
    { value: 'ja', label: '日本語', flag: '🇯🇵' }
    ```
 
-5. **Verificar fallback** en Strapi: El backend debe tener contenido en el nuevo idioma o usar imagen fallback de español
+5. **Configurar locale en Strapi**: El backend debe tener el nuevo locale habilitado (Settings → Internationalization) y contenido traducido. Las imágenes usan fallback automático al contenido en español
 
 ### Fallback de Imágenes
 
 El frontend usa `enrichWithSpanishMedia()` en `src/services/api.js`:
-- Si un Package/Experience no tiene imagen en IT/DE/FR/PT
+- Si un Package/Experience no tiene imagen en EN/IT/DE
 - Busca el mismo `documentId` en español (ES)
 - Copia `thumbnail` y `heroImage` del contenido español
 - Garantiza que siempre haya imágenes aunque la traducción esté incompleta
@@ -128,35 +106,51 @@ El frontend usa `enrichWithSpanishMedia()` en `src/services/api.js`:
 ```
 dolovibes/
 ├── public/
-│   └── videos/           # Videos para VideoHero
+│   ├── locales/         # Traducciones i18next (carga automática)
+│   │   ├── es/          # 8 namespaces por idioma
+│   │   ├── en/
+│   │   ├── it/
+│   │   └── de/
+│   └── videos/          # Videos para VideoHero
 ├── src/
-│   ├── components/       # Componentes React
+│   ├── components/      # Componentes React
 │   │   ├── NavbarNew.jsx
 │   │   ├── Footer.jsx
+│   │   ├── VideoHero.jsx
 │   │   ├── PackageCard.jsx
 │   │   ├── ExperienceSelector.jsx
-│   │   ├── BookingForm.jsx
 │   │   ├── QuoteModal.jsx
-│   │   └── ...
+│   │   ├── PackageQuoteModal.jsx
+│   │   ├── PhotoGalleryModal.jsx
+│   │   ├── HikingLevelModal.jsx
+│   │   ├── CurrencySelector.jsx
+│   │   ├── LanguageSwitcher.jsx
+│   │   ├── OptimizedImage.jsx
+│   │   ├── PackageRecommendations.jsx
+│   │   ├── Hreflang.jsx
+│   │   └── ErrorBoundary.jsx
 │   ├── pages/           # Páginas (React Router)
 │   │   ├── HomePage.jsx
 │   │   ├── ExperiencePage.jsx
 │   │   ├── PackageInfoPage.jsx
 │   │   ├── AboutUsPage.jsx
-│   │   └── ...
+│   │   └── DynamicLegalPage.jsx
 │   ├── services/        # Servicios API
-│   │   ├── strapiClient.js   # Cliente HTTP
+│   │   ├── strapiClient.js   # Cliente HTTP (axios)
 │   │   ├── api.js            # Endpoints + transforms + enrich
-│   │   └── hooks.js          # Custom hooks (usePackages, useExperiences)
-│   ├── locales/         # Traducciones i18next
-│   │   ├── es/
-│   │   ├── en/
-│   │   ├── it/
-│   │   ├── de/
-│   │   ├── fr/
-│   │   └── pt/
+│   │   └── hooks.js          # React Query hooks (usePackages, useExperiences, etc.)
+│   ├── contexts/        # React Context providers
+│   │   ├── SiteTextsContext.jsx
+│   │   └── LanguageTransitionContext.jsx
+│   ├── hooks/           # Custom hooks
+│   │   ├── useAlternateUrls.js
+│   │   ├── useFocusTrap.js
+│   │   └── usePageMeta.js
 │   ├── utils/           # Utilidades
-│   │   └── currency.jsx
+│   │   ├── currency.jsx
+│   │   ├── localizedRoutes.js
+│   │   ├── BlocksRenderer.jsx
+│   │   └── dataPrefetch.js
 │   ├── i18n.js          # Configuración i18next
 │   ├── App.jsx          # Router principal
 │   └── main.jsx         # Entry point
@@ -164,6 +158,7 @@ dolovibes/
 ├── .env.example         # Template de .env
 ├── vite.config.js       # Configuración de Vite
 ├── tailwind.config.js   # Configuración de Tailwind CSS
+├── vercel.json          # Configuración de despliegue Vercel
 └── package.json
 ```
 
@@ -218,8 +213,7 @@ Ejemplo:
 
 ### Tecnologías
 - **Tailwind CSS**: Utility-first CSS framework
-- **Headless UI**: Componentes accesibles (Modal, Disclosure, etc)
-- **React Icons**: Iconos (FaPhone, FaEnvelope, etc)
+- **lucide-react**: Librería de iconos
 
 ### Personalización de Tema
 
@@ -228,8 +222,17 @@ Ver `tailwind.config.js`:
 theme: {
   extend: {
     colors: {
-      primary: '#1E3A8A',    // Azul Dolomitas
-      secondary: '#10B981',  // Verde alpino
+      'grafito': '#1C1C1C',   // Primary Dark (Negro Grafito)
+      'pizarra': '#374257',   // Secondary Blue (Azul Pizarra)
+      'alpino': '#66806C',    // Accent Green Dark (Verde Alpino)
+      'bruma': '#A9BFA7',     // Accent Green Light (Verde Bruma)
+      'niebla': '#A3B5B6',    // Accent Blue Light (Azul Niebla)
+      'nieve': '#EFEFE6',     // Background Light (Nieve Suave)
+    },
+    fontFamily: {
+      'heading': ['Poppins Bold', 'sans-serif'],
+      'body': ['Poppins', 'sans-serif'],
+      'mono': ['IBM Plex Mono', 'monospace'],
     }
   }
 }
@@ -248,8 +251,8 @@ theme: {
 3. Ejecuta `node scripts/upload-images.js` en el backend
 
 ### Traducciones no aparecen
-1. Verifica que el archivo JSON existe en `src/locales/<idioma>/`
-2. Verifica que el namespace está registrado en `src/i18n.js`
+1. Verifica que el archivo JSON existe en `public/locales/<idioma>/`
+2. Verifica que el nombre del archivo coincide con un namespace válido (common, home, experiences, packageInfo, about, quoteForm, hikingLevel, legal)
 3. Usa `t('namespace:key')` en el componente:
    ```jsx
    const { t } = useTranslation(['home', 'common']);
@@ -275,10 +278,11 @@ VITE_STRAPI_URL=https://api.dolo-vibes.com
 VITE_STRAPI_API_TOKEN=<produccion-token>
 ```
 
-### Hosting Recomendados
-- **Netlify**: Conectar repo, auto-deploy
-- **Vercel**: Importar proyecto, configurar env vars
-- **Cloudflare Pages**: Push a repo, configurar build
+### Hosting
+El proyecto está desplegado en **Vercel** (configurado en `vercel.json`). Para desplegar:
+1. Importar el proyecto en Vercel
+2. Configurar variables de entorno en el dashboard
+3. Los deploys se ejecutan automáticamente al hacer push
 
 ## 📚 Recursos
 
@@ -290,7 +294,7 @@ VITE_STRAPI_API_TOKEN=<produccion-token>
 
 ## 🤝 Contribuir
 
-1. Crear branch desde `integracion-strapi`
+1. Crear branch desde `main`
 2. Hacer cambios y commit
 3. Verificar que build funciona: `npm run build`
 4. Push y crear Pull Request
