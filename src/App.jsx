@@ -123,7 +123,7 @@ const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialIn
   const { i18n } = useTranslation();
   const { currency } = useCurrencyContext();
 
-  // Track page views on every route change
+  // Track page views only on route changes (not on language/currency changes)
   useEffect(() => {
     const path = location.pathname;
     let pageType = 'home';
@@ -137,7 +137,7 @@ const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialIn
       language: i18n.language,
       currency,
     });
-  }, [location.pathname, i18n.language, currency]);
+  }, [location.pathname]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleOpenQuote = (interest = "") => {
     setInitialInterest(interest);

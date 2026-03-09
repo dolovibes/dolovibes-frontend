@@ -3,7 +3,7 @@ import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { X, User, Mail, Phone, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import { useExperiences } from '../services/hooks';
 import useFocusTrap from '../hooks/useFocusTrap';
-import { trackQuoteFormOpen, trackQuoteFormSubmit } from '../utils/dataLayer';
+import { trackQuoteFormOpen, trackQuoteFormSubmit, trackFormStep } from '../utils/dataLayer';
 
 const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
     const { texts: siteTexts } = useSiteTextsContext();
@@ -37,6 +37,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
     React.useEffect(() => {
         if (isOpen) {
             trackQuoteFormOpen({ interest: initialInterest });
+            trackFormStep({ formType: 'general', step: 1, stepName: 'trip_details' });
             if (initialInterest) {
                 setFormData(prev => ({ ...prev, interest: initialInterest }));
             }
@@ -229,6 +230,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                     if (!formData.interest || !formData.guests) {
                                         return; // Don't advance if required fields are empty
                                     }
+                                    trackFormStep({ formType: 'general', step: 2, stepName: 'contact_info' });
                                     setStep(2);
                                 }}
                                 className="w-full bg-pizarra text-white font-bold py-3 rounded-xl hover:bg-pizarra/90 transition-colors flex justify-center items-center gap-2 mt-4"

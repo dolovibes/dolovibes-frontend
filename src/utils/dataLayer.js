@@ -82,7 +82,17 @@ export function trackPackageQuoteFormSubmit({ packageTitle, travelers, tripType,
   });
 }
 
-// 8. Language change
+// 8. Form step navigation (general quote form funnel)
+export function trackFormStep({ formType, step, stepName }) {
+  push({
+    event: 'form_step',
+    form_type: formType,
+    form_step: step,
+    form_step_name: stepName,
+  });
+}
+
+// 9. Language change
 export function trackLanguageChange({ from, to }) {
   push({
     event: 'language_change',
@@ -91,7 +101,7 @@ export function trackLanguageChange({ from, to }) {
   });
 }
 
-// 9. Currency change
+// 10. Currency change
 export function trackCurrencyChange({ from, to }) {
   push({
     event: 'currency_change',
@@ -100,7 +110,7 @@ export function trackCurrencyChange({ from, to }) {
   });
 }
 
-// 10. Photo gallery open
+// 11. Photo gallery open
 export function trackGalleryOpen({ packageTitle, packageSlug, photoCount }) {
   push({
     event: 'open_gallery',
