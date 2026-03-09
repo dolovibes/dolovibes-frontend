@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useParams, useLocatio
 import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LOCALES, DEFAULT_LOCALE, ROUTE_PATHS } from './utils/localizedRoutes';
 import { LanguageTransitionProvider, useLanguageTransition } from './contexts/LanguageTransitionContext';
+import { trackPageView } from './utils/dataLayer';
+import { useCurrencyContext } from './utils/currency';
 
 // Componentes (cargan siempre - necesarios en todas las páginas)
 import NavbarNew from './components/NavbarNew';
@@ -117,6 +119,26 @@ const LegacyRedirect = ({ routeType }) => {
  * Debe estar dentro del Router porque usa hooks de react-router
  */
 const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialInterest }) => {
+  const location = useLocation();
+  const { i18n } = useTranslation();
+  const { currency } = useCurrencyContext();
+
+  // Track page views on every route change
+  useEffect(() => {
+    const path = location.pathname;
+    let pageType = 'home';
+    if (/\/\w{2}\/(experiencias|experiences|esperienze|erlebnisse)\//.test(path)) pageType = 'experience';
+    else if (/\/\w{2}\/(paquetes|packages|pacchetti|pakete)\//.test(path)) pageType = 'package';
+    else if (/\/\w{2}\/(nosotros|about|chi-siamo|ueber-uns)/.test(path)) pageType = 'about';
+    else if (/\/\w{2}\/(legales|legal|legale|rechtliches)\//.test(path)) pageType = 'legal';
+
+    trackPageView({
+      pageType,
+      language: i18n.language,
+      currency,
+    });
+  }, [location.pathname, i18n.language, currency]);
+
   const handleOpenQuote = (interest = "") => {
     setInitialInterest(interest);
     setIsQuoteOpen(true);

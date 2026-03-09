@@ -2,6 +2,7 @@ import React, { useState, useId } from 'react';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { CheckCircle, Send, X, AlertCircle } from 'lucide-react';
 import useFocusTrap from '../hooks/useFocusTrap';
+import { trackPackageQuoteFormOpen, trackPackageQuoteFormSubmit } from '../utils/dataLayer';
 
 const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
     const { texts: siteTexts } = useSiteTextsContext();
@@ -44,8 +45,9 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
         if (isOpen && packageTitle) {
             setFormData(prev => ({ ...prev, packageTitle }));
         }
-        
+
         if (isOpen) {
+            trackPackageQuoteFormOpen({ packageTitle });
             // Bloquear scroll del body
             document.body.style.overflow = 'hidden';
         } else {
@@ -103,6 +105,13 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
             if (!response.ok) {
                 throw new Error('Error al enviar la solicitud');
             }
+
+            trackPackageQuoteFormSubmit({
+                packageTitle: formData.packageTitle,
+                travelers: formData.viajeros,
+                tripType: formData.tipoViaje,
+                contactMethod: formData.contacto,
+            });
 
             setIsSubmitting(false);
             setIsSubmitted(true);

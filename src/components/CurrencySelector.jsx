@@ -9,6 +9,7 @@ import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { useCurrencyContext, SUPPORTED_CURRENCIES } from '../utils/currency';
 import { useSiteSettings } from '../services/hooks';
+import { trackCurrencyChange } from '../utils/dataLayer';
 
 /**
  * Componente de bandera usando imágenes de flagcdn.com
@@ -142,6 +143,9 @@ const CurrencySelector = ({
   }, [isOpen, currency, currencyList, setCurrency]);
 
   const handleSelect = (code) => {
+    if (code !== currency) {
+      trackCurrencyChange({ from: currency, to: code });
+    }
     setCurrency(code);
     setIsOpen(false);
     buttonRef.current?.focus();

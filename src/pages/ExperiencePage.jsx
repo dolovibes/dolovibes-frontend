@@ -9,6 +9,7 @@ import PackageCard from '../components/PackageCard';
 import Hreflang from '../components/Hreflang';
 import { useAlternateUrls } from '../hooks/useAlternateUrls';
 import usePageMeta from '../hooks/usePageMeta';
+import { trackExperienceView } from '../utils/dataLayer';
 
 const ExperiencePage = ({ onOpenQuote }) => {
     const { t: tCommon, i18n } = useTranslation('common');
@@ -38,6 +39,13 @@ const ExperiencePage = ({ onOpenQuote }) => {
     const loadingText = siteTexts?.loadingExperience || tCommon('loading.experience');
     const packagesTitle = siteTexts?.availablePackagesTitle || tCommon('availablePackages.title');
     const packagesSubtitle = siteTexts?.availablePackagesSubtitle || tCommon('availablePackages.subtitle');
+    // Track experience view when data is loaded
+    useEffect(() => {
+        if (experience) {
+            trackExperienceView({ title: experience.title, slug });
+        }
+    }, [experience, slug]);
+
     // Scroll al inicio cuando carga la página
     useEffect(() => {
         window.scrollTo(0, 0);

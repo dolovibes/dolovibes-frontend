@@ -27,6 +27,7 @@ import Footer from '../components/Footer';
 import Hreflang from '../components/Hreflang';
 import { useAlternateUrls } from '../hooks/useAlternateUrls';
 import usePageMeta from '../hooks/usePageMeta';
+import { trackPackageView, trackGalleryOpen } from '../utils/dataLayer';
 
 const PackageInfoPage = ({ onOpenQuote }) => {
     const { t: tCommon, i18n } = useTranslation('common');
@@ -78,6 +79,19 @@ const PackageInfoPage = ({ onOpenQuote }) => {
 
     // Referencia para la sección de itinerario (para swipe/wheel)
     const itineraryRef = React.useRef(null);
+
+    // Track package view when data is loaded
+    useEffect(() => {
+        if (pkg) {
+            trackPackageView({
+                title: pkg.title,
+                slug,
+                priceEUR: pkg.priceEUR,
+                location: pkg.location,
+                duration: pkg.duration,
+            });
+        }
+    }, [pkg, slug]);
 
     // Scroll al inicio cuando carga la página
     useEffect(() => {
@@ -542,7 +556,14 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                             {pkg.gallery && pkg.gallery.length > 0 && pkg.gallery.some(g => g.url) && (
                                 <div className="mb-6">
                                     <button
-                                        onClick={() => setIsPhotosModalOpen(true)}
+                                        onClick={() => {
+                                            trackGalleryOpen({
+                                                packageTitle: pkg.title,
+                                                packageSlug: pkg.slug,
+                                                photoCount: pkg.gallery?.filter(g => g.url)?.length || 0,
+                                            });
+                                            setIsPhotosModalOpen(true);
+                                        }}
                                         className="w-full flex items-center justify-between p-4 bg-nieve rounded-xl border border-niebla hover:bg-nieve transition-colors text-left"
                                     >
                                         <div className="flex items-center gap-3">

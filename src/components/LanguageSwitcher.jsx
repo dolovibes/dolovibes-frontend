@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ChevronDown, Loader2 } from 'lucide-react';
 import { useLanguageTransition } from '../contexts/LanguageTransitionContext';
 import { useSiteSettings } from '../services/hooks';
+import { trackLanguageChange } from '../utils/dataLayer';
 
 /**
  * Componente de bandera usando SVG de flagcdn.com
@@ -128,6 +129,7 @@ const LanguageSwitcher = ({ isDarkMode = false, compact = false }) => {
             return;
         }
 
+        trackLanguageChange({ from: i18n.language, to: langCode });
         setIsOpen(false);
 
         // Usar el contexto que maneja:

@@ -3,6 +3,7 @@ import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { X, User, Mail, Phone, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import { useExperiences } from '../services/hooks';
 import useFocusTrap from '../hooks/useFocusTrap';
+import { trackQuoteFormOpen, trackQuoteFormSubmit } from '../utils/dataLayer';
 
 const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
     const { texts: siteTexts } = useSiteTextsContext();
@@ -35,13 +36,14 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
 
     React.useEffect(() => {
         if (isOpen) {
+            trackQuoteFormOpen({ interest: initialInterest });
             if (initialInterest) {
                 setFormData(prev => ({ ...prev, interest: initialInterest }));
             }
             setStep(1);
             setError(null);
             setIsSubmitting(false);
-            
+
             // Bloquear scroll del body
             document.body.style.overflow = 'hidden';
         } else {
@@ -84,6 +86,12 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
             if (!response.ok) {
                 throw new Error('Error al enviar la solicitud');
             }
+
+            trackQuoteFormSubmit({
+                interest: formData.interest,
+                guests: formData.guests,
+                contactMethod: formData.contacto,
+            });
 
             setStep(3);
             // fix #26: store timeout ID for cleanup
