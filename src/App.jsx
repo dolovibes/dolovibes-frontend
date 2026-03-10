@@ -123,9 +123,16 @@ const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialIn
   const { i18n } = useTranslation();
   const { currency } = useCurrencyContext();
 
-  // Track page views only on route changes (not on language/currency changes)
+  // Track page views only on localized route changes — skip redirect-only paths
+  // (/, /experiencias/:slug, /paquetes/:slug, /nosotros, /legales/:slug, catch-all)
   useEffect(() => {
     const path = location.pathname;
+
+    // Skip redirect-only routes: bare /, legacy paths without lang prefix, catch-all
+    if (path === '/' || /^\/(?:experiencias|paquetes|nosotros|legales)(?:\/|$)/.test(path)) return;
+    // Only track paths that start with a valid lang prefix
+    if (!/^\/\w{2}(\/|$)/.test(path)) return;
+
     let pageType = 'home';
     if (/\/\w{2}\/(experiencias|experiences|esperienze|erlebnisse)\//.test(path)) pageType = 'experience';
     else if (/\/\w{2}\/(paquetes|packages|pacchetti|pakete)\//.test(path)) pageType = 'package';

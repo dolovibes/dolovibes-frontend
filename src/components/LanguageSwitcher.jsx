@@ -99,18 +99,28 @@ const LanguageSwitcher = ({ isDarkMode = false, compact = false }) => {
         const currentIndex = languages.findIndex(l => l.code === i18n.language);
 
         switch (event.key) {
-            case 'ArrowDown':
+            case 'ArrowDown': {
                 event.preventDefault();
                 const nextIndex = (currentIndex + 1) % languages.length;
-                changeLanguage(languages[nextIndex].code);
+                const nextLang = languages[nextIndex].code;
+                if (nextLang !== i18n.language) {
+                    trackLanguageChange({ from: i18n.language, to: nextLang });
+                }
+                changeLanguage(nextLang);
                 setIsOpen(false);
                 break;
-            case 'ArrowUp':
+            }
+            case 'ArrowUp': {
                 event.preventDefault();
                 const prevIndex = (currentIndex - 1 + languages.length) % languages.length;
-                changeLanguage(languages[prevIndex].code);
+                const prevLang = languages[prevIndex].code;
+                if (prevLang !== i18n.language) {
+                    trackLanguageChange({ from: i18n.language, to: prevLang });
+                }
+                changeLanguage(prevLang);
                 setIsOpen(false);
                 break;
+            }
             case 'Enter':
             case ' ':
                 event.preventDefault();
