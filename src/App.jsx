@@ -120,33 +120,42 @@ const LegacyRedirect = ({ routeType }) => {
  */
 const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialInterest }) => {
   const location = useLocation();
-  const { i18n } = useTranslation();
-  const { currency } = useCurrencyContext();
+  const { currency, loading: currencyLoading } = useCurrencyContext();
 
   // Track page views only on localized route changes — skip redirect-only paths
   // (/, /experiencias/:slug, /paquetes/:slug, /nosotros, /legales/:slug, catch-all)
   useEffect(() => {
+    // Wait until currency is resolved to avoid tracking with wrong currency on first load
+    if (currencyLoading) return;
+
     const path = location.pathname;
 
     // Skip redirect-only routes: bare /, legacy paths without lang prefix, catch-all
     if (path === '/' || /^\/(?:experiencias|paquetes|nosotros|legales)(?:\/|$)/.test(path)) return;
-    // Only track paths that start with a supported locale prefix
-    const langPrefix = SUPPORTED_LOCALES.join('|');
-    const validLangRegex = new RegExp(`^\\/(${langPrefix})(\\/|$)`);
-    if (!validLangRegex.test(path)) return;
 
-    let pageType = 'home';
+    // Only track paths that start with a supported locale prefix
+    // Derive language from URL to avoid race condition with i18n initialization
+    const langMatch = path.match(new RegExp(`^\\/(${SUPPORTED_LOCALES.join('|')})(\\/|$)`));
+    if (!langMatch) return;
+    const language = langMatch[1];
+
+    // Determine pageType — null means unmatched route (localized 404 redirect), skip tracking
+    let pageType = null;
     if (/\/\w{2}\/(experiencias|experiences|esperienze|erlebnisse)\//.test(path)) pageType = 'experience';
     else if (/\/\w{2}\/(paquetes|packages|pacchetti|pakete)\//.test(path)) pageType = 'package';
     else if (/\/\w{2}\/(nosotros|about|chi-siamo|ueber-uns)/.test(path)) pageType = 'about';
     else if (/\/\w{2}\/(legales|legal|legale|rechtliches)\//.test(path)) pageType = 'legal';
+    else if (new RegExp(`^\\/(${SUPPORTED_LOCALES.join('|')})\\/?$`).test(path)) pageType = 'home';
+
+    // Skip unmatched paths (e.g. /es/unknown-page — these redirect to default locale)
+    if (!pageType) return;
 
     trackPageView({
       pageType,
-      language: i18n.language,
+      language,
       currency,
     });
-  }, [location.pathname]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [location.pathname, currencyLoading, currency]);
 
   const handleOpenQuote = (interest = "") => {
     setInitialInterest(interest);

@@ -559,7 +559,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                         onClick={() => {
                                             trackGalleryOpen({
                                                 packageTitle: pkg.title,
-                                                packageSlug: pkg.slug,
+                                                packageSlug: pkg.slug ?? slug,
                                                 photoCount: pkg.gallery?.filter(g => g.url)?.length || 0,
                                             });
                                             setIsPhotosModalOpen(true);
