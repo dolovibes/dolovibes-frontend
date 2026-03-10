@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getLocaleFromPath } from '../utils/localizedRoutes';
@@ -39,12 +39,14 @@ const ExperiencePage = ({ onOpenQuote }) => {
     const loadingText = siteTexts?.loadingExperience || tCommon('loading.experience');
     const packagesTitle = siteTexts?.availablePackagesTitle || tCommon('availablePackages.title');
     const packagesSubtitle = siteTexts?.availablePackagesSubtitle || tCommon('availablePackages.subtitle');
-    // Track experience view when data is loaded
+    // Track experience view when data is loaded (useRef guard prevents StrictMode duplicates)
+    const trackedExpRef = useRef(null);
     useEffect(() => {
-        if (experience) {
+        if (experience && trackedExpRef.current !== slug) {
+            trackedExpRef.current = slug;
             trackExperienceView({ title: experience.title, slug });
         }
-    }, [experience, slug]);
+    }, [experience?.documentId, slug]);
 
     // Scroll al inicio cuando carga la página
     useEffect(() => {

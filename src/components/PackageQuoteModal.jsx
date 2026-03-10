@@ -1,8 +1,8 @@
-import React, { useState, useId } from 'react';
+import React, { useState, useId, useRef } from 'react';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { CheckCircle, Send, X, AlertCircle } from 'lucide-react';
 import useFocusTrap from '../hooks/useFocusTrap';
-import { trackPackageQuoteFormOpen, trackPackageQuoteFormSubmit } from '../utils/dataLayer';
+import { trackPackageQuoteFormOpen, trackPackageQuoteFormSubmit, trackFormStep } from '../utils/dataLayer';
 
 const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
     const { texts: siteTexts } = useSiteTextsContext();
@@ -40,6 +40,10 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [validationError, setValidationError] = useState(false);
     const [error, setError] = useState(null);
+    // fix #11: useRef for timeout cleanup on unmount
+    const timeoutRef = useRef(null);
+    // Ref guard to prevent duplicate tracking events in StrictMode
+    const trackedOpenRef = useRef(false);
 
     React.useEffect(() => {
         if (isOpen && packageTitle) {
@@ -47,16 +51,25 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
         }
 
         if (isOpen) {
-            trackPackageQuoteFormOpen({ packageTitle });
+            if (!trackedOpenRef.current) {
+                trackedOpenRef.current = true;
+                trackPackageQuoteFormOpen({ packageTitle });
+                trackFormStep({ formType: 'package', step: 1, stepName: 'package_details' });
+            }
             // Bloquear scroll del body
             document.body.style.overflow = 'hidden';
         } else {
+            trackedOpenRef.current = false;
             // Restaurar scroll del body
             document.body.style.overflow = 'unset';
         }
         
         return () => {
             document.body.style.overflow = 'unset';
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+                timeoutRef.current = null;
+            }
         };
     }, [isOpen, packageTitle]);
     
@@ -115,7 +128,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
 
             setIsSubmitting(false);
             setIsSubmitted(true);
-            const timeoutId = setTimeout(() => {
+            timeoutRef.current = setTimeout(() => {
                 onClose();
                 setIsSubmitted(false);
                 setValidationError(false);
@@ -125,9 +138,8 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                     viajeros: '2', tipoViaje: 'guiado', serviciosAdicionales: '',
                     packageTitle: packageTitle || ''
                 });
+                timeoutRef.current = null;
             }, 3000);
-            // fix #26: cleanup timeout on unmount
-            return () => clearTimeout(timeoutId);
         } catch (err) {
             setError(siteTexts.packageQuoteModal?.errorMessage || 'Ocurrió un error al enviar la solicitud. Por favor, intenta nuevamente.');
             setIsSubmitting(false);

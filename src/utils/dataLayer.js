@@ -15,9 +15,18 @@ const getDeviceType = () => {
 };
 const DEVICE_TYPE = getDeviceType();
 
+function sanitize(value) {
+  if (typeof value !== 'string') return value;
+  return value.replace(/[<>"'&]/g, '');
+}
+
 function push(payload) {
+  if (typeof window === 'undefined') return;
   window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({ device_type: DEVICE_TYPE, ...payload });
+  const sanitized = Object.fromEntries(
+    Object.entries(payload).map(([k, v]) => [k, sanitize(v)])
+  );
+  window.dataLayer.push({ device_type: DEVICE_TYPE, ...sanitized });
 }
 
 // 1. Page view — fired on every route change

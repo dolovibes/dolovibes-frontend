@@ -34,10 +34,16 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "", ctaSource = "unknow
         notes: ""
     });
 
+    // Ref guard to prevent duplicate tracking events in StrictMode
+    const trackedOpenRef = useRef(false);
+
     React.useEffect(() => {
         if (isOpen) {
-            trackQuoteFormOpen({ interest: initialInterest, ctaSource });
-            trackFormStep({ formType: 'general', step: 1, stepName: 'trip_details' });
+            if (!trackedOpenRef.current) {
+                trackedOpenRef.current = true;
+                trackQuoteFormOpen({ interest: initialInterest, ctaSource });
+                trackFormStep({ formType: 'general', step: 1, stepName: 'trip_details' });
+            }
             if (initialInterest) {
                 setFormData(prev => ({ ...prev, interest: initialInterest }));
             }
@@ -48,6 +54,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "", ctaSource = "unknow
             // Bloquear scroll del body
             document.body.style.overflow = 'hidden';
         } else {
+            trackedOpenRef.current = false;
             // Restaurar scroll del body
             document.body.style.overflow = 'unset';
         }
@@ -60,7 +67,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "", ctaSource = "unknow
                 timeoutRef.current = null;
             }
         };
-    }, [isOpen, initialInterest]);
+    }, [isOpen, initialInterest, ctaSource]);
     
     // fix #12: Focus trap (incluye Escape handler y restauración de focus)
     const focusTrapRef = useFocusTrap(isOpen, onClose);

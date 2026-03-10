@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { BlocksRenderer, extractTextFromBlocks } from '../utils/BlocksRenderer';
@@ -80,9 +80,11 @@ const PackageInfoPage = ({ onOpenQuote }) => {
     // Referencia para la sección de itinerario (para swipe/wheel)
     const itineraryRef = React.useRef(null);
 
-    // Track package view when data is loaded
+    // Track package view when data is loaded (useRef guard prevents StrictMode duplicates)
+    const trackedPkgRef = useRef(null);
     useEffect(() => {
-        if (pkg) {
+        if (pkg && trackedPkgRef.current !== slug) {
+            trackedPkgRef.current = slug;
             trackPackageView({
                 title: pkg.title,
                 slug,
@@ -91,7 +93,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                 duration: pkg.duration,
             });
         }
-    }, [pkg, slug]);
+    }, [pkg?.documentId, slug]);
 
     // Scroll al inicio cuando carga la página
     useEffect(() => {
