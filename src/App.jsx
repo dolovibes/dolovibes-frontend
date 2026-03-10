@@ -130,8 +130,10 @@ const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialIn
 
     // Skip redirect-only routes: bare /, legacy paths without lang prefix, catch-all
     if (path === '/' || /^\/(?:experiencias|paquetes|nosotros|legales)(?:\/|$)/.test(path)) return;
-    // Only track paths that start with a valid lang prefix
-    if (!/^\/\w{2}(\/|$)/.test(path)) return;
+    // Only track paths that start with a supported locale prefix
+    const langPrefix = SUPPORTED_LOCALES.join('|');
+    const validLangRegex = new RegExp(`^\\/(${langPrefix})(\\/|$)`);
+    if (!validLangRegex.test(path)) return;
 
     let pageType = 'home';
     if (/\/\w{2}\/(experiencias|experiences|esperienze|erlebnisse)\//.test(path)) pageType = 'experience';
