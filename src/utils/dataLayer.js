@@ -5,9 +5,19 @@
  * can map these events in GTM without touching the codebase.
  */
 
+// Detect device type once at module load — enriches every event automatically
+const getDeviceType = () => {
+  if (typeof navigator === 'undefined') return 'desktop';
+  const ua = navigator.userAgent;
+  if (/iPad|Tablet/i.test(ua)) return 'tablet';
+  if (/Mobi|Android|iPhone|iPod/i.test(ua)) return 'mobile';
+  return 'desktop';
+};
+const DEVICE_TYPE = getDeviceType();
+
 function push(payload) {
   window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push(payload);
+  window.dataLayer.push({ device_type: DEVICE_TYPE, ...payload });
 }
 
 // 1. Page view — fired on every route change
@@ -42,11 +52,13 @@ export function trackPackageView({ title, slug, priceEUR, location, duration }) 
 }
 
 // 4. General quote form — open
-export function trackQuoteFormOpen({ interest }) {
+// cta_source: 'navbar' | 'package_page' | 'experience_page' | 'mobile_menu'
+export function trackQuoteFormOpen({ interest, ctaSource }) {
   push({
     event: 'open_quote_form',
     form_type: 'general',
     interest: interest || '',
+    cta_source: ctaSource || 'unknown',
   });
 }
 
@@ -117,5 +129,38 @@ export function trackGalleryOpen({ packageTitle, packageSlug, photoCount }) {
     package_title: packageTitle,
     package_slug: packageSlug,
     photo_count: photoCount,
+  });
+}
+
+// 12. Photo gallery navigation — fired on each photo change
+// method: 'button' | 'swipe' | 'keyboard'
+// direction: 'next' | 'previous'
+export function trackGalleryNavigate({ packageSlug, direction, method, photoIndex, totalPhotos }) {
+  push({
+    event: 'gallery_navigate',
+    package_slug: packageSlug,
+    gallery_direction: direction,    // 'next' | 'previous'
+    gallery_nav_method: method,      // 'button' | 'swipe' | 'keyboard'
+    gallery_photo_index: photoIndex, // 0-based index of destination photo
+    gallery_total_photos: totalPhotos,
+  });
+}
+
+// 13. Navbar experience click
+// nav_type: 'desktop_dropdown' | 'mobile_menu'
+export function trackNavExperienceClick({ title, slug, navType }) {
+  push({
+    event: 'nav_experience_click',
+    experience_title: title,
+    experience_slug: slug,
+    nav_type: navType, // 'desktop_dropdown' | 'mobile_menu'
+  });
+}
+
+// 14. Mobile nav menu toggle
+export function trackNavMobileMenuToggle({ action }) {
+  push({
+    event: 'nav_mobile_menu',
+    menu_action: action, // 'open' | 'close'
   });
 }

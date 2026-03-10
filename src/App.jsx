@@ -118,7 +118,7 @@ const LegacyRedirect = ({ routeType }) => {
  * Contenido interno de la app que usa el LanguageTransitionProvider
  * Debe estar dentro del Router porque usa hooks de react-router
  */
-const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialInterest }) => {
+const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialInterest, ctaSource, setCtaSource }) => {
   const location = useLocation();
   const { currency, loading: currencyLoading } = useCurrencyContext();
 
@@ -157,8 +157,10 @@ const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialIn
     });
   }, [location.pathname, currencyLoading, currency]);
 
-  const handleOpenQuote = (interest = "") => {
+  // ctaSource: 'navbar' | 'mobile_menu' | 'experience_page' | 'package_page' | 'about_page'
+  const handleOpenQuote = (interest = "", source = "unknown") => {
     setInitialInterest(interest);
+    setCtaSource(source);
     setIsQuoteOpen(true);
   };
 
@@ -169,35 +171,35 @@ const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialIn
         <LanguageTransitionOverlay />
 
         {/* Navbar global */}
-        <NavbarNew onOpenQuote={() => handleOpenQuote()} />
+        <NavbarNew onOpenQuote={(src) => handleOpenQuote('', src)} />
 
         {/* Rutas con Suspense para lazy loading */}
         <Suspense fallback={<PageLoader />}>
           <Routes>
             {/* Redirect raíz al idioma preferido */}
             <Route path="/" element={<LocaleRedirect />} />
-            
+
             {/* Rutas con prefijo de idioma */}
             <Route path="/:lang" element={<LocaleSync><HomePage /></LocaleSync>} />
-            
+
             {/* Experiencias - todos los idiomas */}
-            <Route path="/:lang/experiencias/:slug" element={<LocaleSync><ExperiencePage onOpenQuote={handleOpenQuote} /></LocaleSync>} />
-            <Route path="/:lang/experiences/:slug" element={<LocaleSync><ExperiencePage onOpenQuote={handleOpenQuote} /></LocaleSync>} />
-            <Route path="/:lang/esperienze/:slug" element={<LocaleSync><ExperiencePage onOpenQuote={handleOpenQuote} /></LocaleSync>} />
-            <Route path="/:lang/erlebnisse/:slug" element={<LocaleSync><ExperiencePage onOpenQuote={handleOpenQuote} /></LocaleSync>} />
-            
+            <Route path="/:lang/experiencias/:slug" element={<LocaleSync><ExperiencePage onOpenQuote={(interest) => handleOpenQuote(interest, 'experience_page')} /></LocaleSync>} />
+            <Route path="/:lang/experiences/:slug" element={<LocaleSync><ExperiencePage onOpenQuote={(interest) => handleOpenQuote(interest, 'experience_page')} /></LocaleSync>} />
+            <Route path="/:lang/esperienze/:slug" element={<LocaleSync><ExperiencePage onOpenQuote={(interest) => handleOpenQuote(interest, 'experience_page')} /></LocaleSync>} />
+            <Route path="/:lang/erlebnisse/:slug" element={<LocaleSync><ExperiencePage onOpenQuote={(interest) => handleOpenQuote(interest, 'experience_page')} /></LocaleSync>} />
+
             {/* Paquetes - todos los idiomas */}
-            <Route path="/:lang/paquetes/:slug" element={<LocaleSync><PackageInfoPage onOpenQuote={handleOpenQuote} /></LocaleSync>} />
-            <Route path="/:lang/packages/:slug" element={<LocaleSync><PackageInfoPage onOpenQuote={handleOpenQuote} /></LocaleSync>} />
-            <Route path="/:lang/pacchetti/:slug" element={<LocaleSync><PackageInfoPage onOpenQuote={handleOpenQuote} /></LocaleSync>} />
-            <Route path="/:lang/pakete/:slug" element={<LocaleSync><PackageInfoPage onOpenQuote={handleOpenQuote} /></LocaleSync>} />
-            
+            <Route path="/:lang/paquetes/:slug" element={<LocaleSync><PackageInfoPage onOpenQuote={(interest) => handleOpenQuote(interest, 'package_page')} /></LocaleSync>} />
+            <Route path="/:lang/packages/:slug" element={<LocaleSync><PackageInfoPage onOpenQuote={(interest) => handleOpenQuote(interest, 'package_page')} /></LocaleSync>} />
+            <Route path="/:lang/pacchetti/:slug" element={<LocaleSync><PackageInfoPage onOpenQuote={(interest) => handleOpenQuote(interest, 'package_page')} /></LocaleSync>} />
+            <Route path="/:lang/pakete/:slug" element={<LocaleSync><PackageInfoPage onOpenQuote={(interest) => handleOpenQuote(interest, 'package_page')} /></LocaleSync>} />
+
             {/* About - todos los idiomas */}
-            <Route path="/:lang/nosotros" element={<LocaleSync><AboutUsPage onOpenQuote={() => handleOpenQuote()} /></LocaleSync>} />
-            <Route path="/:lang/about" element={<LocaleSync><AboutUsPage onOpenQuote={() => handleOpenQuote()} /></LocaleSync>} />
-            <Route path="/:lang/chi-siamo" element={<LocaleSync><AboutUsPage onOpenQuote={() => handleOpenQuote()} /></LocaleSync>} />
-            <Route path="/:lang/ueber-uns" element={<LocaleSync><AboutUsPage onOpenQuote={() => handleOpenQuote()} /></LocaleSync>} />
-            
+            <Route path="/:lang/nosotros" element={<LocaleSync><AboutUsPage onOpenQuote={() => handleOpenQuote('', 'about_page')} /></LocaleSync>} />
+            <Route path="/:lang/about" element={<LocaleSync><AboutUsPage onOpenQuote={() => handleOpenQuote('', 'about_page')} /></LocaleSync>} />
+            <Route path="/:lang/chi-siamo" element={<LocaleSync><AboutUsPage onOpenQuote={() => handleOpenQuote('', 'about_page')} /></LocaleSync>} />
+            <Route path="/:lang/ueber-uns" element={<LocaleSync><AboutUsPage onOpenQuote={() => handleOpenQuote('', 'about_page')} /></LocaleSync>} />
+
             {/* Legal - todos los idiomas */}
             <Route path="/:lang/legales/:slug" element={<LocaleSync><DynamicLegalPage /></LocaleSync>} />
             <Route path="/:lang/legal/:slug" element={<LocaleSync><DynamicLegalPage /></LocaleSync>} />
@@ -220,6 +222,7 @@ const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialIn
           isOpen={isQuoteOpen}
           onClose={() => setIsQuoteOpen(false)}
           initialInterest={initialInterest}
+          ctaSource={ctaSource}
         />
       </div>
     </LanguageTransitionProvider>
@@ -230,6 +233,7 @@ const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialIn
 const App = () => {
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
   const [initialInterest, setInitialInterest] = useState("");
+  const [ctaSource, setCtaSource] = useState("unknown");
 
   return (
     <ErrorBoundary>
@@ -239,6 +243,8 @@ const App = () => {
           setIsQuoteOpen={setIsQuoteOpen}
           initialInterest={initialInterest}
           setInitialInterest={setInitialInterest}
+          ctaSource={ctaSource}
+          setCtaSource={setCtaSource}
         />
       </Router>
     </ErrorBoundary>

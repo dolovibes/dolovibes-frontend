@@ -7,6 +7,7 @@ import { generateLocalizedUrl, getLocaleFromPath } from '../utils/localizedRoute
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import CurrencySelector from './CurrencySelector';
+import { trackNavExperienceClick, trackNavMobileMenuToggle } from '../utils/dataLayer';
 
 const NavbarNew = ({ onOpenQuote }) => {
     const { i18n } = useTranslation('common');
@@ -88,10 +89,18 @@ const NavbarNew = ({ onOpenQuote }) => {
         return () => { document.body.style.overflow = 'unset'; };
     }, [isMenuOpen]);
 
-    const handleExperienceClick = (slug) => {
+    const handleExperienceClick = (slug, navType) => {
+        const exp = experiences.find(e => e.slug === slug);
+        trackNavExperienceClick({ title: exp?.title || slug, slug, navType });
         setIsExperiencesOpen(false);
         setIsMenuOpen(false);
         navigate(generateLocalizedUrl('experiences', slug, currentLocale));
+    };
+
+    const handleMobileMenuToggle = () => {
+        const next = !isMenuOpen;
+        trackNavMobileMenuToggle({ action: next ? 'open' : 'close' });
+        setIsMenuOpen(next);
     };
 
     // Usar estilo oscuro si scrolled O si estamos en página con fondo blanco
@@ -178,7 +187,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                                     {summerExperiences.map((exp) => (
                                                         <li key={exp.id || exp.slug}>
                                                             <button
-                                                                onClick={() => handleExperienceClick(exp.slug)}
+                                                                onClick={() => handleExperienceClick(exp.slug, isMenuOpen ? 'mobile_menu' : 'desktop_dropdown')}
                                                                 className="w-full text-left px-3 py-2 text-pizarra hover:text-grafito hover:bg-nieve rounded-lg font-medium text-sm transition-colors"
                                                             >
                                                                 {exp.title}
@@ -197,7 +206,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                                     {winterExperiences.map((exp) => (
                                                         <li key={exp.id || exp.slug}>
                                                             <button
-                                                                onClick={() => handleExperienceClick(exp.slug)}
+                                                                onClick={() => handleExperienceClick(exp.slug, isMenuOpen ? 'mobile_menu' : 'desktop_dropdown')}
                                                                 className="w-full text-left px-3 py-2 text-pizarra hover:text-grafito hover:bg-nieve rounded-lg font-medium text-sm transition-colors"
                                                             >
                                                                 {exp.title}
@@ -224,7 +233,7 @@ const NavbarNew = ({ onOpenQuote }) => {
 
                             {/* Botón Cotizar */}
                             <button
-                                onClick={onOpenQuote}
+                                onClick={() => onOpenQuote('navbar')}
                                 className="bg-pizarra hover:bg-pizarra/90 text-white px-6 py-2.5 rounded-full font-semibold transition-all transform hover:scale-105 shadow-lg shadow-pizarra/25 hover:shadow-pizarra/40"
                             >
                                 {siteTexts.navbar.quote}
@@ -239,7 +248,7 @@ const NavbarNew = ({ onOpenQuote }) => {
 
                         {/* Mobile Menu Button */}
                         <button
-                            onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            onClick={handleMobileMenuToggle}
                             className={`md:hidden p-2 rounded-lg transition-colors ${isDarkMode ? 'text-grafito hover:bg-nieve' : 'text-white hover:bg-white/10'
                                 }`}
                             aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
@@ -287,7 +296,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                         {summerExperiences.map((exp) => (
                                             <button
                                                 key={exp.id || exp.slug}
-                                                onClick={() => handleExperienceClick(exp.slug)}
+                                                onClick={() => handleExperienceClick(exp.slug, isMenuOpen ? 'mobile_menu' : 'desktop_dropdown')}
                                                 className="w-full text-left px-3 py-2 text-pizarra hover:text-grafito hover:bg-nieve rounded-lg text-sm font-medium"
                                             >
                                                 {exp.title}
@@ -302,7 +311,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                                         {winterExperiences.map((exp) => (
                                             <button
                                                 key={exp.id || exp.slug}
-                                                onClick={() => handleExperienceClick(exp.slug)}
+                                                onClick={() => handleExperienceClick(exp.slug, isMenuOpen ? 'mobile_menu' : 'desktop_dropdown')}
                                                 className="w-full text-left px-3 py-2 text-pizarra hover:text-grafito hover:bg-nieve rounded-lg text-sm font-medium"
                                             >
                                                 {exp.title}
@@ -324,7 +333,7 @@ const NavbarNew = ({ onOpenQuote }) => {
 
                         {/* Cotizar Button */}
                         <button
-                            onClick={() => { setIsMenuOpen(false); onOpenQuote(); }}
+                            onClick={() => { setIsMenuOpen(false); onOpenQuote('mobile_menu'); }}
                             className="w-full bg-pizarra text-white py-3 rounded-xl font-bold mt-4"
                         >
                             {siteTexts.navbar.quote}

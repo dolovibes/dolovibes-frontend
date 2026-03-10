@@ -5,7 +5,7 @@ import { useExperiences } from '../services/hooks';
 import useFocusTrap from '../hooks/useFocusTrap';
 import { trackQuoteFormOpen, trackQuoteFormSubmit, trackFormStep } from '../utils/dataLayer';
 
-const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
+const QuoteModal = ({ isOpen, onClose, initialInterest = "", ctaSource = "unknown" }) => {
     const { texts: siteTexts } = useSiteTextsContext();
     const { data: experiences = [], isLoading: experiencesLoading } = useExperiences();
     const [step, setStep] = useState(1);
@@ -36,7 +36,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
 
     React.useEffect(() => {
         if (isOpen) {
-            trackQuoteFormOpen({ interest: initialInterest });
+            trackQuoteFormOpen({ interest: initialInterest, ctaSource });
             trackFormStep({ formType: 'general', step: 1, stepName: 'trip_details' });
             if (initialInterest) {
                 setFormData(prev => ({ ...prev, interest: initialInterest }));
