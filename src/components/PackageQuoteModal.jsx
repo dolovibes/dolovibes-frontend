@@ -1,7 +1,8 @@
-import React, { useState, useId } from 'react';
+import React, { useState, useId, useRef } from 'react';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { CheckCircle, Send, X, AlertCircle } from 'lucide-react';
 import useFocusTrap from '../hooks/useFocusTrap';
+import { trackPackageQuoteFormOpen, trackPackageQuoteFormSubmit, trackFormStep, trackFormError } from '../utils/dataLayer';
 
 const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
     const { texts: siteTexts } = useSiteTextsContext();
@@ -39,22 +40,39 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [validationError, setValidationError] = useState(false);
     const [error, setError] = useState(null);
+    // fix #11: useRef for timeout cleanup on unmount
+    const timeoutRef = useRef(null);
+    // Ref guard to prevent duplicate tracking events in StrictMode
+    const trackedOpenRef = useRef(false);
+    // Track which funnel steps have been fired to avoid duplicates
+    const firedStepsRef = useRef(new Set());
 
     React.useEffect(() => {
         if (isOpen && packageTitle) {
             setFormData(prev => ({ ...prev, packageTitle }));
         }
-        
+
         if (isOpen) {
+            if (!trackedOpenRef.current) {
+                trackedOpenRef.current = true;
+                trackPackageQuoteFormOpen({ packageTitle });
+                trackFormStep({ formType: 'package', step: 1, stepName: 'package_details' });
+            }
             // Bloquear scroll del body
             document.body.style.overflow = 'hidden';
         } else {
+            trackedOpenRef.current = false;
+            firedStepsRef.current.clear();
             // Restaurar scroll del body
             document.body.style.overflow = 'unset';
         }
         
         return () => {
             document.body.style.overflow = 'unset';
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+                timeoutRef.current = null;
+            }
         };
     }, [isOpen, packageTitle]);
     
@@ -82,6 +100,13 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
+    // Trackea un paso del funnel una sola vez por apertura del modal.
+    const trackStepOnce = (step, stepName) => {
+        if (firedStepsRef.current.has(step)) return;
+        firedStepsRef.current.add(step);
+        trackFormStep({ formType: 'package', step, stepName });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setValidationError(false);
@@ -104,9 +129,16 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                 throw new Error('Error al enviar la solicitud');
             }
 
+            trackPackageQuoteFormSubmit({
+                packageTitle: formData.packageTitle,
+                travelers: formData.viajeros,
+                tripType: formData.tipoViaje,
+                contactMethod: formData.contacto,
+            });
+
             setIsSubmitting(false);
             setIsSubmitted(true);
-            const timeoutId = setTimeout(() => {
+            timeoutRef.current = setTimeout(() => {
                 onClose();
                 setIsSubmitted(false);
                 setValidationError(false);
@@ -116,10 +148,10 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                     viajeros: '2', tipoViaje: 'guiado', serviciosAdicionales: '',
                     packageTitle: packageTitle || ''
                 });
+                timeoutRef.current = null;
             }, 3000);
-            // fix #26: cleanup timeout on unmount
-            return () => clearTimeout(timeoutId);
         } catch (err) {
+            trackFormError({ formType: 'package', errorType: 'api', errorField: 'submit' });
             setError(siteTexts.packageQuoteModal?.errorMessage || 'Ocurrió un error al enviar la solicitud. Por favor, intenta nuevamente.');
             setIsSubmitting(false);
         }
@@ -128,6 +160,8 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
     // Cuando el usuario intenta enviar pero el formulario es inválido (native HTML validation)
     const handleInvalid = (e) => {
         e.preventDefault();
+        const fieldName = e.target?.name || 'unknown';
+        trackFormError({ formType: 'package', errorType: 'validation', errorField: fieldName });
         setValidationError(true);
         // Scroll hacia arriba para ver el mensaje de error
         e.target.closest('form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -227,6 +261,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.nombre}
                                             onChange={handleChange}
+                                            onFocus={() => trackStepOnce(2, 'personal_info')}
                                             className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
                                             placeholder={siteTexts.packageQuoteModal?.placeholderFirstName || 'Tu nombre'}
                                         />
@@ -306,6 +341,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             required
                                             value={formData.email}
                                             onChange={handleChange}
+                                            onFocus={() => trackStepOnce(3, 'contact_info')}
                                             className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm invalid:border-red-300 focus:invalid:border-red-500 focus:invalid:ring-red-500"
                                             placeholder={siteTexts.packageQuoteModal?.placeholderEmail || 'tu@email.com'}
                                         />
@@ -356,6 +392,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                             name="mesViaje"
                                             value={formData.mesViaje}
                                             onChange={handleChange}
+                                            onFocus={() => trackStepOnce(4, 'trip_details')}
                                             className="w-full px-4 py-2.5 border border-niebla rounded-xl focus:ring-2 focus:ring-pizarra focus:border-pizarra transition-all text-sm"
                                         />
                                     </div>

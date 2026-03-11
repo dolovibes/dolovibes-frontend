@@ -9,6 +9,7 @@ import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { useCurrencyContext, SUPPORTED_CURRENCIES } from '../utils/currency';
 import { useSiteSettings } from '../services/hooks';
+import { trackCurrencyChange } from '../utils/dataLayer';
 
 /**
  * Componente de bandera usando imágenes de flagcdn.com
@@ -113,23 +114,33 @@ const CurrencySelector = ({
       case 'ArrowDown': {
         event.preventDefault();
         const nextIndex = (currentIndex + 1) % currencyList.length;
-        setCurrency(currencyList[nextIndex].code);
+        const nextCode = currencyList[nextIndex].code;
+        if (nextCode !== currency) trackCurrencyChange({ from: currency, to: nextCode });
+        setCurrency(nextCode);
         break;
       }
       case 'ArrowUp': {
         event.preventDefault();
         const prevIndex = (currentIndex - 1 + currencyList.length) % currencyList.length;
-        setCurrency(currencyList[prevIndex].code);
+        const prevCode = currencyList[prevIndex].code;
+        if (prevCode !== currency) trackCurrencyChange({ from: currency, to: prevCode });
+        setCurrency(prevCode);
         break;
       }
-      case 'Home':
+      case 'Home': {
         event.preventDefault();
-        setCurrency(currencyList[0].code);
+        const firstCode = currencyList[0].code;
+        if (firstCode !== currency) trackCurrencyChange({ from: currency, to: firstCode });
+        setCurrency(firstCode);
         break;
-      case 'End':
+      }
+      case 'End': {
         event.preventDefault();
-        setCurrency(currencyList[currencyList.length - 1].code);
+        const lastCode = currencyList[currencyList.length - 1].code;
+        if (lastCode !== currency) trackCurrencyChange({ from: currency, to: lastCode });
+        setCurrency(lastCode);
         break;
+      }
       case 'Enter':
       case ' ':
         event.preventDefault();
@@ -142,6 +153,9 @@ const CurrencySelector = ({
   }, [isOpen, currency, currencyList, setCurrency]);
 
   const handleSelect = (code) => {
+    if (code !== currency) {
+      trackCurrencyChange({ from: currency, to: code });
+    }
     setCurrency(code);
     setIsOpen(false);
     buttonRef.current?.focus();

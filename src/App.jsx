@@ -3,11 +3,14 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useParams, useLocatio
 import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LOCALES, DEFAULT_LOCALE, ROUTE_PATHS } from './utils/localizedRoutes';
 import { LanguageTransitionProvider, useLanguageTransition } from './contexts/LanguageTransitionContext';
+import { trackPageView, setAnalyticsContext } from './utils/dataLayer';
+import { useCurrencyContext } from './utils/currency';
 
 // Componentes (cargan siempre - necesarios en todas las páginas)
 import NavbarNew from './components/NavbarNew';
 import QuoteModal from './components/QuoteModal';
 import ErrorBoundary from './components/ErrorBoundary';
+import CookieConsent from './components/CookieConsent';
 
 // Páginas con Lazy Loading - solo se cargan cuando se navega a ellas
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -116,9 +119,62 @@ const LegacyRedirect = ({ routeType }) => {
  * Contenido interno de la app que usa el LanguageTransitionProvider
  * Debe estar dentro del Router porque usa hooks de react-router
  */
-const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialInterest }) => {
-  const handleOpenQuote = (interest = "") => {
+const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialInterest, ctaSource, setCtaSource }) => {
+  const location = useLocation();
+  const { currency, loading: currencyLoading } = useCurrencyContext();
+
+  // Track page views only on localized route changes — skip redirect-only paths
+  // (/, /experiencias/:slug, /paquetes/:slug, /nosotros, /legales/:slug, catch-all)
+  useEffect(() => {
+    // Wait until currency is resolved to avoid tracking with wrong currency on first load
+    if (currencyLoading) return;
+
+    const path = location.pathname;
+
+    // Skip redirect-only routes: bare /, legacy paths without lang prefix, catch-all
+    if (path === '/' || /^\/(?:experiencias|paquetes|nosotros|legales)(?:\/|$)/.test(path)) return;
+
+    // Only track paths that start with a supported locale prefix
+    // Derive language from URL to avoid race condition with i18n initialization
+    const langMatch = path.match(new RegExp(`^\\/(${SUPPORTED_LOCALES.join('|')})(\\/|$)`));
+    if (!langMatch) return;
+    const language = langMatch[1];
+
+    // Determine pageType — null means unmatched route (localized 404 redirect), skip tracking
+    let pageType = null;
+    if (/\/\w{2}\/(experiencias|experiences|esperienze|erlebnisse)\//.test(path)) pageType = 'experience';
+    else if (/\/\w{2}\/(paquetes|packages|pacchetti|pakete)\//.test(path)) pageType = 'package';
+    else if (/\/\w{2}\/(nosotros|about|chi-siamo|ueber-uns)/.test(path)) pageType = 'about';
+    else if (/\/\w{2}\/(legales|legal|legale|rechtliches)\//.test(path)) pageType = 'legal';
+    else if (new RegExp(`^\\/(${SUPPORTED_LOCALES.join('|')})\\/?$`).test(path)) pageType = 'home';
+
+    // Skip unmatched paths (e.g. /es/unknown-page — these redirect to default locale)
+    if (!pageType) return;
+
+    trackPageView({
+      pageType,
+      language,
+      currency,
+    });
+  }, [location.pathname, currencyLoading, currency]);
+
+  // Mantiene el contexto global de analytics sincronizado con idioma y moneda activos.
+  // Así todos los eventos (view_package, open_quote_form, etc.) llevan siempre el contexto correcto
+  // sin necesitar pasar language/currency como argumento en cada llamada individual.
+  useEffect(() => {
+    if (currencyLoading) return;
+    const langMatch = location.pathname.match(
+      new RegExp(`^\\/(${SUPPORTED_LOCALES.join('|')})(\\/|$)`)
+    );
+    if (langMatch) {
+      setAnalyticsContext({ language: langMatch[1], currency });
+    }
+  }, [location.pathname, currency, currencyLoading]);
+
+  // ctaSource: 'navbar' | 'mobile_menu' | 'experience_page' | 'package_page' | 'about_page'
+  const handleOpenQuote = (interest = "", source = "unknown") => {
     setInitialInterest(interest);
+    setCtaSource(source);
     setIsQuoteOpen(true);
   };
 
@@ -129,35 +185,35 @@ const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialIn
         <LanguageTransitionOverlay />
 
         {/* Navbar global */}
-        <NavbarNew onOpenQuote={() => handleOpenQuote()} />
+        <NavbarNew onOpenQuote={(src) => handleOpenQuote('', src)} />
 
         {/* Rutas con Suspense para lazy loading */}
         <Suspense fallback={<PageLoader />}>
           <Routes>
             {/* Redirect raíz al idioma preferido */}
             <Route path="/" element={<LocaleRedirect />} />
-            
+
             {/* Rutas con prefijo de idioma */}
             <Route path="/:lang" element={<LocaleSync><HomePage /></LocaleSync>} />
-            
+
             {/* Experiencias - todos los idiomas */}
-            <Route path="/:lang/experiencias/:slug" element={<LocaleSync><ExperiencePage onOpenQuote={handleOpenQuote} /></LocaleSync>} />
-            <Route path="/:lang/experiences/:slug" element={<LocaleSync><ExperiencePage onOpenQuote={handleOpenQuote} /></LocaleSync>} />
-            <Route path="/:lang/esperienze/:slug" element={<LocaleSync><ExperiencePage onOpenQuote={handleOpenQuote} /></LocaleSync>} />
-            <Route path="/:lang/erlebnisse/:slug" element={<LocaleSync><ExperiencePage onOpenQuote={handleOpenQuote} /></LocaleSync>} />
-            
+            <Route path="/:lang/experiencias/:slug" element={<LocaleSync><ExperiencePage onOpenQuote={(interest) => handleOpenQuote(interest, 'experience_page')} /></LocaleSync>} />
+            <Route path="/:lang/experiences/:slug" element={<LocaleSync><ExperiencePage onOpenQuote={(interest) => handleOpenQuote(interest, 'experience_page')} /></LocaleSync>} />
+            <Route path="/:lang/esperienze/:slug" element={<LocaleSync><ExperiencePage onOpenQuote={(interest) => handleOpenQuote(interest, 'experience_page')} /></LocaleSync>} />
+            <Route path="/:lang/erlebnisse/:slug" element={<LocaleSync><ExperiencePage onOpenQuote={(interest) => handleOpenQuote(interest, 'experience_page')} /></LocaleSync>} />
+
             {/* Paquetes - todos los idiomas */}
-            <Route path="/:lang/paquetes/:slug" element={<LocaleSync><PackageInfoPage onOpenQuote={handleOpenQuote} /></LocaleSync>} />
-            <Route path="/:lang/packages/:slug" element={<LocaleSync><PackageInfoPage onOpenQuote={handleOpenQuote} /></LocaleSync>} />
-            <Route path="/:lang/pacchetti/:slug" element={<LocaleSync><PackageInfoPage onOpenQuote={handleOpenQuote} /></LocaleSync>} />
-            <Route path="/:lang/pakete/:slug" element={<LocaleSync><PackageInfoPage onOpenQuote={handleOpenQuote} /></LocaleSync>} />
-            
+            <Route path="/:lang/paquetes/:slug" element={<LocaleSync><PackageInfoPage onOpenQuote={(interest) => handleOpenQuote(interest, 'package_page')} /></LocaleSync>} />
+            <Route path="/:lang/packages/:slug" element={<LocaleSync><PackageInfoPage onOpenQuote={(interest) => handleOpenQuote(interest, 'package_page')} /></LocaleSync>} />
+            <Route path="/:lang/pacchetti/:slug" element={<LocaleSync><PackageInfoPage onOpenQuote={(interest) => handleOpenQuote(interest, 'package_page')} /></LocaleSync>} />
+            <Route path="/:lang/pakete/:slug" element={<LocaleSync><PackageInfoPage onOpenQuote={(interest) => handleOpenQuote(interest, 'package_page')} /></LocaleSync>} />
+
             {/* About - todos los idiomas */}
-            <Route path="/:lang/nosotros" element={<LocaleSync><AboutUsPage onOpenQuote={() => handleOpenQuote()} /></LocaleSync>} />
-            <Route path="/:lang/about" element={<LocaleSync><AboutUsPage onOpenQuote={() => handleOpenQuote()} /></LocaleSync>} />
-            <Route path="/:lang/chi-siamo" element={<LocaleSync><AboutUsPage onOpenQuote={() => handleOpenQuote()} /></LocaleSync>} />
-            <Route path="/:lang/ueber-uns" element={<LocaleSync><AboutUsPage onOpenQuote={() => handleOpenQuote()} /></LocaleSync>} />
-            
+            <Route path="/:lang/nosotros" element={<LocaleSync><AboutUsPage onOpenQuote={() => handleOpenQuote('', 'about_page')} /></LocaleSync>} />
+            <Route path="/:lang/about" element={<LocaleSync><AboutUsPage onOpenQuote={() => handleOpenQuote('', 'about_page')} /></LocaleSync>} />
+            <Route path="/:lang/chi-siamo" element={<LocaleSync><AboutUsPage onOpenQuote={() => handleOpenQuote('', 'about_page')} /></LocaleSync>} />
+            <Route path="/:lang/ueber-uns" element={<LocaleSync><AboutUsPage onOpenQuote={() => handleOpenQuote('', 'about_page')} /></LocaleSync>} />
+
             {/* Legal - todos los idiomas */}
             <Route path="/:lang/legales/:slug" element={<LocaleSync><DynamicLegalPage /></LocaleSync>} />
             <Route path="/:lang/legal/:slug" element={<LocaleSync><DynamicLegalPage /></LocaleSync>} />
@@ -180,7 +236,11 @@ const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialIn
           isOpen={isQuoteOpen}
           onClose={() => setIsQuoteOpen(false)}
           initialInterest={initialInterest}
+          ctaSource={ctaSource}
         />
+
+        {/* Banner de consentimiento de cookies — Consent Mode v2 */}
+        <CookieConsent />
       </div>
     </LanguageTransitionProvider>
   );
@@ -190,6 +250,7 @@ const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialIn
 const App = () => {
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
   const [initialInterest, setInitialInterest] = useState("");
+  const [ctaSource, setCtaSource] = useState("unknown");
 
   return (
     <ErrorBoundary>
@@ -199,6 +260,8 @@ const App = () => {
           setIsQuoteOpen={setIsQuoteOpen}
           initialInterest={initialInterest}
           setInitialInterest={setInitialInterest}
+          ctaSource={ctaSource}
+          setCtaSource={setCtaSource}
         />
       </Router>
     </ErrorBoundary>

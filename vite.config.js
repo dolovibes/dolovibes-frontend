@@ -1,11 +1,39 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import { compression } from 'vite-plugin-compression2'
 
+// Plugin to inject GTM env var into index.html
+// Uses loadEnv to properly read .env files, and removes GTM blocks entirely when ID is not set or invalid
+function htmlEnvPlugin(gtmId) {
+  // Allowlist validation: accept only standard GTM IDs like "GTM-XXXXXXX"
+  const safeGtmId =
+    typeof gtmId === 'string' && /^GTM-[A-Z0-9]+$/.test(gtmId.trim())
+      ? gtmId.trim()
+      : null;
+
+  return {
+    name: 'html-env',
+    transformIndexHtml(html) {
+      if (!safeGtmId) {
+        // Remove entire GTM script and noscript blocks when ID is not configured or invalid
+        html = html.replace(/\s*<!-- Google Tag Manager -->[\s\S]*?<!-- End Google Tag Manager -->\s*/g, '');
+        html = html.replace(/\s*<!-- Google Tag Manager \(noscript\) -->[\s\S]*?<!-- End Google Tag Manager \(noscript\) -->\s*/g, '');
+        return html;
+      }
+      return html.replace(/%VITE_GTM_ID%/g, safeGtmId);
+    },
+  };
+}
+
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  // Only load VITE_-prefixed vars to avoid accidentally consuming non-public env vars
+  const env = loadEnv(mode, process.cwd(), 'VITE_');
+
+  return {
   plugins: [
     react(),
+    htmlEnvPlugin(env.VITE_GTM_ID),
     // Compresión Gzip y Brotli para producción
     compression({
       algorithm: 'gzip',
@@ -85,4 +113,5 @@ export default defineConfig({
       'axios',
     ],
   },
+};
 })

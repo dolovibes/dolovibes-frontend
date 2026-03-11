@@ -7,6 +7,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DOLOVIBES</title>
 
+  <!-- Google Tag Manager -->
+  <script>
+    /* Consent Mode v2 — debe ejecutarse ANTES de que GTM cargue. */
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function() { window.dataLayer.push(arguments); };
+    var _sc = null;
+    try { var _r = localStorage.getItem('dolovibes_consent_v1'); _sc = _r ? JSON.parse(_r) : null; } catch(e) {}
+    /* Auto-granted con TTL expirado (30d) no debe re-aplicar granted antes de revalidar */
+    var _autoExpired = _sc && _sc.auto && (!_sc.timestamp || Date.now() - _sc.timestamp > 30*24*60*60*1000);
+    var _granted = _sc && _sc.analytics === true && !_autoExpired;
+    window.gtag('consent', 'default',
+      _granted
+        ? { analytics_storage:'granted',  ad_storage:'denied', ad_user_data:'denied', ad_personalization:'denied', functionality_storage:'granted', security_storage:'granted' }
+        : { analytics_storage:'denied',   ad_storage:'denied', ad_user_data:'denied', ad_personalization:'denied', functionality_storage:'granted', security_storage:'granted', wait_for_update:6000 }
+    );
+  </script>
+  <script>(function(w,d,s,l,i){if(!i||i==='')return;w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','%VITE_GTM_ID%');</script>
+  <!-- End Google Tag Manager -->
+
   <!-- DNS Prefetch and Preconnect for better performance -->
   <link rel="dns-prefetch" href="https://fonts.googleapis.com">
   <link rel="dns-prefetch" href="https://fonts.gstatic.com">
@@ -84,6 +107,10 @@
 </head>
 
 <body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=%VITE_GTM_ID%"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>

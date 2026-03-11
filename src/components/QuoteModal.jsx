@@ -3,8 +3,9 @@ import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { X, User, Mail, Phone, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import { useExperiences } from '../services/hooks';
 import useFocusTrap from '../hooks/useFocusTrap';
+import { trackQuoteFormOpen, trackQuoteFormSubmit, trackFormStep, trackFormError } from '../utils/dataLayer';
 
-const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
+const QuoteModal = ({ isOpen, onClose, initialInterest = "", ctaSource = "unknown" }) => {
     const { texts: siteTexts } = useSiteTextsContext();
     const { data: experiences = [], isLoading: experiencesLoading } = useExperiences();
     const [step, setStep] = useState(1);
@@ -33,18 +34,27 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
         notes: ""
     });
 
+    // Ref guard to prevent duplicate tracking events in StrictMode
+    const trackedOpenRef = useRef(false);
+
     React.useEffect(() => {
         if (isOpen) {
+            if (!trackedOpenRef.current) {
+                trackedOpenRef.current = true;
+                trackQuoteFormOpen({ interest: initialInterest, ctaSource });
+                trackFormStep({ formType: 'general', step: 1, stepName: 'trip_details' });
+            }
             if (initialInterest) {
                 setFormData(prev => ({ ...prev, interest: initialInterest }));
             }
             setStep(1);
             setError(null);
             setIsSubmitting(false);
-            
+
             // Bloquear scroll del body
             document.body.style.overflow = 'hidden';
         } else {
+            trackedOpenRef.current = false;
             // Restaurar scroll del body
             document.body.style.overflow = 'unset';
         }
@@ -57,7 +67,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                 timeoutRef.current = null;
             }
         };
-    }, [isOpen, initialInterest]);
+    }, [isOpen, initialInterest, ctaSource]);
     
     // fix #12: Focus trap (incluye Escape handler y restauración de focus)
     const focusTrapRef = useFocusTrap(isOpen, onClose);
@@ -85,6 +95,12 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                 throw new Error('Error al enviar la solicitud');
             }
 
+            trackQuoteFormSubmit({
+                interest: formData.interest,
+                guests: formData.guests,
+                contactMethod: formData.contacto,
+            });
+
             setStep(3);
             // fix #26: store timeout ID for cleanup
             timeoutRef.current = setTimeout(() => {
@@ -104,10 +120,17 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
             }, 3000);
         } catch (err) {
             // Usar SiteTexts (Strapi → i18n fallback) como el resto del sitio
+            trackFormError({ formType: 'general', errorType: 'api', errorField: 'submit' });
             setError(siteTexts.quoteModal?.errorMessage || 'Ocurrió un error al enviar la solicitud. Por favor, intenta nuevamente.');
         } finally {
             setIsSubmitting(false);
         }
+    };
+
+    const handleInvalid = (e) => {
+        e.preventDefault();
+        const fieldName = e.target?.name || 'unknown';
+        trackFormError({ formType: 'general', errorType: 'validation', errorField: fieldName });
     };
 
     return (
@@ -219,8 +242,10 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                 onClick={() => {
                                     // fix #31: Validate required fields before advancing to step 2
                                     if (!formData.interest || !formData.guests) {
+                                        trackFormError({ formType: 'general', errorType: 'validation', errorField: 'interest_or_guests' });
                                         return; // Don't advance if required fields are empty
                                     }
+                                    trackFormStep({ formType: 'general', step: 2, stepName: 'contact_info' });
                                     setStep(2);
                                 }}
                                 className="w-full bg-pizarra text-white font-bold py-3 rounded-xl hover:bg-pizarra/90 transition-colors flex justify-center items-center gap-2 mt-4"
@@ -231,7 +256,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                     )}
 
                     {step === 2 && (
-                        <form onSubmit={handleSubmit} className="space-y-4">
+                        <form onSubmit={handleSubmit} onInvalid={handleInvalid} className="space-y-4">
                             <h4 className="text-lg font-semibold text-grafito mb-4">{siteTexts.quoteModal.step2Title}</h4>
 
                             {/* Error message */}
@@ -249,6 +274,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                 <input
                                     id={nameId}
                                     type="text"
+                                    name="name"
                                     placeholder={siteTexts.quoteModal.namePlaceholder}
                                     value={formData.name}
                                     required
@@ -264,6 +290,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "" }) => {
                                 <input
                                     id={emailId}
                                     type="email"
+                                    name="email"
                                     placeholder={siteTexts.quoteModal.emailPlaceholder}
                                     value={formData.email}
                                     required
