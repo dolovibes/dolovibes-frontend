@@ -3,13 +3,14 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useParams, useLocatio
 import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LOCALES, DEFAULT_LOCALE, ROUTE_PATHS } from './utils/localizedRoutes';
 import { LanguageTransitionProvider, useLanguageTransition } from './contexts/LanguageTransitionContext';
-import { trackPageView } from './utils/dataLayer';
+import { trackPageView, setAnalyticsContext } from './utils/dataLayer';
 import { useCurrencyContext } from './utils/currency';
 
 // Componentes (cargan siempre - necesarios en todas las páginas)
 import NavbarNew from './components/NavbarNew';
 import QuoteModal from './components/QuoteModal';
 import ErrorBoundary from './components/ErrorBoundary';
+import CookieConsent from './components/CookieConsent';
 
 // Páginas con Lazy Loading - solo se cargan cuando se navega a ellas
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -157,6 +158,19 @@ const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialIn
     });
   }, [location.pathname, currencyLoading, currency]);
 
+  // Mantiene el contexto global de analytics sincronizado con idioma y moneda activos.
+  // Así todos los eventos (view_package, open_quote_form, etc.) llevan siempre el contexto correcto
+  // sin necesitar pasar language/currency como argumento en cada llamada individual.
+  useEffect(() => {
+    if (currencyLoading) return;
+    const langMatch = location.pathname.match(
+      new RegExp(`^\\/(${SUPPORTED_LOCALES.join('|')})(\\/|$)`)
+    );
+    if (langMatch) {
+      setAnalyticsContext({ language: langMatch[1], currency });
+    }
+  }, [location.pathname, currency, currencyLoading]);
+
   // ctaSource: 'navbar' | 'mobile_menu' | 'experience_page' | 'package_page' | 'about_page'
   const handleOpenQuote = (interest = "", source = "unknown") => {
     setInitialInterest(interest);
@@ -224,6 +238,9 @@ const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialIn
           initialInterest={initialInterest}
           ctaSource={ctaSource}
         />
+
+        {/* Banner de consentimiento de cookies — Consent Mode v2 */}
+        <CookieConsent />
       </div>
     </LanguageTransitionProvider>
   );

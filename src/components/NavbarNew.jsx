@@ -93,7 +93,7 @@ const NavbarNew = ({ onOpenQuote }) => {
         const exp = experiences.find(e => e.slug === slug);
         trackNavExperienceClick({ title: exp?.title || slug, slug, navType });
         setIsExperiencesOpen(false);
-        setIsMenuOpen(false);
+        closeMenu();
         navigate(generateLocalizedUrl('experiences', slug, currentLocale));
     };
 
@@ -101,6 +101,16 @@ const NavbarNew = ({ onOpenQuote }) => {
         const next = !isMenuOpen;
         trackNavMobileMenuToggle({ action: next ? 'open' : 'close' });
         setIsMenuOpen(next);
+    };
+
+    // Cierra el menú mobile y emite el evento 'close' si estaba abierto.
+    // Usar esta función en lugar de setIsMenuOpen(false) directo para no
+    // perder el evento de tracking cuando el menú se cierra por navegación.
+    const closeMenu = () => {
+        if (isMenuOpen) {
+            trackNavMobileMenuToggle({ action: 'close' });
+        }
+        setIsMenuOpen(false);
     };
 
     // Usar estilo oscuro si scrolled O si estamos en página con fondo blanco
@@ -325,7 +335,7 @@ const NavbarNew = ({ onOpenQuote }) => {
                         {/* About Us */}
                         <Link
                             to={generateLocalizedUrl('about', null, currentLocale)}
-                            onClick={() => setIsMenuOpen(false)}
+                            onClick={closeMenu}
                             className="block py-3 text-grafito font-medium border-b border-niebla"
                         >
                             {siteTexts.navbar.aboutUs}
@@ -333,7 +343,7 @@ const NavbarNew = ({ onOpenQuote }) => {
 
                         {/* Cotizar Button */}
                         <button
-                            onClick={() => { setIsMenuOpen(false); onOpenQuote('mobile_menu'); }}
+                            onClick={() => { closeMenu(); onOpenQuote('mobile_menu'); }}
                             className="w-full bg-pizarra text-white py-3 rounded-xl font-bold mt-4"
                         >
                             {siteTexts.navbar.quote}

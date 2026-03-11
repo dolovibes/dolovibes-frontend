@@ -10,6 +10,7 @@ import Hreflang from '../components/Hreflang';
 import { useAlternateUrls } from '../hooks/useAlternateUrls';
 import usePageMeta from '../hooks/usePageMeta';
 import { trackExperienceView } from '../utils/dataLayer';
+import { useCurrencyContext } from '../utils/currency';
 
 const ExperiencePage = ({ onOpenQuote }) => {
     const { t: tCommon, i18n } = useTranslation('common');
@@ -39,14 +40,18 @@ const ExperiencePage = ({ onOpenQuote }) => {
     const loadingText = siteTexts?.loadingExperience || tCommon('loading.experience');
     const packagesTitle = siteTexts?.availablePackagesTitle || tCommon('availablePackages.title');
     const packagesSubtitle = siteTexts?.availablePackagesSubtitle || tCommon('availablePackages.subtitle');
+
+    // Contexto de moneda — esperar a que se resuelva antes de trackear.
+    const { loading: currencyLoading } = useCurrencyContext();
+
     // Track experience view when data is loaded (useRef guard prevents StrictMode duplicates)
     const trackedExpRef = useRef(null);
     useEffect(() => {
-        if (experience && trackedExpRef.current !== slug) {
+        if (experience && !currencyLoading && trackedExpRef.current !== slug) {
             trackedExpRef.current = slug;
             trackExperienceView({ title: experience.title, slug });
         }
-    }, [experience?.documentId, slug]);
+    }, [experience?.documentId, slug, currencyLoading]);
 
     // Scroll al inicio cuando carga la página
     useEffect(() => {

@@ -3,7 +3,7 @@ import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { X, User, Mail, Phone, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import { useExperiences } from '../services/hooks';
 import useFocusTrap from '../hooks/useFocusTrap';
-import { trackQuoteFormOpen, trackQuoteFormSubmit, trackFormStep } from '../utils/dataLayer';
+import { trackQuoteFormOpen, trackQuoteFormSubmit, trackFormStep, trackFormError } from '../utils/dataLayer';
 
 const QuoteModal = ({ isOpen, onClose, initialInterest = "", ctaSource = "unknown" }) => {
     const { texts: siteTexts } = useSiteTextsContext();
@@ -120,10 +120,17 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "", ctaSource = "unknow
             }, 3000);
         } catch (err) {
             // Usar SiteTexts (Strapi → i18n fallback) como el resto del sitio
+            trackFormError({ formType: 'general', errorType: 'api', errorField: 'submit' });
             setError(siteTexts.quoteModal?.errorMessage || 'Ocurrió un error al enviar la solicitud. Por favor, intenta nuevamente.');
         } finally {
             setIsSubmitting(false);
         }
+    };
+
+    const handleInvalid = (e) => {
+        e.preventDefault();
+        const fieldName = e.target?.name || 'unknown';
+        trackFormError({ formType: 'general', errorType: 'validation', errorField: fieldName });
     };
 
     return (
@@ -235,6 +242,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "", ctaSource = "unknow
                                 onClick={() => {
                                     // fix #31: Validate required fields before advancing to step 2
                                     if (!formData.interest || !formData.guests) {
+                                        trackFormError({ formType: 'general', errorType: 'validation', errorField: 'interest_or_guests' });
                                         return; // Don't advance if required fields are empty
                                     }
                                     trackFormStep({ formType: 'general', step: 2, stepName: 'contact_info' });
@@ -248,7 +256,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "", ctaSource = "unknow
                     )}
 
                     {step === 2 && (
-                        <form onSubmit={handleSubmit} className="space-y-4">
+                        <form onSubmit={handleSubmit} onInvalid={handleInvalid} className="space-y-4">
                             <h4 className="text-lg font-semibold text-grafito mb-4">{siteTexts.quoteModal.step2Title}</h4>
 
                             {/* Error message */}
@@ -266,6 +274,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "", ctaSource = "unknow
                                 <input
                                     id={nameId}
                                     type="text"
+                                    name="name"
                                     placeholder={siteTexts.quoteModal.namePlaceholder}
                                     value={formData.name}
                                     required
@@ -281,6 +290,7 @@ const QuoteModal = ({ isOpen, onClose, initialInterest = "", ctaSource = "unknow
                                 <input
                                     id={emailId}
                                     type="email"
+                                    name="email"
                                     placeholder={siteTexts.quoteModal.emailPlaceholder}
                                     value={formData.email}
                                     required

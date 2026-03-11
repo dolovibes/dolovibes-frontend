@@ -28,6 +28,7 @@ import Hreflang from '../components/Hreflang';
 import { useAlternateUrls } from '../hooks/useAlternateUrls';
 import usePageMeta from '../hooks/usePageMeta';
 import { trackPackageView, trackGalleryOpen } from '../utils/dataLayer';
+import { convertFromEUR } from '../utils/currency';
 
 const PackageInfoPage = ({ onOpenQuote }) => {
     const { t: tCommon, i18n } = useTranslation('common');
@@ -57,7 +58,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
     const loadingText = tCommon('loading.package');
 
     // Contexto de moneda para conversión de precios
-    const { formatPriceFromEUR, currency } = useCurrencyContext();
+    const { formatPriceFromEUR, currency, loading: currencyLoading } = useCurrencyContext();
 
     // Estado para el carrusel de itinerario
     const [currentDay, setCurrentDay] = useState(0);
@@ -80,20 +81,25 @@ const PackageInfoPage = ({ onOpenQuote }) => {
     // Referencia para la sección de itinerario (para swipe/wheel)
     const itineraryRef = React.useRef(null);
 
-    // Track package view when data is loaded (useRef guard prevents StrictMode duplicates)
+    // Track package view when data is loaded (useRef guard prevents StrictMode duplicates).
+    // Incluye currency en deps para re-trackear si el usuario cambia moneda (priceConverted cambia).
     const trackedPkgRef = useRef(null);
     useEffect(() => {
-        if (pkg && trackedPkgRef.current !== slug) {
-            trackedPkgRef.current = slug;
+        if (currencyLoading) return; // esperar a que se resuelva moneda detectada/guardada
+        if (pkg && !currency) return;
+        if (pkg && trackedPkgRef.current !== `${slug}_${currency}`) {
+            trackedPkgRef.current = `${slug}_${currency}`;
             trackPackageView({
                 title: pkg.title,
                 slug,
                 priceEUR: pkg.priceEUR,
+                priceConverted: convertFromEUR(pkg.priceEUR, currency),
+                displayCurrency: currency,
                 location: pkg.location,
                 duration: pkg.duration,
             });
         }
-    }, [pkg?.documentId, slug]);
+    }, [pkg?.documentId, slug, currency, currencyLoading]);
 
     // Scroll al inicio cuando carga la página
     useEffect(() => {
