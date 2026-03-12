@@ -6,7 +6,7 @@ Frontend del sitio web de Dolovibes, agencia de viajes especializada en experien
 
 ## 📋 Requisitos Previos
 
-- Node.js 20+ LTS
+- Node.js 20 LTS (se recomienda usar la versión definida en `.nvmrc`, actualmente **20.11.0** — ejecuta `nvm use` en la raíz del proyecto)
 - npm o yarn
 - Backend Strapi corriendo en `http://localhost:1337` (ver dolovibes-backend)
 
@@ -15,7 +15,7 @@ Frontend del sitio web de Dolovibes, agencia de viajes especializada en experien
 ```bash
 # 1. Clonar el repositorio
 git clone <repo-url>
-cd dolovibes
+cd <nombre-del-repo>
 
 # 2. Instalar dependencias
 npm install
@@ -23,9 +23,8 @@ npm install
 # 3. Configurar variables de entorno
 cp .env.example .env
 
-# 4. Editar .env
+# 4. Editar .env con los valores correctos
 VITE_STRAPI_URL=http://localhost:1337
-VITE_STRAPI_API_TOKEN=tu-token-de-strapi
 
 # 5. Ejecutar en desarrollo
 npm run dev
@@ -36,31 +35,31 @@ npm run dev
 
 ### Variables de Entorno (.env)
 
+Las únicas variables de entorno que consume la app son:
+
 ```env
-# URL del backend Strapi (sin trailing slash)
+# URL del backend Strapi (sin trailing slash) — REQUERIDA
 VITE_STRAPI_URL=http://localhost:1337
 
-# Token de API de Strapi (generado en Settings → API Tokens)
-VITE_STRAPI_API_TOKEN=tu-token-aqui
-
-# Google Tag Manager Container ID
-VITE_GTM_ID=GTM-5MG9W4PF
+# API Key de ExchangeRate para conversión de monedas (opcional)
+# Sin ella, la app usa tasas de fallback hardcodeadas
+# Registro gratis: https://www.exchangerate-api.com/
+VITE_EXCHANGE_RATE_API_KEY=
 ```
 
-### Obtener el API Token de Strapi
-1. Inicia sesión en Strapi Admin: http://localhost:1337/admin
-2. Settings → API Tokens → Create new API Token
-3. Name: `Frontend Token`, Type: `Full access`
-4. Copia el token al archivo `.env`
+> **Nota:** El frontend accede a Strapi mediante endpoints públicos (no envía ningún header `Authorization`), por lo que no se requiere un API Token de Strapi para el frontend.
 
 ## 📝 Scripts Disponibles
 
 ```bash
-npm run dev         # Servidor de desarrollo con hot-reload
-npm run build       # Compilar para producción
-npm run preview     # Preview de build de producción
-npm run lint        # Ejecutar ESLint
+npm run dev              # Servidor de desarrollo con hot-reload
+npm run build            # Compilar para producción (ejecuta `npm run lint` primero)
+npm run build:skip-lint  # Compilar para producción sin ejecutar ESLint
+npm run preview          # Preview de build de producción
+npm run lint             # Ejecutar ESLint
 ```
+
+> **Importante:** `npm run build` falla si hay errores de lint. Usa `build:skip-lint` si necesitas un build rápido sin pasar por ESLint.
 
 ## 🌍 Internacionalización (i18n)
 
@@ -87,21 +86,26 @@ npm run lint        # Ejecutar ESLint
 
 2. **Copiar contenido** de un idioma existente (ej: `en/`) y traducir
 
-3. **No se necesita registrar manualmente en `i18n.js`**: El proyecto usa `i18next-http-backend`, que carga los archivos automáticamente desde `public/locales/{idioma}/{namespace}.json`
+3. **Registrar el nuevo idioma en la configuración** — hay varios archivos que listan los idiomas soportados de forma explícita y que deben actualizarse:
+   - `src/i18n.js`: arrays `SUPPORTED_LANGUAGES` y `supportedLngs`
+   - `src/utils/localizedRoutes.js`: constantes `SUPPORTED_LOCALES` y `ROUTE_PATHS`
+   - `src/contexts/LanguageTransitionContext.jsx`: array local `SUPPORTED_LOCALES`
+   - El regex de detección de idioma en URL dentro de `getInitialLanguage()` en `src/i18n.js` (p.ej. `/^\/(es|en|it|de)(?:\/|$)/`)
 
-4. **Agregar a LanguageSwitcher** (`src/components/LanguageSwitcher.jsx`):
+4. **Agregar a LanguageSwitcher** (`src/components/LanguageSwitcher.jsx`), usando la estructura real `{ code, label, countryCode }`:
    ```jsx
-   { value: 'ja', label: '日本語', flag: '🇯🇵' }
+   { code: 'ja', label: '日本語', countryCode: 'jp' }
    ```
+   > La bandera se renderiza mediante [flagcdn.com](https://flagcdn.com) usando `countryCode` (código ISO 3166-1 alpha-2 del país). El componente también filtra idiomas según los toggles habilitados en Strapi (`enableLanguageEn`, `enableLanguageIt`, `enableLanguageDe`), por lo que es posible que también debas agregar el toggle correspondiente en el backend si deseas controlarlo desde Strapi.
 
 5. **Configurar locale en Strapi**: El backend debe tener el nuevo locale habilitado (Settings → Internationalization) y contenido traducido. Las imágenes usan fallback automático al contenido en español
 
 ### Fallback de Imágenes
 
 El frontend usa `enrichWithSpanishMedia()` en `src/services/api.js`:
-- Si un Package/Experience no tiene imagen en EN/IT/DE
+- Si un Package/Experience no tiene medios en EN/IT/DE
 - Busca el mismo `documentId` en español (ES)
-- Copia `thumbnail` y `heroImage` del contenido español
+- Completa los campos `image` (derivado de `thumbnail`), `heroImage`, `gallery` e `itinerary` con los del contenido español
 - Garantiza que siempre haya imágenes aunque la traducción esté incompleta
 
 ## 📂 Estructura del Proyecto
@@ -114,7 +118,7 @@ dolovibes/
 │   │   ├── en/
 │   │   ├── it/
 │   │   └── de/
-│   └── videos/          # Videos para VideoHero
+│   └── favicon.svg
 ├── src/
 │   ├── components/      # Componentes React
 │   │   ├── NavbarNew.jsx
@@ -153,8 +157,7 @@ dolovibes/
 │   │   ├── currency.jsx
 │   │   ├── localizedRoutes.js
 │   │   ├── BlocksRenderer.jsx
-│   │   ├── dataPrefetch.js
-│   │   └── dataLayer.js       # Eventos GTM (dataLayer.push)
+│   │   └── dataPrefetch.js
 │   ├── i18n.js          # Configuración i18next
 │   ├── App.jsx          # Router principal
 │   └── main.jsx         # Entry point
@@ -170,47 +173,52 @@ dolovibes/
 
 ### Cómo funciona la conexión con Strapi
 
-1. **Componente solicita datos** usando custom hooks:
+1. **Componente solicita datos** usando custom hooks (retornan el objeto de `useQuery`):
    ```jsx
-   const { packages, loading, error } = usePackages();
+   const { data: packages, isLoading, error } = usePackages();
    ```
 
-2. **Hook llama a servicio API**:
+2. **Hook ejecuta la query**:
    ```js
    // src/services/hooks.js
-   const packages = await api.getPackages(locale);
+   // El locale lo resuelve internamente api.getPackages() via getCurrentLocale()
+   return useQuery({
+     queryKey: ['packages', filters, locale],
+     queryFn: () => api.getPackages(filters),
+   });
    ```
 
 3. **API fetch transforma y enriquece**:
    ```js
    // src/services/api.js
-   const data = await fetchFromStrapi(`/packages?locale=${locale}`);
-   // 1. Transforma (agrega documentId)
-   // 2. Enriquece con imágenes de español si faltan
+   // fetchFromStrapi detecta el locale actual y lo incluye automáticamente
+   return fetchFromStrapi('/packages', params, transformPackages);
+   // 1. Transforma (aplica transformPackages, agrega documentId)
+   // 2. Enriquece con imágenes de español si el locale actual no es ES
    ```
 
 4. **Renderiza en componente**:
    ```jsx
-   {packages.map(pkg => <PackageCard key={pkg.id} package={pkg} />)}
+   {packages?.map(pkg => <PackageCard key={pkg.id} package={pkg} />)}
    ```
 
 ### Transformaciones de Datos
 
 **fetchFromStrapi()** realiza:
 1. **Fetch**: Obtiene datos raw de Strapi
-2. **Transform**: Agrega `documentId` a cada item
-3. **Enrich**: Copia imágenes de español si faltan (via `documentId`)
+2. **Transform**: Aplica la función de transformación (agrega `documentId`, normaliza campos)
+3. **Enrich**: Copia medios de español si faltan (via `documentId`)
 
 Ejemplo:
 ```js
 // Raw de Strapi
-{ id: 123, locale: 'it', documentId: 'abc', thumbnail: null }
+{ id: 123, locale: 'it', documentId: 'abc', image: null }
 
 // Después de transform
-{ id: 123, locale: 'it', documentId: 'abc', thumbnail: null }
+{ id: 123, locale: 'it', documentId: 'abc', image: null }
 
 // Después de enrich (busca ES con documentId 'abc')
-{ id: 123, locale: 'it', documentId: 'abc', thumbnail: { url: '/uploads/...' } }
+{ id: 123, locale: 'it', documentId: 'abc', image: { url: '/uploads/...' } }
 ```
 
 ## 🎨 Estilos y UI
@@ -252,7 +260,7 @@ theme: {
 ### Las imágenes no cargan
 1. Verifica en Strapi Admin que las imágenes existan
 2. Verifica permisos públicos: Settings → Roles → Public
-3. Ejecuta `node scripts/upload-images.js` en el backend
+3. En el repositorio de backend (`dolovibes-backend`), desde la raíz del proyecto, ejecuta: `node scripts/upload-images.js`
 
 ### Traducciones no aparecen
 1. Verifica que el archivo JSON existe en `public/locales/<idioma>/`
@@ -277,10 +285,10 @@ npm run build
 ```
 
 ### Variables de Entorno en Producción
+
 ```env
 VITE_STRAPI_URL=https://api.dolo-vibes.com
-VITE_STRAPI_API_TOKEN=<produccion-token>
-VITE_GTM_ID=GTM-5MG9W4PF
+VITE_EXCHANGE_RATE_API_KEY=<api-key-produccion>
 ```
 
 ### Hosting
