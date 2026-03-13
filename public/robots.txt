@@ -43,5 +43,3 @@ Disallow: /
 
 User-agent: Google-Extended
 Disallow: /
-
-Sitemap: https://www.dolo-vibes.com/sitemap.xml
