@@ -183,9 +183,13 @@ export const LanguageTransitionProvider = ({ children }) => {
             // PASO 7: Esperar queries críticas (fix #6: agregar queryFn)
             // ═══════════════════════════════════════════════════════════════
             const criticalQueryFns = {
-                siteTexts: () => api.getSiteTexts(),
-                heroSection: () => api.getHeroSection(),
-                siteSettings: () => api.getSiteSettings(),
+                // bypassHttpCache: true para ignorar el caché HTTP del navegador
+                // y obtener datos frescos del locale correcto tras el cambio de idioma.
+                // Sin esto, el browser puede servir respuestas cacheadas del locale
+                // anterior (ej. "Precio por persona" en español durante hasta 6 min).
+                siteTexts: () => api.getSiteTexts({ bypassHttpCache: true }),
+                heroSection: () => api.getHeroSection({ bypassHttpCache: true }),
+                siteSettings: () => api.getSiteSettings({ bypassHttpCache: true }),
             };
 
             const criticalPromises = CRITICAL_QUERY_KEYS.map(key =>

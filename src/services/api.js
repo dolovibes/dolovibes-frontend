@@ -222,15 +222,22 @@ const getSpanishDataCached = async (endpoint, params, transformFn) => {
  * @param {boolean} isSingleType - true = no agregar locale
  * @returns {Promise<any>} Datos transformados
  */
-const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSingleType = false, { skipMediaFallback = false, skipContentFallback = false } = {}) => {
+const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSingleType = false, { skipMediaFallback = false, skipContentFallback = false, bypassHttpCache = false } = {}) => {
   const locale = getCurrentLocale();
+
+  // Headers para evitar cache del navegador cuando se solicita explícitamente
+  // (fix: precio-traduccion-delay) Se usa al cambiar idioma para que el browser
+  // no sirva respuestas cacheadas de un locale diferente.
+  const requestHeaders = bypassHttpCache
+    ? { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+    : undefined;
 
   // Single Types también necesitan locale para i18n
   if (isSingleType) {
     const finalParams = { ...params, locale };
 
     try {
-      const response = await strapiClient.get(endpoint, { params: finalParams });
+      const response = await strapiClient.get(endpoint, { params: finalParams, headers: requestHeaders });
       const data = response.data.data;
 
       // Transformar datos PRIMERO
@@ -530,8 +537,8 @@ const HERO_POPULATE = {
 /**
  * Obtiene el contenido del Hero Section
  */
-export const getHeroSection = async () => {
-  return fetchFromStrapi('/hero-section', { populate: HERO_POPULATE }, transformHeroSection, true, { skipMediaFallback: true });
+export const getHeroSection = async ({ bypassHttpCache = false } = {}) => {
+  return fetchFromStrapi('/hero-section', { populate: HERO_POPULATE }, transformHeroSection, true, { skipMediaFallback: true, bypassHttpCache });
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -578,8 +585,8 @@ const SETTINGS_POPULATE = {
 /**
  * Obtiene la configuración del sitio
  */
-export const getSiteSettings = async () => {
-  return fetchFromStrapi('/site-setting', { populate: SETTINGS_POPULATE }, transformSiteSettings, true, { skipMediaFallback: true });
+export const getSiteSettings = async ({ bypassHttpCache = false } = {}) => {
+  return fetchFromStrapi('/site-setting', { populate: SETTINGS_POPULATE }, transformSiteSettings, true, { skipMediaFallback: true, bypassHttpCache });
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -591,9 +598,9 @@ export const getSiteSettings = async () => {
  * Obtiene los textos globales del sitio
  * Devuelve null si no existe en el locale actual — el frontend usa i18n como fallback
  */
-export const getSiteTexts = async () => {
+export const getSiteTexts = async ({ bypassHttpCache = false } = {}) => {
   try {
-    return await fetchFromStrapi('/site-text', {}, transformSiteTexts, true, { skipMediaFallback: true, skipContentFallback: true });
+    return await fetchFromStrapi('/site-text', {}, transformSiteTexts, true, { skipMediaFallback: true, skipContentFallback: true, bypassHttpCache });
   } catch {
     // Si no existe en este locale, devolver null para que SiteTextsContext use i18n
     return null;
