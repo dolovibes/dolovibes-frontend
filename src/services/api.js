@@ -229,7 +229,7 @@ const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSing
   // (fix: precio-traduccion-delay) Se usa al cambiar idioma para que el browser
   // no sirva respuestas cacheadas de un locale diferente.
   const requestHeaders = bypassHttpCache
-    ? { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+    ? { 'Cache-Control': 'no-cache' }
     : undefined;
 
   // Single Types también necesitan locale para i18n
@@ -279,7 +279,7 @@ const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSing
   const finalParams = { ...params, locale };
 
   try {
-    const response = await strapiClient.get(endpoint, { params: finalParams });
+    const response = await strapiClient.get(endpoint, { params: finalParams, headers: requestHeaders });
     let data = response.data.data;
 
     // Si no hay datos, intentar con español como fallback completo
