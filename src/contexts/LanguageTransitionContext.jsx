@@ -12,7 +12,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { convertPathToLocale, parseLocalizedPath } from '../utils/localizedRoutes';
-import api from '../services/api';
+import api, { clearSpanishDataCache } from '../services/api';
 
 const LanguageTransitionContext = createContext(null);
 
@@ -150,6 +150,7 @@ export const LanguageTransitionProvider = ({ children }) => {
 
             // ═══════════════════════════════════════════════════════════════
             // PASO 3: Remover queries que dependen del locale del caché
+            //         y limpiar caché en memoria de datos españoles
             // ═══════════════════════════════════════════════════════════════
             queryClient.removeQueries({
                 predicate: (query) => {
@@ -158,6 +159,9 @@ export const LanguageTransitionProvider = ({ children }) => {
                     return typeof lastKey === 'string' && SUPPORTED_LOCALES.includes(lastKey);
                 }
             });
+            // Limpiar caché en memoria para que el próximo acceso a datos
+            // españoles (media fallback) siempre obtenga datos frescos
+            clearSpanishDataCache();
 
             // ═══════════════════════════════════════════════════════════════
             // PASO 4: Cambiar idioma en i18n

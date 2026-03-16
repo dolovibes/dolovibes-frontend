@@ -152,7 +152,14 @@ const enrichWithSpanishMedia = (currentData, spanishData) => {
 // Los datos se cachean por 5 minutos
 
 const spanishDataCache = new Map();
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+/** TTL para el caché en memoria de datos españoles (media fallback) */
+const SPANISH_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutos
+/**
+ * Headers para forzar revalidación con el servidor ignorando el caché HTTP del browser.
+ * Usado al cambiar idioma para evitar respuestas cacheadas del locale anterior.
+ * IMPORTANTE: solo incluir headers listados en el CORS `allowedHeaders` del backend.
+ */
+const CACHE_BYPASS_HEADERS = Object.freeze({ 'Cache-Control': 'no-cache' });
 // fix #41: Deduplicate concurrent in-flight requests to prevent race conditions
 const pendingSpanishRequests = new Map();
 
@@ -192,7 +199,7 @@ const getSpanishDataCached = async (endpoint, params, transformFn) => {
       // Guardar en cache
       spanishDataCache.set(cacheKey, {
         data: transformedData,
-        expiry: Date.now() + CACHE_TTL,
+        expiry: Date.now() + SPANISH_CACHE_TTL_MS,
       });
 
       return transformedData;
@@ -228,16 +235,33 @@ const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSing
   // Headers para evitar cache del navegador cuando se solicita explícitamente
   // (fix: precio-traduccion-delay) Se usa al cambiar idioma para que el browser
   // no sirva respuestas cacheadas de un locale diferente.
-  const requestHeaders = bypassHttpCache
-    ? { 'Cache-Control': 'no-cache' }
-    : undefined;
+  const requestHeaders = bypassHttpCache ? CACHE_BYPASS_HEADERS : undefined;
+
+  /**
+   * Realiza el request HTTP con soporte para retry sin bypass cuando hay error de red.
+   * Fix D: si bypassHttpCache=true y el usuario está offline (error de red sin respuesta),
+   * reintenta sin el header Cache-Control para permitir que el browser sirva desde caché.
+   * Esto es mejor que mostrar un error cuando el caché del browser tiene datos válidos.
+   */
+  const doGet = async (url, reqParams, headers) => {
+    try {
+      return await strapiClient.get(url, { params: reqParams, headers });
+    } catch (err) {
+      // Retry sin bypass solo si: (a) usábamos bypass, (b) no hay respuesta del servidor (red caída)
+      if (bypassHttpCache && !err.response) {
+        console.warn('[Strapi] Network error with cache bypass, retrying from browser cache:', url);
+        return strapiClient.get(url, { params: reqParams });
+      }
+      throw err;
+    }
+  };
 
   // Single Types también necesitan locale para i18n
   if (isSingleType) {
     const finalParams = { ...params, locale };
 
     try {
-      const response = await strapiClient.get(endpoint, { params: finalParams, headers: requestHeaders });
+      const response = await doGet(endpoint, finalParams, requestHeaders);
       const data = response.data.data;
 
       // Transformar datos PRIMERO
@@ -279,7 +303,7 @@ const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSing
   const finalParams = { ...params, locale };
 
   try {
-    const response = await strapiClient.get(endpoint, { params: finalParams, headers: requestHeaders });
+    const response = await doGet(endpoint, finalParams, requestHeaders);
     let data = response.data.data;
 
     // Si no hay datos, intentar con español como fallback completo
@@ -345,7 +369,7 @@ const EXPERIENCE_POPULATE = {
  * Obtiene todas las experiencias
  * @param {string|null} season - Filtrar por temporada ('summer' | 'winter')
  */
-export const getExperiences = async (season = null) => {
+export const getExperiences = async (season = null, { bypassHttpCache = false } = {}) => {
   const params = {
     populate: EXPERIENCE_POPULATE,
     'pagination[pageSize]': 100,
@@ -356,20 +380,20 @@ export const getExperiences = async (season = null) => {
     params['filters[season][$eq]'] = season;
   }
 
-  return fetchFromStrapi('/experiences', params, transformExperiences, false, { skipMediaFallback: true });
+  return fetchFromStrapi('/experiences', params, transformExperiences, false, { skipMediaFallback: true, bypassHttpCache });
 };
 
 /**
  * Obtiene una experiencia por slug
  * @param {string} slug - Slug único de la experiencia
  */
-export const getExperienceBySlug = async (slug) => {
+export const getExperienceBySlug = async (slug, { bypassHttpCache = false } = {}) => {
   const params = {
     'filters[slug][$eq]': slug,
     populate: EXPERIENCE_POPULATE,
   };
 
-  const experiences = await fetchFromStrapi('/experiences', params, transformExperiences, false, { skipMediaFallback: true });
+  const experiences = await fetchFromStrapi('/experiences', params, transformExperiences, false, { skipMediaFallback: true, bypassHttpCache });
   return experiences[0] || null;
 };
 
@@ -403,7 +427,7 @@ export const getExperienceSlugByDocumentId = async (documentId, targetLocale) =>
  * Obtiene las experiencias para mostrar en el footer
  * Solo retorna experiencias con showInFooter=true, ordenadas por footerDisplayOrder
  */
-export const getFooterExperiences = async () => {
+export const getFooterExperiences = async ({ bypassHttpCache = false } = {}) => {
   const params = {
     populate: EXPERIENCE_POPULATE,
     'pagination[pageSize]': 20,
@@ -411,7 +435,7 @@ export const getFooterExperiences = async () => {
     'filters[showInFooter][$eq]': true,
   };
 
-  return fetchFromStrapi('/experiences', params, transformExperiences, false, { skipMediaFallback: true });
+  return fetchFromStrapi('/experiences', params, transformExperiences, false, { skipMediaFallback: true, bypassHttpCache });
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -444,7 +468,7 @@ const PACKAGE_POPULATE = {
  * @param {string} filters.experienceSlug - Filtrar por experiencia
  * @param {string} filters.season - Filtrar por temporada
  */
-export const getPackages = async (filters = {}) => {
+export const getPackages = async (filters = {}, { bypassHttpCache = false } = {}) => {
   const params = {
     populate: PACKAGE_POPULATE,
     'pagination[pageSize]': 100,
@@ -458,20 +482,20 @@ export const getPackages = async (filters = {}) => {
     params['filters[season][$eq]'] = filters.season;
   }
 
-  return fetchFromStrapi('/packages', params, transformPackages);
+  return fetchFromStrapi('/packages', params, transformPackages, false, { bypassHttpCache });
 };
 
 /**
  * Obtiene un paquete por slug
  * @param {string} slug - Slug único del paquete
  */
-export const getPackageBySlug = async (slug) => {
+export const getPackageBySlug = async (slug, { bypassHttpCache = false } = {}) => {
   const params = {
     'filters[slug][$eq]': slug,
     populate: PACKAGE_POPULATE,
   };
 
-  const packages = await fetchFromStrapi('/packages', params, transformPackages);
+  const packages = await fetchFromStrapi('/packages', params, transformPackages, false, { bypassHttpCache });
   return packages[0] || null;
 };
 
@@ -505,15 +529,15 @@ export const getPackageSlugByDocumentId = async (documentId, targetLocale) => {
  * Obtiene paquetes de una experiencia específica
  * @param {string} experienceSlug - Slug de la experiencia
  */
-export const getPackagesByExperience = async (experienceSlug) => {
-  return getPackages({ experienceSlug });
+export const getPackagesByExperience = async (experienceSlug, { bypassHttpCache = false } = {}) => {
+  return getPackages({ experienceSlug }, { bypassHttpCache });
 };
 
 /**
  * Obtiene los paquetes destacados para mostrar en el home
  * Solo retorna paquetes con showInHome=true, ordenados por homeDisplayOrder
  */
-export const getFeaturedPackages = async () => {
+export const getFeaturedPackages = async ({ bypassHttpCache = false } = {}) => {
   const params = {
     populate: PACKAGE_POPULATE,
     'pagination[pageSize]': 20,
@@ -521,7 +545,7 @@ export const getFeaturedPackages = async () => {
     'filters[showInHome][$eq]': true,
   };
 
-  return fetchFromStrapi('/packages', params, transformPackages);
+  return fetchFromStrapi('/packages', params, transformPackages, false, { bypassHttpCache });
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -650,14 +674,14 @@ export const getLegalPageBySlug = async (slug) => {
  * Obtiene las páginas legales para mostrar en el footer
  * Solo retorna legal pages con showInFooter=true, ordenadas por footerDisplayOrder
  */
-export const getFooterLegalPages = async () => {
+export const getFooterLegalPages = async ({ bypassHttpCache = false } = {}) => {
   const params = {
     'pagination[pageSize]': 20,
     'sort': 'footerDisplayOrder:asc',
     'filters[showInFooter][$eq]': true,
   };
 
-  return fetchFromStrapi('/legal-pages', params, transformLegalPage, false, { skipMediaFallback: true });
+  return fetchFromStrapi('/legal-pages', params, transformLegalPage, false, { skipMediaFallback: true, bypassHttpCache });
 };
 
 /**
