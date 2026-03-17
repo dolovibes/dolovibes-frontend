@@ -207,9 +207,9 @@ export const LanguageTransitionProvider = ({ children }) => {
             // disponible antes de desactivar el loading y mostrar la UI.
             // No se necesita bypassHttpCache en los queryFn: el interceptor ya lo aplica.
             const criticalQueryFns = {
-                siteTexts: () => api.getSiteTexts(),
-                heroSection: () => api.getHeroSection(),
-                siteSettings: () => api.getSiteSettings(),
+                siteTexts: () => api.getSiteTexts({ locale: newLocale }),
+                heroSection: () => api.getHeroSection({ locale: newLocale }),
+                siteSettings: () => api.getSiteSettings({ locale: newLocale }),
             };
 
             const criticalPromises = CRITICAL_QUERY_KEYS.map(key =>
