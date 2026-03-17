@@ -235,21 +235,25 @@ const fetchFromStrapi = async (endpoint, params = {}, transformFn = null, isSing
   // Headers para evitar cache del navegador cuando se solicita explícitamente
   // (fix: precio-traduccion-delay) Se usa al cambiar idioma para que el browser
   // no sirva respuestas cacheadas de un locale diferente.
+  // Headers adicionales por request: usados cuando se quiere forzar bypass
+  // en una llamada concreta fuera del contexto de transición de idioma.
+  // Durante la transición de idioma el interceptor de strapiClient aplica
+  // Cache-Control: no-cache a todos los requests automáticamente.
   const requestHeaders = bypassHttpCache ? CACHE_BYPASS_HEADERS : undefined;
 
   /**
    * Realiza el request HTTP con soporte para retry sin bypass cuando hay error de red.
    * Fix D: si bypassHttpCache=true y el usuario está offline (error de red sin respuesta),
-   * reintenta sin el header Cache-Control para permitir que el browser sirva desde caché.
-   * Esto es mejor que mostrar un error cuando el caché del browser tiene datos válidos.
+   * reintenta sin el header explícito para permitir que el browser sirva desde caché.
    */
   const doGet = async (url, reqParams, headers) => {
     try {
       return await strapiClient.get(url, { params: reqParams, headers });
     } catch (err) {
-      // Retry sin bypass solo si: (a) usábamos bypass, (b) no hay respuesta del servidor (red caída)
+      // Retry sin headers explícitos solo si: (a) usábamos bypass per-request,
+      // (b) no hay respuesta del servidor (red caída / offline)
       if (bypassHttpCache && !err.response) {
-        console.warn('[Strapi] Network error with cache bypass, retrying from browser cache:', url);
+        console.warn('[Strapi] Network error with explicit cache bypass, retrying:', url);
         return strapiClient.get(url, { params: reqParams });
       }
       throw err;
