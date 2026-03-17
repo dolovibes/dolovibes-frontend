@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense, useEffect } from 'react';
+import React, { useState, lazy, Suspense, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LOCALES, DEFAULT_LOCALE, ROUTE_PATHS } from './utils/localizedRoutes';
@@ -123,6 +123,11 @@ const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialIn
   const location = useLocation();
   const { currency, loading: currencyLoading } = useCurrencyContext();
 
+  // Ref para que el efecto de page_view lea siempre la moneda actual
+  // sin que un cambio de moneda dispare un page_view falso.
+  const currencyRef = useRef(currency);
+  useEffect(() => { currencyRef.current = currency; }, [currency]);
+
   // Track page views only on localized route changes — skip redirect-only paths
   // (/, /experiencias/:slug, /paquetes/:slug, /nosotros, /legales/:slug, catch-all)
   useEffect(() => {
@@ -154,9 +159,9 @@ const AppContent = ({ isQuoteOpen, setIsQuoteOpen, initialInterest, setInitialIn
     trackPageView({
       pageType,
       language,
-      currency,
+      currency: currencyRef.current,
     });
-  }, [location.pathname, currencyLoading, currency]);
+  }, [location.pathname, currencyLoading]);
 
   // Mantiene el contexto global de analytics sincronizado con idioma y moneda activos.
   // Así todos los eventos (view_package, open_quote_form, etc.) llevan siempre el contexto correcto
