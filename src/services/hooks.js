@@ -173,7 +173,7 @@ export const useHeroSection = () => {
 
   return useQuery({
     queryKey: ['heroSection', locale],
-    queryFn: () => api.getHeroSection(),
+    queryFn: () => api.getHeroSection({ locale }),
     ...singleTypeQueryOptions,
     // No mostrar errores en consola por 404
     meta: {
@@ -207,7 +207,7 @@ export const useSiteSettings = () => {
 
   return useQuery({
     queryKey: ['siteSettings', locale],
-    queryFn: () => api.getSiteSettings(),
+    queryFn: () => api.getSiteSettings({ locale }),
     ...singleTypeQueryOptions,
   });
 };
@@ -223,7 +223,7 @@ export const useSiteTexts = () => {
 
   return useQuery({
     queryKey: ['siteTexts', locale],
-    queryFn: () => api.getSiteTexts(),
+    queryFn: () => api.getSiteTexts({ locale }),
     ...singleTypeQueryOptions,
   });
 };

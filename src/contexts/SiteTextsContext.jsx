@@ -25,7 +25,10 @@ export const SiteTextsProvider = ({ children }) => {
     // Función helper que prioriza Strapi sobre i18n (fix #22: useCallback para evitar re-renders)
     const getText = React.useCallback((strapiPath, i18nKey, namespace = 'common') => {
         // Intentar obtener de Strapi primero (fix #4: usar dot-path matching transformSiteTexts)
-        if (strapiTexts) {
+        // Guardia: mientras se carga el locale nuevo (!isLoading = datos listos para este locale),
+        // usar i18n directamente. Previene mostrar datos de Strapi de un locale anterior
+        // si en el futuro se agrega keepPreviousData/placeholderData a la query.
+        if (!isLoading && strapiTexts) {
             const value = strapiPath.split('.').reduce((obj, key) => obj?.[key], strapiTexts);
             // Validar que el valor no sea solo una cadena vacía o null
             if (value && value.trim && value.trim() !== '') return value;
@@ -61,7 +64,7 @@ export const SiteTextsProvider = ({ children }) => {
         }
 
         return result;
-    }, [strapiTexts, tCommon, tHome, tPackageInfo, tExperiences, tHikingLevel, tQuoteForm]);
+    }, [isLoading, strapiTexts, tCommon, tHome, tPackageInfo, tExperiences, tHikingLevel, tQuoteForm]);
 
     // Objeto de textos con fallback automático
     // fix #4: strapiPath usa dot-notation que matchea la estructura de transformSiteTexts en api.js

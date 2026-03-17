@@ -13,6 +13,39 @@ import qs from 'qs';
 // URL base del backend Strapi
 const STRAPI_URL = import.meta.env.VITE_STRAPI_URL || 'http://localhost:1337';
 
+// ─────────────────────────────────────────────────────────────
+// BYPASS DE CACHÉ DURANTE TRANSICIÓN DE IDIOMA
+// ─────────────────────────────────────────────────────────────
+// Cuando el usuario cambia idioma, activar este flag para que
+// TODOS los requests durante la transición ignoren el caché HTTP
+// del browser. Se desactiva al completar la carga de contenido.
+//
+// PROBLEMA QUE RESUELVE:
+// Los hooks de React (useSiteTexts, usePackages, etc.) se re-renderizan
+// cuando i18n cambia idioma, disparando fetches SIN bypassHttpCache.
+// React Query deduplica requests con el mismo queryKey, por lo que
+// si el hook ya inició la petición, fetchQuery reutiliza esa petición
+// (sin bypass). El interceptor garantiza que TODOS los requests durante
+// la transición tengan Cache-Control: no-cache, sin importar su origen.
+// ─────────────────────────────────────────────────────────────
+let _bypassCacheDuringTransition = false;
+
+/**
+ * Activa el bypass de caché HTTP para todos los requests de Strapi.
+ * Llamar ANTES de cambiar el idioma en i18n.
+ */
+export const enableCacheBypassForTransition = () => {
+  _bypassCacheDuringTransition = true;
+};
+
+/**
+ * Desactiva el bypass de caché HTTP.
+ * Llamar DESPUÉS de que las queries críticas hayan cargado.
+ */
+export const disableCacheBypassForTransition = () => {
+  _bypassCacheDuringTransition = false;
+};
+
 // Cliente HTTP configurado
 const strapiClient = axios.create({
   baseURL: `${STRAPI_URL}/api`,
@@ -24,11 +57,22 @@ const strapiClient = axios.create({
   paramsSerializer: params => qs.stringify(params, { encode: false }),
 });
 
-// Interceptor para logs en desarrollo
+// Interceptor para logs en desarrollo + bypass de caché durante transición de idioma
 strapiClient.interceptors.request.use(
   (config) => {
+    // Agregar Cache-Control: no-cache durante transición de idioma para forzar
+    // revalidación con el servidor e ignorar respuestas cacheadas del locale anterior.
+    // CORS: 'Cache-Control' está en el allowedHeaders del backend (config/middlewares.ts)
+    if (_bypassCacheDuringTransition) {
+      config.headers = {
+        ...config.headers,
+        'Cache-Control': 'no-cache',
+      };
+    }
+
     if (import.meta.env.DEV) {
-      console.log(`[Strapi] ${config.method?.toUpperCase()} ${config.url}`, config.params);
+      console.log(`[Strapi] ${config.method?.toUpperCase()} ${config.url}`, config.params,
+        _bypassCacheDuringTransition ? '(bypass-cache)' : '');
     }
     return config;
   },

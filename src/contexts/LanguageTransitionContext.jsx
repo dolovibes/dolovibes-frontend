@@ -12,7 +12,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { convertPathToLocale, parseLocalizedPath } from '../utils/localizedRoutes';
-import api from '../services/api';
+import api, { clearSpanishDataCache } from '../services/api';
+import { enableCacheBypassForTransition, disableCacheBypassForTransition } from '../services/strapiClient';
 
 const LanguageTransitionContext = createContext(null);
 
@@ -150,6 +151,7 @@ export const LanguageTransitionProvider = ({ children }) => {
 
             // ═══════════════════════════════════════════════════════════════
             // PASO 3: Remover queries que dependen del locale del caché
+            //         y limpiar caché en memoria de datos españoles
             // ═══════════════════════════════════════════════════════════════
             queryClient.removeQueries({
                 predicate: (query) => {
@@ -158,6 +160,22 @@ export const LanguageTransitionProvider = ({ children }) => {
                     return typeof lastKey === 'string' && SUPPORTED_LOCALES.includes(lastKey);
                 }
             });
+            // Limpiar caché en memoria para que el próximo acceso a datos
+            // españoles (media fallback) siempre obtenga datos frescos
+            clearSpanishDataCache();
+
+            // ═══════════════════════════════════════════════════════════════
+            // PASO 3.5: Activar bypass de caché HTTP en el interceptor de Axios
+            // ─────────────────────────────────────────────────────────────────
+            // DEBE activarse ANTES de i18n.changeLanguage(). Al cambiar el idioma,
+            // React re-renderiza los componentes con los nuevos hooks (useSiteTexts,
+            // usePackages, etc.) y React Query dispara fetches inmediatamente.
+            // Si el bypass no está activo en ese momento, esas peticiones usan el
+            // caché HTTP del browser, sirviendo datos del locale anterior.
+            // El interceptor en strapiClient agrega Cache-Control: no-cache a TODOS
+            // los requests hasta que se llame disableCacheBypassForTransition().
+            // ═══════════════════════════════════════════════════════════════
+            enableCacheBypassForTransition();
 
             // ═══════════════════════════════════════════════════════════════
             // PASO 4: Cambiar idioma en i18n
@@ -180,12 +198,18 @@ export const LanguageTransitionProvider = ({ children }) => {
             navigate(newPath, { replace: true });
 
             // ═══════════════════════════════════════════════════════════════
-            // PASO 7: Esperar queries críticas (fix #6: agregar queryFn)
+            // PASO 7: Esperar queries críticas
             // ═══════════════════════════════════════════════════════════════
+            // El bypass de caché (PASO 3.5) ya garantiza que TODOS los requests
+            // de este periodo tengan Cache-Control: no-cache, incluyendo los
+            // disparados por los hooks de React. fetchQuery aquí actúa como
+            // barrera de sincronización: espera a que el contenido crítico esté
+            // disponible antes de desactivar el loading y mostrar la UI.
+            // No se necesita bypassHttpCache en los queryFn: el interceptor ya lo aplica.
             const criticalQueryFns = {
-                siteTexts: () => api.getSiteTexts(),
-                heroSection: () => api.getHeroSection(),
-                siteSettings: () => api.getSiteSettings(),
+                siteTexts: () => api.getSiteTexts({ locale: newLocale }),
+                heroSection: () => api.getHeroSection({ locale: newLocale }),
+                siteSettings: () => api.getSiteSettings({ locale: newLocale }),
             };
 
             const criticalPromises = CRITICAL_QUERY_KEYS.map(key =>
@@ -193,7 +217,7 @@ export const LanguageTransitionProvider = ({ children }) => {
                     queryKey: [key, newLocale],
                     queryFn: criticalQueryFns[key],
                     staleTime: 0,
-                    signal: abortControllerRef.current?.signal, // fix #20: connect abort signal
+                    signal: abortControllerRef.current?.signal,
                 }).catch(() => null)
             );
 
@@ -208,6 +232,9 @@ export const LanguageTransitionProvider = ({ children }) => {
             console.error('[LanguageTransition] Error al cambiar idioma:', error);
             return false;
         } finally {
+            // Desactivar bypass SIEMPRE (éxito, error o abort) para no afectar
+            // requests normales posteriores al cambio de idioma
+            disableCacheBypassForTransition();
             setIsTransitioning(false);
             abortControllerRef.current = null;
         }
