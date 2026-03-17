@@ -3,9 +3,9 @@
  *
  * Estrategia geo-localizada:
  * ┌─────────────────────────────────────────────────────────────┐
- * │  UE/EEA + Reino Unido + Brasil → BANNER OBLIGATORIO        │
+ * │  UE/EEE, Reino Unido y Brasil → BANNER OBLIGATORIO          │
  * │    • analytics_storage = 'denied' hasta opt-in explícito.  │
- * │    • Cumple GDPR, UK GDPR, LGPD.                           │
+ * │    • Cumple GDPR, UK-GDPR, LGPD.                           │
  * │                                                             │
  * │  México / USA / Canadá / Resto del mundo → SIN BANNER      │
  * │    • analytics_storage = 'granted' automáticamente.        │
@@ -31,12 +31,12 @@ import { useTranslation } from 'react-i18next';
 import { detectUserLocation } from '../utils/currency';
 
 // Países donde el banner es legalmente obligatorio.
-// UE/EEA completa + UK + Brasil (LGPD).
+// UE/EEE completo, Reino Unido y Brasil (LGPD).
 const CONSENT_REQUIRED_COUNTRIES = new Set([
   // Unión Europea
   'DE','FR','IT','ES','PT','NL','BE','AT','FI','SE','DK','PL','CZ','HU',
   'RO','BG','HR','SK','SI','EE','LV','LT','LU','MT','CY','IE','GR',
-  // EEA (no-UE)
+  // EEE (no UE)
   'NO','IS','LI',
   // Reino Unido
   'GB',
@@ -171,7 +171,7 @@ const CookieConsent = () => {
 
       if (requiresConsent) {
         // País con obligación legal → mostrar banner. Consent sigue en 'denied' (default de index.html).
-        // Si había un auto-grant previo de un país no-EU, lo limpiamos.
+        // Si había un auto-grant previo de un país no UE, lo limpiamos.
         try { localStorage.removeItem(CONSENT_KEY); } catch (_e) { /* ok */ }
         setVisible(true);
       } else {
