@@ -16,14 +16,14 @@
  * No hace un request extra si la geolocalización de moneda ya corrió.
  *
  * Flujo primera visita (UE):
- * 1. index.html aplica default denied (consent_v2 script).
+ * 1. index.html aplica default denied POR REGIÓN (region: [EU/EEA/UK/BR]).
  * 2. CookieConsent detecta país → UE → muestra banner.
  * 3. Usuario acepta → gtag consent update 'granted'.
  * 4. Usuario rechaza → sigue en 'denied', GTM no recibe datos.
  *
  * Flujo primera visita (no-UE):
- * 1. index.html aplica default denied.
- * 2. CookieConsent detecta país → no UE → auto-granted, sin banner.
+ * 1. index.html aplica default granted (sin region = resto del mundo).
+ * 2. CookieConsent detecta país → no UE → refuerza auto-granted, sin banner.
  */
 
 import { useState, useEffect } from 'react';
