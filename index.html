@@ -21,9 +21,9 @@
 
     if (_hasExplicitConsent || _hasValidAutoGrant) {
       /* Usuario que ya tomó una decisión (manual o auto-grant vigente) → aplicar directo. */
+      var _cs = _sc.analytics === true ? 'granted' : 'denied';
       window.gtag('consent', 'default', {
-        analytics_storage: _sc.analytics === true ? 'granted' : 'denied',
-        ad_storage:'denied', ad_user_data:'denied', ad_personalization:'denied',
+        analytics_storage:_cs, ad_storage:_cs, ad_user_data:_cs, ad_personalization:_cs,
         functionality_storage:'granted', security_storage:'granted'
       });
     } else {
@@ -42,8 +42,8 @@
         region: _consentRegions
       });
       window.gtag('consent', 'default', {
-        analytics_storage:'granted', ad_storage:'denied', ad_user_data:'denied',
-        ad_personalization:'denied', functionality_storage:'granted', security_storage:'granted'
+        analytics_storage:'granted', ad_storage:'granted', ad_user_data:'granted',
+        ad_personalization:'granted', functionality_storage:'granted', security_storage:'granted'
       });
     }
   </script>

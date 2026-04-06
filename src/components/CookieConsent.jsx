@@ -2,15 +2,15 @@
  * CookieConsent — Banner de consentimiento compatible con GTM Consent Mode v2
  *
  * Estrategia geo-localizada:
- * ┌─────────────────────────────────────────────────────────────┐
- * │  UE/EEE, Reino Unido y Brasil → BANNER OBLIGATORIO          │
- * │    • analytics_storage = 'denied' hasta opt-in explícito.  │
- * │    • Cumple GDPR, UK-GDPR, LGPD.                           │
- * │                                                             │
- * │  México / USA / Canadá / Resto del mundo → SIN BANNER      │
- * │    • analytics_storage = 'granted' automáticamente.        │
- * │    • CCPA (California) usa modelo opt-out, no opt-in.      │
- * └─────────────────────────────────────────────────────────────┘
+ * ┌───────────────────────────────────────────────────────────────────┐
+ * │  UE/EEE, Reino Unido y Brasil → BANNER OBLIGATORIO                │
+ * │    • analytics_storage, ad_storage, ad_user_data = 'denied'      │
+ * │      hasta opt-in explícito. Cumple GDPR, UK-GDPR, LGPD.        │
+ * │                                                                   │
+ * │  México / USA / Canadá / Resto del mundo → SIN BANNER            │
+ * │    • Todos los consent signals = 'granted' automáticamente.      │
+ * │    • CCPA (California) usa modelo opt-out, no opt-in.            │
+ * └───────────────────────────────────────────────────────────────────┘
  *
  * Reutiliza detectUserLocation() de currency.jsx (ya cachea 7 días).
  * No hace un request extra si la geolocalización de moneda ya corrió.
@@ -18,11 +18,11 @@
  * Flujo primera visita (UE):
  * 1. index.html aplica default denied POR REGIÓN (region: [EU/EEA/UK/BR]).
  * 2. CookieConsent detecta país → UE → muestra banner.
- * 3. Usuario acepta → gtag consent update 'granted'.
+ * 3. Usuario acepta → gtag consent update ALL 'granted' (analytics + ads).
  * 4. Usuario rechaza → sigue en 'denied', GTM no recibe datos.
  *
  * Flujo primera visita (no-UE):
- * 1. index.html aplica default granted (sin region = resto del mundo).
+ * 1. index.html aplica default granted para TODO (analytics + ads).
  * 2. CookieConsent detecta país → no UE → refuerza auto-granted, sin banner.
  */
 
@@ -64,25 +64,25 @@ const AUTO_GRANT_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
 // esté disponible incluso antes de que se carguen las traducciones.
 const TEXTS = {
   es: {
-    message: 'Usamos cookies analíticas para medir el rendimiento del sitio y mejorar tu experiencia.',
+    message: 'Usamos cookies analíticas y de publicidad para medir el rendimiento del sitio y mostrarte contenido relevante.',
     accept: 'Aceptar',
     reject: 'Rechazar',
     policy: 'Política de cookies',
   },
   en: {
-    message: 'We use analytics cookies to measure site performance and improve your experience.',
+    message: 'We use analytics and advertising cookies to measure site performance and show you relevant content.',
     accept: 'Accept',
     reject: 'Decline',
     policy: 'Cookie Policy',
   },
   it: {
-    message: 'Utilizziamo cookie analitici per misurare le prestazioni del sito e migliorare la tua esperienza.',
+    message: 'Utilizziamo cookie analitici e pubblicitari per misurare le prestazioni del sito e mostrarti contenuti pertinenti.',
     accept: 'Accetta',
     reject: 'Rifiuta',
     policy: 'Cookie Policy',
   },
   de: {
-    message: 'Wir verwenden Analyse-Cookies, um die Website-Leistung zu messen und Ihre Erfahrung zu verbessern.',
+    message: 'Wir verwenden Analyse- und Werbe-Cookies, um die Website-Leistung zu messen und Ihnen relevante Inhalte zu zeigen.',
     accept: 'Akzeptieren',
     reject: 'Ablehnen',
     policy: 'Cookie-Richtlinie',
@@ -107,12 +107,12 @@ function applyGtmConsent(analyticsGranted, options = {}) {
   if (typeof window === 'undefined') return;
   window.dataLayer = window.dataLayer || [];
   if (typeof window.gtag === 'function') {
+    const consentState = analyticsGranted ? 'granted' : 'denied';
     window.gtag('consent', 'update', {
-      analytics_storage: analyticsGranted ? 'granted' : 'denied',
-      // Ads deshabilitados — el sitio no corre campañas de pago actualmente.
-      ad_storage: 'denied',
-      ad_user_data: 'denied',
-      ad_personalization: 'denied',
+      analytics_storage: consentState,
+      ad_storage: consentState,
+      ad_user_data: consentState,
+      ad_personalization: consentState,
     });
   }
   // Emitir eventos solo en decisiones explícitas del usuario, no en rehidratación.
