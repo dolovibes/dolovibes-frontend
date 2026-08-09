@@ -489,6 +489,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                         disabledA={!isModalityUsable(pkg.autoGuidedModality)}
                                         disabledB={!isModalityUsable(pkg.guidedModality)}
                                         unavailableLabel={siteTexts.packageInfo.modalityUnavailable}
+                                        ariaLabel={siteTexts.packageInfo.modalitySelectorAriaLabel}
                                     />
 
                                     {/* Aclaración de la modalidad elegida: texto sutil entre

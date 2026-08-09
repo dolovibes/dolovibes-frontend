@@ -137,19 +137,21 @@ export const SiteTextsProvider = ({ children }) => {
             includes: getText('packageInfo.includes', 'includes', 'packageInfo'),
             notIncludes: getText('packageInfo.notIncludes', 'notIncludes', 'packageInfo'),
             // ── Modalidades Autoguiada/Guiada ──
-            // Los i18n keys de la segunda posición TODAVÍA NO EXISTEN en
-            // src/locales/*/packageInfo.json (se agregan en la fase de i18n).
-            // Mientras tanto `getText` devuelve undefined para estos campos
-            // cuando Strapi no los tiene poblados, y cada consumidor omite el
-            // elemento en vez de pintar texto en el idioma equivocado. Se dejan
-            // las claves ya escritas para que al agregarlas al JSON funcionen
-            // sin tocar este archivo.
+            // Las 6 claves de fallback i18n viven en src/locales/*/packageInfo.json
+            // y public/locales/*/packageInfo.json (namespace packageInfo). `getText`
+            // prioriza Strapi y cae a i18n cuando Strapi no tiene el site-text
+            // poblado; cada consumidor omite el elemento en vez de pintar texto en
+            // el idioma equivocado si ninguna de las dos fuentes responde.
             modalityDefaultLabelA: getText('packageInfo.modalityDefaultLabelA', 'modalityDefaultLabelA', 'packageInfo'),
             modalityDefaultLabelB: getText('packageInfo.modalityDefaultLabelB', 'modalityDefaultLabelB', 'packageInfo'),
             guideIncludedLabel: getText('packageInfo.guideIncludedLabel', 'guideIncludedLabel', 'packageInfo'),
             availableDatesHeading: getText('packageInfo.availableDatesHeading', 'availableDatesHeading', 'packageInfo'),
             fromPrice: getText('packageInfo.fromPrice', 'fromPrice', 'packageInfo'),
             modalityUnavailable: getText('packageInfo.modalityUnavailable', 'modalityUnavailable', 'packageInfo'),
+            // aria-label del tablist del ModalityToggle: es infraestructura de
+            // accesibilidad, no contenido editorial, así que no tiene strapiPath
+            // ni pasa por getText — se lee directo de i18n.
+            modalitySelectorAriaLabel: tPackageInfo('modalitySelectorAriaLabel'),
         },
         // Quote Modal
         quoteModal: {
@@ -259,7 +261,7 @@ export const SiteTextsProvider = ({ children }) => {
             q5b: getText('answers.q5b', 'answers.q5b', 'hikingLevel'),
             q5c: getText('answers.q5c', 'answers.q5c', 'hikingLevel'),
         },
-    }), [getText]);
+    }), [getText, tPackageInfo]);
 
     return (
         <SiteTextsContext.Provider value={{ texts, isLoading, getText }}>
