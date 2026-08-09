@@ -464,6 +464,25 @@ const PACKAGE_POPULATE = {
   startDates: true,
   tags: true,
   experience: true,
+  // ── Modalidades Autoguiada/Guiada ──────────────────────────────────
+  // IMPORTANTE: en Strapi v5, `populate: true` sobre un componente devuelve SOLO
+  // sus campos escalares y omite por completo los componentes anidados.
+  // Verificado empíricamente contra Strapi 5.35 local:
+  //   populate[autoGuidedModalityContent]=true          -> { id, hint, availableDatesText }
+  //   populate[autoGuidedModalityContent][populate]=*   -> + includes[2] y notIncludes[1] con su `detail`
+  // Por eso los componentes con hijos llevan `populate` explícito (mismo patrón
+  // que `gallery`/`itinerary` más arriba). `toggleLabelA/B` son strings del
+  // content-type, no requieren populate.
+  autoGuidedModalityConfig: true, // solo escalares, sin componentes anidados
+  guidedModalityConfig: {
+    populate: ['departures'],
+  },
+  autoGuidedModalityContent: {
+    populate: ['includes', 'notIncludes'],
+  },
+  guidedModalityContent: {
+    populate: ['includes', 'notIncludes'],
+  },
 };
 
 /**
@@ -748,6 +767,75 @@ const transformPackages = (data) => {
     // Determinar si mostrar descuento: solo si hasDiscount=true Y hay originalPriceAmount
     const showDiscount = item.hasDiscount === true && item.originalPriceAmount && item.originalPriceAmount > item.priceAmount;
 
+    // ── Modalidades Autoguiada/Guiada ────────────────────────────────
+    // Cada modalidad se arma con DOS componentes de Strapi: *Config (operativo,
+    // compartido entre idiomas) y *Content (editorial, localizado). Cualquiera
+    // de los dos puede venir null/undefined si el paquete todavía no fue
+    // configurado, o si el editor no publicó los cambios: todo va con optional
+    // chaining y defaults (enabled=false, arrays [], strings null).
+    const buildModality = (config, content, modalityName) => {
+      const priceEUR = config?.priceAmount ?? null;
+      const originalPriceEUR = config?.originalPriceAmount ?? null;
+      // Misma regla de descuento que el precio legacy (ver showDiscount arriba)
+      const modalityShowDiscount =
+        config?.hasDiscount === true &&
+        originalPriceEUR != null &&
+        priceEUR != null &&
+        originalPriceEUR > priceEUR;
+
+      // Recomendación Gate C (Codex): un editor pudo habilitar la modalidad
+      // sin cargarle precio en el CMS. No bloqueamos la UI (fromPriceEUR cae
+      // al legacy), pero lo hacemos visible para no enmascarar el dato incompleto.
+      if (config?.enabled === true && priceEUR === null) {
+        console.warn(`[Strapi] Package "${item.slug}" (${item.documentId}): modalidad "${modalityName}" está enabled pero sin priceAmount cargado`);
+      }
+
+      return {
+        enabled: config?.enabled === true,
+        priceEUR,
+        originalPriceEUR: modalityShowDiscount ? originalPriceEUR : null,
+        hasDiscount: modalityShowDiscount,
+        hint: content?.hint || null,
+        availableDatesText: content?.availableDatesText || null,
+        includes: content?.includes?.map(inc => ({
+          label: inc.label,
+          detail: inc.detail,
+        })) || [],
+        notIncludes: content?.notIncludes?.map(ni => ({
+          label: ni.label,
+          detail: ni.detail,
+        })) || [],
+      };
+    };
+
+    const autoGuidedModality = buildModality(
+      item.autoGuidedModalityConfig,
+      item.autoGuidedModalityContent,
+      'autoGuided',
+    );
+
+    const guidedModality = {
+      ...buildModality(item.guidedModalityConfig, item.guidedModalityContent, 'guided'),
+      // departures usa el mismo componente package.start-date que startDates legacy
+      departures: item.guidedModalityConfig?.departures?.map(d => d.displayText || d.date) || [],
+    };
+
+    // fromPriceEUR: precio "desde" a nivel paquete.
+    // REGLA DE FALLBACK (decisión de negocio — interpretación tomada en Fase 4,
+    // pendiente de validación en el Gate C, no darla por definitiva):
+    //   1. Si hay modalidades con enabled === true y priceAmount numérico,
+    //      se usa el MÁS BAJO de esos precios.
+    //   2. Si ninguna modalidad nueva aplica (ambas deshabilitadas, ambos
+    //      componentes null, o habilitadas pero sin precio cargado), se cae al
+    //      priceAmount legacy, para que ningún paquete existente o aún no
+    //      migrado quede sin precio que mostrar.
+    const enabledModalityPrices = [autoGuidedModality, guidedModality]
+      .filter(m => m.enabled && typeof m.priceEUR === 'number')
+      .map(m => m.priceEUR);
+    const fromPriceEUR = enabledModalityPrices.length > 0
+      ? Math.min(...enabledModalityPrices)
+      : item.priceAmount;
+
     return {
       id: item.id,
       documentId: item.documentId, // Necesario para enrichWithSpanishMedia
@@ -809,6 +897,13 @@ const transformPackages = (data) => {
       // Campos para recomendaciones del home
       showInHome: item.showInHome || false,
       homeDisplayOrder: item.homeDisplayOrder || 0,
+      // ── Modalidades Autoguiada/Guiada (aditivo: los campos legacy de arriba
+      // siguen intactos para PackageCard/PackageInfoPage) ──
+      toggleLabelA: item.toggleLabelA || null,
+      toggleLabelB: item.toggleLabelB || null,
+      autoGuidedModality,
+      guidedModality,
+      fromPriceEUR,
     };
   });
 };
