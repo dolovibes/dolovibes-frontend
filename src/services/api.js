@@ -1053,6 +1053,15 @@ const transformSiteTexts = (data) => {
       itinerary: data.packageInfoItinerary,
       includes: data.packageInfoIncludes,
       notIncludes: data.packageInfoNotIncludes,
+      // ── Modalidades Autoguiada/Guiada (aditivo: ningún campo de arriba se
+      // toca; si Strapi no tiene estos campos poblados quedan undefined y el
+      // consumidor decide qué hacer, igual que el resto de esta sección) ──
+      modalityDefaultLabelA: data.packageInfoModalityDefaultLabelA,
+      modalityDefaultLabelB: data.packageInfoModalityDefaultLabelB,
+      guideIncludedLabel: data.packageInfoGuideIncludedLabel,
+      availableDatesHeading: data.packageInfoAvailableDatesHeading,
+      fromPrice: data.packageInfoFromPrice,
+      modalityUnavailable: data.packageInfoModalityUnavailable,
     },
     // Selector de moneda
     currency: {

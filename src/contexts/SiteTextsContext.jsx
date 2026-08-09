@@ -136,6 +136,20 @@ export const SiteTextsProvider = ({ children }) => {
             itinerary: getText('packageInfo.itinerary', 'itinerary', 'packageInfo'),
             includes: getText('packageInfo.includes', 'includes', 'packageInfo'),
             notIncludes: getText('packageInfo.notIncludes', 'notIncludes', 'packageInfo'),
+            // ── Modalidades Autoguiada/Guiada ──
+            // Los i18n keys de la segunda posición TODAVÍA NO EXISTEN en
+            // src/locales/*/packageInfo.json (se agregan en la fase de i18n).
+            // Mientras tanto `getText` devuelve undefined para estos campos
+            // cuando Strapi no los tiene poblados, y cada consumidor omite el
+            // elemento en vez de pintar texto en el idioma equivocado. Se dejan
+            // las claves ya escritas para que al agregarlas al JSON funcionen
+            // sin tocar este archivo.
+            modalityDefaultLabelA: getText('packageInfo.modalityDefaultLabelA', 'modalityDefaultLabelA', 'packageInfo'),
+            modalityDefaultLabelB: getText('packageInfo.modalityDefaultLabelB', 'modalityDefaultLabelB', 'packageInfo'),
+            guideIncludedLabel: getText('packageInfo.guideIncludedLabel', 'guideIncludedLabel', 'packageInfo'),
+            availableDatesHeading: getText('packageInfo.availableDatesHeading', 'availableDatesHeading', 'packageInfo'),
+            fromPrice: getText('packageInfo.fromPrice', 'fromPrice', 'packageInfo'),
+            modalityUnavailable: getText('packageInfo.modalityUnavailable', 'modalityUnavailable', 'packageInfo'),
         },
         // Quote Modal
         quoteModal: {

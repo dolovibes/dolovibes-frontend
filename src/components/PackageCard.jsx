@@ -35,9 +35,35 @@ const PackageCard = ({ pkg }) => {
         return 'text-pizarra';
     };
 
-    // Formatear precios desde EUR
-    const formattedPrice = formatPriceFromEUR(pkg.priceEUR);
-    const formattedOriginalPrice = pkg.hasDiscount && pkg.originalPriceEUR ? formatPriceFromEUR(pkg.originalPriceEUR) : null;
+    // ── Precio: modo LEGACY vs modo MODALIDAD ──
+    // Decisión deliberadamente conservadora para esta primera integración:
+    //
+    // 1. Sin modalidades habilitadas (el caso de la enorme mayoría de los
+    //    paquetes hoy) el comportamiento es IDÉNTICO al anterior: precio
+    //    legacy, precio tachado y badge de oferta tal cual estaban.
+    // 2. Con alguna modalidad habilitada mostramos `fromPriceEUR` (el mínimo
+    //    entre las modalidades habilitadas) prefijado con el label "desde",
+    //    y NO mostramos ni badge de descuento ni precio tachado. Motivo:
+    //    `hasDiscount`/`originalPriceEUR` son campos del paquete legacy y el
+    //    descuento por modalidad vive dentro de cada modalidad, así que no
+    //    sabemos de forma confiable si el descuento corresponde justo a la
+    //    modalidad que ganó el mínimo. Pintar un tachado que quizá pertenece
+    //    a la otra modalidad sería información de precio engañosa en una
+    //    tarjeta de venta, y eso pesa más que perder el badge de oferta.
+    //    Si el negocio quiere el badge aquí, hace falta que la capa de datos
+    //    exponga a qué modalidad pertenece `fromPriceEUR`.
+    const hasModalityPricing =
+        pkg.autoGuidedModality?.enabled === true || pkg.guidedModality?.enabled === true;
+
+    const formattedPrice = hasModalityPricing
+        ? formatPriceFromEUR(pkg.fromPriceEUR)
+        : formatPriceFromEUR(pkg.priceEUR);
+    const formattedOriginalPrice = !hasModalityPricing && pkg.hasDiscount && pkg.originalPriceEUR
+        ? formatPriceFromEUR(pkg.originalPriceEUR)
+        : null;
+    // Sin texto de site-text disponible no se pinta el prefijo (evita
+    // hardcodear "Desde" en un idioma cuando el usuario navega en otro).
+    const fromPriceLabel = hasModalityPricing ? siteTexts.packageInfo?.fromPrice : null;
 
     return (
         <Link
@@ -59,8 +85,8 @@ const PackageCard = ({ pkg }) => {
                 {/* Overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-pizarra/60 via-transparent to-transparent"></div>
 
-                {/* Discount badge */}
-                {pkg.hasDiscount && (
+                {/* Discount badge — solo en modo legacy (ver nota de precio arriba) */}
+                {!hasModalityPricing && pkg.hasDiscount && (
                     <div className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
                         {siteTexts.recommendations.offer}
                     </div>
@@ -71,6 +97,11 @@ const PackageCard = ({ pkg }) => {
                     <div className="bg-white rounded-xl px-4 py-2 shadow-lg">
                         {formattedOriginalPrice && (
                             <p className="text-niebla text-xs line-through">{formattedOriginalPrice}</p>
+                        )}
+                        {fromPriceLabel && (
+                            <p className="text-niebla text-[10px] uppercase tracking-wider leading-none">
+                                {fromPriceLabel}
+                            </p>
                         )}
                         <p className="text-pizarra font-bold text-lg">{formattedPrice}</p>
                     </div>
