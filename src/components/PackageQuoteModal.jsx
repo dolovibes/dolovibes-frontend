@@ -4,7 +4,7 @@ import { CheckCircle, Send, X, AlertCircle } from 'lucide-react';
 import useFocusTrap from '../hooks/useFocusTrap';
 import { trackPackageQuoteFormOpen, trackPackageQuoteFormSubmit, trackFormStep, trackFormError } from '../utils/dataLayer';
 
-const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
+const PackageQuoteModal = ({ isOpen, onClose, packageTitle, preselectedTripType = 'guiado' }) => {
     const { texts: siteTexts } = useSiteTextsContext();
     // fix #12: Focus trap
     const focusTrapRef = useFocusTrap(isOpen, onClose);
@@ -32,7 +32,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
         contacto: 'whatsapp',
         mesViaje: '',
         viajeros: '2',
-        tipoViaje: 'guiado',
+        tipoViaje: preselectedTripType,
         serviciosAdicionales: '',
         packageTitle: packageTitle || ''
     });
@@ -53,6 +53,18 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
         }
 
         if (isOpen) {
+            // Hallazgo de QA adversarial (Grok): el modal antes SIEMPRE abría
+            // con tipoViaje:'guiado' fijo, ignorando la modalidad que el
+            // usuario ya había elegido en el toggle de la página — un lead
+            // podía pedir cotización de una modalidad distinta a la que vio y
+            // cuyo precio consultó. El modal queda montado entre aperturas
+            // (isOpen solo alterna, no desmonta), así que hay que
+            // re-sincronizar en cada apertura, igual que ya se hace con
+            // packageTitle arriba — de lo contrario, una elección manual
+            // previa del usuario DENTRO del modal "se pegaría" a la siguiente
+            // apertura en vez de reflejar la modalidad recién elegida.
+            setFormData(prev => ({ ...prev, tipoViaje: preselectedTripType }));
+
             if (!trackedOpenRef.current) {
                 trackedOpenRef.current = true;
                 trackPackageQuoteFormOpen({ packageTitle });
@@ -74,7 +86,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                 timeoutRef.current = null;
             }
         };
-    }, [isOpen, packageTitle]);
+    }, [isOpen, packageTitle, preselectedTripType]);
     
     // Cerrar con tecla ESC
     React.useEffect(() => {
@@ -145,7 +157,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                 setFormData({
                     nombre: '', apellido: '', ciudad: '', estado: '', pais: '',
                     email: '', telefono: '', contacto: 'whatsapp', mesViaje: '',
-                    viajeros: '2', tipoViaje: 'guiado', serviciosAdicionales: '',
+                    viajeros: '2', tipoViaje: preselectedTripType, serviciosAdicionales: '',
                     packageTitle: packageTitle || ''
                 });
                 timeoutRef.current = null;
@@ -419,10 +431,16 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                     <label className="block text-sm font-medium text-pizarra mb-1.5">
                                         {siteTexts.packageQuoteModal?.tripType || 'Tipo de viaje'}
                                     </label>
+                                    {/* aria-pressed (hallazgo QA adversarial, Codex): estos dos
+                                        botones dependían solo del estilo visual para comunicar
+                                        cuál está seleccionado — un lector de pantalla no podía
+                                        saberlo. Ahora es más relevante que antes: este selector
+                                        debería coincidir con el toggle principal de la página. */}
                                     <div className="grid grid-cols-2 gap-3">
                                         <button
                                             type="button"
                                             onClick={() => setFormData(prev => ({ ...prev, tipoViaje: 'guiado' }))}
+                                            aria-pressed={formData.tipoViaje === 'guiado'}
                                             className={`p-3 rounded-xl border-2 transition-all text-center ${formData.tipoViaje === 'guiado'
                                                 ? 'border-pizarra bg-nieve text-pizarra'
                                                 : 'border-pizarra hover:border-bruma text-pizarra'
@@ -434,6 +452,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                         <button
                                             type="button"
                                             onClick={() => setFormData(prev => ({ ...prev, tipoViaje: 'autoguiado' }))}
+                                            aria-pressed={formData.tipoViaje === 'autoguiado'}
                                             className={`p-3 rounded-xl border-2 transition-all text-center ${formData.tipoViaje === 'autoguiado'
                                                 ? 'border-pizarra bg-nieve text-pizarra'
                                                 : 'border-pizarra hover:border-bruma text-pizarra'

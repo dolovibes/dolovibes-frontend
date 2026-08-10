@@ -102,6 +102,11 @@ const PackageAccordionSection = ({ items, icon, title }) => {
               {hasDetail && (
                 <div
                   id={panelId}
+                  // aria-hidden cuando está colapsado (hallazgo QA adversarial,
+                  // Grok): el panel sigue en el DOM con max-h-0/opacity-0 para
+                  // animar la transición, pero sin esto algunos lectores de
+                  // pantalla leen contenido "cerrado" como si fuera visible.
+                  aria-hidden={!isExpanded}
                   className={`overflow-hidden transition-all duration-300 ${
                     isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
                   }`}

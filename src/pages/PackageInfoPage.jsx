@@ -18,6 +18,7 @@ import {
     Camera
 } from 'lucide-react';
 import { usePackage, useLanguageAwareNavigation } from '../services/hooks';
+import { isModalityUsable } from '../services/api';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { useCurrencyContext } from '../utils/currency';
 import ModalityToggle from '../components/ModalityToggle';
@@ -107,11 +108,17 @@ const PackageInfoPage = ({ onOpenQuote }) => {
         if (pkg && !currency) return;
         if (pkg && trackedPkgRef.current !== `${slug}_${currency}`) {
             trackedPkgRef.current = `${slug}_${currency}`;
+            // fromPriceEUR (no priceEUR legacy) — hallazgo de QA adversarial
+            // (Grok): con modalidades, priceEUR legacy puede quedar desfasado
+            // del precio "desde" que el usuario realmente ve en la página.
+            // fromPriceEUR ya resuelve esto en api.js (cae a priceEUR legacy
+            // cuando no hay modalidades usables, así que no cambia nada para
+            // los paquetes sin modalidad).
             trackPackageView({
                 title: pkg.title,
                 slug,
-                priceEUR: pkg.priceEUR,
-                priceConverted: convertFromEUR(pkg.priceEUR, currency),
+                priceEUR: pkg.fromPriceEUR,
+                priceConverted: convertFromEUR(pkg.fromPriceEUR, currency),
                 displayCurrency: currency,
                 location: pkg.location,
                 duration: pkg.duration,
@@ -213,18 +220,16 @@ const PackageInfoPage = ({ onOpenQuote }) => {
     //
     // "Usable" (Gate D, Codex — corrige bug bloqueante de la ronda anterior):
     // una modalidad solo cuenta si además de `enabled === true` tiene un
-    // `priceEUR` numérico. `enabled` sin precio es un dato incompleto del CMS
-    // (el mismo caso que `fromPriceEUR` en api.js ya excluye al calcular el
-    // mínimo, cayendo al legacy — ver api.js ~línea 786). Antes, esta página
-    // solo miraba `enabled`, así que una modalidad habilitada-pero-sin-precio
-    // activaba la rama nueva y dejaba el bloque de precio completamente vacío,
-    // contradiciendo el propio fallback que `api.js` ya documenta. Ahora
-    // ambos lados usan el mismo criterio: si ninguna modalidad es usable,
-    // `hasModalityData` es false y la página cae 100% al bloque legacy
-    // (mismo precio que `fromPriceEUR` habría mostrado).
-    const isModalityUsable = (modality) =>
-        modality?.enabled === true && typeof modality.priceEUR === 'number';
-
+    // `priceEUR` numérico real. `enabled` sin precio es un dato incompleto del
+    // CMS (el mismo caso que `fromPriceEUR` en api.js ya excluye al calcular
+    // el mínimo, cayendo al legacy). Antes, esta página solo miraba `enabled`,
+    // así que una modalidad habilitada-pero-sin-precio activaba la rama nueva
+    // y dejaba el bloque de precio completamente vacío, contradiciendo el
+    // propio fallback que `api.js` ya documenta. Ahora ambos lados usan el
+    // mismo criterio (`isModalityUsable`, importado de api.js — antes vivía
+    // duplicado localmente aquí y con un chequeo distinto en PackageCard.jsx,
+    // corregido tras QA adversarial): si ninguna modalidad es usable,
+    // `hasModalityData` es false y la página cae 100% al bloque legacy.
     const hasModalityData =
         isModalityUsable(pkg.autoGuidedModality) || isModalityUsable(pkg.guidedModality);
 
@@ -886,6 +891,15 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                 isOpen={isQuoteModalOpen}
                 onClose={() => setIsQuoteModalOpen(false)}
                 packageTitle={pkg.title}
+                // Hallazgo de QA adversarial (Grok): antes el modal siempre
+                // abría con "Guiado" fijo, sin importar qué modalidad eligió
+                // el usuario en el toggle de arriba. Solo se pasa un valor
+                // explícito cuando hay modalidad activa (hasModalityData) —
+                // para paquetes legacy sin modalidades, se omite el prop y el
+                // modal usa su propio default ('guiado'), sin cambiar nada.
+                preselectedTripType={hasModalityData
+                    ? (selectedModalityKey === 'A' ? 'autoguiado' : 'guiado')
+                    : undefined}
             />
 
             {/* Modal de Evaluación de Nivel de Hiking */}

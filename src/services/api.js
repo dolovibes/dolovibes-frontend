@@ -47,6 +47,26 @@ const getCurrentLocale = () => {
 };
 
 // ═══════════════════════════════════════════════════════════════
+// MODALIDADES AUTOGUIADA/GUIADA — criterio compartido
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * Criterio único de "modalidad usable": habilitada Y con precio numérico
+ * real. Antes vivía duplicado (con matices distintos) en PackageInfoPage.jsx
+ * y PackageCard.jsx — PackageCard solo miraba `enabled`, así que una
+ * modalidad enabled-sin-precio activaba su UI de "Desde" con el precio
+ * legacy, mientras la página de detalle correctamente caía 100% a legacy.
+ * Unificado tras revisión adversarial (Grok) que señaló la divergencia.
+ *
+ * Usa `Number.isFinite` en vez de `typeof x === 'number'`: en JS,
+ * `typeof NaN === 'number'` es true, así que el chequeo anterior aceptaba
+ * NaN como "precio válido" (p.ej. si Strapi devolviera un cast numérico
+ * corrupto), lo que habría contaminado `Math.min()` en fromPriceEUR.
+ */
+export const isModalityUsable = (modality) =>
+  modality?.enabled === true && Number.isFinite(modality?.priceEUR);
+
+// ═══════════════════════════════════════════════════════════════
 // WRAPPER PRINCIPAL
 // ═══════════════════════════════════════════════════════════════
 
@@ -786,8 +806,27 @@ const transformPackages = (data) => {
       // Recomendación Gate C (Codex): un editor pudo habilitar la modalidad
       // sin cargarle precio en el CMS. No bloqueamos la UI (fromPriceEUR cae
       // al legacy), pero lo hacemos visible para no enmascarar el dato incompleto.
-      if (config?.enabled === true && priceEUR === null) {
+      if (config?.enabled === true && !Number.isFinite(priceEUR)) {
         console.warn(`[Strapi] Package "${item.slug}" (${item.documentId}): modalidad "${modalityName}" está enabled pero sin priceAmount cargado`);
+      }
+
+      const includes = content?.includes?.map(inc => ({
+        label: inc.label,
+        detail: inc.detail,
+      })) || [];
+      const notIncludes = content?.notIncludes?.map(ni => ({
+        label: ni.label,
+        detail: ni.detail,
+      })) || [];
+
+      // Hallazgo de QA adversarial (Grok): una modalidad "usable" por precio
+      // pero con includes/notIncludes vacíos hace que esa sección desaparezca
+      // por completo en la página (no hay fallback al legacy dentro del modo
+      // modalidad, deliberado — ver PackageInfoPage.jsx). No es un bug de
+      // código: es contenido incompleto en el CMS. Se deja visible con el
+      // mismo patrón de warning que el precio, en vez de silenciarlo.
+      if (config?.enabled === true && Number.isFinite(priceEUR) && includes.length === 0 && notIncludes.length === 0) {
+        console.warn(`[Strapi] Package "${item.slug}" (${item.documentId}): modalidad "${modalityName}" tiene precio pero no tiene includes ni notIncludes cargados`);
       }
 
       return {
@@ -797,14 +836,8 @@ const transformPackages = (data) => {
         hasDiscount: modalityShowDiscount,
         hint: content?.hint || null,
         availableDatesText: content?.availableDatesText || null,
-        includes: content?.includes?.map(inc => ({
-          label: inc.label,
-          detail: inc.detail,
-        })) || [],
-        notIncludes: content?.notIncludes?.map(ni => ({
-          label: ni.label,
-          detail: ni.detail,
-        })) || [],
+        includes,
+        notIncludes,
       };
     };
 
@@ -821,19 +854,18 @@ const transformPackages = (data) => {
     };
 
     // fromPriceEUR: precio "desde" a nivel paquete.
-    // REGLA DE FALLBACK (decisión de negocio — interpretación tomada en Fase 4,
-    // pendiente de validación en el Gate C, no darla por definitiva):
-    //   1. Si hay modalidades con enabled === true y priceAmount numérico,
-    //      se usa el MÁS BAJO de esos precios.
+    // REGLA DE FALLBACK (decisión de negocio, validada en Gate C):
+    //   1. Si hay modalidades usables (ver `isModalityUsable` — enabled Y
+    //      precio numérico real, no NaN), se usa el MÁS BAJO de esos precios.
     //   2. Si ninguna modalidad nueva aplica (ambas deshabilitadas, ambos
     //      componentes null, o habilitadas pero sin precio cargado), se cae al
     //      priceAmount legacy, para que ningún paquete existente o aún no
     //      migrado quede sin precio que mostrar.
-    const enabledModalityPrices = [autoGuidedModality, guidedModality]
-      .filter(m => m.enabled && typeof m.priceEUR === 'number')
+    const usableModalityPrices = [autoGuidedModality, guidedModality]
+      .filter(isModalityUsable)
       .map(m => m.priceEUR);
-    const fromPriceEUR = enabledModalityPrices.length > 0
-      ? Math.min(...enabledModalityPrices)
+    const fromPriceEUR = usableModalityPrices.length > 0
+      ? Math.min(...usableModalityPrices)
       : item.priceAmount;
 
     return {

@@ -8,6 +8,7 @@ import { useCurrencyContext } from '../utils/currency';
 import { generateLocalizedUrl } from '../utils/localizedRoutes';
 import { prefetchPackage } from '../utils/dataPrefetch';
 import { extractTextFromBlocks } from '../utils/BlocksRenderer';
+import { isModalityUsable } from '../services/api';
 import OptimizedImage from './OptimizedImage';
 
 const PackageCard = ({ pkg }) => {
@@ -52,8 +53,17 @@ const PackageCard = ({ pkg }) => {
     //    tarjeta de venta, y eso pesa más que perder el badge de oferta.
     //    Si el negocio quiere el badge aquí, hace falta que la capa de datos
     //    exponga a qué modalidad pertenece `fromPriceEUR`.
+    //
+    // Corrección tras QA adversarial (Grok): este chequeo antes solo miraba
+    // `enabled`, no si la modalidad era realmente "usable" (enabled + precio
+    // numérico) — divergía del criterio que ya usa PackageInfoPage.jsx y
+    // fromPriceEUR en api.js. Con una modalidad enabled-sin-precio, la
+    // tarjeta entraba en modo "Desde" pero mostraba el precio LEGACY (porque
+    // fromPriceEUR cae ahí), mientras el detalle mostraba la página legacy
+    // completa — inconsistente entre ambas superficies. Unificado con el
+    // mismo helper `isModalityUsable` que usa el resto del feature.
     const hasModalityPricing =
-        pkg.autoGuidedModality?.enabled === true || pkg.guidedModality?.enabled === true;
+        isModalityUsable(pkg.autoGuidedModality) || isModalityUsable(pkg.guidedModality);
 
     const formattedPrice = hasModalityPricing
         ? formatPriceFromEUR(pkg.fromPriceEUR)
