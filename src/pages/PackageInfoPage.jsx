@@ -256,6 +256,13 @@ const PackageInfoPage = ({ onOpenQuote }) => {
 
     const activeModality = modalitiesByKey[selectedModalityKey];
 
+    // Resueltas una sola vez, reusadas por el ModalityToggle Y por
+    // PackageQuoteModal — antes el modal de cotización no las recibía y
+    // mostraba "Guiado"/"Autoguiado" fijo sin importar la etiqueta real del
+    // tour (hallazgo de revisión adversarial, Codex + Grok).
+    const resolvedToggleLabelA = pkg.toggleLabelA || siteTexts.packageInfo.modalityDefaultLabelA;
+    const resolvedToggleLabelB = pkg.toggleLabelB || siteTexts.packageInfo.modalityDefaultLabelB;
+
     const handleModalityChange = (nextKey) => {
         setModalitySelection({ documentId: pkg.documentId, key: nextKey });
     };
@@ -487,8 +494,8 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                             {hasModalityData && (
                                 <div className="mb-8">
                                     <ModalityToggle
-                                        labelA={pkg.toggleLabelA || siteTexts.packageInfo.modalityDefaultLabelA}
-                                        labelB={pkg.toggleLabelB || siteTexts.packageInfo.modalityDefaultLabelB}
+                                        labelA={resolvedToggleLabelA}
+                                        labelB={resolvedToggleLabelB}
                                         selected={selectedModalityKey}
                                         onChange={handleModalityChange}
                                         disabledA={!isModalityUsable(pkg.autoGuidedModality)}
@@ -900,6 +907,11 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                 preselectedTripType={hasModalityData
                     ? (selectedModalityKey === 'A' ? 'autoguiado' : 'guiado')
                     : undefined}
+                // Mismas etiquetas reales que ve en el toggle de arriba — para
+                // paquetes legacy sin modalidad, se omiten y el modal usa sus
+                // defaults ("Autoguiado"/"Guiado"), sin cambiar nada.
+                labelA={hasModalityData ? resolvedToggleLabelA : undefined}
+                labelB={hasModalityData ? resolvedToggleLabelB : undefined}
             />
 
             {/* Modal de Evaluación de Nivel de Hiking */}

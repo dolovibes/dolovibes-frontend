@@ -4,8 +4,15 @@ import { CheckCircle, Send, X, AlertCircle } from 'lucide-react';
 import useFocusTrap from '../hooks/useFocusTrap';
 import { trackPackageQuoteFormOpen, trackPackageQuoteFormSubmit, trackFormStep, trackFormError } from '../utils/dataLayer';
 
-const PackageQuoteModal = ({ isOpen, onClose, packageTitle, preselectedTripType = 'guiado' }) => {
+const PackageQuoteModal = ({ isOpen, onClose, packageTitle, preselectedTripType = 'guiado', labelA, labelB }) => {
     const { texts: siteTexts } = useSiteTextsContext();
+    // Etiquetas reales del tour (spec "Toggle editable" — Codex/Grok, ronda de
+    // revisión del plan): antes este modal siempre decía "Guiado"/"Autoguiado"
+    // fijo, sin importar qué etiquetas custom tenga el tour en el toggle
+    // principal (ej. "Viaje Personalizado"/"Grupal"). labelA/labelB son las ya
+    // resueltas (custom o default) que vienen del detalle del paquete.
+    const resolvedLabelA = labelA || siteTexts.packageQuoteModal?.tripTypeSelfGuided || 'Autoguiado';
+    const resolvedLabelB = labelB || siteTexts.packageQuoteModal?.tripTypeGuided || 'Guiado';
     // fix #12: Focus trap
     const focusTrapRef = useFocusTrap(isOpen, onClose);
     // fix #25: Generate unique IDs for form fields
@@ -126,6 +133,19 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle, preselectedTripType 
         setIsSubmitting(true);
 
         try {
+            // modalityLabel: la etiqueta REAL del tour (ej. "Grupal"), aparte de
+            // tipoViaje (la clave canónica guiado/autoguiado que el backend usa
+            // para el correo). Solo se manda cuando el paquete de verdad tiene
+            // modalidad configurada (labelA/labelB vienen de PackageInfoPage) —
+            // si no, se omite el campo por completo en vez de mandar el default
+            // genérico de este modal ("Autoguiado"/"Guiado"), que ya es
+            // exactamente lo que el fallback del backend produce solo. Mandarlo
+            // siempre habría cambiado el correo de TODOS los paquetes legacy sin
+            // necesidad (hallazgo de revisión adversarial, Grok).
+            const modalityLabel = (labelA || labelB)
+                ? (formData.tipoViaje === 'guiado' ? resolvedLabelB : resolvedLabelA)
+                : undefined;
+
             const response = await fetch(`${import.meta.env.VITE_STRAPI_URL}/api/quote-request`, {
                 method: 'POST',
                 headers: {
@@ -133,7 +153,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle, preselectedTripType 
                 },
                 body: JSON.stringify({
                     type: 'package',
-                    data: formData,
+                    data: modalityLabel ? { ...formData, modalityLabel } : formData,
                 }),
             });
 
@@ -446,7 +466,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle, preselectedTripType 
                                                 : 'border-pizarra hover:border-bruma text-pizarra'
                                                 }`}
                                         >
-                                            <span className="font-semibold block text-sm">{siteTexts.packageQuoteModal?.tripTypeGuided || 'Guiado'}</span>
+                                            <span className="font-semibold block text-sm">{resolvedLabelB}</span>
                                             <span className="text-xs opacity-70">{siteTexts.packageQuoteModal?.tripTypeGuidedDesc || 'Con guía experto'}</span>
                                         </button>
                                         <button
@@ -458,7 +478,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle, preselectedTripType 
                                                 : 'border-pizarra hover:border-bruma text-pizarra'
                                                 }`}
                                         >
-                                            <span className="font-semibold block text-sm">{siteTexts.packageQuoteModal?.tripTypeSelfGuided || 'Autoguiado'}</span>
+                                            <span className="font-semibold block text-sm">{resolvedLabelA}</span>
                                             <span className="text-xs opacity-70">{siteTexts.packageQuoteModal?.tripTypeSelfGuidedDesc || 'Por tu cuenta'}</span>
                                         </button>
                                     </div>
