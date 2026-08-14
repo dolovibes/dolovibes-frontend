@@ -87,6 +87,23 @@ export function trackPackageView({ title, slug, priceEUR, priceConverted, displa
   });
 }
 
+// 3.5. Modality toggle — user switches between Autoguiada/Guiada on a package
+// page. Sin esto no había forma de saber qué modalidad mira/prefiere la
+// gente antes de cotizar (hallazgo de revisión adversarial del plan de
+// modalidad, Codex/Grok: view_package solo registraba el precio mínimo
+// inicial, nunca la modalidad).
+export function trackModalitySwitch({ packageTitle, packageDocumentId, packageSlug, modalityKey, modalityLabel, priceEUR }) {
+  push({
+    event: 'switch_modality',
+    package_title: packageTitle,
+    package_document_id: packageDocumentId,
+    package_slug: packageSlug,
+    modality_key: modalityKey,
+    modality_label: modalityLabel,
+    package_price_eur: priceEUR,
+  });
+}
+
 // 4. General quote form — open
 // cta_source: 'navbar' | 'package_page' | 'experience_page' | 'mobile_menu'
 export function trackQuoteFormOpen({ interest, ctaSource }) {
@@ -95,6 +112,10 @@ export function trackQuoteFormOpen({ interest, ctaSource }) {
     form_type: 'general',
     interest: interest || '',
     cta_source: ctaSource || 'unknown',
+    // Reset explícito: si antes se vio un paquete (view_package/switch_modality
+    // dejan package_title en el modelo), abrir el formulario general no debe
+    // heredarlo (mismo patrón que trackQuoteFormSubmit).
+    package_title: undefined,
   });
 }
 
@@ -106,6 +127,18 @@ export function trackQuoteFormSubmit({ interest, guests, contactMethod }) {
     interest,
     guests,
     contact_method: contactMethod,
+    // GTM conserva el valor anterior de una key si simplemente se omite del
+    // push; hay que resetearla explícitamente a undefined para que un envío
+    // general no herede modality_key/package_document_id de un paquete
+    // visto antes en la misma sesión (hallazgo de revisión adversarial, Grok).
+    package_title: undefined,
+    package_document_id: undefined,
+    package_slug: undefined,
+    travelers: undefined,
+    trip_type: undefined,
+    modality_key: undefined,
+    modality_label: undefined,
+    package_price_eur: undefined,
   });
 }
 
@@ -115,18 +148,40 @@ export function trackPackageQuoteFormOpen({ packageTitle }) {
     event: 'open_quote_form',
     form_type: 'package',
     package_title: packageTitle,
+    // Mismo patrón de reset que el resto del par open/submit: si antes se
+    // abrió el formulario general en la misma sesión, interest/cta_source
+    // quedaban pegados en el modelo de GTM y se colaban aquí.
+    interest: undefined,
+    cta_source: undefined,
   });
 }
 
 // 7. Package quote form — submit
-export function trackPackageQuoteFormSubmit({ packageTitle, travelers, tripType, contactMethod }) {
+// documentId/slug/modalityKey/modalityLabel/priceEUR: sin esto no se podía
+// reconstruir qué vio exactamente el cliente al pedir la cotización — el
+// lead solo traía el título del paquete, ambiguo entre locales/duplicados
+// (hallazgo de revisión adversarial del plan de modalidad, Codex/Grok).
+export function trackPackageQuoteFormSubmit({
+  packageTitle, packageDocumentId, packageSlug, travelers, tripType, modalityKey, modalityLabel, priceEUR, contactMethod,
+}) {
   push({
     event: 'submit_quote_form',
     form_type: 'package',
     package_title: packageTitle,
+    package_document_id: packageDocumentId,
+    package_slug: packageSlug,
     travelers,
     trip_type: tripType,
+    modality_key: modalityKey,
+    modality_label: modalityLabel,
+    package_price_eur: priceEUR,
     contact_method: contactMethod,
+    // Mismo fix que trackQuoteFormSubmit, en la dirección inversa: si antes
+    // se abrió/envió el formulario general en la misma sesión, `interest`/
+    // `guests` quedaban pegados en el modelo de GTM y se colaban en este
+    // submit de paquete (hallazgo de revisión adversarial, Grok).
+    interest: undefined,
+    guests: undefined,
   });
 }
 

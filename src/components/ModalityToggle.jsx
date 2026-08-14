@@ -56,8 +56,13 @@ const ModalityToggle = ({
     { key: 'B', label: labelB, disabled: disabledB },
   ];
 
+  // Ambos guardan también contra "seleccionar lo ya seleccionado" (hallazgo
+  // de revisión adversarial, Codex): sin esto, un click sobre la opción
+  // activa, o Home/End cuando esa opción ya tiene el foco, disparaban
+  // onChange igual — generando "cambios de modalidad" falsos en analytics
+  // que en realidad son solo reselecciones sin cambio real de estado.
   const handleSelect = (option, isDisabled) => {
-    if (isDisabled) return;
+    if (isDisabled || option === selected) return;
     if (onChange) onChange(option);
   };
 
@@ -65,6 +70,7 @@ const ModalityToggle = ({
     const target = options.find((o) => o.key === option);
     if (!target || target.disabled) return;
     buttonRefs.current[option]?.focus();
+    if (option === selected) return;
     if (onChange) onChange(option);
   };
 

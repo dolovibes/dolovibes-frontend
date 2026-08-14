@@ -30,7 +30,7 @@ import Footer from '../components/Footer';
 import Hreflang from '../components/Hreflang';
 import { useAlternateUrls } from '../hooks/useAlternateUrls';
 import usePageMeta from '../hooks/usePageMeta';
-import { trackPackageView, trackGalleryOpen } from '../utils/dataLayer';
+import { trackPackageView, trackGalleryOpen, trackModalitySwitch } from '../utils/dataLayer';
 import { convertFromEUR } from '../utils/currency';
 
 const PackageInfoPage = ({ onOpenQuote }) => {
@@ -265,6 +265,20 @@ const PackageInfoPage = ({ onOpenQuote }) => {
 
     const handleModalityChange = (nextKey) => {
         setModalitySelection({ documentId: pkg.documentId, key: nextKey });
+        // Sin este evento no había forma de saber qué modalidad mira/prefiere
+        // la gente antes de cotizar (hallazgo de revisión adversarial, ver
+        // dataLayer.js). Se dispara con el precio/label de la modalidad a la
+        // que se está cambiando, no la que se deja.
+        const nextModality = modalitiesByKey[nextKey];
+        const nextLabel = nextKey === 'A' ? resolvedToggleLabelA : resolvedToggleLabelB;
+        trackModalitySwitch({
+            packageTitle: pkg.title,
+            packageDocumentId: pkg.documentId,
+            packageSlug: pkg.slug,
+            modalityKey: nextKey,
+            modalityLabel: nextLabel,
+            priceEUR: nextModality?.priceEUR,
+        });
     };
 
     return (
@@ -935,6 +949,8 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                 isOpen={isQuoteModalOpen}
                 onClose={() => setIsQuoteModalOpen(false)}
                 packageTitle={pkg.title}
+                packageDocumentId={pkg.documentId}
+                packageSlug={pkg.slug}
                 // Hallazgo de QA adversarial (Grok): antes el modal siempre
                 // abría con "Guiado" fijo, sin importar qué modalidad eligió
                 // el usuario en el toggle de arriba. Solo se pasa un valor
@@ -949,6 +965,15 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                 // defaults ("Autoguiado"/"Guiado"), sin cambiar nada.
                 labelA={hasModalityData ? resolvedToggleLabelA : undefined}
                 labelB={hasModalityData ? resolvedToggleLabelB : undefined}
+                // Precio por modalidad, para que el evento de analytics del
+                // envío lleve el precio que el usuario realmente vio.
+                priceA={hasModalityData ? pkg.autoGuidedModality?.priceEUR : undefined}
+                priceB={hasModalityData ? pkg.guidedModality?.priceEUR : undefined}
+                // Mismo cálculo que el toggle principal (hallazgo de revisión
+                // adversarial, Codex): antes el modal dejaba elegir una
+                // modalidad que el toggle ya mostraba como "No disponible".
+                disabledA={hasModalityData && !isModalityUsable(pkg.autoGuidedModality)}
+                disabledB={hasModalityData && !isModalityUsable(pkg.guidedModality)}
             />
 
             {/* Modal de Evaluación de Nivel de Hiking */}
