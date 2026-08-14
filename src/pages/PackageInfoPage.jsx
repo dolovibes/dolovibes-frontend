@@ -329,15 +329,19 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 </span>
                             )}
 
-                            {/* Equivalentes por modalidad. El badge de guía solo aplica a
-                                la modalidad Guiada; la Autoguiada, por definición, no lleva
-                                guía y no muestra ningún badge en su lugar. */}
-                            {hasModalityData && selectedModalityKey === 'B' && siteTexts.packageInfo.guideIncludedLabel && (
-                                <span className="flex items-center gap-1.5 sm:gap-2 bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-sm sm:text-base">
-                                    {siteTexts.packageInfo.guideIncludedLabel}
-                                </span>
-                            )}
-                            {hasModalityData && activeModality?.availableDatesText && (
+                            {/* "Guía incluido" se movió junto al precio (ver más abajo) —
+                                la spec lo pide como chip pegado al precio, no en el hero,
+                                para que cambiar el toggle y ver el precio actualizarse sea
+                                la misma acción que ver si trae guía (hallazgo de revisión
+                                adversarial, Codex/Grok: estaban visualmente desconectados,
+                                el usuario podía cambiar el toggle y no notar el badge de
+                                arriba, fuera del viewport). */}
+                            {/* El rango abierto de fechas solo aplica a Autoguiada (A) —
+                                Guiada (B) usa exclusivamente las salidas fijas (chips más
+                                abajo), nunca ambas superficies a la vez (mismo hallazgo:
+                                la spec pide UNA superficie de fechas que cambia según
+                                modalidad, no dos que pueden contradecirse). */}
+                            {hasModalityData && selectedModalityKey === 'A' && activeModality?.availableDatesText && (
                                 <span className="flex items-center gap-1.5 sm:gap-2 bg-emerald-500/20 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-emerald-400/30 text-sm sm:text-base">
                                     <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
                                     <span className="font-medium">{activeModality.availableDatesText}</span>
@@ -519,7 +523,10 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                                 ? `${siteTexts.packageInfo.fromPrice} · ${siteTexts.packageInfo.pricePerPerson}`
                                                 : siteTexts.packageInfo.pricePerPerson}
                                         </p>
-                                        <div className="flex items-baseline gap-3">
+                                        {/* flex-wrap (hallazgo QA, Codex): precio + tachado + badge
+                                            "Guía incluido" pueden exceder el ancho en móvil con
+                                            precios convertidos largos o labels en alemán/italiano. */}
+                                        <div className="flex flex-wrap items-baseline gap-3">
                                             {activeModality?.hasDiscount === true
                                                 && activeModality.originalPriceEUR > 0
                                                 && activeModality.originalPriceEUR > activeModality.priceEUR && (
@@ -530,6 +537,13 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                             {typeof activeModality?.priceEUR === 'number' && (
                                                 <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-pizarra">
                                                     {formatPriceFromEUR(activeModality.priceEUR)}
+                                                </span>
+                                            )}
+                                            {/* "Guía incluido" pegado al precio a propósito — ver
+                                                nota más arriba, junto al badge del hero que se quitó. */}
+                                            {selectedModalityKey === 'B' && siteTexts.packageInfo.guideIncludedLabel && (
+                                                <span className="bg-niebla/40 text-grafito px-3 py-1 rounded-full text-xs sm:text-sm font-medium self-center">
+                                                    {siteTexts.packageInfo.guideIncludedLabel}
                                                 </span>
                                             )}
                                         </div>
@@ -638,26 +652,49 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 los desplegables de la modalidad —y no pegadas al precio—
                                 para que TODO el contenido que cambia con el toggle quede
                                 agrupado en la misma zona de la página. */}
-                            {hasModalityData && selectedModalityKey === 'B' && activeModality?.departures?.length > 0 && (
-                                <div className="mb-6">
-                                    {siteTexts.packageInfo.availableDatesHeading && (
-                                        <h3 className="text-lg font-bold text-grafito mb-3 font-heading">
-                                            {siteTexts.packageInfo.availableDatesHeading}
-                                        </h3>
-                                    )}
-                                    <div className="flex flex-wrap gap-2">
-                                        {activeModality.departures.map((departure, index) => (
-                                            <span
-                                                key={`departure-${index}`}
-                                                className="flex items-center gap-2 bg-nieve border border-niebla text-grafito px-3 py-1.5 rounded-full text-sm font-medium"
-                                            >
-                                                <Calendar className="w-3.5 h-3.5 text-pizarra flex-shrink-0" aria-hidden="true" />
-                                                {departure}
-                                            </span>
-                                        ))}
+                            {(() => {
+                                const allDepartures = activeModality?.departures || [];
+                                if (!hasModalityData || selectedModalityKey !== 'B' || allDepartures.length === 0) {
+                                    return null;
+                                }
+                                // Solo salidas disponibles: una fecha con available:false
+                                // (agotada, apagada por Paty en el CMS) no debe aparecer
+                                // en absoluto, no solo perder el resaltado.
+                                const availableDepartures = allDepartures.filter(d => d.available);
+                                return (
+                                    <div className="mb-6">
+                                        {siteTexts.packageInfo.availableDatesHeading && (
+                                            <h3 className="text-lg font-bold text-grafito mb-3 font-heading">
+                                                {siteTexts.packageInfo.availableDatesHeading}
+                                            </h3>
+                                        )}
+                                        {availableDepartures.length > 0 ? (
+                                            <div className="flex flex-wrap gap-2">
+                                                {availableDepartures.map((departure, index) => (
+                                                    <span
+                                                        key={`departure-${index}`}
+                                                        className="flex items-center gap-2 bg-nieve border border-niebla text-grafito px-3 py-1.5 rounded-full text-sm font-medium"
+                                                    >
+                                                        <Calendar className="w-3.5 h-3.5 text-pizarra flex-shrink-0" aria-hidden="true" />
+                                                        {departure.text}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            // Hay salidas cargadas en el CMS pero todas agotadas —
+                                            // decirlo explícitamente en vez de desaparecer en
+                                            // silencio (hallazgo de revisión adversarial, Grok: el
+                                            // usuario veía precio e "incluye" de un tour guiado sin
+                                            // ninguna fecha ni explicación de por qué).
+                                            siteTexts.packageInfo.noDatesAvailable && (
+                                                <p className="text-niebla text-sm">
+                                                    {siteTexts.packageInfo.noDatesAvailable}
+                                                </p>
+                                            )
+                                        )}
                                     </div>
-                                </div>
-                            )}
+                                );
+                            })()}
 
                             {/* Incluye / No incluye de la modalidad activa.
                                 El `key` incluye la modalidad a propósito: fuerza el remonte

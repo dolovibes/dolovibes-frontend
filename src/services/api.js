@@ -849,8 +849,16 @@ const transformPackages = (data) => {
 
     const guidedModality = {
       ...buildModality(item.guidedModalityConfig, item.guidedModalityContent, 'guided'),
-      // departures usa el mismo componente package.start-date que startDates legacy
-      departures: item.guidedModalityConfig?.departures?.map(d => d.displayText || d.date) || [],
+      // departures usa el mismo componente package.start-date que startDates legacy.
+      // Se conserva la estructura completa (no solo el texto) hasta la capa de
+      // presentación — un `available:false` apagado en el CMS debe ocultar la
+      // fecha en vez de solo dejar de resaltarla (hallazgo de revisión
+      // adversarial, Codex/Grok: el frontend descartaba `available` al
+      // aplanar a string, así que una fecha agotada seguía mostrándose).
+      departures: item.guidedModalityConfig?.departures?.map(d => ({
+        text: d.displayText || d.date,
+        available: d.available !== false,
+      })) || [],
     };
 
     // fromPriceEUR: precio "desde" a nivel paquete.

@@ -137,7 +137,7 @@ export const SiteTextsProvider = ({ children }) => {
             includes: getText('packageInfo.includes', 'includes', 'packageInfo'),
             notIncludes: getText('packageInfo.notIncludes', 'notIncludes', 'packageInfo'),
             // ── Modalidades Autoguiada/Guiada ──
-            // Las 6 claves de fallback i18n viven en src/locales/*/packageInfo.json
+            // Las claves de fallback i18n viven en src/locales/*/packageInfo.json
             // y public/locales/*/packageInfo.json (namespace packageInfo). `getText`
             // prioriza Strapi y cae a i18n cuando Strapi no tiene el site-text
             // poblado; cada consumidor omite el elemento en vez de pintar texto en
@@ -146,6 +146,7 @@ export const SiteTextsProvider = ({ children }) => {
             modalityDefaultLabelB: getText('packageInfo.modalityDefaultLabelB', 'modalityDefaultLabelB', 'packageInfo'),
             guideIncludedLabel: getText('packageInfo.guideIncludedLabel', 'guideIncludedLabel', 'packageInfo'),
             availableDatesHeading: getText('packageInfo.availableDatesHeading', 'availableDatesHeading', 'packageInfo'),
+            noDatesAvailable: getText('packageInfo.noDatesAvailable', 'noDatesAvailable', 'packageInfo'),
             fromPrice: getText('packageInfo.fromPrice', 'fromPrice', 'packageInfo'),
             modalityUnavailable: getText('packageInfo.modalityUnavailable', 'modalityUnavailable', 'packageInfo'),
             // aria-label del tablist del ModalityToggle: es infraestructura de

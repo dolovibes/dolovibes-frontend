@@ -18,6 +18,7 @@
     "modalityDefaultLabelB": "Guiada",
     "guideIncludedLabel": "Guía incluido",
     "availableDatesHeading": "Fechas de salida",
+    "noDatesAvailable": "No hay fechas disponibles por el momento",
     "fromPrice": "Desde",
     "modalityUnavailable": "No disponible",
     "modalitySelectorAriaLabel": "Selector de modalidad",
