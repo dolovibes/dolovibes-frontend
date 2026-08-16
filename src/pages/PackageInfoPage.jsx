@@ -394,35 +394,42 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                     </div>
 
                     {/* Contenido derecha */}
-                    <div className="w-full md:w-1/2 h-[300px] md:h-full bg-white p-6 md:p-10 flex flex-col justify-between">
-                        <div>
-                            {/* Badge del día */}
-                            <div className="inline-flex items-center gap-2 mb-3">
-                                <div className="w-9 h-9 bg-pizarra rounded-lg flex items-center justify-center shadow shadow-pizarra/20">
-                                    <span className="text-base font-bold text-white">{pkg.itinerary[currentDay].day}</span>
+                    <div className="w-full md:w-1/2 h-[300px] md:h-full bg-white p-6 md:p-10 flex flex-col">
+                        {/* min-h-0 en un flex-col es necesario para que este hijo pueda
+                            encogerse por debajo de su contenido intrínseco — sin esto, un
+                            hijo flex nunca se achica más allá de lo que su contenido pide, y
+                            el max-h-full/overflow-y-auto de abajo no tendría ningún límite
+                            real del que partir (se seguiría desbordando el flex-col padre).
+                            flex-1 le da exactamente el espacio que sobra después de la
+                            navegación de abajo, sea cual sea la altura real de esta tarjeta
+                            (h-[300px]/h-[450px]) y el tamaño de fuente del breakpoint activo
+                            — no depende de un número de píxeles calculado a mano por
+                            breakpoint, que ya se rompió dos veces (768px y luego lg:+,
+                            hallazgo de revisión adversarial, Codex, ronda 2). */}
+                        <div className="flex flex-col min-h-0 flex-1">
+                            <div className="shrink-0">
+                                {/* Badge del día */}
+                                <div className="inline-flex items-center gap-2 mb-3">
+                                    <div className="w-9 h-9 bg-pizarra rounded-lg flex items-center justify-center shadow shadow-pizarra/20">
+                                        <span className="text-base font-bold text-white">{pkg.itinerary[currentDay].day}</span>
+                                    </div>
+                                    <span className="text-pizarra font-semibold text-sm">
+                                        {siteTexts.packageInfo.day} {pkg.itinerary[currentDay].day} {siteTexts.packageInfo.dayOf} {pkg.itinerary.length}
+                                    </span>
                                 </div>
-                                <span className="text-pizarra font-semibold text-sm">
-                                    {siteTexts.packageInfo.day} {pkg.itinerary[currentDay].day} {siteTexts.packageInfo.dayOf} {pkg.itinerary.length}
-                                </span>
+
+                                {/* Título */}
+                                <h3 className="text-xl md:text-2xl font-bold text-grafito mb-3 leading-tight">
+                                    {pkg.itinerary[currentDay].title}
+                                </h3>
                             </div>
 
-                            {/* Título */}
-                            <h3 className="text-xl md:text-2xl font-bold text-grafito mb-3 leading-tight">
-                                {pkg.itinerary[currentDay].title}
-                            </h3>
-
-                            {/* Descripción - altura fija con scroll y gradiente indicador en
-                                TODOS los breakpoints. El contenedor padre tiene altura FIJA
-                                (h-[450px]) desde md: en adelante — un `*:max-h-none` en
-                                cualquier breakpoint apuesta a que el texto de ese día siempre
-                                quepa a ese ancho de columna, lo cual depende de cuánto escriba
-                                el equipo editorial y ya se rompió una vez a 768px (hallazgo QA
-                                de regresión, reproducido en 2 paquetes con modalidad). En vez
-                                de mover el límite a otro breakpoint (misma fragilidad, solo con
-                                contenido más largo), se deja un tope acotado siempre: nunca
-                                puede desbordar la caja fija sin importar cuánto crezca el texto. */}
-                            <div className="relative">
-                                <div className="text-pizarra text-sm md:text-base leading-relaxed prose prose-sm max-w-none max-h-[180px] sm:max-h-[200px] md:max-h-[220px] lg:max-h-[300px] overflow-y-auto pr-1 pb-10 scrollbar-thin scrollbar-thumb-niebla scrollbar-track-transparent">
+                            {/* Descripción - toma el espacio remanente real del flex-col
+                                (ver comentario arriba) y hace scroll interno dentro de eso,
+                                nunca desborda la tarjeta sin importar el breakpoint, el
+                                tamaño de fuente, o cuánto escriba el equipo editorial. */}
+                            <div className="relative flex-1 min-h-0">
+                                <div className="text-pizarra text-sm md:text-base leading-relaxed prose prose-sm max-w-none h-full overflow-y-auto pr-1 pb-10 scrollbar-thin scrollbar-thumb-niebla scrollbar-track-transparent">
                                     <BlocksRenderer content={pkg.itinerary[currentDay].description} />
                                 </div>
                                 {/* Gradiente indicador de scroll (se ve inofensivo aunque el
@@ -432,7 +439,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                         </div>
 
                         {/* Navegación */}
-                        <div className="flex items-center justify-between pt-2 border-t border-niebla">
+                        <div className="flex items-center justify-between pt-2 border-t border-niebla shrink-0">
                             {/* Flechas */}
                             <div className="flex items-center gap-3">
                                 <button
