@@ -25,3 +25,4 @@ dist-ssr
 
 # Playwright/QA artifacts
 .playwright-mcp/
+.vercel

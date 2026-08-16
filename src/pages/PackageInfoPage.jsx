@@ -43,11 +43,14 @@ const PackageInfoPage = ({ onOpenQuote }) => {
     const { data: pkg, isLoading, error } = usePackage(slug);
     const { texts: siteTexts } = useSiteTextsContext();
 
-    // Hook para redirección inteligente al cambiar idioma
+    // Hook para redirección inteligente al cambiar idioma (y para corregir
+    // enlaces directos con el slug del idioma equivocado — ver comentario
+    // en useLanguageAwareNavigation)
     useLanguageAwareNavigation({
         documentId: pkg?.documentId,
         currentSlug: slug,
         resourceType: 'package',
+        dataLocale: pkg?.locale,
     });
 
     // Hreflang para SEO - URLs alternativas por idioma (DEBE estar antes de early returns)
@@ -106,6 +109,12 @@ const PackageInfoPage = ({ onOpenQuote }) => {
     useEffect(() => {
         if (currencyLoading) return; // esperar a que se resuelva moneda detectada/guardada
         if (pkg && !currency) return;
+        // No trackear si estos datos son un fallback silencioso a otro locale
+        // (pkg.locale !== currentLocale) — useLanguageAwareNavigation está a
+        // punto de redirigir a la URL correcta; contar esta vista contamina
+        // analytics con el slug/idioma equivocado (hallazgo de revisión
+        // adversarial, Codex: "Analytics registra la URL incorrecta").
+        if (pkg && pkg.locale && pkg.locale !== currentLocale) return;
         if (pkg && trackedPkgRef.current !== `${slug}_${currency}`) {
             trackedPkgRef.current = `${slug}_${currency}`;
             // fromPriceEUR (no priceEUR legacy) — hallazgo de QA adversarial
@@ -124,7 +133,7 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                 duration: pkg.duration,
             });
         }
-    }, [pkg?.documentId, slug, currency, currencyLoading]);
+    }, [pkg?.documentId, pkg?.locale, slug, currency, currencyLoading, currentLocale]);
 
     // Scroll al inicio cuando carga la página
     useEffect(() => {

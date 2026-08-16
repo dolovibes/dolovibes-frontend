@@ -766,6 +766,7 @@ const transformExperiences = (data) => {
   return items.map((item) => ({
     id: item.id,
     documentId: item.documentId, // Necesario para enrichWithSpanishMedia
+    locale: item.locale, // Necesario para detectar fallback silencioso a español (ver useLanguageAwareNavigation)
     title: item.title,
     slug: item.slug,
     season: item.season, // fix #42: keep raw Strapi value (summer/winter) - frontend seasonMap handles both formats
@@ -879,6 +880,7 @@ const transformPackages = (data) => {
     return {
       id: item.id,
       documentId: item.documentId, // Necesario para enrichWithSpanishMedia
+      locale: item.locale, // Necesario para detectar fallback silencioso a español (ver useLanguageAwareNavigation)
       experienceSlug: item.experience?.slug || '',
       title: item.title,
       slug: item.slug,
@@ -1176,6 +1178,7 @@ const transformLegalPage = (data) => {
   return items.map((item) => ({
     id: item.id,
     documentId: item.documentId, // fix #19: Necesario para resolución de slugs al cambiar idioma
+    locale: item.locale, // Necesario para detectar fallback silencioso a español (ver useLanguageAwareNavigation)
     title: item.title,
     slug: item.slug,
     content: item.content, // Rico texto (Markdown)
