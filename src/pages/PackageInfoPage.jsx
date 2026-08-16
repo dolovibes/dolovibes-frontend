@@ -411,20 +411,23 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 {pkg.itinerary[currentDay].title}
                             </h3>
 
-                            {/* Descripción - altura fija con scroll en móvil/tablet y gradiente
-                                indicador. El contenedor padre tiene altura FIJA (h-[450px]) desde
-                                md: en adelante — a md: (768-1023px) el texto puede necesitar más
-                                líneas que a lg:+ (columna más angosta), y sin un tope se desborda
-                                por fuera de esa caja fija y se pinta encima de la sección
-                                siguiente (hallazgo QA de regresión: bug visual real en 768px,
-                                reproducido en 2 paquetes con modalidad). lg:max-h-none solo
-                                aplica donde de verdad ya no hace falta el límite. */}
+                            {/* Descripción - altura fija con scroll y gradiente indicador en
+                                TODOS los breakpoints. El contenedor padre tiene altura FIJA
+                                (h-[450px]) desde md: en adelante — un `*:max-h-none` en
+                                cualquier breakpoint apuesta a que el texto de ese día siempre
+                                quepa a ese ancho de columna, lo cual depende de cuánto escriba
+                                el equipo editorial y ya se rompió una vez a 768px (hallazgo QA
+                                de regresión, reproducido en 2 paquetes con modalidad). En vez
+                                de mover el límite a otro breakpoint (misma fragilidad, solo con
+                                contenido más largo), se deja un tope acotado siempre: nunca
+                                puede desbordar la caja fija sin importar cuánto crezca el texto. */}
                             <div className="relative">
-                                <div className="text-pizarra text-sm md:text-base leading-relaxed prose prose-sm max-w-none max-h-[180px] sm:max-h-[200px] md:max-h-[220px] lg:max-h-none overflow-y-auto pr-1 pb-10 scrollbar-thin scrollbar-thumb-niebla scrollbar-track-transparent">
+                                <div className="text-pizarra text-sm md:text-base leading-relaxed prose prose-sm max-w-none max-h-[180px] sm:max-h-[200px] md:max-h-[220px] lg:max-h-[300px] overflow-y-auto pr-1 pb-10 scrollbar-thin scrollbar-thumb-niebla scrollbar-track-transparent">
                                     <BlocksRenderer content={pkg.itinerary[currentDay].description} />
                                 </div>
-                                {/* Gradiente indicador de scroll para móvil/tablet */}
-                                <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white via-white/70 to-transparent pointer-events-none lg:hidden transition-opacity duration-300"></div>
+                                {/* Gradiente indicador de scroll (se ve inofensivo aunque el
+                                    texto no llegue a desbordar; consistente en todos los anchos) */}
+                                <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white via-white/70 to-transparent pointer-events-none transition-opacity duration-300"></div>
                             </div>
                         </div>
 
