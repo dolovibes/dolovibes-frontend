@@ -136,6 +136,23 @@ export const SiteTextsProvider = ({ children }) => {
             itinerary: getText('packageInfo.itinerary', 'itinerary', 'packageInfo'),
             includes: getText('packageInfo.includes', 'includes', 'packageInfo'),
             notIncludes: getText('packageInfo.notIncludes', 'notIncludes', 'packageInfo'),
+            // ── Modalidades Autoguiada/Guiada ──
+            // Las claves de fallback i18n viven en src/locales/*/packageInfo.json
+            // y public/locales/*/packageInfo.json (namespace packageInfo). `getText`
+            // prioriza Strapi y cae a i18n cuando Strapi no tiene el site-text
+            // poblado; cada consumidor omite el elemento en vez de pintar texto en
+            // el idioma equivocado si ninguna de las dos fuentes responde.
+            modalityDefaultLabelA: getText('packageInfo.modalityDefaultLabelA', 'modalityDefaultLabelA', 'packageInfo'),
+            modalityDefaultLabelB: getText('packageInfo.modalityDefaultLabelB', 'modalityDefaultLabelB', 'packageInfo'),
+            guideIncludedLabel: getText('packageInfo.guideIncludedLabel', 'guideIncludedLabel', 'packageInfo'),
+            availableDatesHeading: getText('packageInfo.availableDatesHeading', 'availableDatesHeading', 'packageInfo'),
+            noDatesAvailable: getText('packageInfo.noDatesAvailable', 'noDatesAvailable', 'packageInfo'),
+            fromPrice: getText('packageInfo.fromPrice', 'fromPrice', 'packageInfo'),
+            modalityUnavailable: getText('packageInfo.modalityUnavailable', 'modalityUnavailable', 'packageInfo'),
+            // aria-label del tablist del ModalityToggle: es infraestructura de
+            // accesibilidad, no contenido editorial, así que no tiene strapiPath
+            // ni pasa por getText — se lee directo de i18n.
+            modalitySelectorAriaLabel: tPackageInfo('modalitySelectorAriaLabel'),
         },
         // Quote Modal
         quoteModal: {
@@ -245,7 +262,7 @@ export const SiteTextsProvider = ({ children }) => {
             q5b: getText('answers.q5b', 'answers.q5b', 'hikingLevel'),
             q5c: getText('answers.q5c', 'answers.q5c', 'hikingLevel'),
         },
-    }), [getText]);
+    }), [getText, tPackageInfo]);
 
     return (
         <SiteTextsContext.Provider value={{ texts, isLoading, getText }}>

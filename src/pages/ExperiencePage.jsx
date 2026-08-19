@@ -22,11 +22,14 @@ const ExperiencePage = ({ onOpenQuote }) => {
     const { data: relatedPackages = [], isLoading: loadingPackages } = usePackagesByExperience(slug);
     const { data: siteTexts } = useSiteTexts();
 
-    // Hook para redirección inteligente al cambiar idioma
+    // Hook para redirección inteligente al cambiar idioma (y para corregir
+    // enlaces directos con el slug del idioma equivocado — ver comentario
+    // en useLanguageAwareNavigation)
     useLanguageAwareNavigation({
         documentId: experience?.documentId,
         currentSlug: slug,
         resourceType: 'experience',
+        dataLocale: experience?.locale,
     });
 
     // Hreflang para SEO - URLs alternativas por idioma (DEBE estar antes de early returns)
@@ -47,11 +50,15 @@ const ExperiencePage = ({ onOpenQuote }) => {
     // Track experience view when data is loaded (useRef guard prevents StrictMode duplicates)
     const trackedExpRef = useRef(null);
     useEffect(() => {
+        // No trackear si estos datos son un fallback silencioso a otro locale
+        // (useLanguageAwareNavigation está por redirigir a la URL correcta —
+        // ver mismo guard en PackageInfoPage).
+        if (experience?.locale && experience.locale !== i18n.language) return;
         if (experience && !currencyLoading && trackedExpRef.current !== slug) {
             trackedExpRef.current = slug;
             trackExperienceView({ title: experience.title, slug });
         }
-    }, [experience?.documentId, slug, currencyLoading]);
+    }, [experience?.documentId, experience?.locale, slug, currencyLoading, i18n.language]);
 
     // Scroll al inicio cuando carga la página
     useEffect(() => {

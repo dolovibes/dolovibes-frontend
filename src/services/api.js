@@ -47,6 +47,26 @@ const getCurrentLocale = () => {
 };
 
 // ═══════════════════════════════════════════════════════════════
+// MODALIDADES AUTOGUIADA/GUIADA — criterio compartido
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * Criterio único de "modalidad usable": habilitada Y con precio numérico
+ * real. Antes vivía duplicado (con matices distintos) en PackageInfoPage.jsx
+ * y PackageCard.jsx — PackageCard solo miraba `enabled`, así que una
+ * modalidad enabled-sin-precio activaba su UI de "Desde" con el precio
+ * legacy, mientras la página de detalle correctamente caía 100% a legacy.
+ * Unificado tras revisión adversarial (Grok) que señaló la divergencia.
+ *
+ * Usa `Number.isFinite` en vez de `typeof x === 'number'`: en JS,
+ * `typeof NaN === 'number'` es true, así que el chequeo anterior aceptaba
+ * NaN como "precio válido" (p.ej. si Strapi devolviera un cast numérico
+ * corrupto), lo que habría contaminado `Math.min()` en fromPriceEUR.
+ */
+export const isModalityUsable = (modality) =>
+  modality?.enabled === true && Number.isFinite(modality?.priceEUR);
+
+// ═══════════════════════════════════════════════════════════════
 // WRAPPER PRINCIPAL
 // ═══════════════════════════════════════════════════════════════
 
@@ -464,6 +484,25 @@ const PACKAGE_POPULATE = {
   startDates: true,
   tags: true,
   experience: true,
+  // ── Modalidades Autoguiada/Guiada ──────────────────────────────────
+  // IMPORTANTE: en Strapi v5, `populate: true` sobre un componente devuelve SOLO
+  // sus campos escalares y omite por completo los componentes anidados.
+  // Verificado empíricamente contra Strapi 5.35 local:
+  //   populate[autoGuidedModalityContent]=true          -> { id, hint, availableDatesText }
+  //   populate[autoGuidedModalityContent][populate]=*   -> + includes[2] y notIncludes[1] con su `detail`
+  // Por eso los componentes con hijos llevan `populate` explícito (mismo patrón
+  // que `gallery`/`itinerary` más arriba). `toggleLabelA/B` son strings del
+  // content-type, no requieren populate.
+  autoGuidedModalityConfig: true, // solo escalares, sin componentes anidados
+  guidedModalityConfig: {
+    populate: ['departures'],
+  },
+  autoGuidedModalityContent: {
+    populate: ['includes', 'notIncludes'],
+  },
+  guidedModalityContent: {
+    populate: ['includes', 'notIncludes'],
+  },
 };
 
 /**
@@ -727,6 +766,7 @@ const transformExperiences = (data) => {
   return items.map((item) => ({
     id: item.id,
     documentId: item.documentId, // Necesario para enrichWithSpanishMedia
+    locale: item.locale, // Necesario para detectar fallback silencioso a español (ver useLanguageAwareNavigation)
     title: item.title,
     slug: item.slug,
     season: item.season, // fix #42: keep raw Strapi value (summer/winter) - frontend seasonMap handles both formats
@@ -748,9 +788,99 @@ const transformPackages = (data) => {
     // Determinar si mostrar descuento: solo si hasDiscount=true Y hay originalPriceAmount
     const showDiscount = item.hasDiscount === true && item.originalPriceAmount && item.originalPriceAmount > item.priceAmount;
 
+    // ── Modalidades Autoguiada/Guiada ────────────────────────────────
+    // Cada modalidad se arma con DOS componentes de Strapi: *Config (operativo,
+    // compartido entre idiomas) y *Content (editorial, localizado). Cualquiera
+    // de los dos puede venir null/undefined si el paquete todavía no fue
+    // configurado, o si el editor no publicó los cambios: todo va con optional
+    // chaining y defaults (enabled=false, arrays [], strings null).
+    const buildModality = (config, content, modalityName) => {
+      const priceEUR = config?.priceAmount ?? null;
+      const originalPriceEUR = config?.originalPriceAmount ?? null;
+      // Misma regla de descuento que el precio legacy (ver showDiscount arriba)
+      const modalityShowDiscount =
+        config?.hasDiscount === true &&
+        originalPriceEUR != null &&
+        priceEUR != null &&
+        originalPriceEUR > priceEUR;
+
+      // Recomendación Gate C (Codex): un editor pudo habilitar la modalidad
+      // sin cargarle precio en el CMS. No bloqueamos la UI (fromPriceEUR cae
+      // al legacy), pero lo hacemos visible para no enmascarar el dato incompleto.
+      if (config?.enabled === true && !Number.isFinite(priceEUR)) {
+        console.warn(`[Strapi] Package "${item.slug}" (${item.documentId}): modalidad "${modalityName}" está enabled pero sin priceAmount cargado`);
+      }
+
+      const includes = content?.includes?.map(inc => ({
+        label: inc.label,
+        detail: inc.detail,
+      })) || [];
+      const notIncludes = content?.notIncludes?.map(ni => ({
+        label: ni.label,
+        detail: ni.detail,
+      })) || [];
+
+      // Hallazgo de QA adversarial (Grok): una modalidad "usable" por precio
+      // pero con includes/notIncludes vacíos hace que esa sección desaparezca
+      // por completo en la página (no hay fallback al legacy dentro del modo
+      // modalidad, deliberado — ver PackageInfoPage.jsx). No es un bug de
+      // código: es contenido incompleto en el CMS. Se deja visible con el
+      // mismo patrón de warning que el precio, en vez de silenciarlo.
+      if (config?.enabled === true && Number.isFinite(priceEUR) && includes.length === 0 && notIncludes.length === 0) {
+        console.warn(`[Strapi] Package "${item.slug}" (${item.documentId}): modalidad "${modalityName}" tiene precio pero no tiene includes ni notIncludes cargados`);
+      }
+
+      return {
+        enabled: config?.enabled === true,
+        priceEUR,
+        originalPriceEUR: modalityShowDiscount ? originalPriceEUR : null,
+        hasDiscount: modalityShowDiscount,
+        hint: content?.hint || null,
+        availableDatesText: content?.availableDatesText || null,
+        includes,
+        notIncludes,
+      };
+    };
+
+    const autoGuidedModality = buildModality(
+      item.autoGuidedModalityConfig,
+      item.autoGuidedModalityContent,
+      'autoGuided',
+    );
+
+    const guidedModality = {
+      ...buildModality(item.guidedModalityConfig, item.guidedModalityContent, 'guided'),
+      // departures usa el mismo componente package.start-date que startDates legacy.
+      // Se conserva la estructura completa (no solo el texto) hasta la capa de
+      // presentación — un `available:false` apagado en el CMS debe ocultar la
+      // fecha en vez de solo dejar de resaltarla (hallazgo de revisión
+      // adversarial, Codex/Grok: el frontend descartaba `available` al
+      // aplanar a string, así que una fecha agotada seguía mostrándose).
+      departures: item.guidedModalityConfig?.departures?.map(d => ({
+        text: d.displayText || d.date,
+        available: d.available !== false,
+      })) || [],
+    };
+
+    // fromPriceEUR: precio "desde" a nivel paquete.
+    // REGLA DE FALLBACK (decisión de negocio, validada en Gate C):
+    //   1. Si hay modalidades usables (ver `isModalityUsable` — enabled Y
+    //      precio numérico real, no NaN), se usa el MÁS BAJO de esos precios.
+    //   2. Si ninguna modalidad nueva aplica (ambas deshabilitadas, ambos
+    //      componentes null, o habilitadas pero sin precio cargado), se cae al
+    //      priceAmount legacy, para que ningún paquete existente o aún no
+    //      migrado quede sin precio que mostrar.
+    const usableModalityPrices = [autoGuidedModality, guidedModality]
+      .filter(isModalityUsable)
+      .map(m => m.priceEUR);
+    const fromPriceEUR = usableModalityPrices.length > 0
+      ? Math.min(...usableModalityPrices)
+      : item.priceAmount;
+
     return {
       id: item.id,
       documentId: item.documentId, // Necesario para enrichWithSpanishMedia
+      locale: item.locale, // Necesario para detectar fallback silencioso a español (ver useLanguageAwareNavigation)
       experienceSlug: item.experience?.slug || '',
       title: item.title,
       slug: item.slug,
@@ -809,6 +939,13 @@ const transformPackages = (data) => {
       // Campos para recomendaciones del home
       showInHome: item.showInHome || false,
       homeDisplayOrder: item.homeDisplayOrder || 0,
+      // ── Modalidades Autoguiada/Guiada (aditivo: los campos legacy de arriba
+      // siguen intactos para PackageCard/PackageInfoPage) ──
+      toggleLabelA: item.toggleLabelA || null,
+      toggleLabelB: item.toggleLabelB || null,
+      autoGuidedModality,
+      guidedModality,
+      fromPriceEUR,
     };
   });
 };
@@ -958,6 +1095,15 @@ const transformSiteTexts = (data) => {
       itinerary: data.packageInfoItinerary,
       includes: data.packageInfoIncludes,
       notIncludes: data.packageInfoNotIncludes,
+      // ── Modalidades Autoguiada/Guiada (aditivo: ningún campo de arriba se
+      // toca; si Strapi no tiene estos campos poblados quedan undefined y el
+      // consumidor decide qué hacer, igual que el resto de esta sección) ──
+      modalityDefaultLabelA: data.packageInfoModalityDefaultLabelA,
+      modalityDefaultLabelB: data.packageInfoModalityDefaultLabelB,
+      guideIncludedLabel: data.packageInfoGuideIncludedLabel,
+      availableDatesHeading: data.packageInfoAvailableDatesHeading,
+      fromPrice: data.packageInfoFromPrice,
+      modalityUnavailable: data.packageInfoModalityUnavailable,
     },
     // Selector de moneda
     currency: {
@@ -1032,6 +1178,7 @@ const transformLegalPage = (data) => {
   return items.map((item) => ({
     id: item.id,
     documentId: item.documentId, // fix #19: Necesario para resolución de slugs al cambiar idioma
+    locale: item.locale, // Necesario para detectar fallback silencioso a español (ver useLanguageAwareNavigation)
     title: item.title,
     slug: item.slug,
     content: item.content, // Rico texto (Markdown)

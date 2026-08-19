@@ -18,8 +18,11 @@ import {
     Camera
 } from 'lucide-react';
 import { usePackage, useLanguageAwareNavigation } from '../services/hooks';
+import { isModalityUsable } from '../services/api';
 import { useSiteTextsContext } from '../contexts/SiteTextsContext';
 import { useCurrencyContext } from '../utils/currency';
+import ModalityToggle from '../components/ModalityToggle';
+import PackageAccordionSection from '../components/PackageAccordionSection';
 import PackageQuoteModal from '../components/PackageQuoteModal';
 import PhotoGalleryModal from '../components/PhotoGalleryModal';
 import HikingLevelModal from '../components/HikingLevelModal';
@@ -27,7 +30,7 @@ import Footer from '../components/Footer';
 import Hreflang from '../components/Hreflang';
 import { useAlternateUrls } from '../hooks/useAlternateUrls';
 import usePageMeta from '../hooks/usePageMeta';
-import { trackPackageView, trackGalleryOpen } from '../utils/dataLayer';
+import { trackPackageView, trackGalleryOpen, trackModalitySwitch } from '../utils/dataLayer';
 import { convertFromEUR } from '../utils/currency';
 
 const PackageInfoPage = ({ onOpenQuote }) => {
@@ -40,11 +43,14 @@ const PackageInfoPage = ({ onOpenQuote }) => {
     const { data: pkg, isLoading, error } = usePackage(slug);
     const { texts: siteTexts } = useSiteTextsContext();
 
-    // Hook para redirección inteligente al cambiar idioma
+    // Hook para redirección inteligente al cambiar idioma (y para corregir
+    // enlaces directos con el slug del idioma equivocado — ver comentario
+    // en useLanguageAwareNavigation)
     useLanguageAwareNavigation({
         documentId: pkg?.documentId,
         currentSlug: slug,
         resourceType: 'package',
+        dataLocale: pkg?.locale,
     });
 
     // Hreflang para SEO - URLs alternativas por idioma (DEBE estar antes de early returns)
@@ -65,6 +71,22 @@ const PackageInfoPage = ({ onOpenQuote }) => {
 
     // Estado para los includes expandibles
     const [expandedInclude, setExpandedInclude] = useState(null);
+
+    // Modalidad seleccionada en el toggle Autoguiada ('A') / Guiada ('B').
+    // Se guarda junto al documentId al que pertenece la elección para que, al
+    // navegar a OTRO paquete, la selección no se arrastre: si el documentId
+    // guardado no coincide con el del paquete actual, la selección se ignora y
+    // se recalcula la modalidad por defecto durante el render (ver
+    // `selectedModalityKey` más abajo). Se resuelve así, por derivación, en vez
+    // de con un useEffect de reset, por tres razones concretas:
+    //   1. Un useEffect corre DESPUÉS del primer pintado, así que un paquete
+    //      que solo tiene la modalidad Guiada habilitada alcanzaría a pintar un
+    //      frame con los datos (vacíos) de la Autoguiada antes de corregirse.
+    //   2. Evita introducir warnings nuevos de `react-hooks/set-state-in-effect`
+    //      y `exhaustive-deps`, que este repo tiene activos.
+    //   3. No hay estado que pueda quedar desincronizado: la fuente de verdad
+    //      es el paquete actual, no un efecto que debe alcanzarlo.
+    const [modalitySelection, setModalitySelection] = useState({ documentId: null, key: 'A' });
 
     // Estado para el modal de cotización
     const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
@@ -87,19 +109,31 @@ const PackageInfoPage = ({ onOpenQuote }) => {
     useEffect(() => {
         if (currencyLoading) return; // esperar a que se resuelva moneda detectada/guardada
         if (pkg && !currency) return;
+        // No trackear si estos datos son un fallback silencioso a otro locale
+        // (pkg.locale !== currentLocale) — useLanguageAwareNavigation está a
+        // punto de redirigir a la URL correcta; contar esta vista contamina
+        // analytics con el slug/idioma equivocado (hallazgo de revisión
+        // adversarial, Codex: "Analytics registra la URL incorrecta").
+        if (pkg && pkg.locale && pkg.locale !== currentLocale) return;
         if (pkg && trackedPkgRef.current !== `${slug}_${currency}`) {
             trackedPkgRef.current = `${slug}_${currency}`;
+            // fromPriceEUR (no priceEUR legacy) — hallazgo de QA adversarial
+            // (Grok): con modalidades, priceEUR legacy puede quedar desfasado
+            // del precio "desde" que el usuario realmente ve en la página.
+            // fromPriceEUR ya resuelve esto en api.js (cae a priceEUR legacy
+            // cuando no hay modalidades usables, así que no cambia nada para
+            // los paquetes sin modalidad).
             trackPackageView({
                 title: pkg.title,
                 slug,
-                priceEUR: pkg.priceEUR,
-                priceConverted: convertFromEUR(pkg.priceEUR, currency),
+                priceEUR: pkg.fromPriceEUR,
+                priceConverted: convertFromEUR(pkg.fromPriceEUR, currency),
                 displayCurrency: currency,
                 location: pkg.location,
                 duration: pkg.duration,
             });
         }
-    }, [pkg?.documentId, slug, currency, currencyLoading]);
+    }, [pkg?.documentId, pkg?.locale, slug, currency, currencyLoading, currentLocale]);
 
     // Scroll al inicio cuando carga la página
     useEffect(() => {
@@ -183,6 +217,79 @@ const PackageInfoPage = ({ onOpenQuote }) => {
 
     const currentItinerary = pkg.itinerary?.[currentDay];
 
+    // ── Modalidades Autoguiada/Guiada ──
+    //
+    // `hasModalityData` es el interruptor central de esta integración: cuando es
+    // false (hoy, la enorme mayoría de los paquetes, y cualquier paquete futuro
+    // que no se configure) la página renderiza EXACTAMENTE los mismos bloques
+    // legacy que antes de esta fase, sin una sola clase ni condición cambiada.
+    // Los bloques nuevos se agregan AL LADO de los legacy, nunca fusionados con
+    // ellos, precisamente para que el riesgo de regresión visual sobre los
+    // paquetes ya publicados sea nulo y auditable línea por línea.
+    //
+    // "Usable" (Gate D, Codex — corrige bug bloqueante de la ronda anterior):
+    // una modalidad solo cuenta si además de `enabled === true` tiene un
+    // `priceEUR` numérico real. `enabled` sin precio es un dato incompleto del
+    // CMS (el mismo caso que `fromPriceEUR` en api.js ya excluye al calcular
+    // el mínimo, cayendo al legacy). Antes, esta página solo miraba `enabled`,
+    // así que una modalidad habilitada-pero-sin-precio activaba la rama nueva
+    // y dejaba el bloque de precio completamente vacío, contradiciendo el
+    // propio fallback que `api.js` ya documenta. Ahora ambos lados usan el
+    // mismo criterio (`isModalityUsable`, importado de api.js — antes vivía
+    // duplicado localmente aquí y con un chequeo distinto en PackageCard.jsx,
+    // corregido tras QA adversarial): si ninguna modalidad es usable,
+    // `hasModalityData` es false y la página cae 100% al bloque legacy.
+    const hasModalityData =
+        isModalityUsable(pkg.autoGuidedModality) || isModalityUsable(pkg.guidedModality);
+
+    const modalitiesByKey = { A: pkg.autoGuidedModality, B: pkg.guidedModality };
+
+    // Modalidad por defecto: la primera USABLE (no solo habilitada). Si
+    // ninguna lo es, `hasModalityData` es false y nada de esto se renderiza.
+    const defaultModalityKey = isModalityUsable(pkg.autoGuidedModality) ? 'A' : 'B';
+
+    // La selección solo vale para el paquete en el que se hizo; para cualquier
+    // otro documentId se vuelve a la modalidad por defecto.
+    const storedModalityKey = modalitySelection.documentId === pkg.documentId
+        ? modalitySelection.key
+        : defaultModalityKey;
+
+    // Guarda final: nunca mostramos una modalidad no usable (deshabilitada O
+    // sin precio), aunque el estado guardado apunte a ella. Con esto el
+    // toggle y el contenido siempre coinciden (se le pasa esta misma clave
+    // ya saneada), y el precio nunca queda vacío mientras `hasModalityData`
+    // sea true.
+    const selectedModalityKey = isModalityUsable(modalitiesByKey[storedModalityKey])
+        ? storedModalityKey
+        : defaultModalityKey;
+
+    const activeModality = modalitiesByKey[selectedModalityKey];
+
+    // Resueltas una sola vez, reusadas por el ModalityToggle Y por
+    // PackageQuoteModal — antes el modal de cotización no las recibía y
+    // mostraba "Guiado"/"Autoguiado" fijo sin importar la etiqueta real del
+    // tour (hallazgo de revisión adversarial, Codex + Grok).
+    const resolvedToggleLabelA = pkg.toggleLabelA || siteTexts.packageInfo.modalityDefaultLabelA;
+    const resolvedToggleLabelB = pkg.toggleLabelB || siteTexts.packageInfo.modalityDefaultLabelB;
+
+    const handleModalityChange = (nextKey) => {
+        setModalitySelection({ documentId: pkg.documentId, key: nextKey });
+        // Sin este evento no había forma de saber qué modalidad mira/prefiere
+        // la gente antes de cotizar (hallazgo de revisión adversarial, ver
+        // dataLayer.js). Se dispara con el precio/label de la modalidad a la
+        // que se está cambiando, no la que se deja.
+        const nextModality = modalitiesByKey[nextKey];
+        const nextLabel = nextKey === 'A' ? resolvedToggleLabelA : resolvedToggleLabelB;
+        trackModalitySwitch({
+            packageTitle: pkg.title,
+            packageDocumentId: pkg.documentId,
+            packageSlug: pkg.slug,
+            modalityKey: nextKey,
+            modalityLabel: nextLabel,
+            priceEUR: nextModality?.priceEUR,
+        });
+    };
+
     return (
         <div className="min-h-screen bg-white overflow-x-hidden">
             <Hreflang alternateUrls={alternateUrls} />
@@ -230,15 +337,37 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                     {pkg.groupSize}
                                 </span>
                             )}
-                            {pkg.guideType && (
+                            {/* Badges legacy de guía y fechas: solo para paquetes SIN
+                                modalidades configuradas. El contenido interno queda
+                                idéntico; únicamente se antepone el guard. */}
+                            {!hasModalityData && pkg.guideType && (
                                 <span className="flex items-center gap-1.5 sm:gap-2 bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-sm sm:text-base">
                                     {pkg.guideType}
                                 </span>
                             )}
-                            {pkg.availableDates && (
+                            {!hasModalityData && pkg.availableDates && (
                                 <span className="flex items-center gap-1.5 sm:gap-2 bg-emerald-500/20 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-emerald-400/30 text-sm sm:text-base">
                                     <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
                                     <span className="font-medium">{pkg.availableDates}</span>
+                                </span>
+                            )}
+
+                            {/* "Guía incluido" se movió junto al precio (ver más abajo) —
+                                la spec lo pide como chip pegado al precio, no en el hero,
+                                para que cambiar el toggle y ver el precio actualizarse sea
+                                la misma acción que ver si trae guía (hallazgo de revisión
+                                adversarial, Codex/Grok: estaban visualmente desconectados,
+                                el usuario podía cambiar el toggle y no notar el badge de
+                                arriba, fuera del viewport). */}
+                            {/* El rango abierto de fechas solo aplica a Autoguiada (A) —
+                                Guiada (B) usa exclusivamente las salidas fijas (chips más
+                                abajo), nunca ambas superficies a la vez (mismo hallazgo:
+                                la spec pide UNA superficie de fechas que cambia según
+                                modalidad, no dos que pueden contradecirse). */}
+                            {hasModalityData && selectedModalityKey === 'A' && activeModality?.availableDatesText && (
+                                <span className="flex items-center gap-1.5 sm:gap-2 bg-emerald-500/20 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-emerald-400/30 text-sm sm:text-base">
+                                    <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+                                    <span className="font-medium">{activeModality.availableDatesText}</span>
                                 </span>
                             )}
                         </div>
@@ -274,35 +403,52 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                     </div>
 
                     {/* Contenido derecha */}
-                    <div className="w-full md:w-1/2 h-[300px] md:h-full bg-white p-6 md:p-10 flex flex-col justify-between">
-                        <div>
-                            {/* Badge del día */}
-                            <div className="inline-flex items-center gap-2 mb-3">
-                                <div className="w-9 h-9 bg-pizarra rounded-lg flex items-center justify-center shadow shadow-pizarra/20">
-                                    <span className="text-base font-bold text-white">{pkg.itinerary[currentDay].day}</span>
+                    <div className="w-full md:w-1/2 h-[300px] md:h-full bg-white p-6 md:p-10 flex flex-col">
+                        {/* min-h-0 en un flex-col es necesario para que este hijo pueda
+                            encogerse por debajo de su contenido intrínseco — sin esto, un
+                            hijo flex nunca se achica más allá de lo que su contenido pide, y
+                            el max-h-full/overflow-y-auto de abajo no tendría ningún límite
+                            real del que partir (se seguiría desbordando el flex-col padre).
+                            flex-1 le da exactamente el espacio que sobra después de la
+                            navegación de abajo, sea cual sea la altura real de esta tarjeta
+                            (h-[300px]/h-[450px]) y el tamaño de fuente del breakpoint activo
+                            — no depende de un número de píxeles calculado a mano por
+                            breakpoint, que ya se rompió dos veces (768px y luego lg:+,
+                            hallazgo de revisión adversarial, Codex, ronda 2). */}
+                        <div className="flex flex-col min-h-0 flex-1">
+                            <div className="shrink-0">
+                                {/* Badge del día */}
+                                <div className="inline-flex items-center gap-2 mb-3">
+                                    <div className="w-9 h-9 bg-pizarra rounded-lg flex items-center justify-center shadow shadow-pizarra/20">
+                                        <span className="text-base font-bold text-white">{pkg.itinerary[currentDay].day}</span>
+                                    </div>
+                                    <span className="text-pizarra font-semibold text-sm">
+                                        {siteTexts.packageInfo.day} {pkg.itinerary[currentDay].day} {siteTexts.packageInfo.dayOf} {pkg.itinerary.length}
+                                    </span>
                                 </div>
-                                <span className="text-pizarra font-semibold text-sm">
-                                    {siteTexts.packageInfo.day} {pkg.itinerary[currentDay].day} {siteTexts.packageInfo.dayOf} {pkg.itinerary.length}
-                                </span>
+
+                                {/* Título */}
+                                <h3 className="text-xl md:text-2xl font-bold text-grafito mb-3 leading-tight">
+                                    {pkg.itinerary[currentDay].title}
+                                </h3>
                             </div>
 
-                            {/* Título */}
-                            <h3 className="text-xl md:text-2xl font-bold text-grafito mb-3 leading-tight">
-                                {pkg.itinerary[currentDay].title}
-                            </h3>
-
-                            {/* Descripción - altura fija con scroll en móvil y gradiente indicador */}
-                            <div className="relative">
-                                <div className="text-pizarra text-sm md:text-base leading-relaxed prose prose-sm max-w-none max-h-[180px] sm:max-h-[200px] md:max-h-none overflow-y-auto pr-1 pb-10 scrollbar-thin scrollbar-thumb-niebla scrollbar-track-transparent">
+                            {/* Descripción - toma el espacio remanente real del flex-col
+                                (ver comentario arriba) y hace scroll interno dentro de eso,
+                                nunca desborda la tarjeta sin importar el breakpoint, el
+                                tamaño de fuente, o cuánto escriba el equipo editorial. */}
+                            <div className="relative flex-1 min-h-0">
+                                <div className="text-pizarra text-sm md:text-base leading-relaxed prose prose-sm max-w-none h-full overflow-y-auto pr-1 pb-10 scrollbar-thin scrollbar-thumb-niebla scrollbar-track-transparent">
                                     <BlocksRenderer content={pkg.itinerary[currentDay].description} />
                                 </div>
-                                {/* Gradiente indicador de scroll para móvil */}
-                                <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white via-white/70 to-transparent pointer-events-none md:hidden transition-opacity duration-300"></div>
+                                {/* Gradiente indicador de scroll (se ve inofensivo aunque el
+                                    texto no llegue a desbordar; consistente en todos los anchos) */}
+                                <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white via-white/70 to-transparent pointer-events-none transition-opacity duration-300"></div>
                             </div>
                         </div>
 
                         {/* Navegación */}
-                        <div className="flex items-center justify-between pt-2 border-t border-niebla">
+                        <div className="flex items-center justify-between pt-2 border-t border-niebla shrink-0">
                             {/* Flechas */}
                             <div className="flex items-center gap-3">
                                 <button
@@ -366,22 +512,84 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                     <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start w-full">
                         {/* Columna izquierda - Detalles */}
                         <div className="w-full overflow-hidden">
-                            {/* Precio destacado */}
-                            <div className="mb-8">
-                                <p className="text-niebla text-sm uppercase tracking-wider mb-1">
-                                    {siteTexts.packageInfo.pricePerPerson}
-                                </p>
-                                <div className="flex items-baseline gap-3">
-                                    {pkg.hasDiscount === true && pkg.originalPriceEUR && pkg.originalPriceEUR > pkg.priceEUR && (
-                                        <span className="text-niebla line-through text-lg sm:text-xl">
-                                            {formatPriceFromEUR(pkg.originalPriceEUR)}
+                            {/* Precio destacado (legacy, sin modalidades) */}
+                            {!hasModalityData && (
+                                <div className="mb-8">
+                                    <p className="text-niebla text-sm uppercase tracking-wider mb-1">
+                                        {siteTexts.packageInfo.pricePerPerson}
+                                    </p>
+                                    <div className="flex items-baseline gap-3">
+                                        {pkg.hasDiscount === true && pkg.originalPriceEUR && pkg.originalPriceEUR > pkg.priceEUR && (
+                                            <span className="text-niebla line-through text-lg sm:text-xl">
+                                                {formatPriceFromEUR(pkg.originalPriceEUR)}
+                                            </span>
+                                        )}
+                                        <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-pizarra">
+                                            {formatPriceFromEUR(pkg.priceEUR)}
                                         </span>
-                                    )}
-                                    <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-pizarra">
-                                        {formatPriceFromEUR(pkg.priceEUR)}
-                                    </span>
+                                    </div>
                                 </div>
-                            </div>
+                            )}
+
+                            {/* Selector de modalidad + precio de la modalidad activa.
+                                El toggle va ARRIBA del precio a propósito: el usuario
+                                elige modalidad y ve el precio (y el contenido de más
+                                abajo) actualizarse debajo de su elección. */}
+                            {hasModalityData && (
+                                <div className="mb-8">
+                                    <ModalityToggle
+                                        labelA={resolvedToggleLabelA}
+                                        labelB={resolvedToggleLabelB}
+                                        selected={selectedModalityKey}
+                                        onChange={handleModalityChange}
+                                        disabledA={!isModalityUsable(pkg.autoGuidedModality)}
+                                        disabledB={!isModalityUsable(pkg.guidedModality)}
+                                        unavailableLabel={siteTexts.packageInfo.modalityUnavailable}
+                                        ariaLabel={siteTexts.packageInfo.modalitySelectorAriaLabel}
+                                    />
+
+                                    {/* Aclaración de la modalidad elegida: texto sutil entre
+                                        el toggle y el precio, para que se lea como contexto de
+                                        lo recién seleccionado sin competir con la cifra. */}
+                                    {activeModality?.hint && (
+                                        <p className="text-niebla text-sm leading-snug mt-3">
+                                            {activeModality.hint}
+                                        </p>
+                                    )}
+
+                                    <div className="mt-5">
+                                        <p className="text-niebla text-sm uppercase tracking-wider mb-1">
+                                            {siteTexts.packageInfo.fromPrice
+                                                ? `${siteTexts.packageInfo.fromPrice} · ${siteTexts.packageInfo.pricePerPerson}`
+                                                : siteTexts.packageInfo.pricePerPerson}
+                                        </p>
+                                        {/* flex-wrap (hallazgo QA, Codex): precio + tachado + badge
+                                            "Guía incluido" pueden exceder el ancho en móvil con
+                                            precios convertidos largos o labels en alemán/italiano. */}
+                                        <div className="flex flex-wrap items-baseline gap-3">
+                                            {activeModality?.hasDiscount === true
+                                                && activeModality.originalPriceEUR > 0
+                                                && activeModality.originalPriceEUR > activeModality.priceEUR && (
+                                                <span className="text-niebla line-through text-lg sm:text-xl">
+                                                    {formatPriceFromEUR(activeModality.originalPriceEUR)}
+                                                </span>
+                                            )}
+                                            {typeof activeModality?.priceEUR === 'number' && (
+                                                <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-pizarra">
+                                                    {formatPriceFromEUR(activeModality.priceEUR)}
+                                                </span>
+                                            )}
+                                            {/* "Guía incluido" pegado al precio a propósito — ver
+                                                nota más arriba, junto al badge del hero que se quitó. */}
+                                            {selectedModalityKey === 'B' && siteTexts.packageInfo.guideIncludedLabel && (
+                                                <span className="bg-niebla/40 text-grafito px-3 py-1 rounded-full text-xs sm:text-sm font-medium self-center">
+                                                    {siteTexts.packageInfo.guideIncludedLabel}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
 
                             {/* Descripción breve */}
                             <p className="text-base sm:text-lg text-pizarra leading-relaxed mb-4 break-words">
@@ -399,8 +607,8 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </button>
 
-                            {/* Incluye - Desplegables */}
-                            {pkg.includes && pkg.includes.length > 0 && (
+                            {/* Incluye - Desplegables (legacy, sin modalidades) */}
+                            {!hasModalityData && pkg.includes && pkg.includes.length > 0 && (
                                 <div className="mb-6">
                                     <div className="space-y-3">
                                         {pkg.includes.map((item, index) => (
@@ -439,8 +647,8 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 </div>
                             )}
 
-                            {/* No Incluye - Desplegables */}
-                            {pkg.notIncludes && pkg.notIncludes.length > 0 && (
+                            {/* No Incluye - Desplegables (legacy, sin modalidades) */}
+                            {!hasModalityData && pkg.notIncludes && pkg.notIncludes.length > 0 && (
                                 <div className="mb-6">
                                     <div className="space-y-3">
                                         {pkg.notIncludes.map((item, index) => (
@@ -479,7 +687,78 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                 </div>
                             )}
 
-                            {/* Información Adicional - Desplegables */}
+                            {/* Fechas de salida: existen solo en la modalidad Guiada (la
+                                Autoguiada se realiza en fechas libres). Se ubican junto a
+                                los desplegables de la modalidad —y no pegadas al precio—
+                                para que TODO el contenido que cambia con el toggle quede
+                                agrupado en la misma zona de la página. */}
+                            {(() => {
+                                const allDepartures = activeModality?.departures || [];
+                                if (!hasModalityData || selectedModalityKey !== 'B' || allDepartures.length === 0) {
+                                    return null;
+                                }
+                                // Solo salidas disponibles: una fecha con available:false
+                                // (agotada, apagada por Paty en el CMS) no debe aparecer
+                                // en absoluto, no solo perder el resaltado.
+                                const availableDepartures = allDepartures.filter(d => d.available);
+                                return (
+                                    <div className="mb-6">
+                                        {siteTexts.packageInfo.availableDatesHeading && (
+                                            <h3 className="text-lg font-bold text-grafito mb-3 font-heading">
+                                                {siteTexts.packageInfo.availableDatesHeading}
+                                            </h3>
+                                        )}
+                                        {availableDepartures.length > 0 ? (
+                                            <div className="flex flex-wrap gap-2">
+                                                {availableDepartures.map((departure, index) => (
+                                                    <span
+                                                        key={`departure-${index}`}
+                                                        className="flex items-center gap-2 bg-nieve border border-niebla text-grafito px-3 py-1.5 rounded-full text-sm font-medium"
+                                                    >
+                                                        <Calendar className="w-3.5 h-3.5 text-pizarra flex-shrink-0" aria-hidden="true" />
+                                                        {departure.text}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            // Hay salidas cargadas en el CMS pero todas agotadas —
+                                            // decirlo explícitamente en vez de desaparecer en
+                                            // silencio (hallazgo de revisión adversarial, Grok: el
+                                            // usuario veía precio e "incluye" de un tour guiado sin
+                                            // ninguna fecha ni explicación de por qué).
+                                            siteTexts.packageInfo.noDatesAvailable && (
+                                                <p className="text-niebla text-sm">
+                                                    {siteTexts.packageInfo.noDatesAvailable}
+                                                </p>
+                                            )
+                                        )}
+                                    </div>
+                                );
+                            })()}
+
+                            {/* Incluye / No incluye de la modalidad activa.
+                                El `key` incluye la modalidad a propósito: fuerza el remonte
+                                del acordeón al cambiar de modalidad para que no quede
+                                expandido, por índice, un item que el usuario nunca abrió
+                                (cada modalidad tiene su propia lista y su propio orden). */}
+                            {hasModalityData && (
+                                <>
+                                    <PackageAccordionSection
+                                        key={`includes-${selectedModalityKey}`}
+                                        items={activeModality?.includes}
+                                        icon={Check}
+                                    />
+                                    <PackageAccordionSection
+                                        key={`not-includes-${selectedModalityKey}`}
+                                        items={activeModality?.notIncludes}
+                                        icon={X}
+                                    />
+                                </>
+                            )}
+
+                            {/* Información Adicional - Desplegables.
+                                Sin equivalente por modalidad: se muestra siempre, en ambas
+                                ramas, porque no forma parte de este feature. */}
                             {pkg.additionalInfo && pkg.additionalInfo.length > 0 && (
                                 <div className="mb-6">
                                     <div className="space-y-3">
@@ -694,6 +973,31 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                 isOpen={isQuoteModalOpen}
                 onClose={() => setIsQuoteModalOpen(false)}
                 packageTitle={pkg.title}
+                packageDocumentId={pkg.documentId}
+                packageSlug={pkg.slug}
+                // Hallazgo de QA adversarial (Grok): antes el modal siempre
+                // abría con "Guiado" fijo, sin importar qué modalidad eligió
+                // el usuario en el toggle de arriba. Solo se pasa un valor
+                // explícito cuando hay modalidad activa (hasModalityData) —
+                // para paquetes legacy sin modalidades, se omite el prop y el
+                // modal usa su propio default ('guiado'), sin cambiar nada.
+                preselectedTripType={hasModalityData
+                    ? (selectedModalityKey === 'A' ? 'autoguiado' : 'guiado')
+                    : undefined}
+                // Mismas etiquetas reales que ve en el toggle de arriba — para
+                // paquetes legacy sin modalidad, se omiten y el modal usa sus
+                // defaults ("Autoguiado"/"Guiado"), sin cambiar nada.
+                labelA={hasModalityData ? resolvedToggleLabelA : undefined}
+                labelB={hasModalityData ? resolvedToggleLabelB : undefined}
+                // Precio por modalidad, para que el evento de analytics del
+                // envío lleve el precio que el usuario realmente vio.
+                priceA={hasModalityData ? pkg.autoGuidedModality?.priceEUR : undefined}
+                priceB={hasModalityData ? pkg.guidedModality?.priceEUR : undefined}
+                // Mismo cálculo que el toggle principal (hallazgo de revisión
+                // adversarial, Codex): antes el modal dejaba elegir una
+                // modalidad que el toggle ya mostraba como "No disponible".
+                disabledA={hasModalityData && !isModalityUsable(pkg.autoGuidedModality)}
+                disabledB={hasModalityData && !isModalityUsable(pkg.guidedModality)}
             />
 
             {/* Modal de Evaluación de Nivel de Hiking */}

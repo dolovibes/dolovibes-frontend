@@ -23,11 +23,14 @@ const DynamicLegalPage = ({ slug: slugProp, fallbackTitle, fallbackContent }) =>
     // Obtener datos desde Strapi
     const { data: pageData, isLoading } = useLegalPage(slug);
 
-    // Hook para redirección inteligente al cambiar idioma
+    // Hook para redirección inteligente al cambiar idioma (y para corregir
+    // enlaces directos con el slug del idioma equivocado — ver comentario
+    // en useLanguageAwareNavigation)
     useLanguageAwareNavigation({
         documentId: pageData?.documentId,
         currentSlug: slug,
         resourceType: 'legal',
+        dataLocale: pageData?.locale,
     });
 
     // Hreflang para SEO - URLs alternativas por idioma (DEBE estar antes de early returns)

@@ -4,8 +4,18 @@ import { CheckCircle, Send, X, AlertCircle } from 'lucide-react';
 import useFocusTrap from '../hooks/useFocusTrap';
 import { trackPackageQuoteFormOpen, trackPackageQuoteFormSubmit, trackFormStep, trackFormError } from '../utils/dataLayer';
 
-const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
+const PackageQuoteModal = ({
+    isOpen, onClose, packageTitle, preselectedTripType = 'guiado', labelA, labelB,
+    packageDocumentId, packageSlug, priceA, priceB, disabledA = false, disabledB = false,
+}) => {
     const { texts: siteTexts } = useSiteTextsContext();
+    // Etiquetas reales del tour (spec "Toggle editable" — Codex/Grok, ronda de
+    // revisión del plan): antes este modal siempre decía "Guiado"/"Autoguiado"
+    // fijo, sin importar qué etiquetas custom tenga el tour en el toggle
+    // principal (ej. "Viaje Personalizado"/"Grupal"). labelA/labelB son las ya
+    // resueltas (custom o default) que vienen del detalle del paquete.
+    const resolvedLabelA = labelA || siteTexts.packageQuoteModal?.tripTypeSelfGuided || 'Autoguiado';
+    const resolvedLabelB = labelB || siteTexts.packageQuoteModal?.tripTypeGuided || 'Guiado';
     // fix #12: Focus trap
     const focusTrapRef = useFocusTrap(isOpen, onClose);
     // fix #25: Generate unique IDs for form fields
@@ -32,7 +42,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
         contacto: 'whatsapp',
         mesViaje: '',
         viajeros: '2',
-        tipoViaje: 'guiado',
+        tipoViaje: preselectedTripType,
         serviciosAdicionales: '',
         packageTitle: packageTitle || ''
     });
@@ -53,6 +63,18 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
         }
 
         if (isOpen) {
+            // Hallazgo de QA adversarial (Grok): el modal antes SIEMPRE abría
+            // con tipoViaje:'guiado' fijo, ignorando la modalidad que el
+            // usuario ya había elegido en el toggle de la página — un lead
+            // podía pedir cotización de una modalidad distinta a la que vio y
+            // cuyo precio consultó. El modal queda montado entre aperturas
+            // (isOpen solo alterna, no desmonta), así que hay que
+            // re-sincronizar en cada apertura, igual que ya se hace con
+            // packageTitle arriba — de lo contrario, una elección manual
+            // previa del usuario DENTRO del modal "se pegaría" a la siguiente
+            // apertura en vez de reflejar la modalidad recién elegida.
+            setFormData(prev => ({ ...prev, tipoViaje: preselectedTripType }));
+
             if (!trackedOpenRef.current) {
                 trackedOpenRef.current = true;
                 trackPackageQuoteFormOpen({ packageTitle });
@@ -74,7 +96,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                 timeoutRef.current = null;
             }
         };
-    }, [isOpen, packageTitle]);
+    }, [isOpen, packageTitle, preselectedTripType]);
     
     // Cerrar con tecla ESC
     React.useEffect(() => {
@@ -111,9 +133,45 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
         e.preventDefault();
         setValidationError(false);
         setError(null);
+
+        // Red de seguridad (hallazgo de revisión adversarial, Codex): los
+        // botones ya bloquean elegir una modalidad deshabilitada; esto
+        // asegura que, pase lo que pase, nunca se envíe una cotización de una
+        // modalidad sin config/precio real. No debería ser alcanzable en la
+        // práctica — si lo es, no hay una modalidad válida a la que caer, así
+        // que simplemente no se envía.
+        if ((formData.tipoViaje === 'guiado' && disabledB) || (formData.tipoViaje === 'autoguiado' && disabledA)) {
+            return;
+        }
+
         setIsSubmitting(true);
 
         try {
+            // modalityLabel: la etiqueta REAL del tour (ej. "Grupal"), aparte de
+            // tipoViaje (la clave canónica guiado/autoguiado que el backend usa
+            // para el correo). Solo se manda cuando el paquete de verdad tiene
+            // modalidad configurada (labelA/labelB vienen de PackageInfoPage) —
+            // si no, se omite el campo por completo en vez de mandar el default
+            // genérico de este modal ("Autoguiado"/"Guiado"), que ya es
+            // exactamente lo que el fallback del backend produce solo. Mandarlo
+            // siempre habría cambiado el correo de TODOS los paquetes legacy sin
+            // necesidad (hallazgo de revisión adversarial, Grok).
+            const modalityLabel = (labelA || labelB)
+                ? (formData.tipoViaje === 'guiado' ? resolvedLabelB : resolvedLabelA)
+                : undefined;
+
+            // packageDocumentId/packageSlug: sin esto ventas no podía distinguir
+            // dos paquetes con el mismo título (el correo solo llevaba
+            // packageTitle) — el analytics ya lo resolvía, el correo operativo
+            // (único registro de la cotización, no se persiste en BD) no
+            // (hallazgo de revisión adversarial, Grok).
+            const requestData = {
+                ...formData,
+                ...(modalityLabel ? { modalityLabel } : {}),
+                ...(packageDocumentId ? { packageDocumentId } : {}),
+                ...(packageSlug ? { packageSlug } : {}),
+            };
+
             const response = await fetch(`${import.meta.env.VITE_STRAPI_URL}/api/quote-request`, {
                 method: 'POST',
                 headers: {
@@ -121,7 +179,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                 },
                 body: JSON.stringify({
                     type: 'package',
-                    data: formData,
+                    data: requestData,
                 }),
             });
 
@@ -129,10 +187,20 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                 throw new Error('Error al enviar la solicitud');
             }
 
+            // documentId/slug/modalityKey/precio: sin esto no se podía saber
+            // qué vio exactamente el cliente al pedir la cotización (ver nota
+            // en dataLayer.js). Solo se manda el precio si el paquete tiene
+            // modalidad real, mismo guard que modalityLabel arriba.
+            const modalityKey = formData.tipoViaje === 'guiado' ? 'B' : 'A';
             trackPackageQuoteFormSubmit({
                 packageTitle: formData.packageTitle,
+                packageDocumentId,
+                packageSlug,
                 travelers: formData.viajeros,
                 tripType: formData.tipoViaje,
+                modalityKey: modalityLabel ? modalityKey : undefined,
+                modalityLabel,
+                priceEUR: modalityLabel ? (modalityKey === 'A' ? priceA : priceB) : undefined,
                 contactMethod: formData.contacto,
             });
 
@@ -145,7 +213,7 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                 setFormData({
                     nombre: '', apellido: '', ciudad: '', estado: '', pais: '',
                     email: '', telefono: '', contacto: 'whatsapp', mesViaje: '',
-                    viajeros: '2', tipoViaje: 'guiado', serviciosAdicionales: '',
+                    viajeros: '2', tipoViaje: preselectedTripType, serviciosAdicionales: '',
                     packageTitle: packageTitle || ''
                 });
                 timeoutRef.current = null;
@@ -419,28 +487,57 @@ const PackageQuoteModal = ({ isOpen, onClose, packageTitle }) => {
                                     <label className="block text-sm font-medium text-pizarra mb-1.5">
                                         {siteTexts.packageQuoteModal?.tripType || 'Tipo de viaje'}
                                     </label>
+                                    {/* aria-pressed (hallazgo QA adversarial, Codex): estos dos
+                                        botones dependían solo del estilo visual para comunicar
+                                        cuál está seleccionado — un lector de pantalla no podía
+                                        saberlo. Ahora es más relevante que antes: este selector
+                                        debería coincidir con el toggle principal de la página. */}
+                                    {/* disabled={disabledB/A} (hallazgo de revisión adversarial,
+                                        Codex): antes el modal dejaba elegir una modalidad que el
+                                        toggle principal ya mostraba como "No disponible" — el
+                                        cliente podía pedir cotización de algo sin precio/config
+                                        real, y el evento de analytics registraba un precio
+                                        inexistente para esa modalidad. */}
                                     <div className="grid grid-cols-2 gap-3">
                                         <button
                                             type="button"
-                                            onClick={() => setFormData(prev => ({ ...prev, tipoViaje: 'guiado' }))}
-                                            className={`p-3 rounded-xl border-2 transition-all text-center ${formData.tipoViaje === 'guiado'
+                                            disabled={disabledB}
+                                            onClick={() => !disabledB && setFormData(prev => ({ ...prev, tipoViaje: 'guiado' }))}
+                                            aria-pressed={formData.tipoViaje === 'guiado'}
+                                            aria-disabled={disabledB}
+                                            className={`p-3 rounded-xl border-2 transition-all text-center ${disabledB
+                                                ? 'border-niebla text-niebla cursor-not-allowed opacity-60'
+                                                : formData.tipoViaje === 'guiado'
                                                 ? 'border-pizarra bg-nieve text-pizarra'
                                                 : 'border-pizarra hover:border-bruma text-pizarra'
                                                 }`}
                                         >
-                                            <span className="font-semibold block text-sm">{siteTexts.packageQuoteModal?.tripTypeGuided || 'Guiado'}</span>
-                                            <span className="text-xs opacity-70">{siteTexts.packageQuoteModal?.tripTypeGuidedDesc || 'Con guía experto'}</span>
+                                            <span className="font-semibold block text-sm">{resolvedLabelB}</span>
+                                            <span className="text-xs opacity-70">
+                                                {disabledB
+                                                    ? (siteTexts.packageInfo?.modalityUnavailable || '')
+                                                    : (siteTexts.packageQuoteModal?.tripTypeGuidedDesc || 'Con guía experto')}
+                                            </span>
                                         </button>
                                         <button
                                             type="button"
-                                            onClick={() => setFormData(prev => ({ ...prev, tipoViaje: 'autoguiado' }))}
-                                            className={`p-3 rounded-xl border-2 transition-all text-center ${formData.tipoViaje === 'autoguiado'
+                                            disabled={disabledA}
+                                            onClick={() => !disabledA && setFormData(prev => ({ ...prev, tipoViaje: 'autoguiado' }))}
+                                            aria-pressed={formData.tipoViaje === 'autoguiado'}
+                                            aria-disabled={disabledA}
+                                            className={`p-3 rounded-xl border-2 transition-all text-center ${disabledA
+                                                ? 'border-niebla text-niebla cursor-not-allowed opacity-60'
+                                                : formData.tipoViaje === 'autoguiado'
                                                 ? 'border-pizarra bg-nieve text-pizarra'
                                                 : 'border-pizarra hover:border-bruma text-pizarra'
                                                 }`}
                                         >
-                                            <span className="font-semibold block text-sm">{siteTexts.packageQuoteModal?.tripTypeSelfGuided || 'Autoguiado'}</span>
-                                            <span className="text-xs opacity-70">{siteTexts.packageQuoteModal?.tripTypeSelfGuidedDesc || 'Por tu cuenta'}</span>
+                                            <span className="font-semibold block text-sm">{resolvedLabelA}</span>
+                                            <span className="text-xs opacity-70">
+                                                {disabledA
+                                                    ? (siteTexts.packageInfo?.modalityUnavailable || '')
+                                                    : (siteTexts.packageQuoteModal?.tripTypeSelfGuidedDesc || 'Por tu cuenta')}
+                                            </span>
                                         </button>
                                     </div>
                                 </div>

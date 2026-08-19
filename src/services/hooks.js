@@ -266,25 +266,52 @@ import { generateLocalizedUrl } from '../utils/localizedRoutes';
  * NOTA: Con la nueva arquitectura de rutas localizadas, este hook se activa cuando
  * el usuario cambia idioma via LanguageSwitcher, que ya redirige a la nueva URL.
  * El hook ahora solo necesita verificar si el slug existe en el nuevo idioma.
- * 
+ *
+ * TAMBIÉN corrige el caso de navegación directa/enlace con el slug equivocado
+ * para el idioma de la URL (ej. `/en/paquetes/alto-adige-imperdible`, un slug
+ * que solo existe en español — cada locale tiene su propio slug traducido).
+ * `fetchFromStrapi` no encuentra ese slug en `en` y cae a un fallback completo
+ * a español para no dejar la página vacía, pero eso deja contenido en español
+ * bajo una URL que dice `/en/`, sin corregir nada (hallazgo real, reproducido
+ * en vivo: `/en/paquetes/alto-adige-imperdible` y `/en/paquetes/travesia-carezza`
+ * ambos muestran el título en español). `dataLocale` (el locale real de los
+ * datos que llegaron, no el de la URL) permite distinguir ese fallback
+ * silencioso de una carga legítima, y dispara la misma redirección que ya
+ * usa el cambio de idioma manual — si existe una traducción real para el
+ * locale de la URL, redirige a su slug correcto; si genuinamente no existe
+ * ninguna traducción, no hace nada y el fallback a español queda como está
+ * (ese caso SÍ es el comportamiento intencional).
+ *
  * @param {object} options
  * @param {string} options.documentId - Document ID del recurso actual
  * @param {string} options.currentSlug - Slug actual en la URL
- * @param {string} options.resourceType - 'experience' | 'package'
+ * @param {string} options.resourceType - 'experience' | 'package' | 'legal'
+ * @param {string} [options.dataLocale] - Locale real de los datos cargados (item.locale transformado)
  */
-export const useLanguageAwareNavigation = ({ documentId, currentSlug, resourceType }) => {
+export const useLanguageAwareNavigation = ({ documentId, currentSlug, resourceType, dataLocale }) => {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const previousLocale = useRef(i18n.language);
   const isRedirecting = useRef(false);
+  // Evita repetir el chequeo de fallback silencioso para el mismo documento
+  // en cada re-render (solo se necesita una vez por documentId).
+  const checkedMismatchFor = useRef(null);
 
+  // Devuelve `true` si el chequeo se resolvió (haya redirigido o no — "no
+  // existe traducción" también es una resolución válida), `false` si se
+  // saltó (ya había una redirección en curso) o falló por error de red — en
+  // ambos casos el llamador NO debe marcar el documento como ya revisado,
+  // para poder reintentar en el siguiente render (hallazgo de revisión
+  // adversarial, Codex y Grok: marcar el guard antes de confirmar éxito deja
+  // el fallback en español pegado para siempre si la consulta de slug falla
+  // transitoriamente).
   const handleLanguageChange = useCallback(async (newLocale) => {
     // Evitar redirecciones recursivas
-    if (isRedirecting.current || !documentId) return;
-    
+    if (isRedirecting.current || !documentId) return false;
+
     isRedirecting.current = true;
-    
+
     try {
       let newSlug = null;
       const DEFAULT_LOCALE = 'es';
@@ -318,13 +345,15 @@ export const useLanguageAwareNavigation = ({ documentId, currentSlug, resourceTy
       
       // Solo redirigir si el slug cambió
       if (newSlug && newSlug !== currentSlug) {
-        const routeKey = resourceType === 'experience' ? 'experiences' : 
+        const routeKey = resourceType === 'experience' ? 'experiences' :
                          resourceType === 'package' ? 'packages' : 'legal';
         const newPath = generateLocalizedUrl(routeKey, newSlug, newLocale);
         navigate(newPath, { replace: true });
       }
+      return true;
     } catch (error) {
       console.warn('[useLanguageAwareNavigation] Error redirecting:', error);
+      return false;
     } finally {
       isRedirecting.current = false;
     }
@@ -332,14 +361,38 @@ export const useLanguageAwareNavigation = ({ documentId, currentSlug, resourceTy
 
   useEffect(() => {
     const currentLocale = i18n.language;
-    
+
     // Solo redirigir si el idioma cambió (no en carga inicial)
     if (previousLocale.current !== currentLocale && documentId) {
       handleLanguageChange(currentLocale);
     }
-    
+
     previousLocale.current = currentLocale;
   }, [i18n.language, documentId, handleLanguageChange]);
+
+  // Corrige el caso de carga inicial (URL directa / enlace) con slug
+  // equivocado para el locale de la URL — ver nota arriba. Se dispara una
+  // sola vez por documentId, independiente del efecto de "cambio de idioma"
+  // de arriba (ese requiere que el idioma cambie DESPUÉS del mount; este
+  // cubre el mismatch que ya viene desde el primer render).
+  useEffect(() => {
+    if (!documentId || !dataLocale) return;
+    if (checkedMismatchFor.current === documentId) return;
+
+    const currentLocale = i18n.language;
+    if (dataLocale !== currentLocale) {
+      // Marcar el guard SOLO si la resolución terminó bien (redirigió, o
+      // confirmó que no hay traducción y el fallback es intencional) — si
+      // falla (red caída, etc.) no se marca, así un siguiente render de este
+      // mismo documentId puede reintentarlo en vez de quedar pegado en
+      // español para siempre.
+      handleLanguageChange(currentLocale).then((resolved) => {
+        if (resolved) {
+          checkedMismatchFor.current = documentId;
+        }
+      });
+    }
+  }, [documentId, dataLocale, i18n.language, handleLanguageChange]);
 
   return { isRedirecting: isRedirecting.current };
 };
