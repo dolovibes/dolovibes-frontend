@@ -747,13 +747,11 @@ const PackageInfoPage = ({ onOpenQuote }) => {
                                         key={`includes-${selectedModalityKey}`}
                                         items={activeModality?.includes}
                                         icon={Check}
-                                        title={siteTexts.packageInfo.includes}
                                     />
                                     <PackageAccordionSection
                                         key={`not-includes-${selectedModalityKey}`}
                                         items={activeModality?.notIncludes}
                                         icon={X}
-                                        title={siteTexts.packageInfo.notIncludes}
                                     />
                                 </>
                             )}
